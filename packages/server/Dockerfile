@@ -10,7 +10,8 @@ RUN npm install
 COPY ../.. .
 
 # Generate Prisma client
-RUN npm run prisma:generate
+# TODO: When we have a primsa client package, we can uncomment this
+# RUN npm run prisma:generate
 
 # Build the app
 RUN npm run build
