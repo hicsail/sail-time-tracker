@@ -1,38 +1,24 @@
-FROM node:18 as builder
+FROM node:16 AS builder
 
-WORKDIR /usr/src/app
+# Create app directory
+WORKDIR /app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+COPY prisma ./prisma/
 
 # Install app dependencies
-COPY package*.json ./
 RUN npm install
 
-# Copy over the source
-COPY ../.. .
+COPY . .
 
-# Generate Prisma client
-# TODO: When we have a primsa client package, we can uncomment this
-# RUN npm run prisma:generate
-
-# Build the app
 RUN npm run build
 
-############################################
-FROM node:18 as runner
+FROM node:16
 
-WORKDIR /usr/src/app
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
 
-# Copy over the built app
-COPY --from=builder /usr/src/app/dist ./dist
-
-# Install app dependencies
-COPY package*.json ./
-RUN npm install --omit=dev
-
-# Copy over the Prisma client
-# TODO: When we have a primsa client package, we can uncomment this
-# COPY --from=builder /usr/src/app/node_modules/.prisma/client ./node_modules/.prisma/client
-
-# Expose the default port
 EXPOSE 3000
-
-CMD ["npm", "run", "start:deploy"]
+CMD [ "npm", "run", "start:prod" ]
