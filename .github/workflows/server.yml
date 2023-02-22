@@ -49,7 +49,7 @@ jobs:
       - name: Build & Push Docker Build
         uses: docker/build-push-action@v4
         with:
-          file: ./packages/server/Dockerfile
+          context: ./packages/server
           push: ${{ github.event_name != 'pull_request' }}
           tags: hicsail/sail-time-tracker-backend:unstable
       - name: Push to Staging
