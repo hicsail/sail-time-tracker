@@ -13,14 +13,14 @@ export class EmployeesController {
       email: string;
       name: string;
       rate: string;
-    },
+    }
   ): Promise<any> {
     let { email, name } = postData;
     let rate = parseFloat(postData.rate);
     return this.employeesService.createEmployee({
       email,
       name,
-      rate,
+      rate
     });
   }
 }

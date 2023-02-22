@@ -6,6 +6,6 @@ import { PrismaModule } from 'nestjs-prisma';
 @Module({
   imports: [PrismaModule.forRoot()],
   controllers: [EmployeesController],
-  providers: [EmployeesService],
+  providers: [EmployeesService]
 })
 export class EmployeesModule {}
