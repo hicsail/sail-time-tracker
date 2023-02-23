@@ -8,11 +8,15 @@ import { join } from 'path';
 import { ProjectModule } from './project/project.module';
 
 @Module({
-  imports: [EmployeesModule, GraphQLModule.forRoot<ApolloDriverConfig>({
-    driver: ApolloDriver,
-    autoSchemaFile: join(process.cwd(), 'src/schema.gql')
-  }), ProjectModule],
+  imports: [
+    EmployeesModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql')
+    }),
+    ProjectModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

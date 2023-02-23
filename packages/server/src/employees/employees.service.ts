@@ -4,13 +4,12 @@ import { Prisma, Employee } from '@prisma/client';
 
 @Injectable()
 export class EmployeesService {
-
   constructor(private prisma: PrismaService) {}
 
   /**
    * Get all employees
    */
-  async getAllEmployees(): Promise<Employee[]>{
+  async getAllEmployees(): Promise<Employee[]> {
     return this.prisma.employee.findMany();
   }
 
@@ -21,10 +20,7 @@ export class EmployeesService {
    * @returns new employee that has been created
    */
 
-  async addEmployee(
-      newEmployee: Prisma.EmployeeCreateInput,
-  ): Promise<Employee> {
+  async addEmployee(newEmployee: Prisma.EmployeeCreateInput): Promise<Employee> {
     return this.prisma.employee.create({ data: newEmployee });
   }
-
 }

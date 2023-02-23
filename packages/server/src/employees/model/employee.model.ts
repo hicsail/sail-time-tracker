@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID} from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 
 /**
  * return types for querying employee
@@ -6,19 +6,18 @@ import { ObjectType, Field, ID} from '@nestjs/graphql';
 
 @ObjectType()
 export class EmployeeModel {
-    @Field(() => ID)
-    id: string;
+  @Field(() => ID)
+  id: string;
 
-    @Field()
-    email: string;
+  @Field()
+  email: string;
 
-    @Field()
-    name: string;
+  @Field()
+  name: string;
 
-    @Field()
-    rate: number;
+  @Field()
+  rate: number;
 
-    @Field({nullable: true})
-    status?: string;
-
+  @Field({ nullable: true })
+  status?: string;
 }

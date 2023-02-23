@@ -1,4 +1,4 @@
-import { InputType, Field } from "@nestjs/graphql";
+import { InputType, Field } from '@nestjs/graphql';
 
 /**
  * input type for adding new employee
@@ -6,16 +6,15 @@ import { InputType, Field } from "@nestjs/graphql";
 
 @InputType()
 export class EmployeeCreateInput {
+  @Field()
+  name: string;
 
-    @Field()
-    name: string
+  @Field()
+  email: string;
 
-    @Field()
-    email: string
+  @Field()
+  rate: number;
 
-    @Field()
-    rate: number
-
-    @Field({nullable: true})
-    status: string | null
+  @Field({ nullable: true })
+  status: string | null;
 }
