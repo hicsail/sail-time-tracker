@@ -1,0 +1,27 @@
+version: '3'
+services:
+  time-tracker-frontend:
+    image: hicsail/sail-time-tracker-frontend:unstable
+    restart: always
+    ports:
+      - 4004:80
+    env_file:
+      - ../stack.env
+  time-tracker-backend:
+    image: hicsail/sail-time-tracker-backend:unstable
+    restart: always
+    ports:
+      - 4003:3000
+    env_file:
+      - ../stack.env
+  time-tracker-postgres:
+    image: postgres:13
+    restart: always
+    ports:
+      - 5433:5432
+    volumes:
+      - time-tracker-staging:/var/lib/postgresql/data
+    env_file:
+      - ../stack.env
+volumes:
+  time-tracker-staging: ~
