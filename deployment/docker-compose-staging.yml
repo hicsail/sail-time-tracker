@@ -12,6 +12,7 @@ services:
     restart: always
     ports:
       - 4003:3000
+      - 4005:5555
     env_file:
       - ../stack.env
   time-tracker-postgres:
