@@ -5,6 +5,8 @@ services:
     restart: always
     ports:
       - 4004:80
+    env_file:
+      - ../stack.env
   time-tracker-backend:
     image: hicsail/sail-time-tracker-backend:unstable
     restart: always
