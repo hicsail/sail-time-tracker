@@ -21,4 +21,6 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
+EXPOSE 5555
+
 CMD npm run start:prod; npm run prisma:studio;
