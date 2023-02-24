@@ -1,0 +1,39 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type EmployeeModel {
+  id: ID!
+  email: String!
+  name: String!
+  rate: Float!
+  status: String
+}
+
+type ProjectModel {
+  id: ID!
+  name: String!
+  status: String!
+}
+
+type Query {
+  employees: [EmployeeModel!]!
+  projects: [ProjectModel!]!
+}
+
+type Mutation {
+  addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
+  addProject(project: ProjectCreateInput!): ProjectModel!
+}
+
+input EmployeeCreateInput {
+  name: String!
+  email: String!
+  rate: Float!
+  status: String
+}
+
+input ProjectCreateInput {
+  name: String!
+  status: String!
+}
