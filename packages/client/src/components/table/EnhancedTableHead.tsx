@@ -3,12 +3,12 @@
  * @param props
  */
 
-import React from "react";
+import React from 'react';
 import TableHead from '@mui/material/TableHead';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import {Data} from "../../data/data";
+import { Data } from '../../data/data';
 
 export interface HeadCell {
   disablePadding: boolean;
@@ -20,23 +20,23 @@ const headCells: readonly HeadCell[] = [
   {
     id: 'name',
     disablePadding: true,
-    label: 'Project Name',
+    label: 'Project Name'
   },
   {
     id: 'hours',
     disablePadding: false,
-    label: 'Hours',
+    label: 'Hours'
   },
   {
     id: 'previousWeek',
     disablePadding: false,
-    label: 'Previous Week',
+    label: 'Previous Week'
   },
   {
     id: 'description',
     disablePadding: false,
-    label: 'Description',
-  },
+    label: 'Description'
+  }
 ];
 
 interface EnhancedTableProps {
@@ -52,23 +52,14 @@ export const EnhancedTableHead = (props: EnhancedTableProps) => {
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === (rowCount - 2)}
-            onChange={onSelectAllClick}
-          />
+          <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount - 2} onChange={onSelectAllClick} />
         </TableCell>
         {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align='left'
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-          >
+          <TableCell key={headCell.id} align="left" padding={headCell.disablePadding ? 'none' : 'normal'}>
             {headCell.label}
           </TableCell>
         ))}
       </TableRow>
     </TableHead>
   );
-}
+};

@@ -5,12 +5,7 @@ export interface Data {
   description: string;
 }
 
-export function createData(
-  name: string,
-  hours: number,
-  previousWeek: number,
-  description: string,
-): Data {
+export function createData(name: string, hours: number, previousWeek: number, description: string): Data {
   return {
     name,
     hours,
@@ -18,4 +13,3 @@ export function createData(
     description
   };
 }
-

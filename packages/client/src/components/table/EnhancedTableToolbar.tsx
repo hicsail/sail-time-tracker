@@ -3,7 +3,7 @@
  * @param props
  */
 
-import React from "react";
+import React from 'react';
 import { alpha } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -25,27 +25,16 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
         ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
+          bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity)
+        })
       }}
     >
       {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
+        <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
+        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
           Favorite Projects
         </Typography>
       )}
@@ -57,15 +46,18 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Tooltip>
       ) : (
         <Tooltip title="Add New Favorite Project">
-          <IconButton sx={{'&:hover':{
-              backgroundColor:"#1565c0",
-              color: "white"
-            } }}>
+          <IconButton
+            sx={{
+              '&:hover': {
+                backgroundColor: '#1565c0',
+                color: 'white'
+              }
+            }}
+          >
             <AddIcon />
           </IconButton>
         </Tooltip>
       )}
     </Toolbar>
   );
-
-}
+};
