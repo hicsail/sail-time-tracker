@@ -10,8 +10,7 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
-import Input from '@mui/joy/Input';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TextField from '@mui/material/TextField';
 
 import { EnhancedTableToolbar } from '@components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@components/table/EnhancedTableHead';
@@ -25,14 +24,12 @@ const rows = [
   createData('ASL-LEX', 10, 15, '')
 ];
 
-//
 export const ProjectTable = () => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [loading, setLoading] = React.useState(false);
 
   /**
    * this method is used to switch table save state.
-   * @param event
    */
   function handleLoadingClick() {
     setLoading(true);
@@ -58,6 +55,7 @@ export const ProjectTable = () => {
   /**
    * this method is used to handle select single project event.
    * @param event
+   * @param name
    */
   const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
     const selectedIndex = selected.indexOf(name);
@@ -108,25 +106,14 @@ export const ProjectTable = () => {
                         inputProps={{
                           'aria-labelledby': labelId
                         }}
-                        disabled={row.name === 'Indirect' || row.name === 'Absence' ? true : false}
+                        disabled={row.name === 'Indirect' || row.name === 'Absence'}
                       />
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       {row.name}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
-                      <Input
-                        type="number"
-                        variant="solid"
-                        slotProps={{
-                          input: {
-                            min: 0.0,
-                            step: 0.1
-                          }
-                        }}
-                        startDecorator={<AccessTimeIcon sx={{ color: '#424242' }} />}
-                        sx={{ backgroundColor: '#f5f5f5' }}
-                      />
+                      <TextField id="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
                       {row.previousWeek}

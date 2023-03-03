@@ -1,34 +1,18 @@
 import { Date } from '@components/Date.component';
 import { DisplayCard } from '@components/DisplayCard.component';
-import { DisplayData } from '@pages/Track/displaydata';
 import { ProjectTable } from '@components/table/ProjectTable';
-import styled from 'styled-components';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 
 export const Track = () => {
-  const TrackContainer = styled.div`
-    width: 100%;
-    height: 10rem;
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-    align-items: start;
-  `;
-
-  const DisplayContainer = styled.div`
-    display: flex;
-    gap: 4rem;
-    align-items: center;
-  `;
-
   return (
-    <TrackContainer>
-      <DisplayContainer>
+    <Box component="div" maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: '4rem', alignItems: 'start' }}>
+      <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
         <Date />
-        {DisplayData.map((data) => {
-          return <DisplayCard key={data.id} item={data} />;
-        })}
-      </DisplayContainer>
+        <DisplayCard key="work" id="work" title="Total Work Hours" hours="10" />
+        <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours="2" />
+      </Stack>
       <ProjectTable />
-    </TrackContainer>
+    </Box>
   );
 };

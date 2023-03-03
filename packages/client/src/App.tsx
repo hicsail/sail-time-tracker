@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import './App.css';
-
 import { Track } from '@pages/Track/track';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import Container from '@mui/material/Container';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="App">
-      <Track />
-    </div>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Container maxWidth="lg">
+        <Track />
+      </Container>
+    </LocalizationProvider>
   );
 }
 

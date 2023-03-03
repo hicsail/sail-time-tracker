@@ -3,25 +3,25 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { WorkSuitIcon } from '@components/images/WorkSuitIcon';
 import { RestIcon } from '@components/images/RestIcon';
+import { FC } from 'react';
+import Box from '@mui/material/Box';
 
-type DisplayCardProps = {
-  item: {
-    title: string;
-    id: string;
-    hours: string;
-  };
-};
+interface DisplayCardProps {
+  id: string;
+  title: string;
+  hours: string;
+}
 
-export const DisplayCard = ({ item }: DisplayCardProps) => {
+export const DisplayCard: FC<DisplayCardProps> = ({ id, title, hours }) => {
   return (
-    <Card sx={{ maxWidth: 345, maxHeight: 90, display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
-      <CardContent>{item.id === 'work' ? <WorkSuitIcon width={50} height={50} /> : <RestIcon width={50} height={50} />}</CardContent>
+    <Card sx={{ maxWidth: 345, maxHeight: 90, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      <Box paddingLeft="1rem">{id === 'work' ? <WorkSuitIcon width={50} height={50} /> : <RestIcon width={50} height={50} />}</Box>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
         <Typography gutterBottom variant="subtitle2" component="div" color="#616161">
-          {item.title}
+          {title}
         </Typography>
         <Typography gutterBottom variant="h5" component="div" color="#212121">
-          {item.hours}
+          {hours}
         </Typography>
       </CardContent>
     </Card>
