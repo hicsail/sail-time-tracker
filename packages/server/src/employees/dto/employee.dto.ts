@@ -29,6 +29,10 @@ export class EmployeeCreateInput {
   status: string | null;
 }
 
+/**
+ * input type for updating new employee
+ */
+
 @InputType()
 export class EmployeeUpdateInput extends EmployeeCreateInput {
   @Field(() => ID)

@@ -17,6 +17,9 @@ export class ProjectCreateInput {
   status: string;
 }
 
+/**
+ * input type for updating new project
+ */
 @InputType()
 export class ProjectUpdateInput extends ProjectCreateInput {
   @Field(() => ID)
