@@ -23,7 +23,9 @@ type Query {
 
 type Mutation {
   addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
+  updateEmployee(updateEmployee: EmployeeUpdateInput!): EmployeeModel!
   addProject(project: ProjectCreateInput!): ProjectModel!
+  updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
 }
 
 input EmployeeCreateInput {
@@ -33,7 +35,21 @@ input EmployeeCreateInput {
   status: String
 }
 
+input EmployeeUpdateInput {
+  name: String!
+  email: String!
+  rate: Float!
+  status: String
+  id: ID!
+}
+
 input ProjectCreateInput {
   name: String!
   status: String!
+}
+
+input ProjectUpdateInput {
+  name: String!
+  status: String!
+  id: ID!
 }
