@@ -20,17 +20,9 @@ interface EmployeeTableProps {
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [loading, setLoading] = React.useState(false);
 
   /**
-   * this method is used to switch table save state.
-   */
-  function handleLoadingClick() {
-    setLoading(true);
-  }
-
-  /**
-   * this method is used to handle select all project event.
+   * this method is used to handle select all employees' event.
    * @param event
    */
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +35,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
   };
 
   /**
-   * this method is used to handle select single project event.
+   * this method is used to handle select single employee event.
    * @param event
    * @param name
    */
@@ -61,11 +53,9 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
 
-    // remove "Indirect" and "Absence"
     setSelected(newSelected);
   };
 
-  // when name === "Indirect" or "Absence", set isSelected to false
   const isSelected = (name: string) => {
     return selected.indexOf(name) !== -1;
   };

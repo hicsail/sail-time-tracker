@@ -1,5 +1,5 @@
 /**
- * This component is used to display table head (project name, hours, previous week, description)
+ * This component is used to display table head (employee name, email, rate)
  * @param props
  */
 
