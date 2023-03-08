@@ -16,23 +16,18 @@ import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTabl
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
 
 export interface Data {
-  name: string,
-  hours: number,
-  previousWeek: number,
-  description: string
+  name: string;
+  hours: number;
+  previousWeek: number;
+  description: string;
 }
 
-function createData(
-  name: string,
-  hours: number,
-  previousWeek: number,
-  description: string
-): Data {
+function createData(name: string, hours: number, previousWeek: number, description: string): Data {
   return {
     name,
     hours,
     previousWeek,
-    description,
+    description
   };
 }
 
