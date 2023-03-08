@@ -12,9 +12,29 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
 import TextField from '@mui/material/TextField';
 
-import { EnhancedTableToolbar } from '@components/table/EnhancedTableToolbar';
-import { EnhancedTableHead } from '@components/table/EnhancedTableHead';
-import { createData } from '../../data/data';
+import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
+import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
+
+export interface Data {
+  name: string,
+  hours: number,
+  previousWeek: number,
+  description: string
+}
+
+function createData(
+  name: string,
+  hours: number,
+  previousWeek: number,
+  description: string
+): Data {
+  return {
+    name,
+    hours,
+    previousWeek,
+    description,
+  };
+}
 
 // mock rows data
 const rows = [

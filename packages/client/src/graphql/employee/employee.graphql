@@ -1,7 +1,17 @@
 query getEmployeeList {
-    employees {
-        id
-        email
-        name
-    }
+  employees {
+    id
+    email
+    name
+    rate
+  }
+}
+
+mutation EmployeeCreateInput($newEmployee: EmployeeCreateInput!) {
+  addEmployee(employee: $newEmployee) {
+    id
+    email
+    name
+    rate
+  }
 }

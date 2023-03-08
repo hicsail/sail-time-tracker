@@ -1,8 +1,8 @@
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { WorkSuitIcon } from '@components/images/WorkSuitIcon';
-import { RestIcon } from '@components/images/RestIcon';
+import { WorkSuitIcon } from '@pages/Track/components/images/WorkSuitIcon';
+import { RestIcon } from '@pages/Track/components/images/RestIcon';
 import { FC } from 'react';
 import Box from '@mui/material/Box';
 
