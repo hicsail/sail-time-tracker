@@ -23,6 +23,7 @@ model Employee {
 model Project {
     id               String             @default(uuid()) @id
     name             String             @unique
+    description      String
     status           String
     records          Record[]
     favoriteProjects FavoriteProject[]
