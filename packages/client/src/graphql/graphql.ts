@@ -63,18 +63,21 @@ export type MutationUpdateProjectArgs = {
 };
 
 export type ProjectCreateInput = {
+  description: Scalars['String'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
 
 export type ProjectModel = {
   __typename?: 'ProjectModel';
+  description: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
 
 export type ProjectUpdateInput = {
+  description: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
   status: Scalars['String'];
