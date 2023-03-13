@@ -24,13 +24,13 @@ export const EmployeeForm: FC<AddEmployeeFormProps> = ({ type }) => {
   return (
     <Formik
       validateOnChange={true}
-      validateOnBlur={true}
       initialValues={{ name: 'test', email: 'test@test.com', rate: '22', status: '1' }}
       validationSchema={FormValidation}
       onSubmit={async (values) => {
+        console.log({ ...values, rate: parseFloat(values.rate), status: values.status as string });
         await addEmployee({
           variables: {
-            newEmployee: { ...values, rate: parseFloat(values.rate) }
+            newEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString() }
           }
         });
       }}
@@ -38,10 +38,10 @@ export const EmployeeForm: FC<AddEmployeeFormProps> = ({ type }) => {
       <Form>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {error && <Container>`Submission error! ${error.message}`</Container>}
-          <TextInput id="name" type="text" name="name" placeholder="Name" required />
-          <TextInput id="email" type="email" name="email" placeholder="Email" required />
-          <TextInput id="rate" type="number" name="rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
-          <TextInput name="status" select placeholder="Status">
+          <TextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
+          <TextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />
+          <TextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
+          <TextInput name="status" select label="Status" placeholder="Status">
             <MenuItem value={0}>Inactive</MenuItem>
             <MenuItem value={1}>Active</MenuItem>
           </TextInput>
