@@ -1,0 +1,26 @@
+query getProjectList {
+  projects {
+    id
+    name
+    description
+    status
+  }
+}
+
+mutation ProjectCreateInput($newProject: ProjectCreateInput!) {
+  addProject(project: $newProject) {
+    id
+    name
+    description
+    status
+  }
+}
+
+mutation ProjectUpdateInput($updateProject: ProjectUpdateInput!) {
+  updateProject(updateProject: $updateProject) {
+    id
+    name
+    description
+    status
+  }
+}

@@ -30,10 +30,20 @@ export type EmployeeModel = {
   status?: Maybe<Scalars['String']>;
 };
 
+export type EmployeeUpdateInput = {
+  email: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  rate: Scalars['Float'];
+  status?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
   addProject: ProjectModel;
+  updateEmployee: EmployeeModel;
+  updateProject: ProjectModel;
 };
 
 export type MutationAddEmployeeArgs = {
@@ -44,13 +54,30 @@ export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
 };
 
+export type MutationUpdateEmployeeArgs = {
+  updateEmployee: EmployeeUpdateInput;
+};
+
+export type MutationUpdateProjectArgs = {
+  updateProject: ProjectUpdateInput;
+};
+
 export type ProjectCreateInput = {
+  description: Scalars['String'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
 
 export type ProjectModel = {
   __typename?: 'ProjectModel';
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  status: Scalars['String'];
+};
+
+export type ProjectUpdateInput = {
+  description: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
   status: Scalars['String'];

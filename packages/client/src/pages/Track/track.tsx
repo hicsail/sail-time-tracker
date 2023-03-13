@@ -1,6 +1,6 @@
-import { Date } from '@components/Date.component';
-import { DisplayCard } from '@components/DisplayCard.component';
-import { ProjectTable } from '@components/table/ProjectTable';
+import { Date } from '@pages/Track/components/Date.component';
+import { DisplayCard } from '@pages/Track/components/DisplayCard.component';
+import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 

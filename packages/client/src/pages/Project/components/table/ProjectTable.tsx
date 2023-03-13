@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -8,52 +8,34 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import LoadingButton from '@mui/lab/LoadingButton';
-import SaveIcon from '@mui/icons-material/Save';
-import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-import { EnhancedTableToolbar } from '@components/table/EnhancedTableToolbar';
-import { EnhancedTableHead } from '@components/table/EnhancedTableHead';
-import { createData } from '../../data/data';
+import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
+import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
+import { ProjectModel } from '@graphql/graphql';
 
-// mock rows data
-const rows = [
-  createData('Indirect', 80, 67, 'Update Meetings, Standup, Classes, etc'),
-  createData('Absence', 10, 5, 'Vacation, Sick leave, Holidays etc'),
-  createData('ANCHOR', 20, 15, ''),
-  createData('ASL-LEX', 10, 15, '')
-];
+interface ProjectTableProps {
+  rows: ProjectModel[];
+}
 
-export const ProjectTable = () => {
+export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [loading, setLoading] = React.useState(false);
 
   /**
-   * this method is used to switch table save state.
-   */
-  function handleLoadingClick() {
-    setLoading(true);
-  }
-
-  /**
-   * this method is used to handle select all project event.
+   * this method is used to handle select all employees' event.
    * @param event
    */
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.name);
-
-      // remove "Indirect" and "Absence" rows
-      const ableSelected = newSelected.filter((n) => n !== 'Indirect' && n !== 'Absence');
-
-      setSelected(ableSelected);
+      setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
   /**
-   * this method is used to handle select single project event.
+   * this method is used to handle select single employee event.
    * @param event
    * @param name
    */
@@ -71,17 +53,11 @@ export const ProjectTable = () => {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
 
-    // remove "Indirect" and "Absence"
-    setSelected(
-      newSelected.filter((d) => {
-        return d !== 'Indirect' && d !== 'Absence';
-      })
-    );
+    setSelected(newSelected);
   };
 
-  // when name === "Indirect" or "Absence", set isSelected to false
   const isSelected = (name: string) => {
-    return selected.indexOf(name) !== -1 && name !== 'Indirect' && name !== 'Absence';
+    return selected.indexOf(name) !== -1;
   };
 
   return (
@@ -106,19 +82,20 @@ export const ProjectTable = () => {
                         inputProps={{
                           'aria-labelledby': labelId
                         }}
-                        disabled={row.name === 'Indirect' || row.name === 'Absence'}
                       />
                     </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                    <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
                       {row.name}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
-                      <TextField id="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
+                      {row.description}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
-                      {row.previousWeek}
+                      {row.status}
                     </TableCell>
-                    <TableCell align="left">{row.description}</TableCell>
+                    <TableCell align="left" sx={{ border: 'none', width: '100px' }}>
+                      <Button variant="contained">Edit</Button>
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -126,9 +103,6 @@ export const ProjectTable = () => {
           </Table>
         </TableContainer>
       </Paper>
-      <LoadingButton color="primary" onClick={handleLoadingClick} loading={loading} loadingPosition="start" startIcon={<SaveIcon />} variant="contained">
-        <span>Save</span>
-      </LoadingButton>
     </Box>
   );
 };
