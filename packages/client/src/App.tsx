@@ -4,6 +4,7 @@ import Container from '@mui/material/Container';
 import { Employee } from '@pages/Employee/employee';
 
 import { GraphqlProvider } from '@graphql/graphql-provider';
+import { AddEmployee } from '@pages/Employee/addEmployee';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <GraphqlProvider>
         <Container maxWidth="lg">
           <Employee />
+          <AddEmployee />
         </Container>
       </GraphqlProvider>
     </LocalizationProvider>
