@@ -4,33 +4,31 @@ import { Form, Formik } from 'formik';
 import { Container, Box, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
-import { useEmployeeCreateInputMutation } from '@graphql/employee/employee';
+import { useProjectCreateInputMutation } from '@graphql/project/project';
 import { TextInput } from '@components/form/TextInput';
 
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
-  email: Yup.string().email('Invalid email address').required('Required'),
-  rate: Yup.number().required('Required').min(0, 'Rate should be greater than 0'),
+  description: Yup.string(),
   status: Yup.string().required('Required')
 });
 
-interface AddEmployeeFormProps {
+interface AddProjectFormProps {
   type: 'add' | 'edit';
 }
 
-export const EmployeeForm: FC<AddEmployeeFormProps> = ({ type }) => {
-  const [addEmployee, { data, loading, error }] = useEmployeeCreateInputMutation();
+export const ProjectForm: FC<AddProjectFormProps> = ({ type }) => {
+  const [addProject, { data, loading, error }] = useProjectCreateInputMutation();
 
   return (
     <Formik
       validateOnChange={true}
-      initialValues={{ name: 'test', email: 'test@test.com', rate: '22', status: '1' }}
+      initialValues={{ name: 'project 1', description: 'this is a description for project 1', status: 'Active' }}
       validationSchema={FormValidation}
       onSubmit={async (values) => {
-        console.log({ ...values, rate: parseFloat(values.rate), status: values.status as string });
-        await addEmployee({
+        await addProject({
           variables: {
-            newEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString() }
+            newProject: { ...values, status: values.status.toString() }
           }
         });
       }}
@@ -39,11 +37,10 @@ export const EmployeeForm: FC<AddEmployeeFormProps> = ({ type }) => {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {error && <Container>`Submission error! ${error.message}`</Container>}
           <TextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
-          <TextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />
-          <TextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
+          <TextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
           <TextInput name="status" select label="Status" placeholder="Status">
-            <MenuItem value={0}>Inactive</MenuItem>
-            <MenuItem value={1}>Active</MenuItem>
+            <MenuItem value="Inactive">Inactive</MenuItem>
+            <MenuItem value="Active">Active</MenuItem>
           </TextInput>
           <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit" loading={loading}>
             Submit
