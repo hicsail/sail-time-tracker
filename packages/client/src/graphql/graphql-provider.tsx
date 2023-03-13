@@ -1,5 +1,5 @@
-import React, {FC} from 'react';
-import {ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache} from '@apollo/client';
+import React, { FC } from 'react';
+import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache } from '@apollo/client';
 
 const uri = `${import.meta.env.VITE_BACKEND_URL}/graphql`;
 
@@ -7,7 +7,7 @@ export interface GraphqlProviderProps {
   children: React.ReactNode;
 }
 
-export const GraphqlProvider: FC<GraphqlProviderProps> = ({children}) => {
+export const GraphqlProvider: FC<GraphqlProviderProps> = ({ children }) => {
   const httpLink = new HttpLink({
     fetch: fetch,
     uri
