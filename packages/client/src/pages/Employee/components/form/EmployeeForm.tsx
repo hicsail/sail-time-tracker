@@ -1,11 +1,12 @@
 import * as Yup from 'yup';
-import { FC } from 'react';
 import { Form, Formik } from 'formik';
 import { Container, Box, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
-import { useEmployeeCreateInputMutation } from '@graphql/employee/employee';
+import { GetEmployeeListDocument, useEmployeeCreateInputMutation } from '@graphql/employee/employee';
 import { TextInput } from '@components/form/TextInput';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Paths } from '@constants/paths';
 
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
@@ -14,25 +15,26 @@ const FormValidation = Yup.object({
   status: Yup.string().required('Required')
 });
 
-interface AddEmployeeFormProps {
-  type: 'add' | 'edit';
-}
-
-export const EmployeeForm: FC<AddEmployeeFormProps> = ({ type }) => {
+export const EmployeeForm = () => {
   const [addEmployee, { data, loading, error }] = useEmployeeCreateInputMutation();
+  const navigate = useNavigate();
+  let { id } = useParams();
 
+  console.log(id);
   return (
     <Formik
       validateOnChange={true}
-      initialValues={{ name: 'test', email: 'test@test.com', rate: '22', status: '1' }}
+      initialValues={!id ? { name: '', email: '', rate: '', status: '1' } : { name: 'test', email: 'test@test.com', rate: '22', status: '1' }}
       validationSchema={FormValidation}
       onSubmit={async (values) => {
-        console.log({ ...values, rate: parseFloat(values.rate), status: values.status as string });
+        // after submitting the new employee re-fetch the employees via graphql
         await addEmployee({
           variables: {
             newEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString() }
-          }
+          },
+          refetchQueries: [{ query: GetEmployeeListDocument }]
         });
+        await navigate(Paths.EMPLOYEE_lIST);
       }}
     >
       <Form>

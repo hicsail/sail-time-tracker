@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { EmployeeModel } from '@graphql/graphql';
+import { Paths } from '@constants/paths';
 
 interface EmployeeTableProps {
   rows: EmployeeModel[];
@@ -93,8 +94,10 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
                       {row.rate}
                     </TableCell>
-                    <TableCell align="left" sx={{ border: 'none', width: '100px' }}>
-                      <Button variant="contained">Edit</Button>
+                    <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
+                      <Button variant="contained" href={`${Paths.EMPLOYEE_lIST}/${row.id}`}>
+                        Edit
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );

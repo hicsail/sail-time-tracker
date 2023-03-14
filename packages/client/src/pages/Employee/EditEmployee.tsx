@@ -1,5 +1,5 @@
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 
-export const AddEmployee = () => {
+export const EditEmployee = () => {
   return <EmployeeForm />;
 };
