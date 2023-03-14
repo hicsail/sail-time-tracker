@@ -16,6 +16,19 @@ export class ProjectService {
   }
 
   /**
+   * Get a project by ID
+   *
+   * @return a matched project
+   */
+  async getProjectById(id: string): Promise<Project> {
+    return this.prisma.project.findUnique({
+      where: {
+        id: id
+      }
+    });
+  }
+
+  /**
    * Add new project.
    *
    * @returns new project that has been created

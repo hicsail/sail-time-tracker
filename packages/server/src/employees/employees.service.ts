@@ -16,6 +16,19 @@ export class EmployeesService {
   }
 
   /**
+   * Get an employee by ID
+   *
+   * @return a matched employee
+   */
+  async getEmployeeById(id: string): Promise<Employee> {
+    return this.prisma.employee.findUnique({
+      where: {
+        id: id
+      }
+    });
+  }
+
+  /**
    * Add new Employee
    *
    * @param newEmployee new employee information details

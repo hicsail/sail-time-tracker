@@ -19,6 +19,7 @@ type ProjectModel {
 
 type Query {
   employees: [EmployeeModel!]!
+  employee(id: String!): EmployeeModel!
   projects: [ProjectModel!]!
 }
 
