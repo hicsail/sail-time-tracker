@@ -15,6 +15,10 @@ export class ProjectCreateInput {
   @Field()
   @IsNotEmpty()
   status: string;
+
+  @Field()
+  @IsNotEmpty()
+  description: string;
 }
 
 /**

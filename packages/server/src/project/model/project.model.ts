@@ -14,4 +14,7 @@ export class ProjectModel {
 
   @Field()
   status: string;
+
+  @Field()
+  description: string;
 }
