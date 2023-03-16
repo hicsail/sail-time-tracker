@@ -21,6 +21,7 @@ type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
   projects: [ProjectModel!]!
+  project(id: String!): ProjectModel!
 }
 
 type Mutation {
