@@ -12,6 +12,11 @@ export class EmployeesResolver {
     return this.employeesService.getAllEmployees();
   }
 
+  @Query(() => EmployeeModel)
+  async employee(@Args('id') id: string): Promise<EmployeeModel> {
+    return this.employeesService.getEmployeeById(id);
+  }
+
   @Mutation(() => EmployeeModel)
   async addEmployee(@Args('employee') employee: EmployeeCreateInput): Promise<EmployeeModel> {
     return this.employeesService.addEmployee(employee);

@@ -12,6 +12,11 @@ export class ProjectResolver {
     return this.projectService.getAllProjects();
   }
 
+  @Query(() => ProjectModel)
+  async project(@Args('id') id: string): Promise<ProjectModel> {
+    return this.projectService.getProjectById(id);
+  }
+
   @Mutation(() => ProjectModel)
   async addProject(@Args('project') project: ProjectCreateInput): Promise<ProjectModel> {
     return this.projectService.addProject(project);
