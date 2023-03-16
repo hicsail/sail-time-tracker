@@ -3,10 +3,11 @@ import { Form, Formik } from 'formik';
 import { Container, Box, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
-import { GetEmployeeListDocument, useEmployeeCreateInputMutation } from '@graphql/employee/employee';
+import { GetEmployeeListDocument, useEmployeeCreateInputMutation, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
 import { TextInput } from '@components/form/TextInput';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Paths } from '@constants/paths';
+import { useEffect, useState } from 'react';
 
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
@@ -16,25 +17,43 @@ const FormValidation = Yup.object({
 });
 
 export const EmployeeForm = () => {
-  const [addEmployee, { data, loading, error }] = useEmployeeCreateInputMutation();
+  const [addEmployee, { loading, error }] = useEmployeeCreateInputMutation();
+  const [initialValue, setInitialValue] = useState({ name: '', email: '', rate: '', status: '' });
   const navigate = useNavigate();
   let { id } = useParams();
 
-  console.log(id);
+  const { data } = useGetEmployeeByIdQuery({
+    variables: {
+      id: id as string
+    }
+  });
+
+  useEffect(() => {
+    data &&
+      setInitialValue({ name: data?.employee.name, email: data?.employee.email, rate: data?.employee.rate.toString(), status: data?.employee.status ? data.employee.status : '' });
+  }, [data]);
+
+  console.log(initialValue);
+
   return (
     <Formik
       validateOnChange={true}
-      initialValues={!id ? { name: '', email: '', rate: '', status: '1' } : { name: 'test', email: 'test@test.com', rate: '22', status: '1' }}
+      initialValues={initialValue}
       validationSchema={FormValidation}
+      enableReinitialize={true}
       onSubmit={async (values) => {
-        // after submitting the new employee re-fetch the employees via graphql
-        await addEmployee({
-          variables: {
-            newEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString() }
-          },
-          refetchQueries: [{ query: GetEmployeeListDocument }]
-        });
-        await navigate(Paths.EMPLOYEE_lIST);
+        // if no id, create employee
+        if (!id) {
+          // after submitting the new employee re-fetch the employees via graphql
+          await addEmployee({
+            variables: {
+              newEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString() }
+            },
+            refetchQueries: [{ query: GetEmployeeListDocument }]
+          });
+          return await navigate(Paths.EMPLOYEE_lIST);
+        }
+        // if is exists, update the form
       }}
     >
       <Form>
@@ -44,8 +63,8 @@ export const EmployeeForm = () => {
           <TextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />
           <TextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
           <TextInput name="status" select label="Status" placeholder="Status">
-            <MenuItem value={0}>Inactive</MenuItem>
-            <MenuItem value={1}>Active</MenuItem>
+            <MenuItem value="Inactive">Inactive</MenuItem>
+            <MenuItem value="Active">Active</MenuItem>
           </TextInput>
           <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit" loading={loading}>
             Submit
