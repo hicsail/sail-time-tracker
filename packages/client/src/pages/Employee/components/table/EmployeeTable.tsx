@@ -74,7 +74,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.name} selected={isItemSelected}>
+                  <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.id} selected={isItemSelected}>
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
