@@ -1,36 +1,36 @@
 query getEmployeeList {
-    employees {
-        id
-        email
-        name
-        rate
-    }
+  employees {
+    id
+    email
+    name
+    rate
+  }
 }
 
 query getEmployeeById($id: String!) {
-    employee(id: $id) {
-        name
-        email
-        rate
-        status
-    }
+  employee(id: $id) {
+    name
+    email
+    rate
+    status
+  }
 }
 
 mutation EmployeeCreateInput($newEmployee: EmployeeCreateInput!) {
-    addEmployee(employee: $newEmployee) {
-        id
-        email
-        name
-        rate
-    }
+  addEmployee(employee: $newEmployee) {
+    id
+    email
+    name
+    rate
+  }
 }
 
 mutation EmployeeUpdateInput($updateEmployee: EmployeeUpdateInput!) {
-    updateEmployee(updateEmployee: $updateEmployee) {
-        id
-        name
-        email
-        rate
-        status
-    }
+  updateEmployee(updateEmployee: $updateEmployee) {
+    id
+    name
+    email
+    rate
+    status
+  }
 }

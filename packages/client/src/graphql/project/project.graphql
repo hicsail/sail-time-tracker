@@ -1,34 +1,34 @@
 query getProjectList {
-    projects {
-        id
-        name
-        description
-        status
-    }
+  projects {
+    id
+    name
+    description
+    status
+  }
 }
 
 query getProjectById($id: String!) {
-    project(id: $id) {
-        name
-        description
-        status
-    }
+  project(id: $id) {
+    name
+    description
+    status
+  }
 }
 
 mutation ProjectCreateInput($newProject: ProjectCreateInput!) {
-    addProject(project: $newProject) {
-        id
-        name
-        description
-        status
-    }
+  addProject(project: $newProject) {
+    id
+    name
+    description
+    status
+  }
 }
 
 mutation ProjectUpdateInput($updateProject: ProjectUpdateInput!) {
-    updateProject(updateProject: $updateProject) {
-        id
-        name
-        description
-        status
-    }
+  updateProject(updateProject: $updateProject) {
+    id
+    name
+    description
+    status
+  }
 }
