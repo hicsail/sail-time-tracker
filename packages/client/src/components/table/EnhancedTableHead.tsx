@@ -1,18 +1,18 @@
 /**
- * This component is used to display table head (employee name, email, rate)
+ * This component is used to display table head (project name, hours, previous week, description)
  * @param props
  */
 
-import React, { FC } from 'react';
+import React from 'react';
 import TableHead from '@mui/material/TableHead';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { EmployeeModel } from '@graphql/graphql';
+import { Data } from '../../data/data';
 
-interface HeadCell {
+export interface HeadCell {
   disablePadding: boolean;
-  id: keyof EmployeeModel;
+  id: keyof Data;
   label: string;
 }
 
@@ -20,17 +20,22 @@ const headCells: readonly HeadCell[] = [
   {
     id: 'name',
     disablePadding: true,
-    label: 'Name'
+    label: 'Project Name'
   },
   {
-    id: 'email',
-    disablePadding: true,
-    label: 'Email'
-  },
-  {
-    id: 'rate',
+    id: 'hours',
     disablePadding: false,
-    label: 'Rate'
+    label: 'Hours'
+  },
+  {
+    id: 'previousWeek',
+    disablePadding: false,
+    label: 'Previous Week'
+  },
+  {
+    id: 'description',
+    disablePadding: false,
+    label: 'Description'
   }
 ];
 
@@ -40,14 +45,14 @@ interface EnhancedTableProps {
   rowCount: number;
 }
 
-export const EnhancedTableHead: FC<EnhancedTableProps> = (props) => {
+export const EnhancedTableHead = (props: EnhancedTableProps) => {
   const { onSelectAllClick, numSelected, rowCount } = props;
 
   return (
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount} onChange={onSelectAllClick} />
+          <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount - 2} onChange={onSelectAllClick} />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell key={headCell.id} align="left" padding={headCell.disablePadding ? 'none' : 'normal'}>

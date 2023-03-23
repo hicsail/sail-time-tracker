@@ -18,5 +18,5 @@ export default defineConfig({
       '@styles': path.join(__dirname, 'src/styles'),
       '@theme': path.join(__dirname, 'src/theme')
     }
-  }
-});
+  },
+})
