@@ -10,6 +10,7 @@ import { AddProject } from '@pages/Project/addProject';
 import { Track } from '@pages/Track/track';
 import { Paths } from '@constants/paths';
 import { EditEmployee } from '@pages/Employee/EditEmployee';
+import { EditProject } from '@pages/Project/EditProject';
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
             <Route path={Paths.ADMIN} element={<Track />} />
             <Route path={Paths.PROJECT_lIST} element={<Project />} />
             <Route path={Paths.ADD_PROJECT} element={<AddProject />} />
-            <Route path={Paths.EDIT_PROJECT} element={<AddProject />} />
+            <Route path={Paths.EDIT_PROJECT} element={<EditProject />} />
             <Route path={Paths.EMPLOYEE_lIST} element={<Employee />} />
             <Route path={Paths.ADD_EMPLOYEE} element={<AddEmployee />} />
             <Route path={Paths.EDIT_EMPLOYEE} element={<EditEmployee />} />

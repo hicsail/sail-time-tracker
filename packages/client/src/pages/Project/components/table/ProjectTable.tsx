@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { ProjectModel } from '@graphql/graphql';
+import { Paths } from '@constants/paths';
 
 interface ProjectTableProps {
   rows: ProjectModel[];
@@ -94,7 +95,9 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       {row.status}
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px' }}>
-                      <Button variant="contained">Edit</Button>
+                      <Button variant="contained" href={`${Paths.PROJECT_lIST}/${row.id}`}>
+                        Edit
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );

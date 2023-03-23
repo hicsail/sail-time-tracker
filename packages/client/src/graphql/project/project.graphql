@@ -7,6 +7,14 @@ query getProjectList {
   }
 }
 
+query getProjectById($id: String!) {
+  project(id: $id) {
+    name
+    description
+    status
+  }
+}
+
 mutation ProjectCreateInput($newProject: ProjectCreateInput!) {
   addProject(project: $newProject) {
     id

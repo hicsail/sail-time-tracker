@@ -9,6 +9,12 @@ export type GetProjectListQueryVariables = Types.Exact<{ [key: string]: never }>
 
 export type GetProjectListQuery = { __typename?: 'Query'; projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string }> };
 
+export type GetProjectByIdQueryVariables = Types.Exact<{
+  id: Types.Scalars['String'];
+}>;
+
+export type GetProjectByIdQuery = { __typename?: 'Query'; project: { __typename?: 'ProjectModel'; name: string; description: string; status: string } };
+
 export type ProjectCreateInputMutationVariables = Types.Exact<{
   newProject: Types.ProjectCreateInput;
 }>;
@@ -58,6 +64,43 @@ export function useGetProjectListLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetProjectListQueryHookResult = ReturnType<typeof useGetProjectListQuery>;
 export type GetProjectListLazyQueryHookResult = ReturnType<typeof useGetProjectListLazyQuery>;
 export type GetProjectListQueryResult = Apollo.QueryResult<GetProjectListQuery, GetProjectListQueryVariables>;
+export const GetProjectByIdDocument = gql`
+  query getProjectById($id: String!) {
+    project(id: $id) {
+      name
+      description
+      status
+    }
+  }
+`;
+
+/**
+ * __useGetProjectByIdQuery__
+ *
+ * To run a query within a React component, call `useGetProjectByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetProjectByIdQuery(baseOptions: Apollo.QueryHookOptions<GetProjectByIdQuery, GetProjectByIdQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetProjectByIdQuery, GetProjectByIdQueryVariables>(GetProjectByIdDocument, options);
+}
+export function useGetProjectByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectByIdQuery, GetProjectByIdQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetProjectByIdQuery, GetProjectByIdQueryVariables>(GetProjectByIdDocument, options);
+}
+export type GetProjectByIdQueryHookResult = ReturnType<typeof useGetProjectByIdQuery>;
+export type GetProjectByIdLazyQueryHookResult = ReturnType<typeof useGetProjectByIdLazyQuery>;
+export type GetProjectByIdQueryResult = Apollo.QueryResult<GetProjectByIdQuery, GetProjectByIdQueryVariables>;
 export const ProjectCreateInputDocument = gql`
   mutation ProjectCreateInput($newProject: ProjectCreateInput!) {
     addProject(project: $newProject) {

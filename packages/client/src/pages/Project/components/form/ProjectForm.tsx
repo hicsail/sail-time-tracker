@@ -1,11 +1,13 @@
 import * as Yup from 'yup';
-import { FC } from 'react';
 import { Form, Formik } from 'formik';
 import { Container, Box, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
-import { useProjectCreateInputMutation } from '@graphql/project/project';
+import { useGetProjectByIdQuery, useProjectCreateInputMutation } from '@graphql/project/project';
 import { TextInput } from '@components/form/TextInput';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Paths } from '@constants/paths';
+import { useEffect, useState } from 'react';
 
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
@@ -13,24 +15,42 @@ const FormValidation = Yup.object({
   status: Yup.string().required('Required')
 });
 
-interface AddProjectFormProps {
-  type: 'add' | 'edit';
-}
+export const ProjectForm = () => {
+  const [addProject, { loading, error }] = useProjectCreateInputMutation();
+  const [initialValue, setInitialValue] = useState({ name: '', description: '', status: '' });
+  let { id } = useParams();
+  const navigate = useNavigate();
 
-export const ProjectForm: FC<AddProjectFormProps> = ({ type }) => {
-  const [addProject, { data, loading, error }] = useProjectCreateInputMutation();
+  const { data } = useGetProjectByIdQuery({
+    variables: {
+      id: id as string
+    }
+  });
+
+  useEffect(() => {
+    data &&
+      setInitialValue({
+        name: data?.project.name,
+        description: data?.project.description,
+        status: data?.project.status ? data.project.status : ''
+      });
+  }, [data]);
 
   return (
     <Formik
       validateOnChange={true}
-      initialValues={{ name: 'project 1', description: 'this is a description for project 1', status: 'Active' }}
+      initialValues={initialValue}
       validationSchema={FormValidation}
+      enableReinitialize={true}
       onSubmit={async (values) => {
-        await addProject({
-          variables: {
-            newProject: { ...values, status: values.status.toString() }
-          }
-        });
+        if (!id) {
+          await addProject({
+            variables: {
+              newProject: { ...values, status: values.status.toString() }
+            }
+          });
+          return await navigate(Paths.PROJECT_lIST);
+        }
       }}
     >
       <Form>

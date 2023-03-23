@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { Paths } from '@constants/paths';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
@@ -47,6 +48,7 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       ) : (
         <Tooltip title="Add New Project">
           <IconButton
+            href={Paths.ADD_PROJECT}
             sx={{
               '&:hover': {
                 backgroundColor: '#1565c0',
