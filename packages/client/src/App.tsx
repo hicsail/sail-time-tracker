@@ -11,6 +11,7 @@ import { Track } from '@pages/Track/track';
 import { Paths } from '@constants/paths';
 import { EditEmployee } from '@pages/Employee/EditEmployee';
 import { EditProject } from '@pages/Project/EditProject';
+import { Admin } from '@pages/Admin/admin';
 
 function App() {
   return (
@@ -19,11 +20,12 @@ function App() {
         <Router>
           <Routes>
             <Route path={Paths.TRACK} element={<Track />} />
-            <Route path={Paths.ADMIN} element={<Track />} />
-            <Route path={Paths.PROJECT_lIST} element={<Project />} />
+            <Route path={Paths.ADMIN} element={<Admin />}>
+              <Route path={Paths.PROJECT_lIST} element={<Project />} />
+              <Route path={Paths.EMPLOYEE_lIST} element={<Employee />} />
+            </Route>
             <Route path={Paths.ADD_PROJECT} element={<AddProject />} />
             <Route path={Paths.EDIT_PROJECT} element={<EditProject />} />
-            <Route path={Paths.EMPLOYEE_lIST} element={<Employee />} />
             <Route path={Paths.ADD_EMPLOYEE} element={<AddEmployee />} />
             <Route path={Paths.EDIT_EMPLOYEE} element={<EditEmployee />} />
           </Routes>

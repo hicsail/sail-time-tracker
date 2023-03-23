@@ -85,13 +85,24 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                         }}
                       />
                     </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
+                      sx={{
+                        width: '100px',
+                        paddingRight: '3rem',
+                        paddingLeft: '0',
+                        fontWeight: 'bold'
+                      }}
+                    >
                       {row.name}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0', fontWeight: 'bold' }}>
                       {row.description}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', fontWeight: 'bold' }}>
                       {row.status}
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px' }}>
