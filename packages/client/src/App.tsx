@@ -12,13 +12,11 @@ import { Paths } from '@constants/paths';
 import { EditEmployee } from '@pages/Employee/EditEmployee';
 import { EditProject } from '@pages/Project/EditProject';
 import { Admin } from '@pages/Admin/admin';
-import { ThemeProvider } from '@theme/themeProvider';
 
 function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <GraphqlProvider>
-        <ThemeProvider>
           <Router>
             <Routes>
               <Route path={Paths.TRACK} element={<Track />} />
@@ -32,7 +30,6 @@ function App() {
               <Route path={Paths.EDIT_EMPLOYEE} element={<EditEmployee />} />
             </Routes>
           </Router>
-        </ThemeProvider>
       </GraphqlProvider>
     </LocalizationProvider>
   );

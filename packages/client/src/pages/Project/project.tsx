@@ -9,7 +9,6 @@ export const Project = () => {
 
   return (
     <Box
-      component="div"
       maxWidth="xl"
       sx={{
         display: 'flex',
