@@ -9,11 +9,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import { styled } from '@mui/material';
 
 import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { ProjectModel } from '@graphql/graphql';
 import { Paths } from '@constants/paths';
+import { EditButton } from '@components/form/editButton';
 
 interface ProjectTableProps {
   rows: ProjectModel[];
@@ -85,19 +87,28 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                         }}
                       />
                     </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
+                      sx={{
+                        width: '100px',
+                        paddingRight: '3rem',
+                        paddingLeft: '0',
+                        fontWeight: 'bold'
+                      }}
+                    >
                       {row.name}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0', fontWeight: 'bold' }}>
                       {row.description}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', fontWeight: 'bold' }}>
                       {row.status}
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px' }}>
-                      <Button variant="contained" href={`${Paths.PROJECT_lIST}/${row.id}`}>
-                        Edit
-                      </Button>
+                      <EditButton path={`${Paths.PROJECT_lIST}/${row.id}`}>Edit</EditButton>
                     </TableCell>
                   </TableRow>
                 );

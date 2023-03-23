@@ -10,8 +10,8 @@ export const Navbar = () => {
       sx={{
         width: '100%',
         maxWidth: 300,
-        backgroundColor: '#0d192e',
-        color: 'white',
+        backgroundColor: 'white',
+        color: 'grey.50                                                                                                                              0',
         height: '100vh'
       }}
     >
