@@ -17,19 +17,19 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <GraphqlProvider>
-          <Router>
-            <Routes>
-              <Route path={Paths.TRACK} element={<Track />} />
-              <Route path={Paths.ADMIN} element={<Admin />}>
-                <Route path={Paths.PROJECT_lIST} element={<Project />} />
-                <Route path={Paths.EMPLOYEE_lIST} element={<Employee />} />
-              </Route>
-              <Route path={Paths.ADD_PROJECT} element={<AddProject />} />
-              <Route path={Paths.EDIT_PROJECT} element={<EditProject />} />
-              <Route path={Paths.ADD_EMPLOYEE} element={<AddEmployee />} />
-              <Route path={Paths.EDIT_EMPLOYEE} element={<EditEmployee />} />
-            </Routes>
-          </Router>
+        <Router>
+          <Routes>
+            <Route path={Paths.TRACK} element={<Track />} />
+            <Route path={Paths.ADMIN} element={<Admin />}>
+              <Route path={Paths.PROJECT_lIST} element={<Project />} />
+              <Route path={Paths.EMPLOYEE_lIST} element={<Employee />} />
+            </Route>
+            <Route path={Paths.ADD_PROJECT} element={<AddProject />} />
+            <Route path={Paths.EDIT_PROJECT} element={<EditProject />} />
+            <Route path={Paths.ADD_EMPLOYEE} element={<AddEmployee />} />
+            <Route path={Paths.EDIT_EMPLOYEE} element={<EditEmployee />} />
+          </Routes>
+        </Router>
       </GraphqlProvider>
     </LocalizationProvider>
   );
