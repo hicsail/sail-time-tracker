@@ -85,6 +85,16 @@ export type ProjectUpdateInput = {
 
 export type Query = {
   __typename?: 'Query';
+  employee: EmployeeModel;
   employees: Array<EmployeeModel>;
+  project: ProjectModel;
   projects: Array<ProjectModel>;
+};
+
+export type QueryEmployeeArgs = {
+  id: Scalars['String'];
+};
+
+export type QueryProjectArgs = {
+  id: Scalars['String'];
 };

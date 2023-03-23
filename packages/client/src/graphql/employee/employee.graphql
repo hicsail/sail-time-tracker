@@ -7,11 +7,30 @@ query getEmployeeList {
   }
 }
 
+query getEmployeeById($id: String!) {
+  employee(id: $id) {
+    name
+    email
+    rate
+    status
+  }
+}
+
 mutation EmployeeCreateInput($newEmployee: EmployeeCreateInput!) {
   addEmployee(employee: $newEmployee) {
     id
     email
     name
     rate
+  }
+}
+
+mutation EmployeeUpdateInput($updateEmployee: EmployeeUpdateInput!) {
+  updateEmployee(updateEmployee: $updateEmployee) {
+    id
+    name
+    email
+    rate
+    status
   }
 }

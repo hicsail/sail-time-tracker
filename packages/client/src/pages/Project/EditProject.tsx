@@ -1,5 +1,5 @@
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
 
-export const AddProject = () => {
+export const EditProject = () => {
   return <ProjectForm />;
 };
