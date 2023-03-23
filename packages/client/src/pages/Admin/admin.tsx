@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 
 export const Admin = () => {
   return (
-    <Box component="div" sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }}>
       <Navbar />
       <Outlet />
     </Box>
