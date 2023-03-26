@@ -9,7 +9,15 @@ interface SideListItemProps {
 
 export const SideListItem: FC<SideListItemProps> = ({ path, icon, info }) => {
   return (
-    <ListItem disablePadding>
+    <ListItem
+      disablePadding
+      sx={{
+        '&:hover': {
+          '& .MuiSvgIcon-root': { color: 'customColors.iconHoverColor' },
+          backgroundColor: 'customColors.listNavHoverColor'
+        }
+      }}
+    >
       <ListItemButton href={path}>
         <ListItemIcon>{icon}</ListItemIcon>
         <ListItemText primary={info} />
