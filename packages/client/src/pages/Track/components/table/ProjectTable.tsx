@@ -101,7 +101,15 @@ export const ProjectTable = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          width: '100%',
+          mb: 2,
+          backgroundColor: 'customColors.sidebarBg',
+          padding: '1rem'
+        }}
+      >
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -127,10 +135,10 @@ export const ProjectTable = () => {
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       {row.name}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                    <TableCell align="left" sx={{ width: '180px', paddingRight: '3rem', paddingLeft: '0' }}>
                       <TextField id="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
+                    <TableCell align="left" sx={{ width: '150px', paddingRight: '3rem' }}>
                       {row.previousWeek}
                     </TableCell>
                     <TableCell align="left">{row.description}</TableCell>

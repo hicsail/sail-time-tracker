@@ -24,12 +24,12 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'hours',
-    disablePadding: false,
+    disablePadding: true,
     label: 'Hours'
   },
   {
     id: 'previousWeek',
-    disablePadding: false,
+    disablePadding: true,
     label: 'Previous Week'
   },
   {

@@ -15,7 +15,18 @@ export const Track = () => {
   };
 
   return (
-    <Box component="div" maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: '4rem', alignItems: 'start' }}>
+    <Box
+      component="div"
+      maxWidth="lg"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4rem',
+        alignItems: 'start',
+        margin: 'auto',
+        paddingTop: '10rem'
+      }}
+    >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
         {error && <Container>`Fetching error! ${error.message}`</Container>}
         {loading || !data ? (
