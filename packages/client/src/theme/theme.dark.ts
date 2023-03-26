@@ -19,7 +19,8 @@ export const themeDark = createTheme({
       iconColor: '#ccd6f6',
       sidebarBg: '#171C22',
       cardBg: '#171C22',
-      cardTextColor: 'white'
+      cardTextTopColor: '#a3a3a3',
+      cardTextBottomColor: 'white'
     }
   }
 });
