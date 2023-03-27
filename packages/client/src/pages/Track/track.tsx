@@ -4,14 +4,14 @@ import { Date } from '@pages/Track/components/Date.component';
 
 import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
 import { useGetEmployeeListQuery } from '@graphql/employee/employee';
-import { useState } from 'react';
+import { useEmployee } from '@context/employee.context';
 
 export const Track = () => {
   const { data, loading, error } = useGetEmployeeListQuery();
-  const [selectedEmployee, setSelectedEmployee] = useState('12bf5a3f-9ede-4f60-b6ce-29920cf2e549');
+  const { employeeId, setEmployeeId } = useEmployee();
 
   const changeHandler = (e: SelectChangeEvent) => {
-    setSelectedEmployee(e.target.value as string);
+    setEmployeeId(e.target.value);
   };
 
   return (
@@ -34,7 +34,7 @@ export const Track = () => {
         ) : (
           <FormControl sx={{ minWidth: '200px' }}>
             <InputLabel id="employee_select-label">Select Employee</InputLabel>
-            <Select name="select_employee" label="Select Employee" id="select_employee" onChange={changeHandler} value={selectedEmployee}>
+            <Select name="select_employee" label="Select Employee" id="select_employee" onChange={changeHandler} value={employeeId ? employeeId : ''}>
               {data &&
                 data.employees.map((employee) => {
                   return (

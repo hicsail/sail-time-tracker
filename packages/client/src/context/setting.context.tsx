@@ -3,6 +3,7 @@ import { createContext, FC, useContext, useEffect, useState, ReactNode } from 'r
 
 export interface Settings {
   theme: ThemeType;
+  employee?: string | null;
 }
 
 const defaultSettings: Settings = {
