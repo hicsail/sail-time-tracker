@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -21,6 +22,7 @@ interface ProjectTableProps {
 
 export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const navigate = useNavigate();
 
   /**
    * this method is used to handle select all employees' event.
