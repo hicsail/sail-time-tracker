@@ -1,16 +1,7 @@
-import React from 'react';
-
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import LoadingButton from '@mui/lab/LoadingButton';
-import SaveIcon from '@mui/icons-material/Save';
-import TextField from '@mui/material/TextField';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, TextField } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Save } from '@mui/icons-material';
+import { useState } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
@@ -40,8 +31,8 @@ const rows = [
 ];
 
 export const ProjectTable = () => {
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [loading, setLoading] = React.useState(false);
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   /**
    * this method is used to switch table save state.
@@ -148,8 +139,10 @@ export const ProjectTable = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        {rows.length == 0 && <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }}>Add Your First Favorite Project</Button>}
       </Paper>
-      <LoadingButton color="primary" onClick={handleLoadingClick} loading={loading} loadingPosition="start" startIcon={<SaveIcon />} variant="contained">
+
+      <LoadingButton color="primary" onClick={handleLoadingClick} loading={loading} loadingPosition="start" startIcon={<Save />} variant="contained">
         <span>Save</span>
       </LoadingButton>
     </Box>
