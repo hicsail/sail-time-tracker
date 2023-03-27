@@ -1,6 +1,6 @@
 import { DisplayCard } from '@pages/Track/components/DisplayCard.component';
 import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
-import { Date } from '@pages/Track/components/Date.component';
+import { DatePickerComponent } from '@pages/Track/components/Date.component';
 
 import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
 import { useGetEmployeeListQuery } from '@graphql/employee/employee';
@@ -46,7 +46,7 @@ export const Track = () => {
             </Select>
           </FormControl>
         )}
-        <Date />
+        <DatePickerComponent />
         <DisplayCard key="work" id="work" title="Total Work Hours" hours="10" />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours="2" />
       </Stack>
