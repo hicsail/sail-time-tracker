@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
