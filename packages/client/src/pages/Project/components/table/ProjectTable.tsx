@@ -131,6 +131,11 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        {rows.length == 0 && (
+          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} href={Paths.ADD_PROJECT}>
+            Add Your First Project
+          </Button>
+        )}
       </Paper>
     </Box>
   );
