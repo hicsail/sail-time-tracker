@@ -31,6 +31,11 @@ const headCells: readonly HeadCell[] = [
     id: 'rate',
     disablePadding: false,
     label: 'Rate'
+  },
+  {
+    id: 'status',
+    disablePadding: false,
+    label: 'Status'
   }
 ];
 

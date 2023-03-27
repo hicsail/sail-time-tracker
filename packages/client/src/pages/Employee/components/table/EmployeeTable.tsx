@@ -104,11 +104,33 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
                     <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
                       {row.name}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                    <TableCell align="left" sx={{ width: '100px', paddingLeft: '0' }}>
                       {row.email}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
                       {row.rate}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{
+                        width: '100px',
+                        paddingRight: '3rem'
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        sx={{
+                          width: '2rem',
+                          backgroundColor: 'customColors.statusBtnBg',
+                          color: 'customColors.statusBtnText',
+                          padding: '2px 50px',
+                          pointerEvents: 'none',
+                          borderRadius: '20px',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        {row.status}
+                      </Button>
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
                       <Button variant="outlined" href={`${Paths.EMPLOYEE_lIST}/${row.id}`}>

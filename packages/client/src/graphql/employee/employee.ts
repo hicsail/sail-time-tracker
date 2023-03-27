@@ -7,7 +7,10 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetEmployeeListQueryVariables = Types.Exact<{ [key: string]: never }>;
 
-export type GetEmployeeListQuery = { __typename?: 'Query'; employees: Array<{ __typename?: 'EmployeeModel'; id: string; email: string; name: string; rate: number }> };
+export type GetEmployeeListQuery = {
+  __typename?: 'Query';
+  employees: Array<{ __typename?: 'EmployeeModel'; id: string; email: string; name: string; rate: number; status?: string | null }>;
+};
 
 export type GetEmployeeByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -37,6 +40,7 @@ export const GetEmployeeListDocument = gql`
       email
       name
       rate
+      status
     }
   }
 `;

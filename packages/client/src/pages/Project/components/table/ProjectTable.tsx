@@ -118,7 +118,20 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       {row.description}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
-                      {row.status}
+                      <Button
+                        variant="contained"
+                        sx={{
+                          width: '2rem',
+                          backgroundColor: 'customColors.statusBtnBg',
+                          color: 'customColors.statusBtnText',
+                          padding: '2px 50px',
+                          pointerEvents: 'none',
+                          borderRadius: '20px',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        {row.status}
+                      </Button>
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
                       <Button variant="outlined" href={`${Paths.PROJECT_lIST}/${row.id}`}>
