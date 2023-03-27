@@ -3,6 +3,7 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { themeLight } from './theme.light';
 import { themeDark } from './theme.dark';
+import { useSettings } from '@context/setting.context';
 
 export type ThemeType = 'light' | 'dark';
 
@@ -37,7 +38,9 @@ declare module '@mui/material/styles' {
 }
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
-  let theme = 'dark';
+  const { settings } = useSettings();
+
+  const theme = settings.theme;
 
   const selectedTheme = theme === 'light' ? themeLight : themeDark;
 
