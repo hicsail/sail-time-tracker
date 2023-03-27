@@ -1,10 +1,6 @@
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { WorkSuitIcon } from '@components/images/WorkSuitIcon';
-import { RestIcon } from '@components/images/RestIcon';
+import { WorkOff, WorkOutlined } from '@mui/icons-material';
 import { FC } from 'react';
-import Box from '@mui/material/Box';
+import { Box, Typography, CardContent, Card } from '@mui/material';
 
 interface DisplayCardProps {
   id: string;
@@ -14,13 +10,22 @@ interface DisplayCardProps {
 
 export const DisplayCard: FC<DisplayCardProps> = ({ id, title, hours }) => {
   return (
-    <Card sx={{ maxWidth: 345, maxHeight: 90, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-      <Box paddingLeft="1rem">{id === 'work' ? <WorkSuitIcon width={50} height={50} /> : <RestIcon width={50} height={50} />}</Box>
+    <Card
+      sx={{
+        maxWidth: 345,
+        maxHeight: 90,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'customColors.cardBg'
+      }}
+    >
+      <Box paddingLeft="1rem">{id === 'work' ? <WorkOutlined fontSize="large" /> : <WorkOff fontSize="large" />}</Box>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
-        <Typography gutterBottom variant="subtitle2" component="div" color="#616161">
+        <Typography gutterBottom variant="subtitle2" component="div" color="customColors.cardTextTopColor">
           {title}
         </Typography>
-        <Typography gutterBottom variant="h5" component="div" color="#212121">
+        <Typography gutterBottom variant="h5" component="div" color="customColors.cardTextBottomColor">
           {hours}
         </Typography>
       </CardContent>

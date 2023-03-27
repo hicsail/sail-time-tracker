@@ -63,7 +63,15 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          width: '100%',
+          mb: 2,
+          backgroundColor: 'customColors.sidebarBg',
+          padding: '1rem'
+        }}
+      >
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -74,7 +82,15 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.name} selected={isItemSelected}>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.name}
+                    selected={isItemSelected}
+                    sx={{ '& .MuiTableCell-root': { fontWeight: 'medium' } }}
+                  >
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
@@ -93,20 +109,19 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       sx={{
                         width: '100px',
                         paddingRight: '3rem',
-                        paddingLeft: '0',
-                        fontWeight: 'bold'
+                        paddingLeft: '0'
                       }}
                     >
                       {row.name}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0', fontWeight: 'bold' }}>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
                       {row.description}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', fontWeight: 'bold' }}>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
                       {row.status}
                     </TableCell>
-                    <TableCell align="left" sx={{ border: 'none', width: '100px' }}>
-                      <Button variant="contained" href={`${Paths.PROJECT_lIST}/${row.id}`}>
+                    <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
+                      <Button variant="outlined" href={`${Paths.PROJECT_lIST}/${row.id}`}>
                         Edit
                       </Button>
                     </TableCell>

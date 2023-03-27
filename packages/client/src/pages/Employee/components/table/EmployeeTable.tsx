@@ -63,7 +63,15 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          width: '100%',
+          mb: 2,
+          backgroundColor: 'customColors.sidebarBg',
+          padding: '1rem'
+        }}
+      >
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -74,7 +82,15 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.id} selected={isItemSelected}>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.id}
+                    selected={isItemSelected}
+                    sx={{ '& .MuiTableCell-root': { fontWeight: 'medium' } }}
+                  >
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
@@ -95,7 +111,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
                       {row.rate}
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
-                      <Button variant="contained" href={`${Paths.EMPLOYEE_lIST}/${row.id}`}>
+                      <Button variant="outlined" href={`${Paths.EMPLOYEE_lIST}/${row.id}`}>
                         Edit
                       </Button>
                     </TableCell>

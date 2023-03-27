@@ -54,7 +54,6 @@ export const EnhancedTableHead: FC<EnhancedTableProps> = (props) => {
             {headCell.label}
           </TableCell>
         ))}
-        <TableCell key="edit" align="left" padding="none"></TableCell>
       </TableRow>
     </TableHead>
   );
