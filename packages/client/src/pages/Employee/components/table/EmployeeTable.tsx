@@ -144,7 +144,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
           </Table>
         </TableContainer>
         {rows.length == 0 && (
-          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} href={Paths.ADD_EMPLOYEE}>
+          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => navigate(Paths.ADD_EMPLOYEE)}>
             Add Your First Employee
           </Button>
         )}
