@@ -21,7 +21,9 @@ export const themeLight = createTheme({
       sidebarBg: 'white',
       cardBg: 'white',
       cardTextTopColor: '#a3a3a3',
-      cardTextBottomColor: '#525252'
+      cardTextBottomColor: '#525252',
+      statusBtnBg: '#E9F5F5',
+      statusBtnText: '#6E9596'
     }
   }
 });

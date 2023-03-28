@@ -4,6 +4,7 @@ query getEmployeeList {
     email
     name
     rate
+    status
   }
 }
 

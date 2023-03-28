@@ -21,6 +21,8 @@ declare module '@mui/material/styles' {
       cardBg: string;
       cardTextTopColor: string;
       cardTextBottomColor: string;
+      statusBtnBg: string;
+      statusBtnText: string;
     };
   }
 
@@ -33,6 +35,8 @@ declare module '@mui/material/styles' {
       cardBg?: string;
       cardTextTopColor?: string;
       cardTextBottomColor?: string;
+      statusBtnBg?: string;
+      statusBtnText?: string;
     };
   }
 }

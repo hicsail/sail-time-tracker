@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -21,6 +22,7 @@ interface ProjectTableProps {
 
 export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const navigate = useNavigate();
 
   /**
    * this method is used to handle select all employees' event.
@@ -118,7 +120,20 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       {row.description}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
-                      {row.status}
+                      <Button
+                        variant="contained"
+                        sx={{
+                          width: '2rem',
+                          backgroundColor: 'customColors.statusBtnBg',
+                          color: 'customColors.statusBtnText',
+                          padding: '2px 50px',
+                          pointerEvents: 'none',
+                          borderRadius: '20px',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        {row.status}
+                      </Button>
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
                       <Button variant="outlined" href={`${Paths.PROJECT_lIST}/${row.id}`}>
@@ -131,6 +146,11 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        {rows.length == 0 && (
+          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => navigate(Paths.ADD_PROJECT)}>
+            Add Your First Project
+          </Button>
+        )}
       </Paper>
     </Box>
   );
