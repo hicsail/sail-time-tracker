@@ -10,8 +10,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import { Paths } from '@constants/paths';
+import { FormDialog } from '@pages/Project/components/form/FormDialog';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
@@ -46,19 +45,7 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Add New Project">
-          <IconButton
-            href={Paths.ADD_PROJECT}
-            sx={{
-              '&:hover': {
-                backgroundColor: '#1565c0',
-                color: 'white'
-              }
-            }}
-          >
-            <AddIcon />
-          </IconButton>
-        </Tooltip>
+        <FormDialog type="add" />
       )}
     </Toolbar>
   );

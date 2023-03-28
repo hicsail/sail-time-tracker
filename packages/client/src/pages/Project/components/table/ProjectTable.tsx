@@ -10,11 +10,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 
 import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { ProjectModel } from '@graphql/graphql';
 import { Paths } from '@constants/paths';
+import { FormDialog } from '@pages/Project/components/form/FormDialog';
 
 interface ProjectTableProps {
   rows: ProjectModel[];
@@ -120,25 +122,17 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       {row.description}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
-                      <Button
-                        variant="contained"
+                      <Chip
+                        label={row.status}
                         sx={{
-                          width: '2rem',
                           backgroundColor: 'customColors.statusBtnBg',
                           color: 'customColors.statusBtnText',
-                          padding: '2px 50px',
-                          pointerEvents: 'none',
-                          borderRadius: '20px',
-                          boxShadow: 'none'
+                          padding: '0 10px'
                         }}
-                      >
-                        {row.status}
-                      </Button>
+                      />
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
-                      <Button variant="outlined" href={`${Paths.PROJECT_lIST}/${row.id}`}>
-                        Edit
-                      </Button>
+                      <FormDialog type="edit" path={`${Paths.PROJECT_lIST}/${row.id}`} />
                     </TableCell>
                   </TableRow>
                 );

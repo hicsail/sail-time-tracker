@@ -3,11 +3,10 @@ import { Form, Formik } from 'formik';
 import { Container, Box, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
-import { useGetProjectByIdQuery, useProjectCreateInputMutation } from '@graphql/project/project';
+import { GetProjectListDocument, useGetProjectByIdQuery, useProjectCreateInputMutation } from '@graphql/project/project';
 import { TextInput } from '@components/form/TextInput';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Paths } from '@constants/paths';
-import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { FC, useEffect, useState } from 'react';
 
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
@@ -15,11 +14,14 @@ const FormValidation = Yup.object({
   status: Yup.string().required('Required')
 });
 
-export const ProjectForm = () => {
+interface ProjectFormProps {
+  handleClose: () => void;
+}
+
+export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
   const [addProject, { loading, error }] = useProjectCreateInputMutation();
   const [initialValue, setInitialValue] = useState({ name: '', description: '', status: '' });
   let { id } = useParams();
-  const navigate = useNavigate();
 
   const { data } = useGetProjectByIdQuery({
     variables: {
@@ -43,18 +45,22 @@ export const ProjectForm = () => {
       validationSchema={FormValidation}
       enableReinitialize={true}
       onSubmit={async (values) => {
+        // if no id, create project
         if (!id) {
+          // after submitting the new project re-fetch the project via graphql
           await addProject({
             variables: {
               newProject: { ...values, status: values.status.toString() }
-            }
+            },
+            refetchQueries: [{ query: GetProjectListDocument }]
           });
-          return await navigate(Paths.PROJECT_lIST);
+          return handleClose();
         }
+        // if is exists, update the form
       }}
     >
       <Form>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
           {error && <Container>`Submission error! ${error.message}`</Container>}
           <TextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
           <TextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
