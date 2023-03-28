@@ -1,20 +1,13 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
+import { Box, Chip, TableBody, Table, TableCell, TableContainer, TableRow, Paper, Checkbox, Button } from '@mui/material';
 
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { EmployeeModel } from '@graphql/graphql';
 import { Paths } from '@constants/paths';
+import { FormDialog } from '@pages/Employee/components/form/FormDialog';
 
 interface EmployeeTableProps {
   rows: EmployeeModel[];
@@ -119,25 +112,17 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
                         paddingRight: '3rem'
                       }}
                     >
-                      <Button
-                        variant="contained"
+                      <Chip
+                        label={row.status}
                         sx={{
-                          width: '2rem',
                           backgroundColor: 'customColors.statusBtnBg',
                           color: 'customColors.statusBtnText',
-                          padding: '2px 50px',
-                          pointerEvents: 'none',
-                          borderRadius: '20px',
-                          boxShadow: 'none'
+                          padding: '0 10px'
                         }}
-                      >
-                        {row.status}
-                      </Button>
+                      />
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
-                      <Button variant="outlined" href={`${Paths.EMPLOYEE_lIST}/${row.id}`}>
-                        Edit
-                      </Button>
+                      <FormDialog type="edit" path={`${Paths.EMPLOYEE_lIST}/${row.id}`} />
                     </TableCell>
                   </TableRow>
                 );

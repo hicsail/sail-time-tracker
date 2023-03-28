@@ -20,7 +20,9 @@ export const themeDark = createTheme({
       sidebarBg: '#171C22',
       cardBg: '#171C22',
       cardTextTopColor: '#a3a3a3',
-      cardTextBottomColor: 'white'
+      cardTextBottomColor: 'white',
+      statusBtnBg: '#2A4947',
+      statusBtnText: '#5da49f'
     }
   }
 });
