@@ -17,6 +17,10 @@ type ProjectModel {
   description: String!
 }
 
+type CountModel {
+  count: Float!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -27,8 +31,10 @@ type Query {
 type Mutation {
   addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
   updateEmployee(updateEmployee: EmployeeUpdateInput!): EmployeeModel!
+  deleteEmployees(ids: [String!]!): CountModel!
   addProject(project: ProjectCreateInput!): ProjectModel!
   updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
+  deleteProjects(ids: [String!]!): CountModel!
 }
 
 input EmployeeCreateInput {

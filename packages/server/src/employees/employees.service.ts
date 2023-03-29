@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Employee } from '@prisma/client';
+import { CountModel } from '../project/model/project.model';
 
 @Injectable()
 export class EmployeesService {
@@ -52,6 +53,23 @@ export class EmployeesService {
         id: updateEmployee.id as string
       },
       data: updateEmployee
+    });
+  }
+
+  /**
+   * Delete one or more projects
+   *
+   * @return total number of deleted project
+   * @param ids represents array of ids
+   */
+
+  async deleteEmployees(ids: String[]): Promise<CountModel> {
+    return this.prisma.employee.deleteMany({
+      where: {
+        id: {
+          in: ids as string[]
+        }
+      }
     });
   }
 }

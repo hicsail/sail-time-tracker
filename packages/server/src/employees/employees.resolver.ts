@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { EmployeesService } from './employees.service';
 import { EmployeeModel } from './model/employee.model';
 import { EmployeeCreateInput, EmployeeUpdateInput } from './dto/employee.dto';
+import { CountModel } from '../project/model/project.model';
 
 @Resolver(() => EmployeeModel)
 export class EmployeesResolver {
@@ -25,5 +26,10 @@ export class EmployeesResolver {
   @Mutation(() => EmployeeModel)
   async updateEmployee(@Args('updateEmployee') updateEmployee: EmployeeUpdateInput): Promise<EmployeeModel> {
     return this.employeesService.updateEmployee(updateEmployee);
+  }
+
+  @Mutation(() => CountModel)
+  async deleteEmployees(@Args({name: 'ids', type: () => [String]}) ids: String[]): Promise<CountModel> {
+    return this.employeesService.deleteEmployees(ids);
   }
 }

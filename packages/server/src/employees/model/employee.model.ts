@@ -21,3 +21,9 @@ export class EmployeeModel {
   @Field({ nullable: true })
   status?: string;
 }
+
+@ObjectType()
+export class CountModel {
+  @Field()
+  count: number;
+}
