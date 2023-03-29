@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -24,7 +24,15 @@ interface ProjectTableProps {
 
 export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  /**
+   * this method is used to handle model open and close
+   */
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
   /**
    * this method is used to handle select all employees' event.
@@ -132,7 +140,16 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       />
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
-                      <FormDialog type="edit" path={`${Paths.PROJECT_lIST}/${row.id}`} />
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          navigate(`${Paths.PROJECT_lIST}/${row.id}`);
+                          handleClickOpen();
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <FormDialog open={open} setOpen={setOpen} title="Edit Project" />
                     </TableCell>
                   </TableRow>
                 );
@@ -141,9 +158,12 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
           </Table>
         </TableContainer>
         {rows.length == 0 && (
-          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => navigate(Paths.ADD_PROJECT)}>
-            Add Your First Project
-          </Button>
+          <Box>
+            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
+              Add Your First Project
+            </Button>
+            <FormDialog open={open} setOpen={setOpen} title="Add Project" />
+          </Box>
         )}
       </Paper>
     </Box>
