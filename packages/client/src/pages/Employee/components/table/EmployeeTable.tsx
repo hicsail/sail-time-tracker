@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Chip, TableBody, Table, TableCell, TableContainer, TableRow, Paper, Checkbox, Button } from '@mui/material';
@@ -15,7 +15,12 @@ interface EmployeeTableProps {
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
   /**
    * this method is used to handle select all employees' event.
@@ -122,7 +127,16 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
                       />
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
-                      <FormDialog type="edit" path={`${Paths.EMPLOYEE_lIST}/${row.id}`} />
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
+                          handleClickOpen();
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <FormDialog open={open} setOpen={setOpen} title="Edit Employee" />
                     </TableCell>
                   </TableRow>
                 );
@@ -131,9 +145,12 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
           </Table>
         </TableContainer>
         {rows.length == 0 && (
-          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => navigate(Paths.ADD_EMPLOYEE)}>
-            Add Your First Employee
-          </Button>
+          <Box>
+            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
+              Add Your First Employee
+            </Button>
+            <FormDialog open={open} setOpen={setOpen} title="Add Employee" />
+          </Box>
         )}
       </Paper>
     </Box>
