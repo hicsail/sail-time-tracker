@@ -28,7 +28,7 @@ export class ProjectResolver {
   }
 
   @Mutation(() => CountModel)
-  async deleteProjects(@Args({name: 'ids', type: () => [String]}) ids: String[]): Promise<CountModel> {
+  async deleteProjects(@Args({ name: 'ids', type: () => [String] }) ids: String[]): Promise<CountModel> {
     return this.projectService.deleteProjects(ids);
   }
 }
