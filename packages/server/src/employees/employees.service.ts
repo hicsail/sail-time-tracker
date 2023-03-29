@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Employee } from '@prisma/client';
-import { CountModel } from '../project/model/project.model';
+import { CountModel } from './model/employee.model';
 
 @Injectable()
 export class EmployeesService {
