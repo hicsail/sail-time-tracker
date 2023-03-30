@@ -28,7 +28,7 @@ export class EmployeesResolver {
   }
 
   @Mutation(() => EmployeeDeleteReturnModel)
-  async deleteEmployees(@Args({name: 'ids', type: () => [String]}) ids: String[]): Promise<EmployeeDeleteReturnModel> {
+  async deleteEmployees(@Args({ name: 'ids', type: () => [String] }) ids: String[]): Promise<EmployeeDeleteReturnModel> {
     return this.employeesService.deleteEmployees(ids);
   }
 }

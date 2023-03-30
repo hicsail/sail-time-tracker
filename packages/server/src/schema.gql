@@ -26,14 +26,14 @@ type ProjectDeleteReturnModel {
 }
 
 type Query {
-  employees: [EmployeeModel!]!
-  employee(id: String!): EmployeeModel!
-  projects: [ProjectModel!]!
-  project(id: String!): ProjectModel!
+    employees: [EmployeeModel!]!
+    employee(id: String!): EmployeeModel!
+    projects: [ProjectModel!]!
+    project(id: String!): ProjectModel!
 }
 
 type Mutation {
-  addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
+    addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
     updateEmployee(updateEmployee: EmployeeUpdateInput!): EmployeeModel!
     deleteEmployees(ids: [String!]!): EmployeeDeleteReturnModel!
     addProject(project: ProjectCreateInput!): ProjectModel!
@@ -42,29 +42,29 @@ type Mutation {
 }
 
 input EmployeeCreateInput {
-  name: String!
-  email: String!
-  rate: Float!
-  status: String
+    name: String!
+    email: String!
+    rate: Float!
+    status: String
 }
 
 input EmployeeUpdateInput {
-  name: String!
-  email: String!
-  rate: Float!
-  status: String
-  id: ID!
+    name: String!
+    email: String!
+    rate: Float!
+    status: String
+    id: ID!
 }
 
 input ProjectCreateInput {
-  name: String!
-  status: String!
-  description: String!
+    name: String!
+    status: String!
+    description: String!
 }
 
 input ProjectUpdateInput {
-  name: String!
-  status: String!
-  description: String!
-  id: ID!
+    name: String!
+    status: String!
+    description: String!
+    id: ID!
 }
