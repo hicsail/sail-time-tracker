@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
-import { Container, Box, MenuItem } from '@mui/material';
+import { Box, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
-import { GetEmployeeListDocument, useEmployeeCreateInputMutation, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
+import { GetEmployeeListDocument, useEmployeeCreateInputMutation, useEmployeeUpdateInputMutation, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
 import { TextInput } from '@components/form/TextInput';
 import { useParams } from 'react-router-dom';
 import { FC, useEffect, useState } from 'react';
@@ -20,14 +20,16 @@ interface EmployeeFormProps {
 }
 
 export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
-  const [addEmployee, { loading, error }] = useEmployeeCreateInputMutation();
   const [initialValue, setInitialValue] = useState({ name: '', email: '', rate: '', status: '' });
   let { id } = useParams();
+  const [updateEmployee] = useEmployeeUpdateInputMutation();
+  const [addEmployee] = useEmployeeCreateInputMutation();
 
   const { data } = useGetEmployeeByIdQuery({
     variables: {
       id: id as string
-    }
+    },
+    nextFetchPolicy: 'cache-and-network'
   });
 
   useEffect(() => {
@@ -56,14 +58,19 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
             },
             refetchQueries: [{ query: GetEmployeeListDocument }]
           });
-          return handleClose();
+        } else {
+          // after updating the employee, re-fetch the employees via graphql
+          await updateEmployee({
+            variables: {
+              updateEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString(), id: id }
+            }
+          });
         }
-        // if is exists, update the form
+        return handleClose();
       }}
     >
       <Form>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
-          {error && <Container>`Submission error! ${error.message}`</Container>}
           <TextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
           <TextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />
           <TextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
@@ -71,7 +78,7 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
             <MenuItem value="Inactive">Inactive</MenuItem>
             <MenuItem value="Active">Active</MenuItem>
           </TextInput>
-          <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit" loading={loading}>
+          <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit">
             Submit
           </LoadingButton>
         </Box>
