@@ -14,6 +14,11 @@ export type Scalars = {
   Float: number;
 };
 
+export type CountModel = {
+  __typename?: 'CountModel';
+  count: Scalars['Float'];
+};
+
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
@@ -42,6 +47,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
   addProject: ProjectModel;
+  deleteEmployees: CountModel;
+  deleteProjects: CountModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
 };
@@ -52,6 +59,14 @@ export type MutationAddEmployeeArgs = {
 
 export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
+};
+
+export type MutationDeleteEmployeesArgs = {
+  ids: Array<Scalars['String']>;
+};
+
+export type MutationDeleteProjectsArgs = {
+  ids: Array<Scalars['String']>;
 };
 
 export type MutationUpdateEmployeeArgs = {

@@ -28,7 +28,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
    */
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = rows.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -38,14 +38,14 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
   /**
    * this method is used to handle select single employee event.
    * @param event
-   * @param name
+   * @param id
    */
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -57,8 +57,8 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
     setSelected(newSelected);
   };
 
-  const isSelected = (name: string) => {
-    return selected.indexOf(name) !== -1;
+  const isSelected = (id: string) => {
+    return selected.indexOf(id) !== -1;
   };
 
   return (
@@ -72,13 +72,13 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
           padding: '1rem'
         }}
       >
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
             <TableBody>
               {rows.map((row, index) => {
-                const isItemSelected = isSelected(row.name);
+                const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
@@ -95,7 +95,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
-                        onClick={(event) => handleClick(event, row.name)}
+                        onClick={(event) => handleClick(event, row.id)}
                         inputProps={{
                           'aria-labelledby': labelId
                         }}
