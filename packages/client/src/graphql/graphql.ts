@@ -14,16 +14,16 @@ export type Scalars = {
   Float: number;
 };
 
-export type CountModel = {
-  __typename?: 'CountModel';
-  count: Scalars['Float'];
-};
-
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
   rate: Scalars['Float'];
   status?: InputMaybe<Scalars['String']>;
+};
+
+export type EmployeeDeleteReturnModel = {
+  __typename?: 'EmployeeDeleteReturnModel';
+  count: Scalars['Float'];
 };
 
 export type EmployeeModel = {
@@ -47,8 +47,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
   addProject: ProjectModel;
-  deleteEmployees: CountModel;
-  deleteProjects: CountModel;
+  deleteEmployees: EmployeeDeleteReturnModel;
+  deleteProjects: ProjectDeleteReturnModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
 };
@@ -81,6 +81,11 @@ export type ProjectCreateInput = {
   description: Scalars['String'];
   name: Scalars['String'];
   status: Scalars['String'];
+};
+
+export type ProjectDeleteReturnModel = {
+  __typename?: 'ProjectDeleteReturnModel';
+  count: Scalars['Float'];
 };
 
 export type ProjectModel = {

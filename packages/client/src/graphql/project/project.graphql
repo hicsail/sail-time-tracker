@@ -32,3 +32,9 @@ mutation ProjectUpdateInput($updateProject: ProjectUpdateInput!) {
     status
   }
 }
+
+mutation DeleteProjects($ids: [String!]!) {
+  deleteProjects(ids: $ids) {
+    count
+  }
+}
