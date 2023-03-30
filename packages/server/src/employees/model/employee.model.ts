@@ -23,7 +23,7 @@ export class EmployeeModel {
 }
 
 @ObjectType()
-export class CountModel {
+export class EmployeeDeleteReturnModel {
   @Field()
   count: number;
 }

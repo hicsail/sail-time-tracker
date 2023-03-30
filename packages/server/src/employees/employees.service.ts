@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Employee } from '@prisma/client';
-import { CountModel } from './model/employee.model';
+import { EmployeeDeleteReturnModel } from './model/employee.model';
 
 @Injectable()
 export class EmployeesService {
@@ -63,7 +63,7 @@ export class EmployeesService {
    * @param ids represents array of ids
    */
 
-  async deleteEmployees(ids: String[]): Promise<CountModel> {
+  async deleteEmployees(ids: String[]): Promise<EmployeeDeleteReturnModel> {
     return this.prisma.employee.deleteMany({
       where: {
         id: {

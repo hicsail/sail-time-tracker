@@ -20,7 +20,7 @@ export class ProjectModel {
 }
 
 @ObjectType()
-export class CountModel {
+export class ProjectDeleteReturnModel {
   @Field()
   count: number;
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Project, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { ProjectUpdateInput } from './dto/project.dto';
-import { CountModel } from './model/project.model';
+import { ProjectDeleteReturnModel } from './model/project.model';
 
 @Injectable()
 export class ProjectService {
@@ -61,7 +61,7 @@ export class ProjectService {
    * @return total number of deleted project
    * @param ids represents array of ids
    */
-  async deleteProjects(ids: String[]): Promise<CountModel> {
+  async deleteProjects(ids: String[]): Promise<ProjectDeleteReturnModel> {
     return this.prisma.project.deleteMany({
       where: {
         id: {

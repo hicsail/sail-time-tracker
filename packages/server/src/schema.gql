@@ -3,22 +3,26 @@
 # ------------------------------------------------------
 
 type EmployeeModel {
-  id: ID!
-  email: String!
-  name: String!
-  rate: Float!
-  status: String
+    id: ID!
+    email: String!
+    name: String!
+    rate: Float!
+    status: String
+}
+
+type EmployeeDeleteReturnModel {
+    count: Float!
 }
 
 type ProjectModel {
-  id: ID!
-  name: String!
-  status: String!
-  description: String!
+    id: ID!
+    name: String!
+    status: String!
+    description: String!
 }
 
-type CountModel {
-  count: Float!
+type ProjectDeleteReturnModel {
+    count: Float!
 }
 
 type Query {
@@ -30,11 +34,11 @@ type Query {
 
 type Mutation {
   addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
-  updateEmployee(updateEmployee: EmployeeUpdateInput!): EmployeeModel!
-  deleteEmployees(ids: [String!]!): CountModel!
-  addProject(project: ProjectCreateInput!): ProjectModel!
-  updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
-  deleteProjects(ids: [String!]!): CountModel!
+    updateEmployee(updateEmployee: EmployeeUpdateInput!): EmployeeModel!
+    deleteEmployees(ids: [String!]!): EmployeeDeleteReturnModel!
+    addProject(project: ProjectCreateInput!): ProjectModel!
+    updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
+    deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
 }
 
 input EmployeeCreateInput {
