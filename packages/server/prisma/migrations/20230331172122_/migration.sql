@@ -30,7 +30,9 @@ CREATE TABLE "Record" (
 -- CreateTable
 CREATE TABLE "FavoriteProject" (
     "employeeId" TEXT NOT NULL,
-    "projectId" TEXT NOT NULL
+    "projectId" TEXT NOT NULL,
+
+    CONSTRAINT "FavoriteProject_pkey" PRIMARY KEY ("employeeId","projectId")
 );
 
 -- CreateIndex
@@ -44,12 +46,6 @@ CREATE UNIQUE INDEX "Record_employeeId_key" ON "Record"("employeeId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Record_projectId_key" ON "Record"("projectId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "FavoriteProject_employeeId_key" ON "FavoriteProject"("employeeId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "FavoriteProject_projectId_key" ON "FavoriteProject"("projectId");
 
 -- AddForeignKey
 ALTER TABLE "Record" ADD CONSTRAINT "Record_employeeId_fkey" FOREIGN KEY ("employeeId") REFERENCES "Employee"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

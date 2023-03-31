@@ -6,7 +6,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { ProjectModule } from './project/project.module';
-import { RecordModule } from './record/record.module';
 import { FavoriteProjectModule } from './favorite-project/favorite-project.module';
 
 @Module({
@@ -17,7 +16,6 @@ import { FavoriteProjectModule } from './favorite-project/favorite-project.modul
       autoSchemaFile: join(process.cwd(), 'src/schema.gql')
     }),
     ProjectModule,
-    RecordModule,
     FavoriteProjectModule
   ],
   controllers: [AppController],

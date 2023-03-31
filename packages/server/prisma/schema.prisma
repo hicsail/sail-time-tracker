@@ -39,8 +39,9 @@ model Record {
 }
 
 model FavoriteProject {
-    employeeId    String    @unique
+    employeeId    String
     employee      Employee  @relation(fields: [employeeId], references: [id])
-    projectId     String    @unique
+    projectId     String
     project       Project   @relation(fields: [projectId], references: [id])
+    @@id([employeeId, projectId])
 }
