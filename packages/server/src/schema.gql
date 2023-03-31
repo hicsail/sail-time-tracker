@@ -25,6 +25,10 @@ type ProjectDeleteReturnModel {
     count: Float!
 }
 
+type BatchPayload {
+    count: Float!
+}
+
 type Query {
     employees: [EmployeeModel!]!
     employee(id: String!): EmployeeModel!
@@ -39,6 +43,7 @@ type Mutation {
     addProject(project: ProjectCreateInput!): ProjectModel!
     updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
     deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
+    addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
 }
 
 input EmployeeCreateInput {
@@ -67,4 +72,9 @@ input ProjectUpdateInput {
     status: String!
     description: String!
     id: ID!
+}
+
+input FavoriteProjectCreateInput {
+    employeeId: ID!
+    projectId: ID!
 }
