@@ -1,0 +1,5 @@
+mutation AddFavoriteProject ($favoriteProject: [FavoriteProjectCreateInput!]!) {
+    addFavoriteProject(favoriteProject: $favoriteProject) {
+        count
+    }
+}

@@ -14,6 +14,11 @@ export type Scalars = {
   Float: number;
 };
 
+export type BatchPayload = {
+  __typename?: 'BatchPayload';
+  count: Scalars['Float'];
+};
+
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
@@ -43,9 +48,15 @@ export type EmployeeUpdateInput = {
   status?: InputMaybe<Scalars['String']>;
 };
 
+export type FavoriteProjectCreateInput = {
+  employeeId: Scalars['ID'];
+  projectId: Scalars['ID'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
+  addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteProjects: ProjectDeleteReturnModel;
@@ -55,6 +66,10 @@ export type Mutation = {
 
 export type MutationAddEmployeeArgs = {
   employee: EmployeeCreateInput;
+};
+
+export type MutationAddFavoriteProjectArgs = {
+  favoriteProject: Array<FavoriteProjectCreateInput>;
 };
 
 export type MutationAddProjectArgs = {
