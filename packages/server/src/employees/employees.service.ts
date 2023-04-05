@@ -84,7 +84,7 @@ export class EmployeesService {
     return this.prisma.project.findMany({
       where: {
         employees: {
-          every: {
+          some: {
             employeeId: employeeId
           }
         }
