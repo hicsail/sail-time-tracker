@@ -36,6 +36,7 @@ export type EmployeeModel = {
   email: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
+  projects: Array<ProjectModel>;
   rate: Scalars['Float'];
   status?: Maybe<Scalars['String']>;
 };

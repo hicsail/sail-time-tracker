@@ -1,38 +1,36 @@
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
+import { ApolloError } from '@apollo/client';
 
 export interface Data {
+  id: string;
   name: string;
-  hours: number;
-  previousWeek: number;
+  hours?: number;
+  previousWeek?: number;
   description: string;
 }
 
-function createData(name: string, hours: number, previousWeek: number, description: string): Data {
-  return {
-    name,
-    hours,
-    previousWeek,
-    description
+interface ProjectTableProps {
+  data: {
+    employeeData: any;
+    employeeLoading: boolean;
+    employeeError: ApolloError | undefined;
   };
 }
 
-// mock rows data
-const rows = [
-  createData('Indirect', 80, 67, 'Update Meetings, Standup, Classes, etc'),
-  createData('Absence', 10, 5, 'Vacation, Sick leave, Holidays etc'),
-  createData('ANCHOR', 20, 15, ''),
-  createData('ASL-LEX', 10, 15, '')
-];
-
-export const ProjectTable = () => {
+export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
+  const {
+    employeeData: { projects: rows },
+    employeeLoading,
+    employeeError
+  } = data;
 
   /**
    * this method is used to switch table save state.
@@ -47,10 +45,10 @@ export const ProjectTable = () => {
    */
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = rows.map((n: Data) => n.name);
 
       // remove "Indirect" and "Absence" rows
-      const ableSelected = newSelected.filter((n) => n !== 'Indirect' && n !== 'Absence');
+      const ableSelected = newSelected.filter((n: string) => n !== 'Indirect' && n !== 'Absence');
 
       setSelected(ableSelected);
       return;
@@ -106,7 +104,7 @@ export const ProjectTable = () => {
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
             <TableBody>
-              {rows.map((row, index) => {
+              {rows.map((row: Data, index: number) => {
                 const isItemSelected = isSelected(row.name);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -130,7 +128,7 @@ export const ProjectTable = () => {
                       <TextField id="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
                     </TableCell>
                     <TableCell align="left" sx={{ width: '150px', paddingRight: '3rem' }}>
-                      {row.previousWeek}
+                      {row.previousWeek ? row.previousWeek : '0'}
                     </TableCell>
                     <TableCell align="left">{row.description}</TableCell>
                   </TableRow>

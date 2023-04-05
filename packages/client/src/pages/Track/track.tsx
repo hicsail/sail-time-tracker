@@ -3,12 +3,22 @@ import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DatePickerComponent } from '@pages/Track/components/Date.component';
 
 import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
-import { useGetEmployeeListQuery } from '@graphql/employee/employee';
+import { GetEmployeeByIdDocument, GetEmployeeListDocument } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
+import { useQuery } from '@apollo/client';
 
 export const Track = () => {
-  const { data, loading, error } = useGetEmployeeListQuery();
+  const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useQuery(GetEmployeeListDocument);
   const { employeeId, setEmployeeId } = useEmployee();
+  const {
+    data: employeeData,
+    loading: employeeLoading,
+    error: employeeError
+  } = useQuery(GetEmployeeByIdDocument, {
+    variables: {
+      id: employeeId
+    }
+  });
 
   const changeHandler = (e: SelectChangeEvent) => {
     setEmployeeId(e.target.value);
@@ -28,15 +38,15 @@ export const Track = () => {
       }}
     >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
-        {error && <Container>`Fetching error! ${error.message}`</Container>}
-        {loading || !data ? (
+        {employeeListError && <Container>`Fetching error! ${employeeListError.message}`</Container>}
+        {employeeListLoading || !employeeListData ? (
           <div>Loading...</div>
         ) : (
           <FormControl sx={{ minWidth: '200px' }}>
             <InputLabel id="employee_select-label">Select Employee</InputLabel>
             <Select name="select_employee" label="Select Employee" id="select_employee" onChange={changeHandler} value={employeeId ? employeeId : ''}>
-              {data &&
-                data.employees.map((employee) => {
+              {employeeListData &&
+                employeeListData.employees.map((employee: any) => {
                   return (
                     <MenuItem key={employee.id} value={employee.id}>
                       {employee.name}
@@ -50,7 +60,17 @@ export const Track = () => {
         <DisplayCard key="work" id="work" title="Total Work Hours" hours="10" />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours="2" />
       </Stack>
-      <ProjectTable />
+      {employeeData ? (
+        <ProjectTable
+          data={{
+            employeeData: employeeData.employee,
+            employeeLoading: employeeLoading,
+            employeeError: employeeError
+          }}
+        />
+      ) : (
+        <div>Please Select the Employee</div>
+      )}
     </Box>
   );
 };

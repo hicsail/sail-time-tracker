@@ -4,6 +4,7 @@ import * as Types from '../graphql';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+
 const defaultOptions = {} as const;
 export type GetEmployeeListQueryVariables = Types.Exact<{ [key: string]: never }>;
 
@@ -16,7 +17,17 @@ export type GetEmployeeByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
 
-export type GetEmployeeByIdQuery = { __typename?: 'Query'; employee: { __typename?: 'EmployeeModel'; name: string; email: string; rate: number; status?: string | null } };
+export type GetEmployeeByIdQuery = {
+  __typename?: 'Query';
+  employee: {
+    __typename?: 'EmployeeModel';
+    name: string;
+    email: string;
+    rate: number;
+    status?: string | null;
+    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string }>;
+  };
+};
 
 export type EmployeeCreateInputMutationVariables = Types.Exact<{
   newEmployee: Types.EmployeeCreateInput;
@@ -70,10 +81,12 @@ export function useGetEmployeeListQuery(baseOptions?: Apollo.QueryHookOptions<Ge
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetEmployeeListQuery, GetEmployeeListQueryVariables>(GetEmployeeListDocument, options);
 }
+
 export function useGetEmployeeListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEmployeeListQuery, GetEmployeeListQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetEmployeeListQuery, GetEmployeeListQueryVariables>(GetEmployeeListDocument, options);
 }
+
 export type GetEmployeeListQueryHookResult = ReturnType<typeof useGetEmployeeListQuery>;
 export type GetEmployeeListLazyQueryHookResult = ReturnType<typeof useGetEmployeeListLazyQuery>;
 export type GetEmployeeListQueryResult = Apollo.QueryResult<GetEmployeeListQuery, GetEmployeeListQueryVariables>;
@@ -84,6 +97,11 @@ export const GetEmployeeByIdDocument = gql`
       email
       rate
       status
+      projects {
+        id
+        name
+        description
+      }
     }
   }
 `;
@@ -108,10 +126,12 @@ export function useGetEmployeeByIdQuery(baseOptions: Apollo.QueryHookOptions<Get
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>(GetEmployeeByIdDocument, options);
 }
+
 export function useGetEmployeeByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>(GetEmployeeByIdDocument, options);
 }
+
 export type GetEmployeeByIdQueryHookResult = ReturnType<typeof useGetEmployeeByIdQuery>;
 export type GetEmployeeByIdLazyQueryHookResult = ReturnType<typeof useGetEmployeeByIdLazyQuery>;
 export type GetEmployeeByIdQueryResult = Apollo.QueryResult<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>;
@@ -148,6 +168,7 @@ export function useEmployeeCreateInputMutation(baseOptions?: Apollo.MutationHook
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<EmployeeCreateInputMutation, EmployeeCreateInputMutationVariables>(EmployeeCreateInputDocument, options);
 }
+
 export type EmployeeCreateInputMutationHookResult = ReturnType<typeof useEmployeeCreateInputMutation>;
 export type EmployeeCreateInputMutationResult = Apollo.MutationResult<EmployeeCreateInputMutation>;
 export type EmployeeCreateInputMutationOptions = Apollo.BaseMutationOptions<EmployeeCreateInputMutation, EmployeeCreateInputMutationVariables>;
@@ -185,6 +206,7 @@ export function useEmployeeUpdateInputMutation(baseOptions?: Apollo.MutationHook
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<EmployeeUpdateInputMutation, EmployeeUpdateInputMutationVariables>(EmployeeUpdateInputDocument, options);
 }
+
 export type EmployeeUpdateInputMutationHookResult = ReturnType<typeof useEmployeeUpdateInputMutation>;
 export type EmployeeUpdateInputMutationResult = Apollo.MutationResult<EmployeeUpdateInputMutation>;
 export type EmployeeUpdateInputMutationOptions = Apollo.BaseMutationOptions<EmployeeUpdateInputMutation, EmployeeUpdateInputMutationVariables>;
@@ -218,6 +240,7 @@ export function useDeleteEmployeesMutation(baseOptions?: Apollo.MutationHookOpti
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>(DeleteEmployeesDocument, options);
 }
+
 export type DeleteEmployeesMutationHookResult = ReturnType<typeof useDeleteEmployeesMutation>;
 export type DeleteEmployeesMutationResult = Apollo.MutationResult<DeleteEmployeesMutation>;
 export type DeleteEmployeesMutationOptions = Apollo.BaseMutationOptions<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>;
