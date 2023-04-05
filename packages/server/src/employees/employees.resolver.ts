@@ -1,7 +1,8 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { EmployeesService } from './employees.service';
 import { EmployeeDeleteReturnModel, EmployeeModel } from './model/employee.model';
 import { EmployeeCreateInput, EmployeeUpdateInput } from './dto/employee.dto';
+import { ProjectModel } from '../project/model/project.model';
 
 @Resolver(() => EmployeeModel)
 export class EmployeesResolver {
@@ -15,6 +16,11 @@ export class EmployeesResolver {
   @Query(() => EmployeeModel)
   async employee(@Args('id') id: string): Promise<EmployeeModel> {
     return this.employeesService.getEmployeeById(id);
+  }
+
+  @ResolveField(() => [ProjectModel])
+  async projects(@Parent() employee: EmployeeModel): Promise<ProjectModel[]> {
+    return this.employeesService.getFavoriteProjects(employee.id);
   }
 
   @Mutation(() => EmployeeModel)
