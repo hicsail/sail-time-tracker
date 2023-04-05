@@ -30,6 +30,18 @@ type BatchPayload {
   count: Float!
 }
 
+type RecordInsertOrUpdateModel {
+  employeeId: ID!
+  projectId: ID!
+  date: DateTime!
+  hours: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -45,6 +57,7 @@ type Mutation {
   updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
   deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
+  insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
 }
 
 input EmployeeCreateInput {
@@ -78,4 +91,11 @@ input ProjectUpdateInput {
 input FavoriteProjectCreateInput {
   employeeId: ID!
   projectId: ID!
+}
+
+input RecordCreateInput {
+  employee: EmployeeUpdateInput!
+  project: ProjectUpdateInput!
+  hours: Float!
+  date: DateTime!
 }
