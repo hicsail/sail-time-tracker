@@ -21,6 +21,7 @@ interface EnhancedTableToolbarProps {
 }
 
 export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
+
   const { numSelected, selected, setSelected } = props;
   const [open, setOpen] = useState(false);
   const [deleteEmployees, { data, loading, error }] = useDeleteEmployeesMutation();
