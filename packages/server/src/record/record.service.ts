@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { Record } from '@prisma/client';
+import { Employee, Record } from '@prisma/client';
 import { RecordCreateInput } from './dto/record.dto';
 
 @Injectable()
@@ -27,6 +27,14 @@ export class RecordService {
         projectId: record.project.id,
         hours: record.hours,
         date: record.date
+      }
+    });
+  }
+
+  async getEmployeeRecord(employee: Employee) {
+    return this.prisma.employee.findUnique({
+      where: {
+        id: employee.id
       }
     });
   }
