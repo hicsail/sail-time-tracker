@@ -1,5 +1,6 @@
 import { ListItem, ListItemButton, ListItemText, ListItemIcon } from '@mui/material';
 import React, { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface SideListItemProps {
   path: string;
@@ -8,6 +9,7 @@ interface SideListItemProps {
 }
 
 export const SideListItem: FC<SideListItemProps> = ({ path, icon, info }) => {
+  const navigate = useNavigate();
   return (
     <ListItem
       disablePadding
@@ -18,7 +20,7 @@ export const SideListItem: FC<SideListItemProps> = ({ path, icon, info }) => {
         }
       }}
     >
-      <ListItemButton href={path}>
+      <ListItemButton onClick={() => navigate(path)}>
         <ListItemIcon>{icon}</ListItemIcon>
         <ListItemText primary={info} />
       </ListItemButton>
