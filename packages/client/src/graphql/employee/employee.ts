@@ -33,6 +33,12 @@ export type EmployeeUpdateInputMutation = {
   updateEmployee: { __typename?: 'EmployeeModel'; id: string; name: string; email: string; rate: number; status?: string | null };
 };
 
+export type DeleteEmployeesMutationVariables = Types.Exact<{
+  ids: Array<Types.Scalars['String']> | Types.Scalars['String'];
+}>;
+
+export type DeleteEmployeesMutation = { __typename?: 'Mutation'; deleteEmployees: { __typename?: 'EmployeeDeleteReturnModel'; count: number } };
+
 export const GetEmployeeListDocument = gql`
   query getEmployeeList {
     employees {
@@ -182,3 +188,36 @@ export function useEmployeeUpdateInputMutation(baseOptions?: Apollo.MutationHook
 export type EmployeeUpdateInputMutationHookResult = ReturnType<typeof useEmployeeUpdateInputMutation>;
 export type EmployeeUpdateInputMutationResult = Apollo.MutationResult<EmployeeUpdateInputMutation>;
 export type EmployeeUpdateInputMutationOptions = Apollo.BaseMutationOptions<EmployeeUpdateInputMutation, EmployeeUpdateInputMutationVariables>;
+export const DeleteEmployeesDocument = gql`
+  mutation DeleteEmployees($ids: [String!]!) {
+    deleteEmployees(ids: $ids) {
+      count
+    }
+  }
+`;
+export type DeleteEmployeesMutationFn = Apollo.MutationFunction<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>;
+
+/**
+ * __useDeleteEmployeesMutation__
+ *
+ * To run a mutation, you first call `useDeleteEmployeesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEmployeesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEmployeesMutation, { data, loading, error }] = useDeleteEmployeesMutation({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useDeleteEmployeesMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>(DeleteEmployeesDocument, options);
+}
+export type DeleteEmployeesMutationHookResult = ReturnType<typeof useDeleteEmployeesMutation>;
+export type DeleteEmployeesMutationResult = Apollo.MutationResult<DeleteEmployeesMutation>;
+export type DeleteEmployeesMutationOptions = Apollo.BaseMutationOptions<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>;

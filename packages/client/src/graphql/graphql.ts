@@ -21,6 +21,11 @@ export type EmployeeCreateInput = {
   status?: InputMaybe<Scalars['String']>;
 };
 
+export type EmployeeDeleteReturnModel = {
+  __typename?: 'EmployeeDeleteReturnModel';
+  count: Scalars['Float'];
+};
+
 export type EmployeeModel = {
   __typename?: 'EmployeeModel';
   email: Scalars['String'];
@@ -42,6 +47,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
   addProject: ProjectModel;
+  deleteEmployees: EmployeeDeleteReturnModel;
+  deleteProjects: ProjectDeleteReturnModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
 };
@@ -52,6 +59,14 @@ export type MutationAddEmployeeArgs = {
 
 export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
+};
+
+export type MutationDeleteEmployeesArgs = {
+  ids: Array<Scalars['String']>;
+};
+
+export type MutationDeleteProjectsArgs = {
+  ids: Array<Scalars['String']>;
 };
 
 export type MutationUpdateEmployeeArgs = {
@@ -66,6 +81,11 @@ export type ProjectCreateInput = {
   description: Scalars['String'];
   name: Scalars['String'];
   status: Scalars['String'];
+};
+
+export type ProjectDeleteReturnModel = {
+  __typename?: 'ProjectDeleteReturnModel';
+  count: Scalars['Float'];
 };
 
 export type ProjectModel = {

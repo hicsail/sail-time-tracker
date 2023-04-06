@@ -12,17 +12,31 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FormDialog } from '@pages/Employee/components/form/FormDialog';
 import AddIcon from '@mui/icons-material/Add';
+import { GetEmployeeListDocument, useDeleteEmployeesMutation } from '@graphql/employee/employee';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  selected: readonly string[];
+  setSelected: (select: readonly string[]) => void;
 }
 
 export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected } = props;
+  const { numSelected, selected, setSelected } = props;
   const [open, setOpen] = useState(false);
+  const [deleteEmployees, { data, loading, error }] = useDeleteEmployeesMutation();
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  const handleClickDelete = async () => {
+    await deleteEmployees({
+      variables: {
+        ids: selected as string[]
+      },
+      refetchQueries: [{ query: GetEmployeeListDocument }]
+    });
+    setSelected([]);
   };
 
   return (
@@ -46,7 +60,7 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleClickDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
