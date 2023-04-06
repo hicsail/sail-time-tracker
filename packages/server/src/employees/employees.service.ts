@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Employee } from '@prisma/client';
 import { EmployeeDeleteReturnModel } from './model/employee.model';
+import { ProjectModel } from '../project/model/project.model';
 
 @Injectable()
 export class EmployeesService {
@@ -68,6 +69,24 @@ export class EmployeesService {
       where: {
         id: {
           in: ids as string[]
+        }
+      }
+    });
+  }
+
+  /**
+   * Get favorite projects of an employee
+   *
+   * @return a list of projects
+   * @param employeeId represents employee id
+   */
+  async getFavoriteProjects(employeeId: string): Promise<ProjectModel[]> {
+    return this.prisma.project.findMany({
+      where: {
+        employees: {
+          some: {
+            employeeId: employeeId
+          }
         }
       }
     });

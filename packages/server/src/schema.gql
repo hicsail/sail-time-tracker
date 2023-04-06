@@ -3,15 +3,16 @@
 # ------------------------------------------------------
 
 type EmployeeModel {
-    id: ID!
-    email: String!
-    name: String!
-    rate: Float!
-    status: String
+  id: ID!
+  email: String!
+  name: String!
+  rate: Float!
+  status: String
+  projects: [ProjectModel!]!
 }
 
 type EmployeeDeleteReturnModel {
-    count: Float!
+  count: Float!
 }
 
 type ProjectModel {
@@ -25,6 +26,26 @@ type ProjectDeleteReturnModel {
     count: Float!
 }
 
+type ProjectDeleteReturnModel {
+  count: Float!
+}
+
+type BatchPayload {
+  count: Float!
+}
+
+type RecordInsertOrUpdateModel {
+  employeeId: ID!
+  projectId: ID!
+  date: DateTime!
+  hours: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
     employees: [EmployeeModel!]!
     employee(id: String!): EmployeeModel!
@@ -33,12 +54,14 @@ type Query {
 }
 
 type Mutation {
-    addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
-    updateEmployee(updateEmployee: EmployeeUpdateInput!): EmployeeModel!
-    deleteEmployees(ids: [String!]!): EmployeeDeleteReturnModel!
-    addProject(project: ProjectCreateInput!): ProjectModel!
-    updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
-    deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
+  addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
+  updateEmployee(updateEmployee: EmployeeUpdateInput!): EmployeeModel!
+  deleteEmployees(ids: [String!]!): EmployeeDeleteReturnModel!
+  addProject(project: ProjectCreateInput!): ProjectModel!
+  updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
+  deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
+  addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
+  insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
 }
 
 input EmployeeCreateInput {
@@ -63,8 +86,20 @@ input ProjectCreateInput {
 }
 
 input ProjectUpdateInput {
-    name: String!
-    status: String!
-    description: String!
-    id: ID!
+  name: String!
+  status: String!
+  description: String!
+  id: ID!
+}
+
+input FavoriteProjectCreateInput {
+  employeeId: ID!
+  projectId: ID!
+}
+
+input RecordCreateInput {
+  employee: EmployeeUpdateInput!
+  project: ProjectUpdateInput!
+  hours: Float!
+  date: DateTime!
 }
