@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -10,11 +10,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 
 import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { ProjectModel } from '@graphql/graphql';
 import { Paths } from '@constants/paths';
+import { FormDialog } from '@pages/Project/components/form/FormDialog';
 
 interface ProjectTableProps {
   rows: ProjectModel[];
@@ -22,7 +24,15 @@ interface ProjectTableProps {
 
 export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  /**
+   * this method is used to handle model open and close
+   */
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
   /**
    * this method is used to handle select all employees' event.
@@ -120,25 +130,26 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       {row.description}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
-                      <Button
-                        variant="contained"
+                      <Chip
+                        label={row.status}
                         sx={{
-                          width: '2rem',
                           backgroundColor: 'customColors.statusBtnBg',
                           color: 'customColors.statusBtnText',
-                          padding: '2px 50px',
-                          pointerEvents: 'none',
-                          borderRadius: '20px',
-                          boxShadow: 'none'
+                          padding: '0 10px'
                         }}
-                      >
-                        {row.status}
-                      </Button>
+                      />
                     </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
-                      <Button variant="outlined" href={`${Paths.PROJECT_lIST}/${row.id}`}>
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          navigate(`${Paths.PROJECT_lIST}/${row.id}`);
+                          handleClickOpen();
+                        }}
+                      >
                         Edit
                       </Button>
+                      <FormDialog open={open} setOpen={setOpen} title="Edit Project" />
                     </TableCell>
                   </TableRow>
                 );
@@ -147,9 +158,12 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
           </Table>
         </TableContainer>
         {rows.length == 0 && (
-          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => navigate(Paths.ADD_PROJECT)}>
-            Add Your First Project
-          </Button>
+          <Box>
+            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
+              Add Your First Project
+            </Button>
+            <FormDialog open={open} setOpen={setOpen} title="Add Project" />
+          </Box>
         )}
       </Paper>
     </Box>

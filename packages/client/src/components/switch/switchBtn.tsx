@@ -1,5 +1,6 @@
 import { Switch, FormControlLabel, styled } from '@mui/material';
 import { FC } from 'react';
+import { useSettings } from '@context/setting.context';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -53,5 +54,7 @@ interface SwitchBtnProps {
 }
 
 export const SwitchBtn: FC<SwitchBtnProps> = ({ onClick }) => {
-  return <FormControlLabel control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={false} onClick={onClick} />} label="Theme switch" />;
+  const { settings } = useSettings();
+
+  return <FormControlLabel control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={settings.theme !== 'light'} onClick={onClick} />} label="Theme switch" />;
 };

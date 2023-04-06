@@ -5,9 +5,8 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { GetEmployeeListDocument, useEmployeeCreateInputMutation, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
 import { TextInput } from '@components/form/TextInput';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Paths } from '@constants/paths';
-import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { FC, useEffect, useState } from 'react';
 
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
@@ -16,10 +15,13 @@ const FormValidation = Yup.object({
   status: Yup.string().required('Required')
 });
 
-export const EmployeeForm = () => {
+interface EmployeeFormProps {
+  handleClose: () => void;
+}
+
+export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
   const [addEmployee, { loading, error }] = useEmployeeCreateInputMutation();
   const [initialValue, setInitialValue] = useState({ name: '', email: '', rate: '', status: '' });
-  const navigate = useNavigate();
   let { id } = useParams();
 
   const { data } = useGetEmployeeByIdQuery({
@@ -38,8 +40,6 @@ export const EmployeeForm = () => {
       });
   }, [data]);
 
-  console.log(initialValue);
-
   return (
     <Formik
       validateOnChange={true}
@@ -56,13 +56,13 @@ export const EmployeeForm = () => {
             },
             refetchQueries: [{ query: GetEmployeeListDocument }]
           });
-          return await navigate(Paths.EMPLOYEE_lIST);
+          return handleClose();
         }
         // if is exists, update the form
       }}
     >
       <Form>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
           {error && <Container>`Submission error! ${error.message}`</Container>}
           <TextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
           <TextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />

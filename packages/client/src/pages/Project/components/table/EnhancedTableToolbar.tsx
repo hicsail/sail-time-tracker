@@ -3,22 +3,26 @@
  * @param props
  */
 
-import React from 'react';
+import React, { FC, useState } from 'react';
 import { alpha } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { FormDialog } from '@pages/Project/components/form/FormDialog';
 import AddIcon from '@mui/icons-material/Add';
-import { Paths } from '@constants/paths';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected } = props;
+export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelected }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
   return (
     <Toolbar
@@ -46,9 +50,11 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Add New Project">
+        <>
           <IconButton
-            href={Paths.ADD_PROJECT}
+            onClick={() => {
+              handleClickOpen();
+            }}
             sx={{
               '&:hover': {
                 backgroundColor: '#1565c0',
@@ -58,7 +64,8 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           >
             <AddIcon />
           </IconButton>
-        </Tooltip>
+          <FormDialog open={open} setOpen={setOpen} title="Add Project" />
+        </>
       )}
     </Toolbar>
   );

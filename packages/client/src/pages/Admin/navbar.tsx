@@ -21,7 +21,7 @@ export const Navbar = () => {
     <Box
       sx={{
         width: '100%',
-        maxWidth: 300,
+        maxWidth: 250,
         backgroundColor: 'customColors.sidebarBg',
         height: '100vh'
       }}
