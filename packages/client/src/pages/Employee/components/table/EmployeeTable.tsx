@@ -5,18 +5,19 @@ import { Box, Chip, TableBody, Table, TableCell, TableContainer, TableRow, Paper
 
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
-import { EmployeeModel } from '@graphql/graphql';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@pages/Employee/components/form/FormDialog';
+import { GetEmployeeListQuery } from '@graphql/employee/employee';
 
 interface EmployeeTableProps {
-  rows: EmployeeModel[];
+  data: GetEmployeeListQuery | undefined;
 }
 
-export const EmployeeTable: FC<EmployeeTableProps> = ({ rows }) => {
+export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const rows = data?.employees ? data.employees : [];
 
   const handleClickOpen = () => {
     setOpen(true);
