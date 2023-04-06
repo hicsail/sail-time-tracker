@@ -4,6 +4,7 @@ import * as Types from '../graphql';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+
 const defaultOptions = {} as const;
 export type GetProjectListQueryVariables = Types.Exact<{ [key: string]: never }>;
 
@@ -63,10 +64,12 @@ export function useGetProjectListQuery(baseOptions?: Apollo.QueryHookOptions<Get
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetProjectListQuery, GetProjectListQueryVariables>(GetProjectListDocument, options);
 }
+
 export function useGetProjectListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectListQuery, GetProjectListQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetProjectListQuery, GetProjectListQueryVariables>(GetProjectListDocument, options);
 }
+
 export type GetProjectListQueryHookResult = ReturnType<typeof useGetProjectListQuery>;
 export type GetProjectListLazyQueryHookResult = ReturnType<typeof useGetProjectListLazyQuery>;
 export type GetProjectListQueryResult = Apollo.QueryResult<GetProjectListQuery, GetProjectListQueryVariables>;
@@ -100,10 +103,12 @@ export function useGetProjectByIdQuery(baseOptions: Apollo.QueryHookOptions<GetP
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetProjectByIdQuery, GetProjectByIdQueryVariables>(GetProjectByIdDocument, options);
 }
+
 export function useGetProjectByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectByIdQuery, GetProjectByIdQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetProjectByIdQuery, GetProjectByIdQueryVariables>(GetProjectByIdDocument, options);
 }
+
 export type GetProjectByIdQueryHookResult = ReturnType<typeof useGetProjectByIdQuery>;
 export type GetProjectByIdLazyQueryHookResult = ReturnType<typeof useGetProjectByIdLazyQuery>;
 export type GetProjectByIdQueryResult = Apollo.QueryResult<GetProjectByIdQuery, GetProjectByIdQueryVariables>;
@@ -140,6 +145,7 @@ export function useProjectCreateInputMutation(baseOptions?: Apollo.MutationHookO
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<ProjectCreateInputMutation, ProjectCreateInputMutationVariables>(ProjectCreateInputDocument, options);
 }
+
 export type ProjectCreateInputMutationHookResult = ReturnType<typeof useProjectCreateInputMutation>;
 export type ProjectCreateInputMutationResult = Apollo.MutationResult<ProjectCreateInputMutation>;
 export type ProjectCreateInputMutationOptions = Apollo.BaseMutationOptions<ProjectCreateInputMutation, ProjectCreateInputMutationVariables>;
@@ -176,6 +182,7 @@ export function useProjectUpdateInputMutation(baseOptions?: Apollo.MutationHookO
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<ProjectUpdateInputMutation, ProjectUpdateInputMutationVariables>(ProjectUpdateInputDocument, options);
 }
+
 export type ProjectUpdateInputMutationHookResult = ReturnType<typeof useProjectUpdateInputMutation>;
 export type ProjectUpdateInputMutationResult = Apollo.MutationResult<ProjectUpdateInputMutation>;
 export type ProjectUpdateInputMutationOptions = Apollo.BaseMutationOptions<ProjectUpdateInputMutation, ProjectUpdateInputMutationVariables>;
@@ -209,6 +216,7 @@ export function useDeleteProjectsMutation(baseOptions?: Apollo.MutationHookOptio
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<DeleteProjectsMutation, DeleteProjectsMutationVariables>(DeleteProjectsDocument, options);
 }
+
 export type DeleteProjectsMutationHookResult = ReturnType<typeof useDeleteProjectsMutation>;
 export type DeleteProjectsMutationResult = Apollo.MutationResult<DeleteProjectsMutation>;
 export type DeleteProjectsMutationOptions = Apollo.BaseMutationOptions<DeleteProjectsMutation, DeleteProjectsMutationVariables>;

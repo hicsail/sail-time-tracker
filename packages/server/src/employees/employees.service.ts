@@ -73,7 +73,7 @@ export class EmployeesService {
       }
     });
   }
-
+  
   /**
    * Get favorite projects of an employee
    *
