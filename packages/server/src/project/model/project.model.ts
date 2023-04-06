@@ -18,3 +18,9 @@ export class ProjectModel {
   @Field()
   description: string;
 }
+
+@ObjectType()
+export class ProjectDeleteReturnModel {
+  @Field()
+  count: number;
+}

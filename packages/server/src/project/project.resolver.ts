@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { ProjectService } from './project.service';
-import { ProjectModel } from './model/project.model';
+import { ProjectDeleteReturnModel, ProjectModel } from './model/project.model';
 import { ProjectCreateInput, ProjectUpdateInput } from './dto/project.dto';
 
 @Resolver(() => ProjectModel)
@@ -25,5 +25,10 @@ export class ProjectResolver {
   @Mutation(() => ProjectModel)
   async updateProject(@Args('updateProject') updateProject: ProjectUpdateInput): Promise<ProjectModel> {
     return this.projectService.updateProject(updateProject);
+  }
+
+  @Mutation(() => ProjectDeleteReturnModel)
+  async deleteProjects(@Args({ name: 'ids', type: () => [String] }) ids: String[]): Promise<ProjectDeleteReturnModel> {
+    return this.projectService.deleteProjects(ids);
   }
 }
