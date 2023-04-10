@@ -21,11 +21,12 @@ export type GetEmployeeByIdQuery = {
   __typename?: 'Query';
   employee: {
     __typename?: 'EmployeeModel';
+    id: string;
     name: string;
     email: string;
     rate: number;
     status?: string | null;
-    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string }>;
+    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string }>;
   };
 };
 
@@ -81,18 +82,17 @@ export function useGetEmployeeListQuery(baseOptions?: Apollo.QueryHookOptions<Ge
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetEmployeeListQuery, GetEmployeeListQueryVariables>(GetEmployeeListDocument, options);
 }
-
 export function useGetEmployeeListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEmployeeListQuery, GetEmployeeListQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetEmployeeListQuery, GetEmployeeListQueryVariables>(GetEmployeeListDocument, options);
 }
-
 export type GetEmployeeListQueryHookResult = ReturnType<typeof useGetEmployeeListQuery>;
 export type GetEmployeeListLazyQueryHookResult = ReturnType<typeof useGetEmployeeListLazyQuery>;
 export type GetEmployeeListQueryResult = Apollo.QueryResult<GetEmployeeListQuery, GetEmployeeListQueryVariables>;
 export const GetEmployeeByIdDocument = gql`
   query getEmployeeById($id: String!) {
     employee(id: $id) {
+      id
       name
       email
       rate
@@ -101,6 +101,7 @@ export const GetEmployeeByIdDocument = gql`
         id
         name
         description
+        status
       }
     }
   }
@@ -126,12 +127,10 @@ export function useGetEmployeeByIdQuery(baseOptions: Apollo.QueryHookOptions<Get
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>(GetEmployeeByIdDocument, options);
 }
-
 export function useGetEmployeeByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>(GetEmployeeByIdDocument, options);
 }
-
 export type GetEmployeeByIdQueryHookResult = ReturnType<typeof useGetEmployeeByIdQuery>;
 export type GetEmployeeByIdLazyQueryHookResult = ReturnType<typeof useGetEmployeeByIdLazyQuery>;
 export type GetEmployeeByIdQueryResult = Apollo.QueryResult<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>;
@@ -168,7 +167,6 @@ export function useEmployeeCreateInputMutation(baseOptions?: Apollo.MutationHook
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<EmployeeCreateInputMutation, EmployeeCreateInputMutationVariables>(EmployeeCreateInputDocument, options);
 }
-
 export type EmployeeCreateInputMutationHookResult = ReturnType<typeof useEmployeeCreateInputMutation>;
 export type EmployeeCreateInputMutationResult = Apollo.MutationResult<EmployeeCreateInputMutation>;
 export type EmployeeCreateInputMutationOptions = Apollo.BaseMutationOptions<EmployeeCreateInputMutation, EmployeeCreateInputMutationVariables>;
@@ -206,7 +204,6 @@ export function useEmployeeUpdateInputMutation(baseOptions?: Apollo.MutationHook
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<EmployeeUpdateInputMutation, EmployeeUpdateInputMutationVariables>(EmployeeUpdateInputDocument, options);
 }
-
 export type EmployeeUpdateInputMutationHookResult = ReturnType<typeof useEmployeeUpdateInputMutation>;
 export type EmployeeUpdateInputMutationResult = Apollo.MutationResult<EmployeeUpdateInputMutation>;
 export type EmployeeUpdateInputMutationOptions = Apollo.BaseMutationOptions<EmployeeUpdateInputMutation, EmployeeUpdateInputMutationVariables>;
@@ -240,7 +237,6 @@ export function useDeleteEmployeesMutation(baseOptions?: Apollo.MutationHookOpti
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>(DeleteEmployeesDocument, options);
 }
-
 export type DeleteEmployeesMutationHookResult = ReturnType<typeof useDeleteEmployeesMutation>;
 export type DeleteEmployeesMutationResult = Apollo.MutationResult<DeleteEmployeesMutation>;
 export type DeleteEmployeesMutationOptions = Apollo.BaseMutationOptions<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>;
