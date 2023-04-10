@@ -31,11 +31,11 @@ model Project {
 
 model Record {
   date           DateTime   @default(now())
-  employeeId     String     @unique
+  employeeId     String
   employee       Employee   @relation(fields: [employeeId], references: [id])
-  projectId      String     @unique
+  projectId      String
   project        Project    @relation(fields: [projectId], references: [id])
-  hours          Float?
+  hours          Float      @default(0)
   @@id([date, employeeId, projectId])
 }
 
