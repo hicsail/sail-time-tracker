@@ -11,6 +11,7 @@ import { Admin } from '@pages/Admin/admin';
 import { ThemeProvider } from '@theme/theme.provider';
 import { SettingsProvider } from '@context/setting.context';
 import { EmployeeProvider } from '@context/employee.context';
+import { DateProvider } from '@context/date.context';
 
 function App() {
   return (
@@ -18,23 +19,25 @@ function App() {
       <GraphqlProvider>
         <SettingsProvider>
           <ThemeProvider>
-            <Router>
-              <EmployeeProvider>
-                <Routes>
-                  <Route path={Paths.TRACK} element={<Track />} />
-                  <Route path={Paths.ADMIN} element={<Admin />}>
-                    <Route path={Paths.PROJECT_lIST} element={<Project />}>
-                      <Route path={Paths.EDIT_PROJECT} />
-                      <Route path={Paths.ADD_PROJECT} />
+            <DateProvider>
+              <Router>
+                <EmployeeProvider>
+                  <Routes>
+                    <Route path={Paths.TRACK} element={<Track />} />
+                    <Route path={Paths.ADMIN} element={<Admin />}>
+                      <Route path={Paths.PROJECT_lIST} element={<Project />}>
+                        <Route path={Paths.EDIT_PROJECT} />
+                        <Route path={Paths.ADD_PROJECT} />
+                      </Route>
+                      <Route path={Paths.EMPLOYEE_lIST} element={<Employee />}>
+                        <Route path={Paths.EDIT_EMPLOYEE} />
+                        <Route path={Paths.ADD_EMPLOYEE} />
+                      </Route>
                     </Route>
-                    <Route path={Paths.EMPLOYEE_lIST} element={<Employee />}>
-                      <Route path={Paths.EDIT_EMPLOYEE} />
-                      <Route path={Paths.ADD_EMPLOYEE} />
-                    </Route>
-                  </Route>
-                </Routes>
-              </EmployeeProvider>
-            </Router>
+                  </Routes>
+                </EmployeeProvider>
+              </Router>
+            </DateProvider>
           </ThemeProvider>
         </SettingsProvider>
       </GraphqlProvider>
