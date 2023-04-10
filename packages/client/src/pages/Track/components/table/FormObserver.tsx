@@ -11,8 +11,12 @@ interface FormObserverProps {
   setLoading: (loading: boolean) => void;
 }
 
+interface FormValues {
+  hours: number | string;
+}
+
 export const FormObserver: FC<FormObserverProps> = ({ project, employee, date, setLoading }) => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<FormValues>();
   const [addRecordMutation, { loading }] = useAddRecordMutation();
 
   // set loading button state
@@ -44,7 +48,7 @@ export const FormObserver: FC<FormObserverProps> = ({ project, employee, date, s
               rate: employee.rate,
               status: employee.status
             },
-            hours: values.hours,
+            hours: values.hours as number,
             date: startOfWeek(date, { weekStartsOn: 1 })
           }
         }
