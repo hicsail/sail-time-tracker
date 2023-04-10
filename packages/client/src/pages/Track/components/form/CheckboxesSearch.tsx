@@ -4,7 +4,9 @@ import { SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
 import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
-import { FavoriteProjectCreateInput } from '@graphql/graphql';
+import { FavoriteProjectCreateInput, ProjectModel } from '@graphql/graphql';
+import { useEmployee } from '@context/employee.context';
+import { GetEmployeeByIdDocument } from '@graphql/employee/employee';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -14,26 +16,39 @@ export const CheckboxesSearch = () => {
   const { data } = useGetProjectListQuery();
   const [addFavoriteProjectMutation] = useAddFavoriteProjectMutation();
   const { settings } = useSettings();
+  const { employeeId } = useEmployee();
+
+  const {
+    employeeData: {
+      employee: { projects }
+    }
+  } = useEmployee();
 
   // handle user select projects from search checkbox
   const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any) => {
     if (settings.employee) {
-      const data = value.map((v: any) => {
-        return { employeeId: settings.employee, projectId: v.id };
+      const data = value.map((selectedProject: any) => {
+        return { employeeId: settings.employee, projectId: selectedProject.id };
       });
       setSelectedProjects(data);
-    } else {
-      console.log('please choose employee');
     }
   };
 
   // handle user close search checkbox
   const handleOnSubmit = () => {
-    if (settings.employee) {
+    if (settings.employee && selectedProjects) {
       addFavoriteProjectMutation({
         variables: {
           favoriteProject: selectedProjects as FavoriteProjectCreateInput[]
-        }
+        },
+        refetchQueries: [
+          {
+            query: GetEmployeeByIdDocument,
+            variables: {
+              id: employeeId
+            }
+          }
+        ]
       });
     }
   };
@@ -46,18 +61,27 @@ export const CheckboxesSearch = () => {
       options={data ? data.projects : []}
       disableCloseOnSelect
       getOptionLabel={(option) => option.name}
-      renderOption={(props, option, { selected }) => (
-        <li {...props}>
-          <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
-          {option.name}
-        </li>
-      )}
+      filterOptions={(options) => {
+        const ignoredValues = projects.map((project: ProjectModel) => project.id);
+        return options.filter((option) => {
+          return !ignoredValues.includes(option.id);
+        });
+      }}
+      renderOption={(props, option, { selected }) => {
+        return (
+          <li {...props}>
+            <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} disabled={selected} />
+            {option.name}
+          </li>
+        );
+      }}
       style={{ width: 500 }}
       renderInput={(params) => <TextField {...params} label="Add Your Favorite Project" placeholder="Projects" />}
       onChange={(e, value) => {
         handleOnChange(e, value);
       }}
       onClose={handleOnSubmit}
+      clearOnBlur={true}
     />
   );
 };
