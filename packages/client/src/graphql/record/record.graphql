@@ -1,0 +1,8 @@
+mutation addRecord($record: RecordCreateInput!) {
+    insertOrUpdateRecord(record: $record) {
+        employeeId,
+        projectId,
+        date,
+        hours
+    }
+}
