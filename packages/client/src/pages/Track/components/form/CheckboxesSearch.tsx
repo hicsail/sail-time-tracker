@@ -12,7 +12,7 @@ const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
 
 export const CheckboxesSearch = () => {
-  const [selectedProjects, setSelectedProjects] = useState<{ projectId: string; employeeId: string | null | undefined }[]>();
+  const [selectedProjects, setSelectedProjects] = useState<ProjectModel[]>([]);
   const { data } = useGetProjectListQuery();
   const [addFavoriteProjectMutation] = useAddFavoriteProjectMutation();
   const { settings } = useSettings();
@@ -25,21 +25,21 @@ export const CheckboxesSearch = () => {
   } = useEmployee();
 
   // handle user select projects from search checkbox
-  const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any) => {
-    if (settings.employee) {
-      const data = value.map((selectedProject: any) => {
-        return { employeeId: settings.employee, projectId: selectedProject.id };
-      });
-      setSelectedProjects(data);
-    }
+  const handleOnChange = (e: SyntheticEvent<Element, Event>, value: ProjectModel[]) => {
+    console.log(value);
+    setSelectedProjects(value);
   };
 
   // handle user close search checkbox
   const handleOnSubmit = () => {
     if (settings.employee && selectedProjects) {
+      const data = selectedProjects.map((selectedProject: any) => {
+        return { employeeId: settings.employee, projectId: selectedProject.id };
+      });
+
       addFavoriteProjectMutation({
         variables: {
-          favoriteProject: selectedProjects as FavoriteProjectCreateInput[]
+          favoriteProject: data as FavoriteProjectCreateInput[]
         },
         refetchQueries: [
           {
@@ -51,6 +51,7 @@ export const CheckboxesSearch = () => {
         ]
       });
     }
+    setSelectedProjects([]);
   };
 
   return (
@@ -77,11 +78,9 @@ export const CheckboxesSearch = () => {
       }}
       style={{ width: 500 }}
       renderInput={(params) => <TextField {...params} label="Add Your Favorite Project" placeholder="Projects" />}
-      onChange={(e, value) => {
-        handleOnChange(e, value);
-      }}
+      onChange={handleOnChange}
       onClose={handleOnSubmit}
-      clearOnBlur={true}
+      value={selectedProjects}
     />
   );
 };
