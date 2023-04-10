@@ -11,6 +11,7 @@ import { Form, Formik } from 'formik';
 import { TextInput } from '@components/form/TextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
+import { useEmployee } from '@context/employee.context';
 
 export interface Data {
   id: string;
@@ -37,7 +38,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     employeeData: { projects: rows },
     employeeLoading,
     employeeError
-  } = data;
+  } = useEmployee();
   const [initialHours, setInitialHours] = useState<{ hours: number }>({ hours: 0 });
 
   const FormValidation = Yup.object({

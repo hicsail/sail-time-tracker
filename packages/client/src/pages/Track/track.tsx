@@ -3,22 +3,10 @@ import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DatePickerComponent } from '@pages/Track/components/Date.component';
 
 import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
-import { GetEmployeeByIdDocument, GetEmployeeListDocument } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
-import { useQuery } from '@apollo/client';
 
 export const Track = () => {
-  const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useQuery(GetEmployeeListDocument);
-  const { employeeId, setEmployeeId } = useEmployee();
-  const {
-    data: employeeData,
-    loading: employeeLoading,
-    error: employeeError
-  } = useQuery(GetEmployeeByIdDocument, {
-    variables: {
-      id: employeeId
-    }
-  });
+  const { employeeId, setEmployeeId, employeeData, employeeLoading, employeeError, employeeListData, employeeListLoading, employeeListError } = useEmployee();
 
   const changeHandler = (e: SelectChangeEvent) => {
     setEmployeeId(e.target.value);
