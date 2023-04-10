@@ -48,17 +48,7 @@ export const Track = () => {
         <DisplayCard key="work" id="work" title="Total Work Hours" hours="10" />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours="2" />
       </Stack>
-      {employeeData ? (
-        <ProjectTable
-          data={{
-            employeeData: employeeData.employee,
-            employeeLoading: employeeLoading,
-            employeeError: employeeError
-          }}
-        />
-      ) : (
-        <div>Please Select the Employee</div>
-      )}
+      {employeeData ? <ProjectTable /> : <div>Please Select the Employee</div>}
     </Box>
   );
 };
