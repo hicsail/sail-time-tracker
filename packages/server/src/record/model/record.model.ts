@@ -18,3 +18,21 @@ export class RecordInsertOrUpdateModel {
   @Field()
   hours: number;
 }
+
+@ObjectType()
+export class RecordIModel {
+  @Field(() => ID)
+  employeeId: string;
+
+  @Field(() => ID)
+  projectId: string;
+
+  @Field()
+  startDate: Date;
+
+  @Field()
+  endDate: Date;
+
+  @Field()
+  hours: number;
+}
