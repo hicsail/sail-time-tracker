@@ -21,6 +21,13 @@ query getEmployeeById($id: String!) {
       description
       status
     }
+    records {
+      employeeId,
+      projectId,
+      hours,
+      startDate,
+      endDate
+    }
   }
 }
 

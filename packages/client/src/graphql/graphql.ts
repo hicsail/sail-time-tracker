@@ -39,6 +39,7 @@ export type EmployeeModel = {
   name: Scalars['String'];
   projects: Array<ProjectModel>;
   rate: Scalars['Float'];
+  records: Array<RecordIModel>;
   status?: Maybe<Scalars['String']>;
 };
 
@@ -152,6 +153,15 @@ export type RecordCreateInput = {
   employee: EmployeeUpdateInput;
   hours: Scalars['Float'];
   project: ProjectUpdateInput;
+};
+
+export type RecordIModel = {
+  __typename?: 'RecordIModel';
+  employeeId: Scalars['ID'];
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  projectId: Scalars['ID'];
+  startDate: Scalars['DateTime'];
 };
 
 export type RecordInsertOrUpdateModel = {

@@ -27,6 +27,7 @@ export type GetEmployeeByIdQuery = {
     rate: number;
     status?: string | null;
     projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string }>;
+    records: Array<{ __typename?: 'RecordIModel'; employeeId: string; projectId: string; hours: number; startDate: any; endDate: any }>;
   };
 };
 
@@ -102,6 +103,13 @@ export const GetEmployeeByIdDocument = gql`
         name
         description
         status
+      }
+      records {
+        employeeId
+        projectId
+        hours
+        startDate
+        endDate
       }
     }
   }
