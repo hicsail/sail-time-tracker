@@ -3,6 +3,8 @@ import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Employee } from '@prisma/client';
 import { EmployeeDeleteReturnModel } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
+import { RecordIModel } from '../record/model/record.model';
+import { endOfWeek } from 'date-fns';
 
 @Injectable()
 export class EmployeesService {
@@ -89,6 +91,30 @@ export class EmployeesService {
           }
         }
       }
+    });
+  }
+
+  /**
+   * Get favorite projects of an employee
+   *
+   * @return a list of projects
+   * @param employeeId represents employee id
+   */
+  async getRecords(employeeId: string): Promise<RecordIModel[]> {
+    const records = await this.prisma.record.findMany({
+      where: {
+        employeeId: employeeId
+      }
+    });
+
+    return records.map((record) => {
+      return {
+        employeeId: record.employeeId,
+        projectId: record.projectId,
+        hours: record.hours,
+        startDate: record.date,
+        endDate: endOfWeek(record.date, { weekStartsOn: 0 })
+      };
     });
   }
 }

@@ -3,6 +3,7 @@ import { EmployeesService } from './employees.service';
 import { EmployeeDeleteReturnModel, EmployeeModel } from './model/employee.model';
 import { EmployeeCreateInput, EmployeeUpdateInput } from './dto/employee.dto';
 import { ProjectModel } from '../project/model/project.model';
+import { RecordIModel } from '../record/model/record.model';
 
 @Resolver(() => EmployeeModel)
 export class EmployeesResolver {
@@ -21,6 +22,11 @@ export class EmployeesResolver {
   @ResolveField(() => [ProjectModel])
   async projects(@Parent() employee: EmployeeModel): Promise<ProjectModel[]> {
     return this.employeesService.getFavoriteProjects(employee.id);
+  }
+
+  @ResolveField(() => [RecordIModel])
+  async records(@Parent() employee: EmployeeModel): Promise<RecordIModel[]> {
+    return this.employeesService.getRecords(employee.id);
   }
 
   @Mutation(() => EmployeeModel)

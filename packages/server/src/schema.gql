@@ -9,6 +9,7 @@ type EmployeeModel {
   rate: Float!
   status: String
   projects: [ProjectModel!]!
+  records: [RecordIModel!]!
 }
 
 type EmployeeDeleteReturnModel {
@@ -26,10 +27,6 @@ type ProjectDeleteReturnModel {
   count: Float!
 }
 
-type BatchPayload {
-  count: Float!
-}
-
 type RecordInsertOrUpdateModel {
   employeeId: ID!
   projectId: ID!
@@ -41,6 +38,18 @@ type RecordInsertOrUpdateModel {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type RecordIModel {
+  employeeId: ID!
+  projectId: ID!
+  startDate: DateTime!
+  endDate: DateTime!
+  hours: Float!
+}
+
+type BatchPayload {
+  count: Float!
+}
 
 type Query {
   employees: [EmployeeModel!]!
