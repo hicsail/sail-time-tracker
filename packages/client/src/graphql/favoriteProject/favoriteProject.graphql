@@ -3,3 +3,9 @@ mutation AddFavoriteProject($favoriteProject: [FavoriteProjectCreateInput!]!) {
     count
   }
 }
+
+mutation DeleteFavoriteProject($employeeId: String!, $projectIds: [String!]!) {
+  deleteFavoriteProjects(employeeId: $employeeId, projectIds: $projectIds) {
+    count
+  }
+}

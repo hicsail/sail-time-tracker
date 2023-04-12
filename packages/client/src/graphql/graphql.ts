@@ -61,6 +61,7 @@ export type Mutation = {
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
   deleteEmployees: EmployeeDeleteReturnModel;
+  deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
   updateEmployee: EmployeeModel;
@@ -81,6 +82,11 @@ export type MutationAddProjectArgs = {
 
 export type MutationDeleteEmployeesArgs = {
   ids: Array<Scalars['String']>;
+};
+
+export type MutationDeleteFavoriteProjectsArgs = {
+  employeeId: Scalars['String'];
+  projectIds: Array<Scalars['String']>;
 };
 
 export type MutationDeleteProjectsArgs = {

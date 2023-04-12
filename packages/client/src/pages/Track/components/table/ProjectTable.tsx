@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
@@ -40,9 +40,9 @@ export const ProjectTable = () => {
    * this method is used to handle select all project event.
    * @param event
    */
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n: Data) => n.name);
+      const newSelected = rows.map((n: Data) => n.id);
 
       // remove "Indirect" and "Absence" rows
       const ableSelected = newSelected.filter((n: string) => n !== 'Indirect' && n !== 'Absence');
@@ -56,14 +56,14 @@ export const ProjectTable = () => {
   /**
    * this method is used to handle select single project event.
    * @param event
-   * @param name
+   * @param id
    */
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -81,8 +81,8 @@ export const ProjectTable = () => {
   };
 
   // when name === "Indirect" or "Absence", set isSelected to false
-  const isSelected = (name: string) => {
-    return selected.indexOf(name) !== -1 && name !== 'Indirect' && name !== 'Absence';
+  const isSelected = (id: string) => {
+    return selected.indexOf(id) !== -1 && id !== 'Indirect' && id !== 'Absence';
   };
 
   return (
@@ -96,25 +96,25 @@ export const ProjectTable = () => {
           padding: '1rem'
         }}
       >
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
             <TableBody>
               {rows.map((row: Data, index: number) => {
-                const isItemSelected = isSelected(row.name);
+                const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
                 return (
-                  <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.name} selected={isItemSelected}>
+                  <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.id} selected={isItemSelected}>
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
-                        onClick={(event) => handleClick(event, row.name)}
+                        onClick={(event) => handleClick(event, row.id)}
                         inputProps={{
                           'aria-labelledby': labelId
                         }}
-                        disabled={row.name === 'Indirect' || row.name === 'Absence'}
+                        disabled={row.id === 'Indirect' || row.id === 'Absence'}
                       />
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">

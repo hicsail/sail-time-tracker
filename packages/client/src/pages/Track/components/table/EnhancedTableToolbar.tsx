@@ -3,7 +3,7 @@
  * @param props
  */
 
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { alpha } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -12,17 +12,45 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { FormDialog } from '@pages/Track/components/form/FormDialog';
+import { useEmployee } from '@context/employee.context';
+import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
+import { GetEmployeeByIdDocument } from '@graphql/employee/employee';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  selected: readonly string[];
+  setSelected: (select: readonly string[]) => void;
 }
 
-export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected } = props;
+export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelected, selected, setSelected }) => {
   const [open, setOpen] = useState(false);
+  const [deleteFavoriteProject, { error }] = useDeleteFavoriteProjectMutation();
+  const { employeeId } = useEmployee();
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  // handle delete on or more favorite project
+  const handleOnClickDelete = async () => {
+    if (employeeId && selected.length > 0) {
+      deleteFavoriteProject({
+        variables: {
+          employeeId: employeeId,
+          projectIds: selected as string[]
+        },
+        refetchQueries: [
+          {
+            query: GetEmployeeByIdDocument,
+            variables: {
+              id: employeeId
+            }
+          }
+        ]
+      });
+    }
+
+    setSelected([]);
   };
 
   return (
@@ -46,7 +74,7 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleOnClickDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -68,6 +96,7 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           <FormDialog open={open} setOpen={setOpen} title="Add Favorite Projects" />
         </>
       )}
+      <div>{error && <div>{error.message}</div>}</div>
     </Toolbar>
   );
 };

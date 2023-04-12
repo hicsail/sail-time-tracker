@@ -26,7 +26,6 @@ export const CheckboxesSearch = () => {
 
   // handle user select projects from search checkbox
   const handleOnChange = (e: SyntheticEvent<Element, Event>, value: ProjectModel[]) => {
-    console.log(value);
     setSelectedProjects(value);
   };
 
