@@ -1,4 +1,4 @@
-mutation AddFavoriteProject($favoriteProject: [FavoriteProjectCreateInput!]!) {
+mutation addFavoriteProject($favoriteProject: [FavoriteProjectCreateInput!]!) {
   addFavoriteProject(favoriteProject: $favoriteProject) {
     count
   }
