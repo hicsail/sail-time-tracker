@@ -39,11 +39,15 @@ export const ProjectTable = () => {
   useEffect(() => {
     let projects = employee.projects;
     let records = employee.records;
+    let map = new Map();
+
+    records.map((record: any) => {
+      map.set(record.projectId, record.hours);
+    });
 
     const combined = projects.map((project: any) => {
-      const matchingHours = records.find((record: any) => record.projectId === project.id);
+      const hoursValue = map.get(project.id) | 0;
 
-      const hoursValue = matchingHours ? matchingHours.hours : 0;
       return { ...project, hours: hoursValue };
     });
 
