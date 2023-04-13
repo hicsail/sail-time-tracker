@@ -4,9 +4,21 @@ import { DatePickerComponent } from '@pages/Track/components/Date.component';
 
 import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
 import { useEmployee } from '@context/employee.context';
+import { useQuery } from '@apollo/client';
+import { GetEmployeeListDocument, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
 
 export const Track = () => {
-  const { employeeId, setEmployeeId, employeeData, employeeLoading, employeeError, employeeListData, employeeListLoading, employeeListError } = useEmployee();
+  const { employeeId, setEmployeeId } = useEmployee();
+  const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useQuery(GetEmployeeListDocument);
+  const {
+    data: employeeData,
+    loading: employeeLoading,
+    error: employeeError
+  } = useGetEmployeeByIdQuery({
+    variables: {
+      id: employeeId as string
+    }
+  });
 
   const changeHandler = (e: SelectChangeEvent) => {
     setEmployeeId(e.target.value);

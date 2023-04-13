@@ -12,6 +12,8 @@ import { TextInput } from '@components/form/TextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
 import { useEmployee } from '@context/employee.context';
+import { useQuery } from '@apollo/client';
+import { GetEmployeeByIdDocument } from '@graphql/employee/employee';
 
 export interface Data {
   id: string;
@@ -26,9 +28,18 @@ export const ProjectTable = () => {
   const [initialHours, setInitialHours] = useState<{ hours: number }>({ hours: 0 });
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const { employeeId } = useEmployee();
   const { date } = useDate();
-  const { employeeData, employeeLoading, employeeError } = useEmployee();
+  const {
+    data: employeeData,
+    loading: employeeLoading,
+    error: employeeError
+  } = useQuery(GetEmployeeByIdDocument, {
+    variables: {
+      id: employeeId
+    }
+  });
+
   const employee = employeeData.employee;
   const rows = employee.projects;
 

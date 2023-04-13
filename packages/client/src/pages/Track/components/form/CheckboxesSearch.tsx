@@ -6,7 +6,7 @@ import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { FavoriteProjectCreateInput, ProjectModel } from '@graphql/graphql';
 import { useEmployee } from '@context/employee.context';
-import { GetEmployeeByIdDocument } from '@graphql/employee/employee';
+import { GetEmployeeByIdDocument, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -17,16 +17,18 @@ export const CheckboxesSearch = () => {
   const [addFavoriteProjectMutation] = useAddFavoriteProjectMutation();
   const { settings } = useSettings();
   const { employeeId } = useEmployee();
-
   const {
-    employeeData: {
-      employee: { projects }
+    data: employeeData,
+    loading: employeeLoading,
+    error: employeeError
+  } = useGetEmployeeByIdQuery({
+    variables: {
+      id: employeeId as string
     }
-  } = useEmployee();
+  });
 
   // handle user select projects from search checkbox
   const handleOnChange = (e: SyntheticEvent<Element, Event>, value: ProjectModel[]) => {
-    console.log(value);
     setSelectedProjects(value);
   };
 
@@ -63,10 +65,13 @@ export const CheckboxesSearch = () => {
       disableCloseOnSelect
       getOptionLabel={(option) => option.name}
       filterOptions={(options) => {
-        const ignoredValues = projects.map((project: ProjectModel) => project.id);
-        return options.filter((option) => {
-          return !ignoredValues.includes(option.id);
-        });
+        if (employeeData) {
+          const ignoredValues = employeeData.employee.projects.map((project: ProjectModel) => project.id);
+          return options.filter((option) => {
+            return !ignoredValues.includes(option.id);
+          });
+        }
+        return options;
       }}
       renderOption={(props, option, { selected }) => {
         return (
