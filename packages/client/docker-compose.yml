@@ -1,0 +1,8 @@
+version: '3'
+services:
+  time-tracker-frontend:
+    build: .
+    container_name: time-tracker-frontend
+    restart: always
+    ports:
+      - 80:80
