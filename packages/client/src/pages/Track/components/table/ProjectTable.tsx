@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
@@ -23,18 +23,32 @@ export interface Data {
 }
 
 export const ProjectTable = () => {
-  const [initialHours, setInitialHours] = useState<{ hours: number }>({ hours: 0 });
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const { date } = useDate();
   const { employeeData, employeeLoading, employeeError } = useEmployee();
+  const [rows, setRows] = useState(employeeData.employee.projects);
   const employee = employeeData.employee;
-  const rows = employee.projects;
 
   const FormValidation = Yup.object({
     hours: Yup.number().required('Required').min(0, 'Hours should be greater than 0')
   });
+
+  // combine record and favorite project
+  useEffect(() => {
+    let projects = employee.projects;
+    let records = employee.records;
+
+    const combined = projects.map((project: any) => {
+      const matchingHours = records.find((record: any) => record.projectId === project.id);
+
+      const hoursValue = matchingHours ? matchingHours.hours : 0;
+      return { ...project, hours: hoursValue };
+    });
+
+    setRows(combined);
+  }, [employeeData]);
 
   /**
    * this method is used to handle select all project event.
@@ -104,6 +118,7 @@ export const ProjectTable = () => {
               {rows.map((row: Data, index: number) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
+
                 return (
                   <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.id} selected={isItemSelected}>
                     <TableCell padding="checkbox">
@@ -121,7 +136,13 @@ export const ProjectTable = () => {
                       {row.name}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '180px', paddingRight: '3rem', paddingLeft: '0' }}>
-                      <Formik validateOnChange={true} initialValues={initialHours} validationSchema={FormValidation} enableReinitialize={true} onSubmit={() => {}}>
+                      <Formik
+                        validateOnChange={true}
+                        initialValues={row.hours ? { hours: row.hours } : { hours: 0 }}
+                        validationSchema={FormValidation}
+                        enableReinitialize={true}
+                        onSubmit={() => {}}
+                      >
                         <Form>
                           <FormObserver employee={employee} project={row} date={date} setLoading={setLoading} />
                           <TextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
