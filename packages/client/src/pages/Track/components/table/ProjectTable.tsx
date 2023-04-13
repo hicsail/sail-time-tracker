@@ -41,7 +41,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [initialHours, setInitialHours] = useState<{ hours: number }>({ hours: 0 });
 
   const FormValidation = Yup.object({
-    hours: Yup.number().required('Required').min(0, 'Hours should be greater than 0')
+    hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
   });
 
   /**
