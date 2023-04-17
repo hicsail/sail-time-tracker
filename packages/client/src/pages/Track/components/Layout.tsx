@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 
 export const TrackLayout = () => {
   return (
-    <Box sx={{ display: 'flex', gap: '2rem' }}>
+    <Box sx={{ display: 'flex', gap: '2rem', flexDirection: 'column', alignItems: 'center' }}>
       <Navbar />
       <Outlet />
     </Box>
