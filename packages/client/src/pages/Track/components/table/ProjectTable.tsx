@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
@@ -12,6 +12,8 @@ import { TextInput } from '@components/form/TextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
 import { useEmployee } from '@context/employee.context';
+import { useQuery } from '@apollo/client';
+import { GetEmployeeByIdDocument } from '@graphql/employee/employee';
 
 export interface Data {
   id: string;
@@ -25,34 +27,24 @@ export interface Data {
 export const ProjectTable = () => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const { employeeId } = useEmployee();
   const { date } = useDate();
-  const { employeeData, employeeLoading, employeeError } = useEmployee();
-  const [rows, setRows] = useState(employeeData.employee.projects);
+  const {
+    data: employeeData,
+    loading: employeeLoading,
+    error: employeeError
+  } = useQuery(GetEmployeeByIdDocument, {
+    variables: {
+      id: employeeId
+    }
+  });
+
   const employee = employeeData.employee;
+  const rows = employee.projects;
 
   const FormValidation = Yup.object({
     hours: Yup.number().required('Required').min(0, 'Hours should be greater than 0')
   });
-
-  // combine record and favorite project
-  useEffect(() => {
-    let projects = employee.projects;
-    let records = employee.records;
-    let map = new Map();
-
-    records.map((record: any) => {
-      map.set(record.projectId, record.hours);
-    });
-
-    const combined = projects.map((project: any) => {
-      const hoursValue = map.get(project.id) | 0;
-
-      return { ...project, hours: hoursValue };
-    });
-
-    setRows(combined);
-  }, [employeeData]);
 
   /**
    * this method is used to handle select all project event.
