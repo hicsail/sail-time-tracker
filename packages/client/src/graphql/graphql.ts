@@ -159,9 +159,9 @@ export type QueryProjectArgs = {
 
 export type RecordCreateInput = {
   date: Scalars['DateTime'];
-  employee: EmployeeUpdateInput;
+  employeeId: Scalars['ID'];
   hours: Scalars['Float'];
-  project: ProjectUpdateInput;
+  projectId: Scalars['ID'];
 };
 
 export type RecordInsertOrUpdateModel = {
