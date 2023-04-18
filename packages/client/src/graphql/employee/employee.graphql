@@ -21,12 +21,11 @@ query getEmployeeById($id: String!) {
       description
       status
     }
-    records {
-      employeeId,
-      projectId,
+    recordsWithFavoriteProjects(date: Date) {
+      id,
+      name,
+      description,
       hours,
-      startDate,
-      endDate
     }
   }
 }
