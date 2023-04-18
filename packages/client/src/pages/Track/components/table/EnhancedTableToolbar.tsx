@@ -14,7 +14,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { FormDialog } from '@pages/Track/components/form/FormDialog';
 import { useEmployee } from '@context/employee.context';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
-import { GetEmployeeByIdDocument } from '@graphql/employee/employee';
+import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
+import { useDate } from '@context/date.context';
+import { startOfWeek } from 'date-fns';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
@@ -26,6 +28,7 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
   const [open, setOpen] = useState(false);
   const [deleteFavoriteProject, { error }] = useDeleteFavoriteProjectMutation();
   const { employeeId } = useEmployee();
+  const { date } = useDate();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -41,9 +44,10 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
         },
         refetchQueries: [
           {
-            query: GetEmployeeByIdDocument,
+            query: GetRecordWithFavoriteProjectDocument,
             variables: {
-              id: employeeId
+              id: employeeId,
+              date: startOfWeek(date, { weekStartsOn: 1 })
             }
           }
         ]
