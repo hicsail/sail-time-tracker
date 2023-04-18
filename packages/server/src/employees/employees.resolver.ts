@@ -25,8 +25,8 @@ export class EmployeesResolver {
   }
 
   @ResolveField(() => [RecordIModel])
-  async records(@Parent() employee: EmployeeModel): Promise<RecordIModel[]> {
-    return this.employeesService.getRecords(employee.id);
+  async records(@Parent() employee: EmployeeModel, @Args('date') date: Date): Promise<RecordIModel[]> {
+    return this.employeesService.getRecords(employee.id, date);
   }
 
   @Mutation(() => EmployeeModel)
