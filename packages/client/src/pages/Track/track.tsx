@@ -5,20 +5,11 @@ import { DatePickerComponent } from '@pages/Track/components/Date.component';
 import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
 import { useEmployee } from '@context/employee.context';
 import { useQuery } from '@apollo/client';
-import { GetEmployeeListDocument, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
+import { GetEmployeeListDocument } from '@graphql/employee/employee';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
   const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useQuery(GetEmployeeListDocument);
-  const {
-    data: employeeData,
-    loading: employeeLoading,
-    error: employeeError
-  } = useGetEmployeeByIdQuery({
-    variables: {
-      id: employeeId as string
-    }
-  });
 
   const changeHandler = (e: SelectChangeEvent) => {
     setEmployeeId(e.target.value);
@@ -59,7 +50,7 @@ export const Track = () => {
         <DisplayCard key="work" id="work" title="Total Work Hours" hours="10" />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours="2" />
       </Stack>
-      {employeeData ? <ProjectTable /> : <div>Please Select the Employee</div>}
+      {employeeId ? <ProjectTable /> : <div>Please Select the Employee</div>}
     </Box>
   );
 };
