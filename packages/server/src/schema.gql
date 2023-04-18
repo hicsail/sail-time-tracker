@@ -48,6 +48,15 @@ type RecordModel {
   hours: Float!
 }
 
+type RecordWithFavoriteProjectModel {
+  id: ID!
+  name: String!
+  status: String!
+  description: String!
+  isFavorite: Boolean!
+  hours: Float!
+}
+
 type BatchPayload {
   count: Float!
 }
