@@ -114,8 +114,8 @@ input FavoriteProjectCreateInput {
 }
 
 input RecordCreateInput {
-  employee: EmployeeUpdateInput!
-  project: ProjectUpdateInput!
+  employeeId: ID!
+  projectId: ID!
   hours: Float!
   date: DateTime!
 }
