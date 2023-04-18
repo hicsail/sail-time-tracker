@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
@@ -12,35 +12,38 @@ import { TextInput } from '@components/form/TextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
 import { useEmployee } from '@context/employee.context';
-import { useQuery } from '@apollo/client';
-import { GetEmployeeByIdDocument } from '@graphql/employee/employee';
+import { useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
+import { startOfWeek } from 'date-fns';
 
 export interface Data {
   id: string;
   name: string;
   hours?: number;
-  previousWeek?: number;
   description: string;
   status: string;
+  isFavorite: boolean;
 }
 
 export const ProjectTable = () => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState<Data[]>([]);
   const { employeeId } = useEmployee();
   const { date } = useDate();
   const {
     data: employeeData,
     loading: employeeLoading,
     error: employeeError
-  } = useQuery(GetEmployeeByIdDocument, {
+  } = useGetRecordWithFavoriteProjectQuery({
     variables: {
-      id: employeeId
+      id: employeeId as string,
+      date: startOfWeek(date, { weekStartsOn: 1 })
     }
   });
 
-  const employee = employeeData.employee;
-  const rows = employee.projects;
+  useEffect(() => {
+    employeeData && setRows(employeeData.employee.recordsWithFavoriteProjects);
+  }, [employeeData]);
 
   const FormValidation = Yup.object({
     hours: Yup.number().required('Required').min(0, 'Hours should be greater than 0')
@@ -140,13 +143,13 @@ export const ProjectTable = () => {
                         onSubmit={() => {}}
                       >
                         <Form>
-                          <FormObserver employee={employee} project={row} date={date} setLoading={setLoading} />
+                          <FormObserver employeeId={employeeId as string} projectId={row.id} date={date} setLoading={setLoading} />
                           <TextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
                         </Form>
                       </Formik>
                     </TableCell>
                     <TableCell align="left" sx={{ width: '150px', paddingRight: '3rem' }}>
-                      {row.previousWeek ? row.previousWeek : '0'}
+                      0
                     </TableCell>
                     <TableCell align="left">{row.description}</TableCell>
                   </TableRow>
