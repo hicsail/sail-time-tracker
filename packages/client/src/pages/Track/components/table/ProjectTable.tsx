@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState, MouseEvent } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
@@ -71,7 +71,7 @@ export const ProjectTable = () => {
    * @param event
    * @param id
    */
-  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
+  const handleClick = (event: MouseEvent<unknown>, id: string) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly string[] = [];
 
@@ -137,7 +137,7 @@ export const ProjectTable = () => {
                     <TableCell align="left" sx={{ width: '180px', paddingRight: '3rem', paddingLeft: '0' }}>
                       <Formik
                         validateOnChange={true}
-                        initialValues={row.hours ? { hours: row.hours } : { hours: 0 }}
+                        initialValues={row.hours ? { hours: row.hours.toString() } : { hours: '0' }}
                         validationSchema={FormValidation}
                         enableReinitialize={true}
                         onSubmit={() => {}}
