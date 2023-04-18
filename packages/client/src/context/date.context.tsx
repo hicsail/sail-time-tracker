@@ -1,4 +1,4 @@
-import { createContext, ReactNode, FC, useState, useContext, useEffect } from 'react';
+import { createContext, ReactNode, FC, useState, useContext } from 'react';
 
 interface DateContextProps {
   date: Date;
@@ -14,10 +14,6 @@ interface DateProviderProps {
 export const DateProvider: FC<DateProviderProps> = ({ children }) => {
   const defaultDate = new Date();
   const [date, setDate] = useState(defaultDate);
-
-  useEffect(() => {
-    console.log(date);
-  }, [date]);
 
   return <DateContext.Provider value={{ date, setDate }}>{children}</DateContext.Provider>;
 };

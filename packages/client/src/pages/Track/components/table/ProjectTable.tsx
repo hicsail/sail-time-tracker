@@ -46,7 +46,7 @@ export const ProjectTable = () => {
   }, [employeeData]);
 
   const FormValidation = Yup.object({
-    hours: Yup.number().required('Required').min(0, 'Hours should be greater than 0')
+    hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
   });
 
   /**
