@@ -4,10 +4,12 @@ import { createContext, FC, useContext, useEffect, useState, ReactNode } from 'r
 export interface Settings {
   theme: ThemeType;
   employee?: string | null;
+  VITE_BACKEND_URL?: string;
 }
 
 const defaultSettings: Settings = {
-  theme: 'light'
+  theme: 'light',
+  VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL
 };
 
 export interface SettingsContextProps {
@@ -22,7 +24,11 @@ interface SettingsProviderProps {
 }
 
 export const SettingsProvider: FC<SettingsProviderProps> = ({ children }) => {
-  const [settings, setSettings] = useState(retrieveSetting());
+  const [settings, setSettings] = useState({ ...defaultSettings });
+
+  useEffect(() => {
+    restoreSetting().then((settings) => setSettings(settings));
+  }, []);
 
   useEffect(() => {
     saveSettings(settings);
@@ -35,9 +41,19 @@ const saveSettings = (settings: Settings) => {
   localStorage.setItem('settings', JSON.stringify(settings));
 };
 
-const retrieveSetting = (): Settings => {
-  const settings = localStorage.getItem('settings');
-  return settings ? JSON.parse(settings) : defaultSettings;
+const restoreSetting = async (): Promise<Settings> => {
+  let storedSettings = localStorage.getItem('settings');
+  let settings = storedSettings && { ...defaultSettings, ...JSON.parse(storedSettings) };
+
+  try {
+    const response = await fetch('/env.json');
+    const env = await response.json();
+    settings = { ...settings, ...env };
+  } catch (e) {
+    console.error(e);
+  }
+
+  return settings;
 };
 
 export const useSettings = () => {
