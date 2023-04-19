@@ -1,5 +1,5 @@
 import { ThemeType } from '@theme/theme.provider';
-import { createContext, FC, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, FC, ReactNode, useContext, useEffect, useState } from 'react';
 
 export interface Settings {
   theme: ThemeType;
@@ -24,10 +24,10 @@ interface SettingsProviderProps {
 }
 
 export const SettingsProvider: FC<SettingsProviderProps> = ({ children }) => {
-  const [settings, setSettings] = useState({ ...defaultSettings });
+  const [settings, setSettings] = useState(restoreSetting());
 
   useEffect(() => {
-    restoreSetting().then((settings) => setSettings(settings));
+    restoreSettingInProduction().then((settings) => setSettings(settings));
   }, []);
 
   useEffect(() => {
@@ -41,9 +41,15 @@ const saveSettings = (settings: Settings) => {
   localStorage.setItem('settings', JSON.stringify(settings));
 };
 
-const restoreSetting = async (): Promise<Settings> => {
+// get settings from local storage
+const restoreSetting = (): Settings => {
   let storedSettings = localStorage.getItem('settings');
-  let settings = storedSettings && { ...defaultSettings, ...JSON.parse(storedSettings) };
+  return storedSettings && { ...defaultSettings, ...JSON.parse(storedSettings) };
+};
+
+// get settings from env.json
+const restoreSettingInProduction = async (): Promise<Settings> => {
+  let settings = restoreSetting();
 
   try {
     const response = await fetch('/env.json');
@@ -52,7 +58,6 @@ const restoreSetting = async (): Promise<Settings> => {
   } catch (e) {
     console.error(e);
   }
-
   return settings;
 };
 
