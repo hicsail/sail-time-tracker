@@ -11,7 +11,8 @@ import { FC, useEffect, useState } from 'react';
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
   description: Yup.string(),
-  status: Yup.string().required('Required')
+  status: Yup.string().required('Required'),
+  isBillable: Yup.string().required('Required')
 });
 
 interface ProjectFormProps {
@@ -21,7 +22,7 @@ interface ProjectFormProps {
 export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
   const [addProject] = useProjectCreateInputMutation();
   const [updateProject] = useProjectUpdateInputMutation();
-  const [initialValue, setInitialValue] = useState({ name: '', description: '', status: '' });
+  const [initialValue, setInitialValue] = useState({ name: '', description: '', status: '', isBillable: '' });
   let { id } = useParams();
 
   const { data } = useGetProjectByIdQuery({
@@ -36,10 +37,10 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
       setInitialValue({
         name: data?.project.name,
         description: data?.project.description,
-        status: data?.project.status ? data.project.status : ''
+        status: data?.project.status ? data.project.status : '',
+        isBillable: data?.project.isBillable.toString()
       });
   }, [data]);
-  console.log(data);
 
   return (
     <Formik
@@ -53,7 +54,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
           // after submitting the new project re-fetch the project via graphql
           await addProject({
             variables: {
-              newProject: { ...values, status: values.status.toString() }
+              newProject: { ...values, status: values.status.toString(), isBillable: values.isBillable == 'true' }
             },
             refetchQueries: [{ query: GetProjectListDocument }]
           });
@@ -62,7 +63,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
           // after updating the project, re-fetch the projects via graphql
           await updateProject({
             variables: {
-              updateProject: { ...values, status: values.status.toString(), id: id }
+              updateProject: { ...values, status: values.status.toString(), id: id, isBillable: values.isBillable == 'true' }
             }
           });
         }
@@ -77,6 +78,10 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
           <TextInput name="status" select label="Status" placeholder="Status">
             <MenuItem value="Inactive">Inactive</MenuItem>
             <MenuItem value="Active">Active</MenuItem>
+          </TextInput>
+          <TextInput name="isBillable" select label="isBillable" placeholder="IsBillable">
+            <MenuItem value="true">True</MenuItem>
+            <MenuItem value="false">False</MenuItem>
           </TextInput>
           <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit">
             Submit
