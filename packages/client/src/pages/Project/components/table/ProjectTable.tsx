@@ -139,6 +139,16 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                         }}
                       />
                     </TableCell>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
+                      <Chip
+                        label={row.isBillable.toString()}
+                        sx={{
+                          backgroundColor: 'customColors.statusBtnBg',
+                          color: 'customColors.statusBtnText',
+                          padding: '0 10px'
+                        }}
+                      />
+                    </TableCell>
                     <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
                       <Button
                         variant="outlined"
