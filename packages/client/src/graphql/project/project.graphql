@@ -4,6 +4,7 @@ query getProjectList {
     name
     description
     status
+    isBillable
   }
 }
 
