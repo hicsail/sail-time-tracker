@@ -19,6 +19,10 @@ export class ProjectCreateInput {
   @Field()
   @IsNotEmpty()
   description: string;
+
+  @Field()
+  @IsNotEmpty()
+  isBillable: boolean;
 }
 
 /**
