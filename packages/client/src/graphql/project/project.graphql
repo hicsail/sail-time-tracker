@@ -13,6 +13,7 @@ query getProjectById($id: String!) {
     name
     description
     status
+    isBillable
   }
 }
 

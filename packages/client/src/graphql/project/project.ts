@@ -16,7 +16,7 @@ export type GetProjectByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
 
-export type GetProjectByIdQuery = { __typename?: 'Query'; project: { __typename?: 'ProjectModel'; name: string; description: string; status: string } };
+export type GetProjectByIdQuery = { __typename?: 'Query'; project: { __typename?: 'ProjectModel'; name: string; description: string; status: string; isBillable: boolean } };
 
 export type ProjectCreateInputMutationVariables = Types.Exact<{
   newProject: Types.ProjectCreateInput;
@@ -80,6 +80,7 @@ export const GetProjectByIdDocument = gql`
       name
       description
       status
+      isBillable
     }
   }
 `;
