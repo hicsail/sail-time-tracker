@@ -57,6 +57,7 @@ type Mutation {
   updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
   deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
+  deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
 }
 

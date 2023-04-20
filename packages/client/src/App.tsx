@@ -12,6 +12,7 @@ import { ThemeProvider } from '@theme/theme.provider';
 import { SettingsProvider } from '@context/setting.context';
 import { EmployeeProvider } from '@context/employee.context';
 import { DateProvider } from '@context/date.context';
+import { TrackLayout } from '@pages/Track/components/Layout';
 
 function App() {
   return (
@@ -23,7 +24,9 @@ function App() {
               <Router>
                 <EmployeeProvider>
                   <Routes>
-                    <Route path={Paths.TRACK} element={<Track />} />
+                    <Route path={Paths.TRACK} element={<TrackLayout />}>
+                      <Route path={Paths.TRACK} element={<Track />} />
+                    </Route>
                     <Route path={Paths.ADMIN} element={<Admin />}>
                       <Route path={Paths.PROJECT_lIST} element={<Project />}>
                         <Route path={Paths.EDIT_PROJECT} />
