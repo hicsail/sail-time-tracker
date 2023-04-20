@@ -31,6 +31,11 @@ const headCells: readonly HeadCell[] = [
     id: 'status',
     disablePadding: false,
     label: 'Status'
+  },
+  {
+    id: 'isBillable',
+    disablePadding: false,
+    label: 'isBillable'
   }
 ];
 
