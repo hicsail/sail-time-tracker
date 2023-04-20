@@ -1,14 +1,54 @@
 query getEmployeeList {
-  employees {
-    id
-    email
-    name
-    rate
-    status
-  }
+    employees {
+        id
+        email
+        name
+        rate
+        status
+    }
 }
 
 query getEmployeeById($id: String!) {
+    employee(id: $id) {
+        id
+        name
+        email
+        rate
+        status
+        projects {
+            id
+            name
+            description
+            status
+        }
+    }
+}
+
+query getRecordWithFavoriteProject($id: String!, $date: DateTime!) {
+    employee(id: $id) {
+        id
+        name
+        email
+        rate
+        status
+        projects {
+            id
+            name
+            description
+            status
+        }
+        recordsWithFavoriteProjects(date: $date) {
+            id
+            name
+            description
+            status
+            hours
+            isFavorite
+        }
+    }
+}
+
+query getRecordWithFavoriteProject($id: String!, $date: DateTime!) {
   employee(id: $id) {
     id
     name
@@ -20,6 +60,14 @@ query getEmployeeById($id: String!) {
       name
       description
       status
+    }
+    recordsWithFavoriteProjects(date: $date) {
+      id
+      name
+      description
+      status
+      hours
+      isFavorite
     }
   }
 }
@@ -49,26 +97,26 @@ query getRecordWithFavoriteProject($id: String!, $date: DateTime!) {
 }
 
 mutation EmployeeCreateInput($newEmployee: EmployeeCreateInput!) {
-  addEmployee(employee: $newEmployee) {
-    id
-    email
-    name
-    rate
-  }
+    addEmployee(employee: $newEmployee) {
+        id
+        email
+        name
+        rate
+    }
 }
 
 mutation EmployeeUpdateInput($updateEmployee: EmployeeUpdateInput!) {
-  updateEmployee(updateEmployee: $updateEmployee) {
-    id
-    name
-    email
-    rate
-    status
-  }
+    updateEmployee(updateEmployee: $updateEmployee) {
+        id
+        name
+        email
+        rate
+        status
+    }
 }
 
 mutation DeleteEmployees($ids: [String!]!) {
-  deleteEmployees(ids: $ids) {
-    count
-  }
+    deleteEmployees(ids: $ids) {
+        count
+    }
 }

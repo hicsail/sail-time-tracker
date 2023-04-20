@@ -10,9 +10,15 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { Data } from '@pages/Track/components/table/ProjectTable';
 
+interface HeadCellKey {
+  name: string;
+  hours: number;
+  description: string;
+  previousWeek: string;
+}
 export interface HeadCell {
   disablePadding: boolean;
-  id: keyof Data;
+  id: keyof HeadCellKey;
   label: string;
 }
 
