@@ -12,6 +12,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: any;
 };
 
 export type BatchPayload = {
@@ -61,6 +62,7 @@ export type Mutation = {
   addProject: ProjectModel;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteProjects: ProjectDeleteReturnModel;
+  insertOrUpdateRecord: RecordInsertOrUpdateModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
 };
@@ -83,6 +85,10 @@ export type MutationDeleteEmployeesArgs = {
 
 export type MutationDeleteProjectsArgs = {
   ids: Array<Scalars['String']>;
+};
+
+export type MutationInsertOrUpdateRecordArgs = {
+  record: RecordCreateInput;
 };
 
 export type MutationUpdateEmployeeArgs = {
@@ -133,4 +139,19 @@ export type QueryEmployeeArgs = {
 
 export type QueryProjectArgs = {
   id: Scalars['String'];
+};
+
+export type RecordCreateInput = {
+  date: Scalars['DateTime'];
+  employee: EmployeeUpdateInput;
+  hours: Scalars['Float'];
+  project: ProjectUpdateInput;
+};
+
+export type RecordInsertOrUpdateModel = {
+  __typename?: 'RecordInsertOrUpdateModel';
+  date: Scalars['DateTime'];
+  employeeId: Scalars['ID'];
+  hours: Scalars['Float'];
+  projectId: Scalars['ID'];
 };

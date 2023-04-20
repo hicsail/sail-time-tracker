@@ -1,19 +1,17 @@
 import TextField from '@mui/material/TextField';
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useState } from 'react';
+import { useDate } from '@context/date.context';
 
 export const DatePickerComponent = () => {
-  const now = new Date();
-
-  const [value, setValue] = useState(now);
+  const { date, setDate } = useDate();
 
   return (
     <DatePicker
       label="Date"
-      value={value}
+      value={date}
       onChange={(newValue) => {
-        setValue(newValue as Date);
+        setDate(newValue as Date);
       }}
       renderInput={(params) => <TextField {...params} />}
     />

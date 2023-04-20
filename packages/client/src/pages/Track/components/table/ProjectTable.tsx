@@ -1,4 +1,5 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, TextField } from '@mui/material';
+import * as Yup from 'yup';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
 import { FC, useState } from 'react';
@@ -6,6 +7,10 @@ import { FC, useState } from 'react';
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
 import { ApolloError } from '@apollo/client';
+import { Form, Formik } from 'formik';
+import { TextInput } from '@components/form/TextInput';
+import { FormObserver } from '@pages/Track/components/table/FormObserver';
+import { useDate } from '@context/date.context';
 
 export interface Data {
   id: string;
@@ -13,6 +18,7 @@ export interface Data {
   hours?: number;
   previousWeek?: number;
   description: string;
+  status: string;
 }
 
 interface ProjectTableProps {
@@ -26,18 +32,17 @@ interface ProjectTableProps {
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
+  const { date } = useDate();
   const {
     employeeData: { projects: rows },
     employeeLoading,
     employeeError
   } = data;
+  const [initialHours, setInitialHours] = useState<{ hours: number }>({ hours: 0 });
 
-  /**
-   * this method is used to switch table save state.
-   */
-  function handleLoadingClick() {
-    setLoading(true);
-  }
+  const FormValidation = Yup.object({
+    hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
+  });
 
   /**
    * this method is used to handle select all project event.
@@ -107,7 +112,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
               {rows.map((row: Data, index: number) => {
                 const isItemSelected = isSelected(row.name);
                 const labelId = `enhanced-table-checkbox-${index}`;
-
                 return (
                   <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.name} selected={isItemSelected}>
                     <TableCell padding="checkbox">
@@ -125,7 +129,12 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                       {row.name}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '180px', paddingRight: '3rem', paddingLeft: '0' }}>
-                      <TextField id="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
+                      <Formik validateOnChange={true} initialValues={initialHours} validationSchema={FormValidation} enableReinitialize={true} onSubmit={() => {}}>
+                        <Form>
+                          <FormObserver employee={data.employeeData} project={row} date={date} setLoading={setLoading} />
+                          <TextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
+                        </Form>
+                      </Formik>
                     </TableCell>
                     <TableCell align="left" sx={{ width: '150px', paddingRight: '3rem' }}>
                       {row.previousWeek ? row.previousWeek : '0'}
@@ -140,7 +149,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         {rows.length == 0 && <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }}>Add Your First Favorite Project</Button>}
       </Paper>
 
-      <LoadingButton color="primary" onClick={handleLoadingClick} loading={loading} loadingPosition="start" startIcon={<Save />} variant="contained">
+      <LoadingButton color="primary" loading={loading} loadingPosition="start" startIcon={<Save />} variant="contained">
         <span>Save</span>
       </LoadingButton>
     </Box>

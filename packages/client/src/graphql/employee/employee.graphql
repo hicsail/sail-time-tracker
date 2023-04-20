@@ -10,6 +10,7 @@ query getEmployeeList {
 
 query getEmployeeById($id: String!) {
     employee(id: $id) {
+        id
         name
         email
         rate
@@ -18,6 +19,7 @@ query getEmployeeById($id: String!) {
             id
             name
             description
+            status
         }
     }
 }
