@@ -21,8 +21,7 @@ export const Track = () => {
         flexDirection: 'column',
         gap: '4rem',
         alignItems: 'start',
-        margin: 'auto',
-        paddingTop: '10rem'
+        paddingTop: '2rem'
       }}
     >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
