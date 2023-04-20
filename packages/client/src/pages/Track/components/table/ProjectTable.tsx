@@ -6,14 +6,11 @@ import { useState } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
-
+import { ApolloError } from '@apollo/client';
 import { Form, Formik } from 'formik';
 import { TextInput } from '@components/form/TextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
-import { useEmployee } from '@context/employee.context';
-import { useQuery } from '@apollo/client';
-import { GetEmployeeByIdDocument } from '@graphql/employee/employee';
 
 export interface Data {
   id: string;
@@ -28,23 +25,16 @@ export const ProjectTable = () => {
   const [initialHours, setInitialHours] = useState<{ hours: number }>({ hours: 0 });
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
-  const { employeeId } = useEmployee();
   const { date } = useDate();
   const {
-    data: employeeData,
-    loading: employeeLoading,
-    error: employeeError
-  } = useQuery(GetEmployeeByIdDocument, {
-    variables: {
-      id: employeeId
-    }
-  });
-
-  const employee = employeeData.employee;
-  const rows = employee.projects;
+    employeeData: { projects: rows },
+    employeeLoading,
+    employeeError
+  } = data;
+  const [initialHours, setInitialHours] = useState<{ hours: number }>({ hours: 0 });
 
   const FormValidation = Yup.object({
-    hours: Yup.number().required('Required').min(0, 'Hours should be greater than 0')
+    hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
   });
 
   /**
@@ -134,7 +124,7 @@ export const ProjectTable = () => {
                     <TableCell align="left" sx={{ width: '180px', paddingRight: '3rem', paddingLeft: '0' }}>
                       <Formik validateOnChange={true} initialValues={initialHours} validationSchema={FormValidation} enableReinitialize={true} onSubmit={() => {}}>
                         <Form>
-                          <FormObserver employee={employee} project={row} date={date} setLoading={setLoading} />
+                          <FormObserver employee={data.employeeData} project={row} date={date} setLoading={setLoading} />
                           <TextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
                         </Form>
                       </Formik>
