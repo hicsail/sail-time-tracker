@@ -6,7 +6,7 @@ import { ChangeEvent, useEffect, useState, MouseEvent } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
-import { ApolloError } from '@apollo/client';
+
 import { Form, Formik } from 'formik';
 import { TextInput } from '@components/form/TextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
@@ -55,15 +55,10 @@ export const ProjectTable = () => {
    */
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n: Data) => n.id);
-
-      // remove "Indirect" and "Absence" rows
-      const ableSelected = newSelected.filter((n: string) => n !== 'Indirect' && n !== 'Absence');
-
-      setSelected(ableSelected);
-      return;
+      const filteredSelected = rows.filter((n: Data, index) => index !== 1 && index !== 0).map((n: Data) => n.id);
+      return setSelected(filteredSelected);
     }
-    setSelected([]);
+    return setSelected([]);
   };
 
   /**
@@ -85,17 +80,11 @@ export const ProjectTable = () => {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
 
-    // remove "Indirect" and "Absence"
-    setSelected(
-      newSelected.filter((d) => {
-        return d !== 'Indirect' && d !== 'Absence';
-      })
-    );
+    setSelected(newSelected);
   };
 
-  // when name === "Indirect" or "Absence", set isSelected to false
   const isSelected = (id: string) => {
-    return selected.indexOf(id) !== -1 && id !== 'Indirect' && id !== 'Absence';
+    return selected.indexOf(id) !== -1;
   };
 
   return (
@@ -128,7 +117,7 @@ export const ProjectTable = () => {
                         inputProps={{
                           'aria-labelledby': labelId
                         }}
-                        disabled={row.id === 'Indirect' || row.id === 'Absence'}
+                        disabled={index === 0 || index === 1}
                       />
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
