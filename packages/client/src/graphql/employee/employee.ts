@@ -26,7 +26,7 @@ export type GetEmployeeByIdQuery = {
     email: string;
     rate: number;
     status?: string | null;
-    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string }>;
+    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
   };
 };
 
@@ -44,7 +44,7 @@ export type GetRecordWithFavoriteProjectQuery = {
     email: string;
     rate: number;
     status?: string | null;
-    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string }>;
+    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
     recordsWithFavoriteProjects: Array<{
       __typename?: 'RecordWithFavoriteProjectModel';
       id: string;
@@ -129,6 +129,7 @@ export const GetEmployeeByIdDocument = gql`
         name
         description
         status
+        isBillable
       }
     }
   }
@@ -174,6 +175,7 @@ export const GetRecordWithFavoriteProjectDocument = gql`
         name
         description
         status
+        isBillable
       }
       recordsWithFavoriteProjects(date: $date) {
         id
