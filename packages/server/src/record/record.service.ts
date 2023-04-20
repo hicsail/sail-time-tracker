@@ -11,20 +11,20 @@ export class RecordService {
     return this.prisma.record.upsert({
       where: {
         date_employeeId_projectId: {
-          employeeId: record.employee.id,
-          projectId: record.project.id,
+          employeeId: record.employeeId,
+          projectId: record.projectId,
           date: record.date
         }
       },
       update: {
-        employeeId: record.employee.id,
-        projectId: record.project.id,
+        employeeId: record.employeeId,
+        projectId: record.projectId,
         hours: record.hours,
         date: record.date
       },
       create: {
-        employeeId: record.employee.id,
-        projectId: record.project.id,
+        employeeId: record.employeeId,
+        projectId: record.projectId,
         hours: record.hours,
         date: record.date
       }

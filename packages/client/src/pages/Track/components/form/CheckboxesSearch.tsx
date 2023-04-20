@@ -6,7 +6,9 @@ import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { FavoriteProjectCreateInput, ProjectModel } from '@graphql/graphql';
 import { useEmployee } from '@context/employee.context';
-import { GetEmployeeByIdDocument, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
+import { GetRecordWithFavoriteProjectDocument, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
+import { useDate } from '@context/date.context';
+import { startOfWeek } from 'date-fns';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -17,6 +19,7 @@ export const CheckboxesSearch = () => {
   const [addFavoriteProjectMutation] = useAddFavoriteProjectMutation();
   const { settings } = useSettings();
   const { employeeId } = useEmployee();
+  const { date } = useDate();
   const {
     data: employeeData,
     loading: employeeLoading,
@@ -45,9 +48,10 @@ export const CheckboxesSearch = () => {
         },
         refetchQueries: [
           {
-            query: GetEmployeeByIdDocument,
+            query: GetRecordWithFavoriteProjectDocument,
             variables: {
-              id: employeeId
+              id: employeeId,
+              date: startOfWeek(date, { weekStartsOn: 1 })
             }
           }
         ]

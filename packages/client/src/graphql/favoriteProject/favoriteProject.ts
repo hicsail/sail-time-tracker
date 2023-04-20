@@ -20,7 +20,7 @@ export type DeleteFavoriteProjectMutationVariables = Types.Exact<{
 export type DeleteFavoriteProjectMutation = { __typename?: 'Mutation'; deleteFavoriteProjects: { __typename?: 'BatchPayload'; count: number } };
 
 export const AddFavoriteProjectDocument = gql`
-  mutation AddFavoriteProject($favoriteProject: [FavoriteProjectCreateInput!]!) {
+  mutation addFavoriteProject($favoriteProject: [FavoriteProjectCreateInput!]!) {
     addFavoriteProject(favoriteProject: $favoriteProject) {
       count
     }

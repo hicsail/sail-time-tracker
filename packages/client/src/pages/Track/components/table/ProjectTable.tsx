@@ -42,7 +42,7 @@ export const ProjectTable = () => {
   });
 
   useEffect(() => {
-    employeeData ? setRows(employeeData.employee.recordsWithFavoriteProjects) : setRows([]);
+    employeeData && setRows(employeeData.employee.recordsWithFavoriteProjects);
   }, [employeeData]);
 
   const FormValidation = Yup.object({
