@@ -163,6 +163,17 @@ export class EmployeesService {
     // check project in combined list is favorite or not
     combined.forEach((project) => (project.isFavorite = isFavoriteMap.has(project.id)));
 
+    // find indirect and absence project
+    const indirectRecord = combined.find((project) => project.name === 'Indirect');
+    const absenceRecord = combined.find((project) => project.name === 'Absence');
+
+    // remove indirect and absence from combined array
+    // and add them at the front of the combined array
+    combined.splice(combined.indexOf(indirectRecord), 1);
+    combined.splice(combined.indexOf(absenceRecord), 1);
+    combined.splice(0, 0, indirectRecord);
+    combined.splice(1, 0, absenceRecord);
+
     return combined;
   }
 }
