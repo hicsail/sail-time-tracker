@@ -27,6 +27,7 @@ type ProjectModel {
   name: String!
   status: String!
   description: String!
+  isBillable: Boolean!
 }
 
 type ProjectDeleteReturnModel {
@@ -53,6 +54,7 @@ type RecordWithFavoriteProjectModel {
   name: String!
   status: String!
   description: String!
+  isBillable: Boolean!
   isFavorite: Boolean!
   hours: Float!
 }
@@ -99,12 +101,14 @@ input ProjectCreateInput {
   name: String!
   status: String!
   description: String!
+  isBillable: Boolean!
 }
 
 input ProjectUpdateInput {
   name: String!
   status: String!
   description: String!
+  isBillable: Boolean!
   id: ID!
 }
 

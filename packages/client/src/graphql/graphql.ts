@@ -117,6 +117,7 @@ export type MutationUpdateProjectArgs = {
 
 export type ProjectCreateInput = {
   description: Scalars['String'];
+  isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
@@ -130,6 +131,7 @@ export type ProjectModel = {
   __typename?: 'ProjectModel';
   description: Scalars['String'];
   id: Scalars['ID'];
+  isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
@@ -137,6 +139,7 @@ export type ProjectModel = {
 export type ProjectUpdateInput = {
   description: Scalars['String'];
   id: Scalars['ID'];
+  isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
@@ -186,6 +189,7 @@ export type RecordWithFavoriteProjectModel = {
   description: Scalars['String'];
   hours: Scalars['Float'];
   id: Scalars['ID'];
+  isBillable: Scalars['Boolean'];
   isFavorite: Scalars['Boolean'];
   name: Scalars['String'];
   status: Scalars['String'];
