@@ -9,7 +9,8 @@ export interface Settings {
 
 const defaultSettings: Settings = {
   theme: 'light',
-  VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL
+  VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
+  employee: ''
 };
 
 export interface SettingsContextProps {
@@ -24,7 +25,8 @@ interface SettingsProviderProps {
 }
 
 export const SettingsProvider: FC<SettingsProviderProps> = ({ children }) => {
-  const [settings, setSettings] = useState(restoreSetting());
+  const initialSettings = restoreSetting() ? restoreSetting() : defaultSettings;
+  const [settings, setSettings] = useState(initialSettings);
 
   useEffect(() => {
     restoreSettingInProduction().then((settings) => setSettings(settings));
