@@ -25,6 +25,7 @@ model Project {
     name             String             @unique
     description      String
     status           String
+    isBillable       Boolean            @default(true)
     records          Record[]
     employees        FavoriteProject[]
 }

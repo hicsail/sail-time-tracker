@@ -3,6 +3,8 @@ import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Employee } from '@prisma/client';
 import { EmployeeDeleteReturnModel } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
+import { endOfWeek } from 'date-fns';
+import { RecordModel, RecordWithFavoriteProjectModel } from '../record/model/record.model';
 
 @Injectable()
 export class EmployeesService {
@@ -90,5 +92,88 @@ export class EmployeesService {
         }
       }
     });
+  }
+
+  /**
+   * Get favorite projects of an employee
+   *
+   * @return a list of projects
+   * @param employeeId represents employee id
+   * @param date
+   */
+  async getRecords(employeeId: string, date: Date): Promise<RecordModel[]> {
+    const records = await this.prisma.record.findMany({
+      where: {
+        employeeId: employeeId,
+        date: date
+      },
+      include: {
+        project: true
+      }
+    });
+
+    return records.map((record) => {
+      return {
+        employeeId: record.employeeId,
+        projectId: record.projectId,
+        hours: record.hours,
+        startDate: record.date,
+        endDate: endOfWeek(record.date, { weekStartsOn: 0 })
+      };
+    });
+  }
+
+  /**
+   * Get favorite projects With Record
+   *
+   * @return a combined list of projects
+   * @param employeeId represents employee id
+   * @param date
+   */
+  async getRecordsWithFavoriteProject(employeeId: string, date: Date): Promise<RecordWithFavoriteProjectModel[]> {
+    const records = await this.prisma.record.findMany({
+      where: {
+        employeeId: employeeId,
+        date: date
+      },
+      include: {
+        project: true
+      }
+    });
+
+    const favoriteProjects = await this.getFavoriteProjects(employeeId);
+    const isRecordMap = new Set();
+    const isFavoriteMap = new Set();
+    let combined = [];
+
+    // add all project in record to combined list
+    records.forEach((record: any) => {
+      isRecordMap.add(record.projectId);
+      combined.push({ ...record.project, hours: record.hours });
+    });
+
+    // add all project in favorite project that is not in record to combined list
+    favoriteProjects.forEach((project: any) => {
+      if (!isRecordMap.has(project.id)) {
+        combined.push({ ...project, hours: 0 });
+      }
+      isFavoriteMap.add(project.id);
+    });
+
+    // check project in combined list is favorite or not
+    combined.forEach((project) => (project.isFavorite = isFavoriteMap.has(project.id)));
+
+    // find indirect and absence project
+    const indirectRecord = combined.find((project) => project.name === 'Indirect');
+    const absenceRecord = combined.find((project) => project.name === 'Absence');
+
+    // remove indirect and absence from combined array
+    // and add them at the front of the combined array
+    combined.splice(combined.indexOf(indirectRecord), 1);
+    combined.splice(combined.indexOf(absenceRecord), 1);
+    combined.splice(0, 0, indirectRecord);
+    combined.splice(1, 0, absenceRecord);
+
+    return combined;
   }
 }

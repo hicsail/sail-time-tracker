@@ -1,17 +1,17 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { IsNotEmpty, IsDate, IsNumber } from 'class-validator';
-import { EmployeeUpdateInput } from '../../employees/dto/employee.dto';
-import { ProjectUpdateInput } from '../../project/dto/project.dto';
+import { InputType, Field, ID } from '@nestjs/graphql';
+import { IsNotEmpty, IsDate, IsNumber, IsString } from 'class-validator';
 
 @InputType()
 export class RecordCreateInput {
-  @Field()
+  @Field(() => ID)
+  @IsString()
   @IsNotEmpty()
-  employee: EmployeeUpdateInput;
+  employeeId: string;
 
-  @Field()
+  @Field(() => ID)
+  @IsString()
   @IsNotEmpty()
-  project: ProjectUpdateInput;
+  projectId: string;
 
   @Field()
   @IsNotEmpty()

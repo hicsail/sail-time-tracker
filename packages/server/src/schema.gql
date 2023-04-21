@@ -9,28 +9,28 @@ type EmployeeModel {
   rate: Float!
   status: String
   projects: [ProjectModel!]!
+  records(date: DateTime!): [RecordModel!]!
+  recordsWithFavoriteProjects(date: DateTime!): [RecordWithFavoriteProjectModel!]!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type EmployeeDeleteReturnModel {
   count: Float!
 }
 
 type ProjectModel {
-    id: ID!
-    name: String!
-    status: String!
-    description: String!
+  id: ID!
+  name: String!
+  status: String!
+  description: String!
+  isBillable: Boolean!
 }
 
 type ProjectDeleteReturnModel {
-    count: Float!
-}
-
-type ProjectDeleteReturnModel {
-  count: Float!
-}
-
-type BatchPayload {
   count: Float!
 }
 
@@ -41,16 +41,33 @@ type RecordInsertOrUpdateModel {
   hours: Float!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+type RecordModel {
+  employeeId: ID!
+  projectId: ID!
+  startDate: DateTime!
+  endDate: DateTime!
+  hours: Float!
+}
+
+type RecordWithFavoriteProjectModel {
+  id: ID!
+  name: String!
+  status: String!
+  description: String!
+  isBillable: Boolean!
+  isFavorite: Boolean!
+  hours: Float!
+}
+
+type BatchPayload {
+  count: Float!
+}
 
 type Query {
-    employees: [EmployeeModel!]!
-    employee(id: String!): EmployeeModel!
-    projects: [ProjectModel!]!
-    project(id: String!): ProjectModel!
+  employees: [EmployeeModel!]!
+  employee(id: String!): EmployeeModel!
+  projects: [ProjectModel!]!
+  project(id: String!): ProjectModel!
 }
 
 type Mutation {
@@ -61,34 +78,37 @@ type Mutation {
   updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
   deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
+  deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
 }
 
 input EmployeeCreateInput {
-    name: String!
-    email: String!
-    rate: Float!
-    status: String
+  name: String!
+  email: String!
+  rate: Float!
+  status: String
 }
 
 input EmployeeUpdateInput {
-    name: String!
-    email: String!
-    rate: Float!
-    status: String
-    id: ID!
+  name: String!
+  email: String!
+  rate: Float!
+  status: String
+  id: ID!
 }
 
 input ProjectCreateInput {
-    name: String!
-    status: String!
-    description: String!
+  name: String!
+  status: String!
+  description: String!
+  isBillable: Boolean!
 }
 
 input ProjectUpdateInput {
   name: String!
   status: String!
   description: String!
+  isBillable: Boolean!
   id: ID!
 }
 
@@ -98,8 +118,8 @@ input FavoriteProjectCreateInput {
 }
 
 input RecordCreateInput {
-  employee: EmployeeUpdateInput!
-  project: ProjectUpdateInput!
+  employeeId: ID!
+  projectId: ID!
   hours: Float!
   date: DateTime!
 }

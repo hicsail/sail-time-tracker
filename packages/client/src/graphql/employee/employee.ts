@@ -26,7 +26,34 @@ export type GetEmployeeByIdQuery = {
     email: string;
     rate: number;
     status?: string | null;
-    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string }>;
+    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
+  };
+};
+
+export type GetRecordWithFavoriteProjectQueryVariables = Types.Exact<{
+  id: Types.Scalars['String'];
+  date: Types.Scalars['DateTime'];
+}>;
+
+export type GetRecordWithFavoriteProjectQuery = {
+  __typename?: 'Query';
+  employee: {
+    __typename?: 'EmployeeModel';
+    id: string;
+    name: string;
+    email: string;
+    rate: number;
+    status?: string | null;
+    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
+    recordsWithFavoriteProjects: Array<{
+      __typename?: 'RecordWithFavoriteProjectModel';
+      id: string;
+      name: string;
+      description: string;
+      status: string;
+      hours: number;
+      isFavorite: boolean;
+    }>;
   };
 };
 
@@ -102,6 +129,7 @@ export const GetEmployeeByIdDocument = gql`
         name
         description
         status
+        isBillable
       }
     }
   }
@@ -134,6 +162,61 @@ export function useGetEmployeeByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetEmployeeByIdQueryHookResult = ReturnType<typeof useGetEmployeeByIdQuery>;
 export type GetEmployeeByIdLazyQueryHookResult = ReturnType<typeof useGetEmployeeByIdLazyQuery>;
 export type GetEmployeeByIdQueryResult = Apollo.QueryResult<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>;
+export const GetRecordWithFavoriteProjectDocument = gql`
+  query getRecordWithFavoriteProject($id: String!, $date: DateTime!) {
+    employee(id: $id) {
+      id
+      name
+      email
+      rate
+      status
+      projects {
+        id
+        name
+        description
+        status
+        isBillable
+      }
+      recordsWithFavoriteProjects(date: $date) {
+        id
+        name
+        description
+        status
+        hours
+        isFavorite
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetRecordWithFavoriteProjectQuery__
+ *
+ * To run a query within a React component, call `useGetRecordWithFavoriteProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRecordWithFavoriteProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRecordWithFavoriteProjectQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useGetRecordWithFavoriteProjectQuery(baseOptions: Apollo.QueryHookOptions<GetRecordWithFavoriteProjectQuery, GetRecordWithFavoriteProjectQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetRecordWithFavoriteProjectQuery, GetRecordWithFavoriteProjectQueryVariables>(GetRecordWithFavoriteProjectDocument, options);
+}
+export function useGetRecordWithFavoriteProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRecordWithFavoriteProjectQuery, GetRecordWithFavoriteProjectQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetRecordWithFavoriteProjectQuery, GetRecordWithFavoriteProjectQueryVariables>(GetRecordWithFavoriteProjectDocument, options);
+}
+export type GetRecordWithFavoriteProjectQueryHookResult = ReturnType<typeof useGetRecordWithFavoriteProjectQuery>;
+export type GetRecordWithFavoriteProjectLazyQueryHookResult = ReturnType<typeof useGetRecordWithFavoriteProjectLazyQuery>;
+export type GetRecordWithFavoriteProjectQueryResult = Apollo.QueryResult<GetRecordWithFavoriteProjectQuery, GetRecordWithFavoriteProjectQueryVariables>;
 export const EmployeeCreateInputDocument = gql`
   mutation EmployeeCreateInput($newEmployee: EmployeeCreateInput!) {
     addEmployee(employee: $newEmployee) {

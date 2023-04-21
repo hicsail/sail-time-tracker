@@ -21,7 +21,16 @@ export const EmployeeProvider: FC<EmployeeProviderProps> = ({ children }) => {
     setSettings({ ...settings, employee: employeeId });
   }, [employeeId]);
 
-  return <EmployeeContext.Provider value={{ employeeId, setEmployeeId }}>{children}</EmployeeContext.Provider>;
+  return (
+    <EmployeeContext.Provider
+      value={{
+        employeeId,
+        setEmployeeId
+      }}
+    >
+      {children}
+    </EmployeeContext.Provider>
+  );
 };
 
 export const useEmployee = () => {

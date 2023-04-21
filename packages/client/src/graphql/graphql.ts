@@ -39,7 +39,17 @@ export type EmployeeModel = {
   name: Scalars['String'];
   projects: Array<ProjectModel>;
   rate: Scalars['Float'];
+  records: Array<RecordModel>;
+  recordsWithFavoriteProjects: Array<RecordWithFavoriteProjectModel>;
   status?: Maybe<Scalars['String']>;
+};
+
+export type EmployeeModelRecordsArgs = {
+  date: Scalars['DateTime'];
+};
+
+export type EmployeeModelRecordsWithFavoriteProjectsArgs = {
+  date: Scalars['DateTime'];
 };
 
 export type EmployeeUpdateInput = {
@@ -61,6 +71,7 @@ export type Mutation = {
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
   deleteEmployees: EmployeeDeleteReturnModel;
+  deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
   updateEmployee: EmployeeModel;
@@ -83,6 +94,11 @@ export type MutationDeleteEmployeesArgs = {
   ids: Array<Scalars['String']>;
 };
 
+export type MutationDeleteFavoriteProjectsArgs = {
+  employeeId: Scalars['String'];
+  projectIds: Array<Scalars['String']>;
+};
+
 export type MutationDeleteProjectsArgs = {
   ids: Array<Scalars['String']>;
 };
@@ -101,6 +117,7 @@ export type MutationUpdateProjectArgs = {
 
 export type ProjectCreateInput = {
   description: Scalars['String'];
+  isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
@@ -114,6 +131,7 @@ export type ProjectModel = {
   __typename?: 'ProjectModel';
   description: Scalars['String'];
   id: Scalars['ID'];
+  isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
@@ -121,6 +139,7 @@ export type ProjectModel = {
 export type ProjectUpdateInput = {
   description: Scalars['String'];
   id: Scalars['ID'];
+  isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   status: Scalars['String'];
 };
@@ -143,9 +162,9 @@ export type QueryProjectArgs = {
 
 export type RecordCreateInput = {
   date: Scalars['DateTime'];
-  employee: EmployeeUpdateInput;
+  employeeId: Scalars['ID'];
   hours: Scalars['Float'];
-  project: ProjectUpdateInput;
+  projectId: Scalars['ID'];
 };
 
 export type RecordInsertOrUpdateModel = {
@@ -154,4 +173,24 @@ export type RecordInsertOrUpdateModel = {
   employeeId: Scalars['ID'];
   hours: Scalars['Float'];
   projectId: Scalars['ID'];
+};
+
+export type RecordModel = {
+  __typename?: 'RecordModel';
+  employeeId: Scalars['ID'];
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  projectId: Scalars['ID'];
+  startDate: Scalars['DateTime'];
+};
+
+export type RecordWithFavoriteProjectModel = {
+  __typename?: 'RecordWithFavoriteProjectModel';
+  description: Scalars['String'];
+  hours: Scalars['Float'];
+  id: Scalars['ID'];
+  isBillable: Scalars['Boolean'];
+  isFavorite: Scalars['Boolean'];
+  name: Scalars['String'];
+  status: Scalars['String'];
 };

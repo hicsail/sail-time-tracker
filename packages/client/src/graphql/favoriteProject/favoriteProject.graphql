@@ -1,5 +1,11 @@
-mutation AddFavoriteProject ($favoriteProject: [FavoriteProjectCreateInput!]!) {
-    addFavoriteProject(favoriteProject: $favoriteProject) {
-        count
-    }
+mutation addFavoriteProject($favoriteProject: [FavoriteProjectCreateInput!]!) {
+  addFavoriteProject(favoriteProject: $favoriteProject) {
+    count
+  }
+}
+
+mutation DeleteFavoriteProject($employeeId: String!, $projectIds: [String!]!) {
+  deleteFavoriteProjects(employeeId: $employeeId, projectIds: $projectIds) {
+    count
+  }
 }

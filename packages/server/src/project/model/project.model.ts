@@ -17,6 +17,9 @@ export class ProjectModel {
 
   @Field()
   description: string;
+
+  @Field()
+  isBillable: boolean;
 }
 
 @ObjectType()

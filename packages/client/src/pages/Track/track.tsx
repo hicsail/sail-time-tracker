@@ -3,22 +3,13 @@ import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DatePickerComponent } from '@pages/Track/components/Date.component';
 
 import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
-import { GetEmployeeByIdDocument, GetEmployeeListDocument } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
 import { useQuery } from '@apollo/client';
+import { GetEmployeeListDocument } from '@graphql/employee/employee';
 
 export const Track = () => {
-  const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useQuery(GetEmployeeListDocument);
   const { employeeId, setEmployeeId } = useEmployee();
-  const {
-    data: employeeData,
-    loading: employeeLoading,
-    error: employeeError
-  } = useQuery(GetEmployeeByIdDocument, {
-    variables: {
-      id: employeeId
-    }
-  });
+  const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useQuery(GetEmployeeListDocument);
 
   const changeHandler = (e: SelectChangeEvent) => {
     setEmployeeId(e.target.value);
@@ -33,8 +24,7 @@ export const Track = () => {
         flexDirection: 'column',
         gap: '4rem',
         alignItems: 'start',
-        margin: 'auto',
-        paddingTop: '10rem'
+        paddingTop: '2rem'
       }}
     >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
@@ -60,17 +50,7 @@ export const Track = () => {
         <DisplayCard key="work" id="work" title="Total Work Hours" hours="10" />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours="2" />
       </Stack>
-      {employeeData ? (
-        <ProjectTable
-          data={{
-            employeeData: employeeData.employee,
-            employeeLoading: employeeLoading,
-            employeeError: employeeError
-          }}
-        />
-      ) : (
-        <div>Please Select the Employee</div>
-      )}
+      {employeeId ? <ProjectTable /> : <div>Please Select the Employee</div>}
     </Box>
   );
 };
