@@ -11,12 +11,15 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import { FormDialog } from '@pages/Track/components/form/FormDialog';
+import { FormDialog } from '@components/form/FormDialog';
 import { useEmployee } from '@context/employee.context';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
 import { startOfWeek } from 'date-fns';
+import { CheckboxesSearch } from '@pages/Track/components/form/CheckboxesSearch';
+import { Paths } from '@constants/paths';
+import { useNavigate } from 'react-router-dom';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
@@ -29,9 +32,16 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
   const [deleteFavoriteProject, { error }] = useDeleteFavoriteProjectMutation();
   const { employeeId } = useEmployee();
   const { date } = useDate();
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  // close Model and navigate to Track Page
+  const handleClose = () => {
+    setOpen(false);
+    navigate(Paths.TRACK);
   };
 
   // handle delete on or more favorite project
@@ -85,9 +95,7 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
       ) : (
         <>
           <IconButton
-            onClick={() => {
-              handleClickOpen();
-            }}
+            onClick={handleClickOpen}
             sx={{
               '&:hover': {
                 backgroundColor: '#1565c0',
@@ -97,7 +105,9 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
           >
             <AddIcon />
           </IconButton>
-          <FormDialog open={open} setOpen={setOpen} title="Add Favorite Projects" />
+          <FormDialog open={open} setOpen={setOpen} onClose={handleClose} title="Add Favorite Projects">
+            <CheckboxesSearch />
+          </FormDialog>
         </>
       )}
       <div>{error && <div>{error.message}</div>}</div>

@@ -6,8 +6,9 @@ import { Box, Chip, TableBody, Table, TableCell, TableContainer, TableRow, Paper
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
-import { FormDialog } from '@pages/Employee/components/form/FormDialog';
+import { FormDialog } from '@components/form/FormDialog';
 import { GetEmployeeListQuery } from '@graphql/employee/employee';
+import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 
 interface EmployeeTableProps {
   data: GetEmployeeListQuery | undefined;
@@ -21,6 +22,14 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  /**
+   * close Model and navigate to Track Page
+   */
+  const handleClose = () => {
+    setOpen(false);
+    navigate(Paths.EMPLOYEE_lIST);
   };
 
   /**
@@ -137,7 +146,9 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                       >
                         Edit
                       </Button>
-                      <FormDialog open={open} setOpen={setOpen} title="Edit Employee" />
+                      <FormDialog open={open} setOpen={setOpen} title="Edit Employee" onClose={handleClose}>
+                        <EmployeeForm handleClose={handleClose} />
+                      </FormDialog>
                     </TableCell>
                   </TableRow>
                 );
@@ -150,7 +161,9 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
             <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
               Add Your First Employee
             </Button>
-            <FormDialog open={open} setOpen={setOpen} title="Add Employee" />
+            <FormDialog open={open} setOpen={setOpen} title="Edit Employee" onClose={handleClose}>
+              <EmployeeForm handleClose={handleClose} />
+            </FormDialog>
           </Box>
         )}
       </Paper>
