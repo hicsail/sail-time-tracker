@@ -22,7 +22,7 @@ interface EnhancedTableToolbarProps {
 
 export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelected, selected, setSelected }) => {
   const [open, setOpen] = useState(false);
-  const [deleteEmployees, { data, loading, error }] = useDeleteEmployeesMutation();
+  const [deleteEmployees] = useDeleteEmployeesMutation();
   const navigate = useNavigate();
 
   const handleClickOpen = () => {
@@ -90,7 +90,7 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
           >
             <Add />
           </IconButton>
-          <FormDialog open={open} setOpen={setOpen} title="Add Employee" onClose={handleClose}>
+          <FormDialog open={open} title="Add Employee" onClose={handleClose}>
             <EmployeeForm handleClose={handleClose} />
           </FormDialog>
         </>

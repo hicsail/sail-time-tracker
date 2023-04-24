@@ -158,7 +158,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       >
                         Edit
                       </Button>
-                      <FormDialog open={open} setOpen={setOpen} title="Edit Project" onClose={handleClose}>
+                      <FormDialog open={open} title="Edit Project" onClose={handleClose}>
                         <ProjectForm handleClose={handleClose} />
                       </FormDialog>
                     </TableCell>
@@ -173,7 +173,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
             <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
               Add Your First Project
             </Button>
-            <FormDialog open={open} setOpen={setOpen} title="Add Project" onClose={handleClose}>
+            <FormDialog open={open} title="Add Project" onClose={handleClose}>
               <ProjectForm handleClose={handleClose} />
             </FormDialog>
           </Box>

@@ -5,13 +5,12 @@ import { FC, ReactNode } from 'react';
 
 interface FormDialogProps {
   open: boolean;
-  setOpen: (open: boolean) => void;
   title: string;
   children: ReactNode;
   onClose: () => void;
 }
 
-export const FormDialog: FC<FormDialogProps> = ({ open, setOpen, title, children, onClose }) => {
+export const FormDialog: FC<FormDialogProps> = ({ open, title, children, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ margin: 'auto' }}>{title}</DialogTitle>

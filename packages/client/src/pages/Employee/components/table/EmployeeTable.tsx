@@ -146,7 +146,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                       >
                         Edit
                       </Button>
-                      <FormDialog open={open} setOpen={setOpen} title="Edit Employee" onClose={handleClose}>
+                      <FormDialog open={open} title="Edit Employee" onClose={handleClose}>
                         <EmployeeForm handleClose={handleClose} />
                       </FormDialog>
                     </TableCell>
@@ -161,7 +161,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
             <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
               Add Your First Employee
             </Button>
-            <FormDialog open={open} setOpen={setOpen} title="Edit Employee" onClose={handleClose}>
+            <FormDialog open={open} title="Edit Employee" onClose={handleClose}>
               <EmployeeForm handleClose={handleClose} />
             </FormDialog>
           </Box>
