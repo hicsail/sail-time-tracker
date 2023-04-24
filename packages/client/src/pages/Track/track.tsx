@@ -7,6 +7,7 @@ import { useEmployee } from '@context/employee.context';
 import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
 import { startOfWeek } from 'date-fns';
+import { useEffect } from 'react';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
@@ -15,13 +16,22 @@ export const Track = () => {
   const {
     data: employeeData,
     loading: employeeLoading,
-    error: employeeError
+    error: employeeError,
+    refetch: refechEmployeeData
   } = useGetRecordWithFavoriteProjectQuery({
     variables: {
       id: employeeId as string,
       date: startOfWeek(date, { weekStartsOn: 1 })
     }
   });
+
+  // refetch records with favorite projects after change the date.
+  useEffect(() => {
+    refechEmployeeData({
+      id: employeeId as string,
+      date: startOfWeek(date, { weekStartsOn: 1 })
+    });
+  }, [date, employeeId]);
 
   const absenceRecord = employeeData?.employee.recordsWithFavoriteProjects.filter((project) => {
     return project.name === 'Absence';
