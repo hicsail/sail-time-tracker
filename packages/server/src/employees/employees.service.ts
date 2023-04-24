@@ -3,7 +3,7 @@ import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Employee } from '@prisma/client';
 import { EmployeeDeleteReturnModel } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
-import { endOfWeek } from 'date-fns';
+import { endOfWeek, previousDay } from 'date-fns';
 import { RecordModel, RecordWithFavoriteProjectModel } from '../record/model/record.model';
 
 @Injectable()
@@ -131,6 +131,7 @@ export class EmployeesService {
    * @param date
    */
   async getRecordsWithFavoriteProject(employeeId: string, date: Date): Promise<RecordWithFavoriteProjectModel[]> {
+    // get current week records
     const records = await this.prisma.record.findMany({
       where: {
         employeeId: employeeId,
@@ -141,9 +142,19 @@ export class EmployeesService {
       }
     });
 
+    // get previous week records
+    const previousWeekRecords = await this.prisma.record.findMany({
+      where: {
+        employeeId: employeeId,
+        date: previousDay(date, 1)
+      }
+    });
+
+    // get favorite project by employee id
     const favoriteProjects = await this.getFavoriteProjects(employeeId);
     const isRecordMap = new Set();
     const isFavoriteMap = new Set();
+    const previousWeekMap = new Map();
     let combined = [];
 
     // add all project in record to combined list
@@ -160,8 +171,20 @@ export class EmployeesService {
       isFavoriteMap.add(project.id);
     });
 
+    // create previous week map to store previous week project hours
+    // (key: projectId, value: hours)
+    previousWeekRecords.forEach((record) => {
+      previousWeekMap.set(record.projectId, record.hours);
+    });
+
     // check project in combined list is favorite or not
-    combined.forEach((project) => (project.isFavorite = isFavoriteMap.has(project.id)));
+    combined.forEach((project) => {
+      // add field isFavorite
+      project.isFavorite = isFavoriteMap.has(project.id);
+
+      // add field previousWeek
+      project.previousWeek = previousWeekMap.has(project.id) ? previousWeekMap.get(project.id) : 0;
+    });
 
     // find indirect and absence project
     const indirectRecord = combined.find((project) => project.name === 'Indirect');
