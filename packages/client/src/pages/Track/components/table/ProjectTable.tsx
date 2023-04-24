@@ -21,6 +21,7 @@ export interface Data {
   description: string;
   status: string;
   isFavorite: boolean;
+  previousWeek?: number;
 }
 
 interface ProjectTableProps {
@@ -130,7 +131,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                       </Formik>
                     </TableCell>
                     <TableCell align="left" sx={{ width: '150px', paddingRight: '3rem' }}>
-                      0
+                      {row.previousWeek}
                     </TableCell>
                     <TableCell align="left">{row.description}</TableCell>
                   </TableRow>

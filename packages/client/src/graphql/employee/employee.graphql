@@ -46,6 +46,7 @@ query getRecordWithFavoriteProject($id: String!, $date: DateTime!) {
       status
       hours
       isFavorite
+      previousWeek
     }
   }
 }
