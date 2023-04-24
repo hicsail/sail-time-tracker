@@ -31,7 +31,7 @@ export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, dat
   }, [loading]);
 
   useEffect(() => {
-    if (typeof values.hours == 'number' && values.hours > 0) {
+    if (typeof values.hours == 'number' && values.hours >= 0) {
       addRecordMutation({
         variables: {
           record: {
