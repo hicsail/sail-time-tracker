@@ -4,12 +4,34 @@ import { DatePickerComponent } from '@pages/Track/components/Date.component';
 
 import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
 import { useEmployee } from '@context/employee.context';
-import { useQuery } from '@apollo/client';
-import { GetEmployeeListDocument } from '@graphql/employee/employee';
+import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
+import { useDate } from '@context/date.context';
+import { startOfWeek } from 'date-fns';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
-  const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useQuery(GetEmployeeListDocument);
+  const { date } = useDate();
+  const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useGetEmployeeListQuery();
+  const {
+    data: employeeData,
+    loading: employeeLoading,
+    error: employeeError
+  } = useGetRecordWithFavoriteProjectQuery({
+    variables: {
+      id: employeeId as string,
+      date: startOfWeek(date, { weekStartsOn: 1 })
+    }
+  });
+
+  const absenceRecord = employeeData?.employee.recordsWithFavoriteProjects.filter((project) => {
+    return project.name === 'Absence';
+  });
+
+  const totalWorkHours = employeeData?.employee.recordsWithFavoriteProjects
+    .filter((project) => {
+      return project.name !== 'Absence';
+    })
+    .reduce((sum, currentProject) => sum + currentProject.hours, 0);
 
   const changeHandler = (e: SelectChangeEvent) => {
     setEmployeeId(e.target.value);
@@ -47,10 +69,10 @@ export const Track = () => {
           </FormControl>
         )}
         <DatePickerComponent />
-        <DisplayCard key="work" id="work" title="Total Work Hours" hours="10" />
-        <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours="2" />
+        <DisplayCard key="work" id="work" title="Total Work Hours" hours={totalWorkHours ? totalWorkHours : 0} />
+        <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours={absenceRecord ? absenceRecord[0].hours : 0} />
       </Stack>
-      {employeeId ? <ProjectTable /> : <div>Please Select the Employee</div>}
+      {employeeId ? <ProjectTable data={employeeData} /> : <div>Please Select the Employee</div>}
     </Box>
   );
 };

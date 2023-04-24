@@ -2,6 +2,7 @@ import { useFormikContext } from 'formik';
 import { FC, useEffect } from 'react';
 import startOfWeek from 'date-fns/startOfWeek';
 import { useAddRecordMutation } from '@graphql/record/record';
+import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 
 interface FormObserverProps {
   projectId: string;
@@ -39,7 +40,16 @@ export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, dat
             hours: values.hours as number,
             date: startOfWeek(date, { weekStartsOn: 1 })
           }
-        }
+        },
+        refetchQueries: [
+          {
+            query: GetRecordWithFavoriteProjectDocument,
+            variables: {
+              id: employeeId,
+              date: startOfWeek(date, { weekStartsOn: 1 })
+            }
+          }
+        ]
       });
     }
   }, [values]);

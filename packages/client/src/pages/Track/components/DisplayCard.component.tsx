@@ -5,7 +5,7 @@ import { Box, Typography, CardContent, Card } from '@mui/material';
 interface DisplayCardProps {
   id: string;
   title: string;
-  hours: string;
+  hours: number;
 }
 
 export const DisplayCard: FC<DisplayCardProps> = ({ id, title, hours }) => {

@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
-import { ChangeEvent, useEffect, useState, MouseEvent } from 'react';
+import { ChangeEvent, useEffect, useState, MouseEvent, FC } from 'react';
 
 import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
@@ -12,8 +12,7 @@ import { TextInput } from '@components/form/TextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
 import { useEmployee } from '@context/employee.context';
-import { useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
-import { startOfWeek } from 'date-fns';
+import { GetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
 
 export interface Data {
   id: string;
@@ -24,26 +23,19 @@ export interface Data {
   isFavorite: boolean;
 }
 
-export const ProjectTable = () => {
+interface ProjectTableProps {
+  data: GetRecordWithFavoriteProjectQuery | undefined;
+}
+export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<Data[]>([]);
   const { employeeId } = useEmployee();
   const { date } = useDate();
-  const {
-    data: employeeData,
-    loading: employeeLoading,
-    error: employeeError
-  } = useGetRecordWithFavoriteProjectQuery({
-    variables: {
-      id: employeeId as string,
-      date: startOfWeek(date, { weekStartsOn: 1 })
-    }
-  });
 
   useEffect(() => {
-    employeeData ? setRows(employeeData.employee.recordsWithFavoriteProjects) : setRows([]);
-  }, [employeeData]);
+    data ? setRows(data.employee.recordsWithFavoriteProjects) : setRows([]);
+  }, [data]);
 
   const FormValidation = Yup.object({
     hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
