@@ -36,6 +36,34 @@ async function main() {
       isBillable: false
     }
   });
+
+  const employees = await prisma.employee.findMany();
+  const projects = await prisma.project.findMany({
+    where: {
+      OR: [{ name: 'Indirect' }, { name: 'Absence' }]
+    }
+  });
+
+  employees.map((employee) => {
+    projects.map(async (project) => {
+      await prisma.favoriteProject.upsert({
+        where: {
+          employeeId_projectId: {
+            employeeId: employee.id,
+            projectId: project.id
+          }
+        },
+        create: {
+          employeeId: employee.id,
+          projectId: project.id
+        },
+        update: {
+          employeeId: employee.id,
+          projectId: project.id
+        }
+      });
+    });
+  });
 }
 
 main()
