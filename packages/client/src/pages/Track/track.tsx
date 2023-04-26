@@ -1,15 +1,14 @@
 import { DisplayCard } from '@pages/Track/components/DisplayCard.component';
 import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
+import { DropDownMenu } from "@pages/Track/components/DropDownMenu";
 
-import { Box, Stack, SelectChangeEvent } from '@mui/material';
-import { useEmployee } from '@context/employee.context';
+import { Box, Stack, SelectChangeEvent, TextField } from '@mui/material';
 import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
+import { useEmployee } from '@context/employee.context';
 import { useDate } from '@context/date.context';
 import { startOfWeek } from 'date-fns';
 import { useEffect } from 'react';
-import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { DropDownMenu } from "@pages/Track/components/DropDownMenu";
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
