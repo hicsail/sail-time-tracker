@@ -1,6 +1,6 @@
 import { DisplayCard } from '@pages/Track/components/DisplayCard.component';
 import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
-import { DropDownMenu } from "@pages/Track/components/DropDownMenu";
+import { DropDownMenu } from '@pages/Track/components/DropDownMenu';
 
 import { Box, Stack, SelectChangeEvent, TextField } from '@mui/material';
 import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
@@ -8,16 +8,13 @@ import { useEmployee } from '@context/employee.context';
 import { useDate } from '@context/date.context';
 import { startOfWeek } from 'date-fns';
 import { useEffect } from 'react';
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
   const { date, setDate } = useDate();
   const { data: employeeListData } = useGetEmployeeListQuery();
-  const {
-    data: employeeData,
-    refetch: refechEmployeeData
-  } = useGetRecordWithFavoriteProjectQuery({
+  const { data: employeeData, refetch: refechEmployeeData } = useGetRecordWithFavoriteProjectQuery({
     variables: {
       id: employeeId as string,
       date: startOfWeek(date, { weekStartsOn: 1 })
@@ -50,8 +47,8 @@ export const Track = () => {
     setEmployeeId(e.target.value);
   };
 
-  const employees = employeeListData?.employees.map(employee =>{
-    return { id: employee.id, name: employee.name }
+  const employees = employeeListData?.employees.map((employee) => {
+    return { id: employee.id, name: employee.name };
   });
 
   return (
@@ -67,7 +64,7 @@ export const Track = () => {
       }}
     >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
-        <DropDownMenu data={employees} onChange={employeeChangeHandler} label="Select Employee" defaultValue={employeeId} id="select_employee" name="select_employee"/>
+        <DropDownMenu data={employees} onChange={employeeChangeHandler} label="Select Employee" defaultValue={employeeId} id="select_employee" name="select_employee" />
         <DatePicker
           label="Date"
           value={date}
