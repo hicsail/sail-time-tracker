@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# change permission of script
+chmod 0700 generate_env.sh
+
 # Generate JSON file
 echo "Generating env.json file"
 cat > /usr/share/nginx/html/env.json <<EOF
