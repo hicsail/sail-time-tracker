@@ -1,19 +1,55 @@
 import { DisplayCard } from '@pages/Track/components/DisplayCard.component';
 import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
-import { DatePickerComponent } from '@pages/Track/components/Date.component';
+import { DropDownMenu } from '@pages/Track/components/DropDownMenu';
 
-import { Box, Stack, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl, Container } from '@mui/material';
+import { Box, Stack, SelectChangeEvent, TextField } from '@mui/material';
+import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
-import { useQuery } from '@apollo/client';
-import { GetEmployeeListDocument } from '@graphql/employee/employee';
+import { useDate } from '@context/date.context';
+import { startOfWeek } from 'date-fns';
+import { useEffect } from 'react';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
-  const { data: employeeListData, loading: employeeListLoading, error: employeeListError } = useQuery(GetEmployeeListDocument);
+  const { date, setDate } = useDate();
+  const { data: employeeListData } = useGetEmployeeListQuery();
+  const { data: employeeData, refetch: refechEmployeeData } = useGetRecordWithFavoriteProjectQuery({
+    variables: {
+      id: employeeId as string,
+      date: startOfWeek(date, { weekStartsOn: 1 })
+    }
+  });
 
-  const changeHandler = (e: SelectChangeEvent) => {
+  // re-fetch records with favorite projects after change the date.
+  useEffect(() => {
+    refechEmployeeData({
+      id: employeeId as string,
+      date: startOfWeek(date, { weekStartsOn: 1 })
+    });
+  }, [date, employeeId]);
+
+  const absenceRecord = employeeData?.employee.recordsWithFavoriteProjects.filter((project) => {
+    return project.name === 'Absence';
+  });
+
+  const totalWorkHours = employeeData?.employee.recordsWithFavoriteProjects
+    .filter((project) => {
+      return project.name !== 'Absence';
+    })
+    .reduce((sum, currentProject) => sum + currentProject.hours, 0);
+
+  /**
+   * employee dropdown change handler
+   * @param e
+   */
+  const employeeChangeHandler = (e: SelectChangeEvent) => {
     setEmployeeId(e.target.value);
   };
+
+  const employees = employeeListData?.employees.map((employee) => {
+    return { id: employee.id, name: employee.name };
+  });
 
   return (
     <Box
@@ -28,29 +64,19 @@ export const Track = () => {
       }}
     >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
-        {employeeListError && <Container>`Fetching error! ${employeeListError.message}`</Container>}
-        {employeeListLoading || !employeeListData ? (
-          <div>Loading...</div>
-        ) : (
-          <FormControl sx={{ minWidth: '200px' }}>
-            <InputLabel id="employee_select-label">Select Employee</InputLabel>
-            <Select name="select_employee" label="Select Employee" id="select_employee" onChange={changeHandler} value={employeeId ? employeeId : ''}>
-              {employeeListData &&
-                employeeListData.employees.map((employee: any) => {
-                  return (
-                    <MenuItem key={employee.id} value={employee.id}>
-                      {employee.name}
-                    </MenuItem>
-                  );
-                })}
-            </Select>
-          </FormControl>
-        )}
-        <DatePickerComponent />
-        <DisplayCard key="work" id="work" title="Total Work Hours" hours="10" />
-        <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours="2" />
+        <DropDownMenu data={employees} onChange={employeeChangeHandler} label="Select Employee" defaultValue={employeeId} id="select_employee" name="select_employee" />
+        <DatePicker
+          label="Date"
+          value={date}
+          onChange={(newValue) => {
+            setDate(newValue as Date);
+          }}
+          renderInput={(params) => <TextField {...params} />}
+        />
+        <DisplayCard key="work" id="work" title="Total Work Hours" hours={totalWorkHours ? totalWorkHours : 0} />
+        <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours={absenceRecord ? absenceRecord[0].hours : 0} />
       </Stack>
-      {employeeId ? <ProjectTable /> : <div>Please Select the Employee</div>}
+      {employeeId ? <ProjectTable data={employeeData} /> : <div>Please Select the Employee</div>}
     </Box>
   );
 };

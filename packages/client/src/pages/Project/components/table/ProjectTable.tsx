@@ -1,22 +1,13 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-
+import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { ProjectModel } from '@graphql/graphql';
 import { Paths } from '@constants/paths';
-import { FormDialog } from '@pages/Project/components/form/FormDialog';
+import { FormDialog } from '@components/form/FormDialog';
+import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
 
 interface ProjectTableProps {
   rows: ProjectModel[];
@@ -32,6 +23,14 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
    */
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  /**
+   * close Model and navigate to Track Page.
+   */
+  const handleClose = () => {
+    setOpen(false);
+    navigate(Paths.PROJECT_lIST);
   };
 
   /**
@@ -159,7 +158,9 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       >
                         Edit
                       </Button>
-                      <FormDialog open={open} setOpen={setOpen} title="Edit Project" />
+                      <FormDialog open={open} title="Edit Project" onClose={handleClose}>
+                        <ProjectForm handleClose={handleClose} />
+                      </FormDialog>
                     </TableCell>
                   </TableRow>
                 );
@@ -172,7 +173,9 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
             <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
               Add Your First Project
             </Button>
-            <FormDialog open={open} setOpen={setOpen} title="Add Project" />
+            <FormDialog open={open} title="Add Project" onClose={handleClose}>
+              <ProjectForm handleClose={handleClose} />
+            </FormDialog>
           </Box>
         )}
       </Paper>

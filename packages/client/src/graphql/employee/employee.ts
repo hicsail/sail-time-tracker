@@ -53,6 +53,7 @@ export type GetRecordWithFavoriteProjectQuery = {
       status: string;
       hours: number;
       isFavorite: boolean;
+      previousWeek: number;
     }>;
   };
 };
@@ -184,6 +185,7 @@ export const GetRecordWithFavoriteProjectDocument = gql`
         status
         hours
         isFavorite
+        previousWeek
       }
     }
   }
