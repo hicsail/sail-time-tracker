@@ -192,5 +192,6 @@ export type RecordWithFavoriteProjectModel = {
   isBillable: Scalars['Boolean'];
   isFavorite: Scalars['Boolean'];
   name: Scalars['String'];
+  previousWeek: Scalars['Float'];
   status: Scalars['String'];
 };

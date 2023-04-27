@@ -44,5 +44,8 @@ export class RecordWithFavoriteProjectModel extends ProjectModel {
   isFavorite: Boolean;
 
   @Field()
-  hours: Number;
+  hours: number;
+
+  @Field()
+  previousWeek: number;
 }

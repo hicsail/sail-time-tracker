@@ -57,6 +57,7 @@ type RecordWithFavoriteProjectModel {
   isBillable: Boolean!
   isFavorite: Boolean!
   hours: Float!
+  previousWeek: Float!
 }
 
 type BatchPayload {
