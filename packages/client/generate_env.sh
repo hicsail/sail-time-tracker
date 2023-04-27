@@ -1,4 +1,5 @@
 #!/bin/bash
+chmod 700 generate_env.sh
 
 # Generate JSON file
 echo "Generating env.json file"
