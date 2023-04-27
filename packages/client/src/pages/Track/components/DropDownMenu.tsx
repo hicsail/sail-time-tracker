@@ -14,7 +14,7 @@ export const DropDownMenu: FC<DropDownMenuProps<any>> = ({ data, onChange, defau
   return (
     <FormControl sx={{ minWidth: '200px' }}>
       <InputLabel id="employee_select-label">{label}</InputLabel>
-      <Select name={name} label={label} id={id} onChange={onChange} value={defaultValue as string}>
+      <Select name={name} label={label} id={id} onChange={onChange} value={defaultValue ? defaultValue : ''}>
         {data &&
           data.map((item: any) => {
             return (
