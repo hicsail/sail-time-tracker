@@ -13,6 +13,7 @@ import { SettingsProvider } from '@context/setting.context';
 import { EmployeeProvider } from '@context/employee.context';
 import { DateProvider } from '@context/date.context';
 import { TrackLayout } from '@pages/Track/components/Layout';
+import { Report } from '@pages/Report/report';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
                         <Route path={Paths.EDIT_EMPLOYEE} />
                         <Route path={Paths.ADD_EMPLOYEE} />
                       </Route>
+                      <Route path={Paths.REPORT} element={<Report />} />
                     </Route>
                   </Routes>
                 </EmployeeProvider>
