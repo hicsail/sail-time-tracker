@@ -16,7 +16,6 @@ export const Report = () => {
     setGroupBy(e.target.value);
   };
 
-  console.log(groupBy);
   return (
     <div>
       <Box sx={{ paddingTop: '1rem' }}>
