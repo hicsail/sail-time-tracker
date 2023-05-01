@@ -13,7 +13,7 @@ interface DropDownMenuProps<T> {
 export const DropDownMenu: FC<DropDownMenuProps<any>> = ({ data, onChange, defaultValue, label, name, id }) => {
   return (
     <FormControl sx={{ minWidth: '200px' }}>
-      <InputLabel id="employee_select-label">{label}</InputLabel>
+      <InputLabel>{label}</InputLabel>
       <Select name={name} label={label} id={id} onChange={onChange} value={defaultValue ? defaultValue : ''}>
         {data &&
           data.map((item: any) => {
