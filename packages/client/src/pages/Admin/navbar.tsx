@@ -35,7 +35,7 @@ export const Navbar = () => {
       <nav aria-label="secondary track reports">
         <SideList>
           <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Track" />
-          <SideListItem path={Paths.TRACK} icon={<Assessment sx={{ color: 'customColors.iconColor' }} />} info="Reports" />
+          <SideListItem path={Paths.REPORT} icon={<Assessment sx={{ color: 'customColors.iconColor' }} />} info="Reports" />
           <SwitchBtn onClick={handleOnClick} />
         </SideList>
       </nav>
