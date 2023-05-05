@@ -90,5 +90,5 @@ export const GroupByEmployee = () => {
     }
   ];
 
-  return <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} />;
+  return <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Project" />;
 };

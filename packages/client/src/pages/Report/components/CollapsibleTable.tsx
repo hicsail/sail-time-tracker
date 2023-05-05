@@ -6,9 +6,10 @@ interface CollapsibleTableProps {
   rows: any;
   outerTableConfig: any;
   innerTableConfig: any;
+  innerTitle: string;
 }
 
-export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, outerTableConfig, innerTableConfig }) => {
+export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, outerTableConfig, innerTableConfig, innerTitle }) => {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -26,7 +27,7 @@ export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, outerTableCo
         </TableHead>
         <TableBody>
           {rows.map((row: any) => (
-            <Row key={row.name} row={row} innerTableConfig={innerTableConfig} innerTitle="Project" outerTableConfig={outerTableConfig} />
+            <Row key={row.name} row={row} innerTableConfig={innerTableConfig} innerTitle={innerTitle} outerTableConfig={outerTableConfig} />
           ))}
         </TableBody>
       </Table>

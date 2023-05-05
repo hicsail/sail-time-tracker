@@ -1,96 +1,77 @@
 import { CollapsibleTable } from '@pages/Report/components/CollapsibleTable';
 import { Box } from '@mui/material';
 
-function createData(name: string, isBillable: boolean, hours: number) {
+function createData(name: string, isBillable: boolean, workHours: number, indirectHours: number) {
   return {
     name,
     isBillable,
-    hours,
+    workHours,
+    indirectHours,
     inner: [
       {
         id: '1',
         name: 'Employee 1',
-        hours: 30,
-        ratio: 0.89
+        workHours: 30,
+        indirectHours: 0.75
       },
       {
         id: '2',
         name: 'Employee 2',
-        hours: 10,
-        ratio: 0.55
+        workHours: 10,
+        indirectHours: 0.25
       }
     ]
   };
 }
 
 export const GroupByProject = () => {
-  const rows = [
-    createData('Project 1', true, 40),
-    createData('Project 2', true, 9.0),
-    createData('Project 3', false, 16.0),
-    createData('Project 4', true, 3.7),
-    createData('Project 5', true, 16.0)
-  ];
+  const rows = [createData('Project 1', true, 40, 1), createData('Project 2', true, 20, 5)];
 
-  const outerHeaderRow = [
+  const outerTableConfig = [
     {
-      name: 'Projects'
+      name: 'Projects',
+      render: (row: any) => row.name
     },
     {
-      name: 'IsBillable'
+      name: 'IsBillable',
+      render: (row: any) => {
+        return (
+          <Box
+            sx={row.isBillable ? { backgroundColor: 'rgb(250, 236,204)' } : { backgroundColor: 'rgb(250, 227,222)' }}
+            width={40}
+            height={20}
+            textAlign="center"
+            borderRadius="3px"
+          >
+            {row.isBillable.toString()}
+          </Box>
+        );
+      }
     },
     {
-      name: 'Hours'
+      name: 'Work Hours',
+      render: (row: any) => row.workHours
+    },
+    {
+      name: 'Indirect Hours',
+      render: (row: any) => row.indirectHours
     }
   ];
 
-  const innerHeaderRow = [
+  const innerTableConfig = [
     {
-      name: 'Name'
+      name: 'Name',
+      render: (row: any) => row.name
     },
     {
-      name: 'Hours'
+      name: 'Work Hours',
+      render: (row: any) => row.workHours
     },
     {
-      name: 'Ratio'
+      name: 'Indirect Hours',
+      render: (row: any) => row.indirectHours
     }
   ];
 
-  const rowsValuesConfigure = {
-    outer: [
-      {
-        value: (row: any) => row.name
-      },
-      {
-        value: (row: any) => {
-          return (
-            <Box
-              sx={row.isBillable ? { backgroundColor: 'rgb(250, 236,204)' } : { backgroundColor: 'rgb(250, 227,222)' }}
-              width={40}
-              height={20}
-              textAlign="center"
-              borderRadius="3px"
-            >
-              {row.isBillable.toString()}
-            </Box>
-          );
-        }
-      },
-      {
-        value: (row: any) => row.hours
-      }
-    ],
-    inner: [
-      {
-        value: (row: any) => row.name
-      },
-      {
-        value: (row: any) => row.hours
-      },
-      {
-        value: (row: any) => row.ratio
-      }
-    ]
-  };
-  return <CollapsibleTable rows={rows} outerHeaderRow={outerHeaderRow} innerHeaderRow={innerHeaderRow} rowsValuesConfigure={rowsValuesConfigure} />;
+  return <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
 };
