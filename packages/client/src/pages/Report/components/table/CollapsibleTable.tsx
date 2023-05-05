@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableRow, Paper, TableContainer } from '@mui/material';
-import { Row } from '@pages/Report/components/Row';
+import { Row } from '@pages/Report/components/table/Row';
 import { FC } from 'react';
 
 interface CollapsibleTableProps {
