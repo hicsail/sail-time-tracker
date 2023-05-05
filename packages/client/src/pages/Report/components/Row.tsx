@@ -11,8 +11,8 @@ import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 
-export const Row = (props: { row: any; rowsValue: any; innerHeader: any; innerTitle: string }) => {
-  const { row, rowsValue, innerHeader, innerTitle } = props;
+export const Row = (props: { row: any; innerTableConfig: any; innerTitle: string; outerTableConfig: any }) => {
+  const { row, innerTableConfig, innerTitle, outerTableConfig } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -23,8 +23,8 @@ export const Row = (props: { row: any; rowsValue: any; innerHeader: any; innerTi
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
         </TableCell>
-        {rowsValue.outer.map((config: any) => {
-          return <TableCell>{config.value(row)}</TableCell>;
+        {outerTableConfig.map((config: any) => {
+          return <TableCell>{config.render(row)}</TableCell>;
         })}
       </TableRow>
       <TableRow>
@@ -37,17 +37,17 @@ export const Row = (props: { row: any; rowsValue: any; innerHeader: any; innerTi
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    {innerHeader.map((cell: any) => (
+                    {innerTableConfig.map((cell: any) => (
                       <TableCell align={cell.align}>{cell.name}</TableCell>
                     ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.inner.map((historyRow: any) => {
+                  {row.inner.map((innerRow: any) => {
                     return (
                       <TableRow>
-                        {rowsValue.inner.map((row: any) => {
-                          return <TableCell align={row.align ? row.align : 'left'}>{row.value(historyRow)}</TableCell>;
+                        {innerTableConfig.map((row: any) => {
+                          return <TableCell align={row.align ? row.align : 'left'}>{row.render(innerRow)}</TableCell>;
                         })}
                       </TableRow>
                     );

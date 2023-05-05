@@ -37,89 +37,64 @@ export const GroupByEmployee = () => {
     createData('Employee 5', 356, 16.0, 49, 0.34)
   ];
 
-  const outerHeaderRow = [
+  const outerTableConfig = [
     {
-      name: 'Employees'
+      name: 'Employees',
+      render: (row: any) => row.name
     },
     {
       name: 'Work Hours',
+      render: (row: any) => row.workHours,
       align: 'right'
     },
     {
       name: 'Indirect Hours',
+      render: (row: any) => row.indirectHours,
       align: 'right'
     },
     {
       name: 'Billable Hours (Work + Indirect)',
+      render: (row: any) => row.billableHours,
       align: 'right'
     },
     {
       name: 'Ratio (Work / Indirect)',
+      render: (row: any) => row.ratio,
       align: 'right'
     }
   ];
 
-  const innerHeaderRow = [
+  const innerTableConfig = [
     {
-      name: 'Name'
+      name: 'Name',
+      render: (row: any) => row.name
     },
     {
-      name: 'IsBillable'
+      name: 'IsBillable',
+      render: (row: any) => {
+        return (
+          <Box
+            sx={row.isBillable ? { backgroundColor: 'rgb(250, 236,204)' } : { backgroundColor: 'rgb(250, 227,222)' }}
+            width={40}
+            height={20}
+            textAlign="center"
+            borderRadius="3px"
+          >
+            {row.isBillable.toString()}
+          </Box>
+        );
+      }
     },
     {
-      name: 'Hours'
+      name: 'Hours',
+      render: (row: any) => row.hours
     },
     {
       name: 'Rate',
+      render: (row: any) => row.rate,
       align: 'right'
     }
   ];
 
-  const rowsValuesConfigure = {
-    outer: [
-      {
-        value: (row: any) => row.name
-      },
-      {
-        value: (row: any) => row.workHours
-      },
-      {
-        value: (row: any) => row.indirectHours
-      },
-      {
-        value: (row: any) => row.billableHours
-      },
-      {
-        value: (row: any) => row.ratio
-      }
-    ],
-    inner: [
-      {
-        value: (row: any) => row.name
-      },
-      {
-        value: (row: any) => {
-          return (
-            <Box
-              sx={row.isBillable ? { backgroundColor: 'rgb(250, 236,204)' } : { backgroundColor: 'rgb(250, 227,222)' }}
-              width={40}
-              height={20}
-              textAlign="center"
-              borderRadius="3px"
-            >
-              {row.isBillable.toString()}
-            </Box>
-          );
-        }
-      },
-      {
-        value: (row: any) => row.hours
-      },
-      {
-        value: (row: any) => row.rate,
-        align: 'right'
-      }
-    ]
-  };
-  return <CollapsibleTable rows={rows} outerHeaderRow={outerHeaderRow} innerHeaderRow={innerHeaderRow} rowsValuesConfigure={rowsValuesConfigure} />;
+  return <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} />;
 };
