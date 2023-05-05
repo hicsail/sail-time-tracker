@@ -1,12 +1,13 @@
 import { CollapsibleTable } from '@pages/Report/components/CollapsibleTable';
 import { Box } from '@mui/material';
 
-function createData(name: string, isBillable: boolean, workHours: number, indirectHours: number) {
+function createData(name: string, isBillable: boolean, workHours: number, indirectHours: number, billableHours: number) {
   return {
     name,
     isBillable,
     workHours,
     indirectHours,
+    billableHours,
     inner: [
       {
         id: '1',
@@ -25,7 +26,7 @@ function createData(name: string, isBillable: boolean, workHours: number, indire
 }
 
 export const GroupByProject = () => {
-  const rows = [createData('Project 1', true, 40, 1), createData('Project 2', true, 20, 5)];
+  const rows = [createData('Project 1', true, 40, 1, 41), createData('Project 2', true, 20, 5, 25)];
 
   const outerTableConfig = [
     {
@@ -55,6 +56,10 @@ export const GroupByProject = () => {
     {
       name: 'Indirect Hours',
       render: (row: any) => row.indirectHours
+    },
+    {
+      name: 'Billable Hours',
+      render: (row: any) => row.billableHours
     }
   ];
 
