@@ -14,28 +14,22 @@ const createData = (name: string, workHours: number, indirectHours: number, bill
         id: '1',
         name: 'Project 1',
         isBillable: true,
-        rate: 0.89,
-        hours: 3
+        workHours: 10,
+        indirectHours: 1
       },
       {
         id: '2',
         name: 'Project 2',
         isBillable: false,
-        rate: 0.89,
-        hours: 10
+        workHours: 50,
+        indirectHours: 5
       }
     ]
   };
 };
 
 export const GroupByEmployee = () => {
-  const rows = [
-    createData('Employee 1', 60, 6, 66, 10),
-    createData('Employee 2', 237, 9.0, 4.3, 0.23),
-    createData('Employee 3', 262, 16.0, 24, 0.15),
-    createData('Employee 4', 305, 3.7, 67, 0.76),
-    createData('Employee 5', 356, 16.0, 49, 0.34)
-  ];
+  const rows = [createData('Employee 1', 60, 6, 66, 10), createData('Employee 2', 40, 10, 50, 0.23)];
 
   const outerTableConfig = [
     {
@@ -86,12 +80,12 @@ export const GroupByEmployee = () => {
       }
     },
     {
-      name: 'Hours',
-      render: (row: any) => row.hours
+      name: 'Work Hours',
+      render: (row: any) => row.workHours
     },
     {
-      name: 'Rate',
-      render: (row: any) => row.rate,
+      name: 'Indirect Hours',
+      render: (row: any) => row.indirectHours,
       align: 'right'
     }
   ];
