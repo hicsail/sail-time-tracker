@@ -2,13 +2,12 @@ import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTabl
 import { Box } from '@mui/material';
 import * as React from 'react';
 
-const createData = (name: string, workHours: number, indirectHours: number, billableHours: number, ratio: number) => {
+const createData = (name: string, workHours: number, indirectHours: number, billableHours: number) => {
   return {
     name,
     workHours,
     indirectHours,
     billableHours,
-    ratio,
     inner: [
       {
         id: '1',
@@ -29,7 +28,7 @@ const createData = (name: string, workHours: number, indirectHours: number, bill
 };
 
 export const GroupByEmployee = () => {
-  const rows = [createData('Employee 1', 60, 6, 66, 10), createData('Employee 2', 40, 10, 50, 0.23)];
+  const rows = [createData('Employee 1', 60, 6, 66), createData('Employee 2', 40, 10, 50)];
 
   const outerTableConfig = [
     {
@@ -49,11 +48,6 @@ export const GroupByEmployee = () => {
     {
       name: 'Billable Hours (Work + Indirect)',
       render: (row: any) => row.billableHours,
-      align: 'right'
-    },
-    {
-      name: 'Ratio (Work / Indirect)',
-      render: (row: any) => row.ratio,
       align: 'right'
     }
   ];
