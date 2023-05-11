@@ -2,33 +2,52 @@ import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTabl
 import { Box } from '@mui/material';
 import * as React from 'react';
 
-const createData = (name: string, workHours: number, indirectHours: number, billableHours: number) => {
+const createData = (name: string, workHours: number, indirectHours: number, billableHours: number, inner: any) => {
   return {
     name,
     workHours,
     indirectHours,
     billableHours,
-    inner: [
-      {
-        id: '1',
-        name: 'Project 1',
-        isBillable: true,
-        workHours: 10,
-        indirectHours: 1
-      },
-      {
-        id: '2',
-        name: 'Project 2',
-        isBillable: false,
-        workHours: 50,
-        indirectHours: 5
-      }
-    ]
+    inner
   };
 };
 
+const inner1 = [
+  {
+    id: '1',
+    name: 'Project 1',
+    isBillable: true,
+    workHours: 10,
+    indirectHours: 1
+  },
+  {
+    id: '2',
+    name: 'Project 2',
+    isBillable: false,
+    workHours: 50,
+    indirectHours: 5
+  }
+]
+
+const inner2 = [
+  {
+    id: '1',
+    name: 'Project 1',
+    isBillable: true,
+    workHours: 10,
+    indirectHours: 2.5
+  },
+  {
+    id: '2',
+    name: 'Project 2',
+    isBillable: false,
+    workHours: 30,
+    indirectHours: 7.5
+  }
+]
+
 export const GroupByEmployee = () => {
-  const rows = [createData('Employee 1', 60, 6, 66), createData('Employee 2', 40, 10, 50)];
+  const rows = [createData('Employee 1', 60, 6, 66, inner1), createData('Employee 2', 40, 10, 50, inner2)];
 
   const outerTableConfig = [
     {
