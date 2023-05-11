@@ -25,7 +25,7 @@ const inner1 = [
     workHours: 10,
     indirectHours: 2.5
   }
-]
+];
 
 const inner2 = [
   {
@@ -40,8 +40,7 @@ const inner2 = [
     workHours: 30,
     indirectHours: 7.5
   }
-]
-
+];
 
 export const GroupByProject = () => {
   const rows = [createData('Project 1', true, 20, 3.5, 23.5, inner1), createData('Project 2', true, 112.5, 12.5, 110, inner2)];
