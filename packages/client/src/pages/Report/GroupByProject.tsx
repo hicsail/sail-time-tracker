@@ -1,32 +1,50 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
 
-function createData(name: string, isBillable: boolean, workHours: number, indirectHours: number, billableHours: number) {
+function createData(name: string, isBillable: boolean, workHours: number, indirectHours: number, billableHours: number, inner: any) {
   return {
     name,
     isBillable,
     workHours,
     indirectHours,
     billableHours,
-    inner: [
-      {
-        id: '1',
-        name: 'Employee 1',
-        workHours: 30,
-        indirectHours: 0.75
-      },
-      {
-        id: '2',
-        name: 'Employee 2',
-        workHours: 10,
-        indirectHours: 0.25
-      }
-    ]
+    inner
   };
 }
 
+const inner1 = [
+  {
+    id: '1',
+    name: 'Employee 1',
+    workHours: 10,
+    indirectHours: 1
+  },
+  {
+    id: '2',
+    name: 'Employee 2',
+    workHours: 10,
+    indirectHours: 2.5
+  }
+]
+
+const inner2 = [
+  {
+    id: '1',
+    name: 'Employee 1',
+    workHours: 50,
+    indirectHours: 5
+  },
+  {
+    id: '2',
+    name: 'Employee 2',
+    workHours: 30,
+    indirectHours: 7.5
+  }
+]
+
+
 export const GroupByProject = () => {
-  const rows = [createData('Project 1', true, 40, 1, 41), createData('Project 2', true, 20, 5, 25)];
+  const rows = [createData('Project 1', true, 20, 3.5, 23.5, inner1), createData('Project 2', true, 112.5, 12.5, 110, inner2)];
 
   const outerTableConfig = [
     {
