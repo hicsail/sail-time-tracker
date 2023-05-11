@@ -2,12 +2,20 @@ import { GroupByEmployee } from '@pages/Report/GroupByEmployee';
 import { GroupByProject } from '@pages/Report/GroupByProject';
 import { useState } from 'react';
 import { DropDownMenu } from '@components/form/DropDownMenu';
-import { Box, SelectChangeEvent } from '@mui/material';
+import {Box, SelectChangeEvent, TextField} from '@mui/material';
 import { DateRangePickerComponent } from '@pages/Report/components/DateRangePickerComponent';
 import 'react-datepicker/dist/react-datepicker.css';
+import { DatePicker } from '@mui/x-date-pickers';
+import startOfWeek from "date-fns/startOfWeek";
+import {endOfWeek} from "date-fns";
 
 export const Report = () => {
   const [groupBy, setGroupBy] = useState<string>('1');
+  const date = new Date();
+  const [dateRange, setDateRage] = useState<{startDate: Date | null, endDate: Date | null}>({
+    startDate: startOfWeek(date, { weekStartsOn: 1 }),
+    endDate: endOfWeek(date, { weekStartsOn: 1 })
+  })
 
   const data = [
     { id: '1', name: 'Employee' },
@@ -19,13 +27,40 @@ export const Report = () => {
   };
 
   return (
-    <div>
-      {/*<Box sx={{ paddingTop: '1rem' }}>
-        <DropDownMenu data={data} onChange={handleOnChange} defaultValue={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
+    <Box>
+      <Box sx={{display: 'flex', alignItems: 'center', gap: 5}}>
+        <Box sx={{ paddingTop: '1rem' }}>
+          <DropDownMenu data={data} onChange={handleOnChange} defaultValue={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
+        </Box>
+        <Box>
+          <DateRangePickerComponent />
+        </Box>
+        <Box>
+          <DatePicker
+            label="Start Date"
+            value={dateRange.startDate}
+            onChange={(newValue) => {
+              setDateRage((prevState) => ({
+                ...prevState,
+                startDate: newValue
+              }))
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+          <DatePicker
+            label="End Date"
+            value={dateRange.endDate}
+            onChange={(newValue) => {
+              setDateRage((prevState) => ({
+                ...prevState,
+                endDate: newValue
+              }))
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </Box>
       </Box>
-      <DateRangePickerComponent />
-      {groupBy === '1' ? <GroupByEmployee /> : <GroupByProject />}*/}
-      <DateRangePickerComponent />
-    </div>
+      {groupBy === '1' ? <GroupByEmployee /> : <GroupByProject />}
+    </Box>
   );
 };
