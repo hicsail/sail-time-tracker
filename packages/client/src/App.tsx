@@ -14,10 +14,16 @@ import { EmployeeProvider } from '@context/employee.context';
 import { DateProvider } from '@context/date.context';
 import { TrackLayout } from '@pages/Track/components/Layout';
 import { Report } from '@pages/Report/Report';
+import enLocale from 'date-fns/locale/en-US';
 
 function App() {
+
+  if (enLocale && enLocale.options) {
+    enLocale.options.weekStartsOn = 1;
+  }
+
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enLocale}>
       <GraphqlProvider>
         <SettingsProvider>
           <ThemeProvider>
