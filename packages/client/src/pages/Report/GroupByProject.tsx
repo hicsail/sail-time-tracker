@@ -1,4 +1,4 @@
-import { CollapsibleTable } from '@pages/Report/components/CollapsibleTable';
+import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
 
 function createData(name: string, isBillable: boolean, workHours: number, indirectHours: number, billableHours: number) {
