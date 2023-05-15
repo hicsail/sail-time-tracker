@@ -133,7 +133,12 @@ export type ProjectModel = {
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
+  records: Array<RecordModelWithEmployee>;
   status: Scalars['String'];
+};
+
+export type ProjectModelRecordsArgs = {
+  date: Scalars['DateTime'];
 };
 
 export type ProjectUpdateInput = {
@@ -175,12 +180,19 @@ export type RecordInsertOrUpdateModel = {
   projectId: Scalars['ID'];
 };
 
-export type RecordModel = {
-  __typename?: 'RecordModel';
-  employeeId: Scalars['ID'];
+export type RecordModelWithEmployee = {
+  __typename?: 'RecordModelWithEmployee';
+  employee: EmployeeModel;
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
-  projectId: Scalars['ID'];
+  startDate: Scalars['DateTime'];
+};
+
+export type RecordModelWithProject = {
+  __typename?: 'RecordModelWithProject';
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  project: ProjectModel;
   startDate: Scalars['DateTime'];
 };
 
@@ -193,5 +205,10 @@ export type RecordWithFavoriteProjectModel = {
   isFavorite: Scalars['Boolean'];
   name: Scalars['String'];
   previousWeek: Scalars['Float'];
+  records: Array<RecordModelWithEmployee>;
   status: Scalars['String'];
+};
+
+export type RecordWithFavoriteProjectModelRecordsArgs = {
+  date: Scalars['DateTime'];
 };
