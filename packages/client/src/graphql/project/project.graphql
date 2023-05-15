@@ -8,11 +8,11 @@ query getProjectList {
   }
 }
 
-query getProjectListWithRecord {
+query getProjectListWithRecord($date: DateTime!) {
   projects {
     id
     name
-    records(date: Date) {
+    records(date: $date) {
       startDate
       endDate
       hours

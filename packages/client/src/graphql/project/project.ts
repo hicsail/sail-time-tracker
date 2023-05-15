@@ -12,7 +12,9 @@ export type GetProjectListQuery = {
   projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
 };
 
-export type GetProjectListWithRecordQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type GetProjectListWithRecordQueryVariables = Types.Exact<{
+  date: Types.Scalars['DateTime'];
+}>;
 
 export type GetProjectListWithRecordQuery = {
   __typename?: 'Query';
@@ -87,11 +89,11 @@ export type GetProjectListQueryHookResult = ReturnType<typeof useGetProjectListQ
 export type GetProjectListLazyQueryHookResult = ReturnType<typeof useGetProjectListLazyQuery>;
 export type GetProjectListQueryResult = Apollo.QueryResult<GetProjectListQuery, GetProjectListQueryVariables>;
 export const GetProjectListWithRecordDocument = gql`
-  query getProjectListWithRecord {
+  query getProjectListWithRecord($date: DateTime!) {
     projects {
       id
       name
-      records(date: Date) {
+      records(date: $date) {
         startDate
         endDate
         hours
@@ -116,10 +118,11 @@ export const GetProjectListWithRecordDocument = gql`
  * @example
  * const { data, loading, error } = useGetProjectListWithRecordQuery({
  *   variables: {
+ *      date: // value for 'date'
  *   },
  * });
  */
-export function useGetProjectListWithRecordQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectListWithRecordQuery, GetProjectListWithRecordQueryVariables>) {
+export function useGetProjectListWithRecordQuery(baseOptions: Apollo.QueryHookOptions<GetProjectListWithRecordQuery, GetProjectListWithRecordQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetProjectListWithRecordQuery, GetProjectListWithRecordQueryVariables>(GetProjectListWithRecordDocument, options);
 }
