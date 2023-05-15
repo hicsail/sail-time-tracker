@@ -114,11 +114,10 @@ export class EmployeesService {
 
     return records.map((record) => {
       return {
-        employeeId: record.employeeId,
-        projectId: record.projectId,
-        hours: record.hours,
         startDate: record.date,
-        endDate: endOfWeek(record.date, { weekStartsOn: 0 })
+        endDate: endOfWeek(record.date, { weekStartsOn: 0 }),
+        hours: record.hours,
+        project: record.project
       };
     });
   }
