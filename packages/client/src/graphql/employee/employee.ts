@@ -12,7 +12,9 @@ export type GetEmployeeListQuery = {
   employees: Array<{ __typename?: 'EmployeeModel'; id: string; email: string; name: string; rate: number; status?: string | null }>;
 };
 
-export type GetEmployeeListWithRecordQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type GetEmployeeListWithRecordQueryVariables = Types.Exact<{
+  date: Types.Scalars['DateTime'];
+}>;
 
 export type GetEmployeeListWithRecordQuery = {
   __typename?: 'Query';
@@ -129,11 +131,11 @@ export type GetEmployeeListQueryHookResult = ReturnType<typeof useGetEmployeeLis
 export type GetEmployeeListLazyQueryHookResult = ReturnType<typeof useGetEmployeeListLazyQuery>;
 export type GetEmployeeListQueryResult = Apollo.QueryResult<GetEmployeeListQuery, GetEmployeeListQueryVariables>;
 export const GetEmployeeListWithRecordDocument = gql`
-  query getEmployeeListWithRecord {
+  query getEmployeeListWithRecord($date: DateTime!) {
     employees {
       id
       name
-      records(date: Date) {
+      records(date: $date) {
         startDate
         endDate
         hours
@@ -158,10 +160,11 @@ export const GetEmployeeListWithRecordDocument = gql`
  * @example
  * const { data, loading, error } = useGetEmployeeListWithRecordQuery({
  *   variables: {
+ *      date: // value for 'date'
  *   },
  * });
  */
-export function useGetEmployeeListWithRecordQuery(baseOptions?: Apollo.QueryHookOptions<GetEmployeeListWithRecordQuery, GetEmployeeListWithRecordQueryVariables>) {
+export function useGetEmployeeListWithRecordQuery(baseOptions: Apollo.QueryHookOptions<GetEmployeeListWithRecordQuery, GetEmployeeListWithRecordQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetEmployeeListWithRecordQuery, GetEmployeeListWithRecordQueryVariables>(GetEmployeeListWithRecordDocument, options);
 }

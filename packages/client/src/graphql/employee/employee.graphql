@@ -8,11 +8,11 @@ query getEmployeeList {
   }
 }
 
-query getEmployeeListWithRecord {
+query getEmployeeListWithRecord($date: DateTime!) {
   employees {
     id
     name
-    records(date: Date) {
+    records(date: $date) {
       startDate
       endDate
       hours
