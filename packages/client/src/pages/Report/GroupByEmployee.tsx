@@ -57,17 +57,14 @@ export const GroupByEmployee = () => {
     {
       name: 'Work Hours',
       render: (row: any) => row.workHours,
-      align: 'right'
     },
     {
       name: 'Indirect Hours',
       render: (row: any) => row.indirectHours,
-      align: 'right'
     },
     {
       name: 'Billable Hours (Work + Indirect)',
       render: (row: any) => row.billableHours,
-      align: 'right'
     }
   ];
 
