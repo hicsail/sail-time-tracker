@@ -42,11 +42,10 @@ type RecordInsertOrUpdateModel {
 }
 
 type RecordModel {
-  employeeId: ID!
-  projectId: ID!
   startDate: DateTime!
   endDate: DateTime!
   hours: Float!
+  project: ProjectModel!
 }
 
 type RecordWithFavoriteProjectModel {

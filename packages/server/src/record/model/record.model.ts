@@ -22,11 +22,6 @@ export class RecordInsertOrUpdateModel {
 
 @ObjectType()
 export class RecordModel {
-  @Field(() => ID)
-  employeeId: string;
-
-  @Field(() => ID)
-  projectId: string;
 
   @Field()
   startDate: Date;
@@ -36,6 +31,9 @@ export class RecordModel {
 
   @Field()
   hours: number;
+
+  @Field()
+  project: ProjectModel
 }
 
 @ObjectType()
