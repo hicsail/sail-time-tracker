@@ -1,54 +1,50 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
 import * as React from 'react';
-
-const createData = (name: string, workHours: number, indirectHours: number, billableHours: number, inner: any) => {
-  return {
-    name,
-    workHours,
-    indirectHours,
-    billableHours,
-    inner
-  };
-};
-
-const inner1 = [
-  {
-    id: '1',
-    name: 'Project 1',
-    isBillable: true,
-    workHours: 10,
-    indirectHours: 1
-  },
-  {
-    id: '2',
-    name: 'Project 2',
-    isBillable: false,
-    workHours: 50,
-    indirectHours: 5
-  }
-];
-
-const inner2 = [
-  {
-    id: '1',
-    name: 'Project 1',
-    isBillable: true,
-    workHours: 10,
-    indirectHours: 2.5
-  },
-  {
-    id: '2',
-    name: 'Project 2',
-    isBillable: false,
-    workHours: 30,
-    indirectHours: 7.5
-  }
-];
+import { useGetEmployeeListWithRecordQuery } from '@graphql/employee/employee';
+import { startOfWeek } from 'date-fns';
 
 export const GroupByEmployee = () => {
-  const rows = [createData('Employee 1', 60, 6, 66, inner1), createData('Employee 2', 40, 10, 50, inner2)];
+  // get all employees with records
+  const { data } = useGetEmployeeListWithRecordQuery({
+    variables: {
+      date: startOfWeek(new Date(), { weekStartsOn: 1 })
+    }
+  });
 
+  // construct rows
+  const rows = data
+    ? data.employees.map((employee) => {
+        const totalWorkHours = employee.records
+          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+          .reduce((sum, currentValue) => sum + currentValue.hours, 0);
+
+        let totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
+
+        // projects in record that belongs the employee, excludes indirect and absence
+        const inner = employee.records
+          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+          .map((record) => {
+            return {
+              id: record.project.id,
+              name: record.project.name,
+              isBillable: record.project.isBillable,
+              workHours: record.hours,
+              indirectHours: ((record.hours / totalWorkHours) * totalIndirectHours).toFixed(1)
+            };
+          });
+
+        return {
+          name: employee.name,
+          workHours: totalWorkHours,
+          indirectHours: totalIndirectHours,
+          billableHours: totalWorkHours + totalIndirectHours,
+          inner: inner
+        };
+      })
+    : [];
+
+  // outer table column name and render config
   const outerTableConfig = [
     {
       name: 'Employees',
@@ -68,6 +64,7 @@ export const GroupByEmployee = () => {
     }
   ];
 
+  // inner table column name and render config
   const innerTableConfig = [
     {
       name: 'Name',
