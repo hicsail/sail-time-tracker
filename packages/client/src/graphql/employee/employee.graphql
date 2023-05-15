@@ -1,4 +1,14 @@
-query getEmployeeListAndRecords {
+query getEmployeeList {
+  employees {
+    id
+    email
+    name
+    rate
+    status
+  }
+}
+
+query getEmployeeListWithRecord {
   employees {
     id
     name
@@ -9,7 +19,6 @@ query getEmployeeListAndRecords {
       project {
         id
         name
-        isBillable
       }
     }
   }
