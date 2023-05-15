@@ -4,7 +4,6 @@ import * as Types from '../graphql';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-
 const defaultOptions = {} as const;
 export type AddRecordMutationVariables = Types.Exact<{
   record: Types.RecordCreateInput;
@@ -48,7 +47,6 @@ export function useAddRecordMutation(baseOptions?: Apollo.MutationHookOptions<Ad
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<AddRecordMutation, AddRecordMutationVariables>(AddRecordDocument, options);
 }
-
 export type AddRecordMutationHookResult = ReturnType<typeof useAddRecordMutation>;
 export type AddRecordMutationResult = Apollo.MutationResult<AddRecordMutation>;
 export type AddRecordMutationOptions = Apollo.BaseMutationOptions<AddRecordMutation, AddRecordMutationVariables>;
