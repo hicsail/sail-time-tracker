@@ -19,6 +19,7 @@ query getEmployeeListWithRecord($date: DateTime!) {
       project {
         id
         name
+        isBillable
       }
     }
   }
