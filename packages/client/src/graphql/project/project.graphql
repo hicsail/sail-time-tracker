@@ -5,6 +5,15 @@ query getProjectList {
     description
     status
     isBillable
+    records(date: Date) {
+      startDate
+      endDate
+      hours
+      employee {
+        id
+        name
+      }
+    }
   }
 }
 

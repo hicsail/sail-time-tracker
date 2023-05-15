@@ -1,10 +1,17 @@
-query getEmployeeList {
+query getEmployeeListAndRecords {
   employees {
     id
-    email
     name
-    rate
-    status
+    records(date: Date) {
+      startDate
+      endDate
+      hours
+      project {
+        id
+        name
+        isBillable
+      }
+    }
   }
 }
 

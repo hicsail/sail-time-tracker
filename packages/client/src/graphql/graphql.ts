@@ -39,7 +39,7 @@ export type EmployeeModel = {
   name: Scalars['String'];
   projects: Array<ProjectModel>;
   rate: Scalars['Float'];
-  records: Array<RecordModel>;
+  records: Array<RecordModelWithProject>;
   recordsWithFavoriteProjects: Array<RecordWithFavoriteProjectModel>;
   status?: Maybe<Scalars['String']>;
 };

@@ -9,7 +9,15 @@ export type GetProjectListQueryVariables = Types.Exact<{ [key: string]: never }>
 
 export type GetProjectListQuery = {
   __typename?: 'Query';
-  projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
+  projects: Array<{
+    __typename?: 'ProjectModel';
+    id: string;
+    name: string;
+    description: string;
+    status: string;
+    isBillable: boolean;
+    records: Array<{ __typename?: 'RecordModelWithEmployee'; startDate: any; endDate: any; hours: number; employee: { __typename?: 'EmployeeModel'; id: string; name: string } }>;
+  }>;
 };
 
 export type GetProjectByIdQueryVariables = Types.Exact<{
@@ -44,6 +52,15 @@ export const GetProjectListDocument = gql`
       description
       status
       isBillable
+      records(date: Date) {
+        startDate
+        endDate
+        hours
+        employee {
+          id
+          name
+        }
+      }
     }
   }
 `;
