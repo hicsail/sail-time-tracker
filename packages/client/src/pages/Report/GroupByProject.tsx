@@ -43,7 +43,7 @@ const inner2 = [
 ];
 
 export const GroupByProject = () => {
-  const rows = [createData('Project 1', true, 20, 3.5, 23.5, inner1), createData('Project 2', true, 112.5, 12.5, 110, inner2)];
+  const rows = [createData('Project 1', true, 20, 3.5, 23.5, inner1), createData('Project 2', true, 80, 12.5, 92.5, inner2)];
 
   const outerTableConfig = [
     {
