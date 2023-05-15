@@ -12,6 +12,7 @@ query getProjectListWithRecord($date: DateTime!) {
   projects {
     id
     name
+    isBillable
     records(date: $date) {
       startDate
       endDate
