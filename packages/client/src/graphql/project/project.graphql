@@ -5,6 +5,13 @@ query getProjectList {
     description
     status
     isBillable
+  }
+}
+
+query getProjectListWithRecord {
+  projects {
+    id
+    name
     records(date: Date) {
       startDate
       endDate
