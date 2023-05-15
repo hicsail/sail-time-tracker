@@ -3,6 +3,8 @@ import { Project, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { ProjectUpdateInput } from './dto/project.dto';
 import { ProjectDeleteReturnModel } from './model/project.model';
+import { RecordModelWithEmployee } from '../record/model/record.model';
+import { endOfWeek } from 'date-fns';
 
 @Injectable()
 export class ProjectService {
@@ -68,6 +70,34 @@ export class ProjectService {
           in: ids as string[]
         }
       }
+    });
+  }
+
+  /**
+   * Get records of the project
+   *
+   * @return a list of records with employee data
+   * @param projectId represents project id
+   * @param date
+   */
+  async getRecords(projectId: string, date: Date): Promise<RecordModelWithEmployee[]> {
+    const records = await this.prisma.record.findMany({
+      where: {
+        projectId: projectId,
+        date: date
+      },
+      include: {
+        employee: true
+      }
+    });
+
+    return records.map((record) => {
+      return {
+        startDate: record.date,
+        endDate: endOfWeek(record.date, { weekStartsOn: 0 }),
+        hours: record.hours,
+        employee: record.employee
+      };
     });
   }
 }
