@@ -56,15 +56,15 @@ export const GroupByEmployee = () => {
     },
     {
       name: 'Work Hours',
-      render: (row: any) => row.workHours,
+      render: (row: any) => row.workHours
     },
     {
       name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours,
+      render: (row: any) => row.indirectHours
     },
     {
       name: 'Billable Hours (Work + Indirect)',
-      render: (row: any) => row.billableHours,
+      render: (row: any) => row.billableHours
     }
   ];
 
