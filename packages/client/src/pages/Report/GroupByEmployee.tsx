@@ -1,6 +1,5 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
-import * as React from 'react';
 import { useGetEmployeeListWithRecordQuery } from '@graphql/employee/employee';
 import { startOfWeek } from 'date-fns';
 
@@ -30,7 +29,7 @@ export const GroupByEmployee = () => {
               name: record.project.name,
               isBillable: record.project.isBillable,
               workHours: record.hours,
-              indirectHours: ((record.hours / totalWorkHours) * totalIndirectHours).toFixed(1)
+              indirectHours: ((record.hours / totalWorkHours) * totalIndirectHours).toFixed(0)
             };
           });
 
