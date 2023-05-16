@@ -1,49 +1,59 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
-
-function createData(name: string, isBillable: boolean, workHours: number, indirectHours: number, billableHours: number, inner: any) {
-  return {
-    name,
-    isBillable,
-    workHours,
-    indirectHours,
-    billableHours,
-    inner
-  };
-}
-
-const inner1 = [
-  {
-    id: '1',
-    name: 'Employee 1',
-    workHours: 10,
-    indirectHours: 1
-  },
-  {
-    id: '2',
-    name: 'Employee 2',
-    workHours: 10,
-    indirectHours: 2.5
-  }
-];
-
-const inner2 = [
-  {
-    id: '1',
-    name: 'Employee 1',
-    workHours: 50,
-    indirectHours: 5
-  },
-  {
-    id: '2',
-    name: 'Employee 2',
-    workHours: 30,
-    indirectHours: 7.5
-  }
-];
+import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
+import { startOfWeek } from 'date-fns';
 
 export const GroupByProject = () => {
-  const rows = [createData('Project 1', true, 20, 3.5, 23.5, inner1), createData('Project 2', true, 80, 12.5, 92.5, inner2)];
+  // get all employees with records
+  const { data } = useGetProjectListWithRecordQuery({
+    variables: {
+      date: startOfWeek(new Date(), { weekStartsOn: 1 })
+    }
+  });
+
+  let indirectHours = 0;
+  data?.projects.forEach((project) => {
+    if (project.name === 'Indirect') {
+      indirectHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
+    }
+  });
+
+  const totalWorkHours = data
+    ? data.projects
+        .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence')
+        .map((project) => {
+          return project.records.reduce((sum, currentValue) => currentValue.hours + sum, 0);
+        })
+        .reduce((sum, currentValue) => sum + currentValue, 0)
+    : 0;
+
+  // construct rows
+  const rowsData = data
+    ? data.projects
+        .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence')
+        .map((project) => {
+          const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
+          const indirectHour = Math.round((workHours / totalWorkHours) * indirectHours);
+
+          const inner = project.records.map((record) => {
+            return {
+              id: record.employee.id,
+              name: record.employee.name,
+              workHours: record.hours,
+              indirectHours: Math.round((record.hours / workHours) * indirectHour)
+            };
+          });
+
+          return {
+            name: project.name,
+            isBillable: project.isBillable,
+            workHours: workHours,
+            indirectHours: indirectHour,
+            billableHours: workHours + indirectHour,
+            inner: inner
+          };
+        })
+    : [];
 
   const outerTableConfig = [
     {
@@ -95,5 +105,5 @@ export const GroupByProject = () => {
     }
   ];
 
-  return <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
+  return <CollapsibleTable rows={rowsData} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
 };
