@@ -1,6 +1,5 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
-import * as React from 'react';
 
 const createData = (name: string, workHours: number, indirectHours: number, billableHours: number, inner: any) => {
   return {
