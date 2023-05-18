@@ -18,7 +18,7 @@ const inner1 = [
     name: 'Project 1',
     isBillable: true,
     workHours: 10,
-    indirectHours: 1,
+    indirectHours: 1.0,
     percentage: Math.round((10 / 60) * 100)
   },
   {
@@ -26,7 +26,7 @@ const inner1 = [
     name: 'Project 2',
     isBillable: false,
     workHours: 50,
-    indirectHours: 5,
+    indirectHours: 5.0,
     percentage: Math.round((50 / 60) * 100)
   }
 ];
@@ -64,7 +64,7 @@ export const GroupByEmployee = () => {
     },
     {
       name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours
+      render: (row: any) => row.indirectHours.toFixed(1)
     },
     {
       name: 'Billable Hours (Work + Indirect)',
