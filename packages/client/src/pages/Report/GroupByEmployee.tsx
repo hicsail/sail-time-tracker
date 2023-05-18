@@ -24,12 +24,14 @@ export const GroupByEmployee = () => {
         const inner = employee.records
           .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
           .map((record) => {
+            const indirectHour = record.hours / totalWorkHours * totalIndirectHours;
             return {
               id: record.project.id,
               name: record.project.name,
               isBillable: record.project.isBillable,
               workHours: record.hours,
-              indirectHours: ((record.hours / totalWorkHours) * totalIndirectHours).toFixed(0)
+              indirectHours: Math.round(indirectHour),
+              percentage: Math.round((indirectHour / totalIndirectHours) * 100) + "%",
             };
           });
 
@@ -60,7 +62,7 @@ export const GroupByEmployee = () => {
     {
       name: 'Billable Hours (Work + Indirect)',
       render: (row: any) => row.billableHours
-    }
+    },
   ];
 
   // inner table column name and render config
@@ -92,7 +94,10 @@ export const GroupByEmployee = () => {
     {
       name: 'Indirect Hours',
       render: (row: any) => row.indirectHours,
-      align: 'right'
+    },
+    {
+      name: 'Percentage',
+      render: (row: any) => row.percentage,
     }
   ];
 

@@ -40,7 +40,8 @@ export const GroupByProject = () => {
               id: record.employee.id,
               name: record.employee.name,
               workHours: record.hours,
-              indirectHours: Math.round((record.hours / workHours) * indirectHour)
+              indirectHours: Math.round((record.hours / workHours) * indirectHour),
+              percentage: Math.round(record.hours / workHours * 100) + '%',
             };
           });
 
@@ -49,6 +50,7 @@ export const GroupByProject = () => {
             isBillable: project.isBillable,
             workHours: workHours,
             indirectHours: indirectHour,
+            percentage: Math.round(workHours / totalWorkHours * 100) + '%',
             billableHours: workHours + indirectHour,
             inner: inner
           };
@@ -87,7 +89,11 @@ export const GroupByProject = () => {
     {
       name: 'Billable Hours',
       render: (row: any) => row.billableHours
-    }
+    },
+    {
+      name: 'Percentage',
+      render: (row: any) => row.percentage
+    },
   ];
 
   const innerTableConfig = [
@@ -102,7 +108,11 @@ export const GroupByProject = () => {
     {
       name: 'Indirect Hours',
       render: (row: any) => row.indirectHours
-    }
+    },
+    {
+      name: 'Percentage',
+      render: (row: any) => row.percentage
+    },
   ];
 
   return <CollapsibleTable rows={rowsData} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
