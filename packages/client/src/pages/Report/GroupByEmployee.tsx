@@ -1,13 +1,13 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
-import * as React from 'react';
 
-const createData = (name: string, workHours: number, indirectHours: number, billableHours: number, inner: any) => {
+const createData = (name: string, workHours: number, indirectHours: number, billableHours: number, percentage: number, inner: any) => {
   return {
     name,
     workHours,
     indirectHours,
     billableHours,
+    percentage,
     inner
   };
 };
@@ -18,14 +18,16 @@ const inner1 = [
     name: 'Project 1',
     isBillable: true,
     workHours: 10,
-    indirectHours: 1
+    indirectHours: 1.0,
+    percentage: Math.round((10 / 60) * 100)
   },
   {
     id: '2',
     name: 'Project 2',
     isBillable: false,
     workHours: 50,
-    indirectHours: 5
+    indirectHours: 5.0,
+    percentage: Math.round((50 / 60) * 100)
   }
 ];
 
@@ -35,19 +37,21 @@ const inner2 = [
     name: 'Project 1',
     isBillable: true,
     workHours: 10,
-    indirectHours: 2.5
+    indirectHours: 2.5,
+    percentage: Math.round((10 / 40) * 100)
   },
   {
     id: '2',
     name: 'Project 2',
     isBillable: false,
     workHours: 30,
-    indirectHours: 7.5
+    indirectHours: 7.5,
+    percentage: Math.round((30 / 40) * 100)
   }
 ];
 
 export const GroupByEmployee = () => {
-  const rows = [createData('Employee 1', 60, 6, 66, inner1), createData('Employee 2', 40, 10, 50, inner2)];
+  const rows = [createData('Employee 1', 60, 6, 66, Math.round((40 / 100) * 100), inner1), createData('Employee 2', 40, 10, 50, Math.round((60 / 100) * 100), inner2)];
 
   const outerTableConfig = [
     {
@@ -56,15 +60,19 @@ export const GroupByEmployee = () => {
     },
     {
       name: 'Work Hours',
-      render: (row: any) => row.workHours,
+      render: (row: any) => row.workHours
     },
     {
       name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours,
+      render: (row: any) => row.indirectHours.toFixed(1)
     },
     {
       name: 'Billable Hours (Work + Indirect)',
-      render: (row: any) => row.billableHours,
+      render: (row: any) => row.billableHours
+    },
+    {
+      name: 'Percentage',
+      render: (row: any) => row.percentage + '%'
     }
   ];
 
@@ -97,6 +105,10 @@ export const GroupByEmployee = () => {
       name: 'Indirect Hours',
       render: (row: any) => row.indirectHours,
       align: 'right'
+    },
+    {
+      name: 'Percentage',
+      render: (row: any) => row.percentage + '%'
     }
   ];
 
