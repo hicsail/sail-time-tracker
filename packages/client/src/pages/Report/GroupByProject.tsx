@@ -2,12 +2,17 @@ import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTabl
 import { Box } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
 import { startOfWeek } from 'date-fns';
+import { FC } from 'react';
 
-export const GroupByProject = () => {
+interface GroupByEmployeeProps {
+  date: Date;
+}
+
+export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
   // get all employees with records
   const { data } = useGetProjectListWithRecordQuery({
     variables: {
-      date: startOfWeek(new Date(), { weekStartsOn: 1 })
+      date: startOfWeek(date, { weekStartsOn: 1 })
     }
   });
 
