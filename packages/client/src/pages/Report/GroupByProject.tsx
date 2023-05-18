@@ -48,10 +48,7 @@ const inner2 = [
 ];
 
 export const GroupByProject = () => {
-  const rows = [
-    createData('Project 1', true, 20, 3, 23, Math.round((20 / 100) * 100), inner1),
-    createData('Project 2', true, 80, 12, 92, Math.round((80 / 100) * 100), inner2)
-  ];
+  const rows = [createData('Project 1', true, 20, 3, 23, Math.round((20 / 100) * 100), inner1), createData('Project 2', true, 80, 12, 92, Math.round((80 / 100) * 100), inner2)];
 
   const outerTableConfig = [
     {
