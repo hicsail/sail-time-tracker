@@ -29,7 +29,7 @@ export const Report = () => {
         <Box>
           <DropDownMenu data={data} onChange={handleOnChange} defaultValue={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
         </Box>
-        <Box sx={{display: 'flex', gap: 5}}>
+        <Box sx={{ display: 'flex', gap: 5 }}>
           <DatePicker
             label="Start Date"
             value={dateRange.startDate}
