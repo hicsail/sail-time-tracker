@@ -17,7 +17,6 @@ import { Report } from '@pages/Report/Report';
 import enLocale from 'date-fns/locale/en-US';
 
 function App() {
-
   if (enLocale && enLocale.options) {
     enLocale.options.weekStartsOn = 1;
   }
