@@ -31,7 +31,7 @@ export const Row = (props: { row: any; innerTableConfig: any; innerTitle: string
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography gutterBottom component="div" sx={{ fontSize: "1rem", fontWeight: 'medium'}}>
+              <Typography gutterBottom component="div" fontWeight="medium">
                 {innerTitle}
               </Typography>
               <Table size="small" aria-label="purchases">
