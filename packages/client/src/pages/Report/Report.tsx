@@ -3,11 +3,8 @@ import { GroupByProject } from '@pages/Report/GroupByProject';
 import { useState } from 'react';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import { Box, SelectChangeEvent, TextField } from '@mui/material';
-import { DateRangePickerComponent } from '@pages/Report/components/DateRangePickerComponent';
-import 'react-datepicker/dist/react-datepicker.css';
 import { DatePicker } from '@mui/x-date-pickers';
-import startOfWeek from 'date-fns/startOfWeek';
-import { endOfWeek } from 'date-fns';
+import { endOfWeek, startOfWeek } from 'date-fns';
 
 export const Report = () => {
   const [groupBy, setGroupBy] = useState<string>('1');
@@ -28,14 +25,11 @@ export const Report = () => {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-        <Box sx={{ paddingTop: '1rem' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, padding: '3rem 0' }}>
+        <Box>
           <DropDownMenu data={data} onChange={handleOnChange} defaultValue={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
         </Box>
-        <Box>
-          <DateRangePickerComponent />
-        </Box>
-        <Box>
+        <Box sx={{display: 'flex', gap: 5}}>
           <DatePicker
             label="Start Date"
             value={dateRange.startDate}
