@@ -1,6 +1,7 @@
 export enum Paths {
   TRACK = '/',
   ADMIN = '/admin',
+  REPORT = '/admin/report',
   PROJECT_lIST = '/admin/projects',
   ADD_PROJECT = '/admin/projects/add',
   EDIT_PROJECT = '/admin/projects/:id',
