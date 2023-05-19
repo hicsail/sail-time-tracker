@@ -31,7 +31,7 @@ export const CheckboxesSearch = () => {
   });
 
   // handle user select projects from search checkbox
-  const handleOnChange = (e: SyntheticEvent<Element, Event>, value: ProjectModel[]) => {
+  const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any[]) => {
     setSelectedProjects(value);
   };
 
@@ -70,7 +70,7 @@ export const CheckboxesSearch = () => {
       getOptionLabel={(option) => option.name}
       filterOptions={(options) => {
         if (employeeData) {
-          const ignoredValues = employeeData.employee.projects.map((project: ProjectModel) => project.id);
+          const ignoredValues = employeeData.employee.projects.map((project: any) => project.id);
           return options.filter((option) => {
             return !ignoredValues.includes(option.id);
           });
