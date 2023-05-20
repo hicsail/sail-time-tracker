@@ -12,6 +12,21 @@ export type GetProjectListQuery = {
   projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
 };
 
+export type GetProjectListWithRecordQueryVariables = Types.Exact<{
+  date: Types.Scalars['DateTime'];
+}>;
+
+export type GetProjectListWithRecordQuery = {
+  __typename?: 'Query';
+  projects: Array<{
+    __typename?: 'ProjectModel';
+    id: string;
+    name: string;
+    isBillable: boolean;
+    records: Array<{ __typename?: 'RecordModelWithEmployee'; startDate: any; endDate: any; hours: number; employee: { __typename?: 'EmployeeModel'; id: string; name: string } }>;
+  }>;
+};
+
 export type GetProjectByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
@@ -74,6 +89,52 @@ export function useGetProjectListLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetProjectListQueryHookResult = ReturnType<typeof useGetProjectListQuery>;
 export type GetProjectListLazyQueryHookResult = ReturnType<typeof useGetProjectListLazyQuery>;
 export type GetProjectListQueryResult = Apollo.QueryResult<GetProjectListQuery, GetProjectListQueryVariables>;
+export const GetProjectListWithRecordDocument = gql`
+  query getProjectListWithRecord($date: DateTime!) {
+    projects {
+      id
+      name
+      isBillable
+      records(date: $date) {
+        startDate
+        endDate
+        hours
+        employee {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetProjectListWithRecordQuery__
+ *
+ * To run a query within a React component, call `useGetProjectListWithRecordQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectListWithRecordQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectListWithRecordQuery({
+ *   variables: {
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useGetProjectListWithRecordQuery(baseOptions: Apollo.QueryHookOptions<GetProjectListWithRecordQuery, GetProjectListWithRecordQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetProjectListWithRecordQuery, GetProjectListWithRecordQueryVariables>(GetProjectListWithRecordDocument, options);
+}
+export function useGetProjectListWithRecordLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectListWithRecordQuery, GetProjectListWithRecordQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetProjectListWithRecordQuery, GetProjectListWithRecordQueryVariables>(GetProjectListWithRecordDocument, options);
+}
+export type GetProjectListWithRecordQueryHookResult = ReturnType<typeof useGetProjectListWithRecordQuery>;
+export type GetProjectListWithRecordLazyQueryHookResult = ReturnType<typeof useGetProjectListWithRecordLazyQuery>;
+export type GetProjectListWithRecordQueryResult = Apollo.QueryResult<GetProjectListWithRecordQuery, GetProjectListWithRecordQueryVariables>;
 export const GetProjectByIdDocument = gql`
   query getProjectById($id: String!) {
     project(id: $id) {

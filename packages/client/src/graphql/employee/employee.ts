@@ -4,13 +4,32 @@ import * as Types from '../graphql';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-
 const defaultOptions = {} as const;
 export type GetEmployeeListQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type GetEmployeeListQuery = {
   __typename?: 'Query';
   employees: Array<{ __typename?: 'EmployeeModel'; id: string; email: string; name: string; rate: number; status?: string | null }>;
+};
+
+export type GetEmployeeListWithRecordQueryVariables = Types.Exact<{
+  date: Types.Scalars['DateTime'];
+}>;
+
+export type GetEmployeeListWithRecordQuery = {
+  __typename?: 'Query';
+  employees: Array<{
+    __typename?: 'EmployeeModel';
+    id: string;
+    name: string;
+    records: Array<{
+      __typename?: 'RecordModelWithProject';
+      startDate: any;
+      endDate: any;
+      hours: number;
+      project: { __typename?: 'ProjectModel'; id: string; name: string; isBillable: boolean };
+    }>;
+  }>;
 };
 
 export type GetEmployeeByIdQueryVariables = Types.Exact<{
@@ -117,6 +136,52 @@ export function useGetEmployeeListLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetEmployeeListQueryHookResult = ReturnType<typeof useGetEmployeeListQuery>;
 export type GetEmployeeListLazyQueryHookResult = ReturnType<typeof useGetEmployeeListLazyQuery>;
 export type GetEmployeeListQueryResult = Apollo.QueryResult<GetEmployeeListQuery, GetEmployeeListQueryVariables>;
+export const GetEmployeeListWithRecordDocument = gql`
+  query getEmployeeListWithRecord($date: DateTime!) {
+    employees {
+      id
+      name
+      records(date: $date) {
+        startDate
+        endDate
+        hours
+        project {
+          id
+          name
+          isBillable
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetEmployeeListWithRecordQuery__
+ *
+ * To run a query within a React component, call `useGetEmployeeListWithRecordQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEmployeeListWithRecordQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEmployeeListWithRecordQuery({
+ *   variables: {
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useGetEmployeeListWithRecordQuery(baseOptions: Apollo.QueryHookOptions<GetEmployeeListWithRecordQuery, GetEmployeeListWithRecordQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetEmployeeListWithRecordQuery, GetEmployeeListWithRecordQueryVariables>(GetEmployeeListWithRecordDocument, options);
+}
+export function useGetEmployeeListWithRecordLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEmployeeListWithRecordQuery, GetEmployeeListWithRecordQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetEmployeeListWithRecordQuery, GetEmployeeListWithRecordQueryVariables>(GetEmployeeListWithRecordDocument, options);
+}
+export type GetEmployeeListWithRecordQueryHookResult = ReturnType<typeof useGetEmployeeListWithRecordQuery>;
+export type GetEmployeeListWithRecordLazyQueryHookResult = ReturnType<typeof useGetEmployeeListWithRecordLazyQuery>;
+export type GetEmployeeListWithRecordQueryResult = Apollo.QueryResult<GetEmployeeListWithRecordQuery, GetEmployeeListWithRecordQueryVariables>;
 export const GetEmployeeByIdDocument = gql`
   query getEmployeeById($id: String!) {
     employee(id: $id) {

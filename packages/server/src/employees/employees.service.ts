@@ -4,7 +4,7 @@ import { Prisma, Employee } from '@prisma/client';
 import { EmployeeDeleteReturnModel } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
 import { endOfWeek, previousDay } from 'date-fns';
-import { RecordModel, RecordWithFavoriteProjectModel } from '../record/model/record.model';
+import { RecordModelWithProject, RecordWithFavoriteProjectModel } from '../record/model/record.model';
 
 @Injectable()
 export class EmployeesService {
@@ -101,7 +101,7 @@ export class EmployeesService {
    * @param employeeId represents employee id
    * @param date
    */
-  async getRecords(employeeId: string, date: Date): Promise<RecordModel[]> {
+  async getRecords(employeeId: string, date: Date): Promise<RecordModelWithProject[]> {
     const records = await this.prisma.record.findMany({
       where: {
         employeeId: employeeId,
@@ -114,11 +114,10 @@ export class EmployeesService {
 
     return records.map((record) => {
       return {
-        employeeId: record.employeeId,
-        projectId: record.projectId,
-        hours: record.hours,
         startDate: record.date,
-        endDate: endOfWeek(record.date, { weekStartsOn: 0 })
+        endDate: endOfWeek(record.date, { weekStartsOn: 0 }),
+        hours: record.hours,
+        project: record.project
       };
     });
   }

@@ -1,7 +1,8 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { ProjectService } from './project.service';
 import { ProjectDeleteReturnModel, ProjectModel } from './model/project.model';
 import { ProjectCreateInput, ProjectUpdateInput } from './dto/project.dto';
+import { RecordModelWithEmployee } from '../record/model/record.model';
 
 @Resolver(() => ProjectModel)
 export class ProjectResolver {
@@ -15,6 +16,11 @@ export class ProjectResolver {
   @Query(() => ProjectModel)
   async project(@Args('id') id: string): Promise<ProjectModel> {
     return this.projectService.getProjectById(id);
+  }
+
+  @ResolveField(() => [RecordModelWithEmployee])
+  async records(@Parent() project: ProjectModel, @Args('date') date: Date): Promise<RecordModelWithEmployee[]> {
+    return this.projectService.getRecords(project.id, date);
   }
 
   @Mutation(() => ProjectModel)

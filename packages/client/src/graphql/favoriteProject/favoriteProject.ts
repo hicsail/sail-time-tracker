@@ -4,7 +4,6 @@ import * as Types from '../graphql';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-
 const defaultOptions = {} as const;
 export type AddFavoriteProjectMutationVariables = Types.Exact<{
   favoriteProject: Array<Types.FavoriteProjectCreateInput> | Types.FavoriteProjectCreateInput;
@@ -49,7 +48,6 @@ export function useAddFavoriteProjectMutation(baseOptions?: Apollo.MutationHookO
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<AddFavoriteProjectMutation, AddFavoriteProjectMutationVariables>(AddFavoriteProjectDocument, options);
 }
-
 export type AddFavoriteProjectMutationHookResult = ReturnType<typeof useAddFavoriteProjectMutation>;
 export type AddFavoriteProjectMutationResult = Apollo.MutationResult<AddFavoriteProjectMutation>;
 export type AddFavoriteProjectMutationOptions = Apollo.BaseMutationOptions<AddFavoriteProjectMutation, AddFavoriteProjectMutationVariables>;
@@ -84,7 +82,6 @@ export function useDeleteFavoriteProjectMutation(baseOptions?: Apollo.MutationHo
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<DeleteFavoriteProjectMutation, DeleteFavoriteProjectMutationVariables>(DeleteFavoriteProjectDocument, options);
 }
-
 export type DeleteFavoriteProjectMutationHookResult = ReturnType<typeof useDeleteFavoriteProjectMutation>;
 export type DeleteFavoriteProjectMutationResult = Apollo.MutationResult<DeleteFavoriteProjectMutation>;
 export type DeleteFavoriteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteFavoriteProjectMutation, DeleteFavoriteProjectMutationVariables>;

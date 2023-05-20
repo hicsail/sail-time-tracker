@@ -8,6 +8,23 @@ query getProjectList {
   }
 }
 
+query getProjectListWithRecord($date: DateTime!) {
+  projects {
+    id
+    name
+    isBillable
+    records(date: $date) {
+      startDate
+      endDate
+      hours
+      employee {
+        id
+        name
+      }
+    }
+  }
+}
+
 query getProjectById($id: String!) {
   project(id: $id) {
     name

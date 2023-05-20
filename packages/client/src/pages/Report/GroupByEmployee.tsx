@@ -1,58 +1,56 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
+import { useGetEmployeeListWithRecordQuery } from '@graphql/employee/employee';
+import { startOfWeek } from 'date-fns';
+import { FC } from 'react';
 
-const createData = (name: string, workHours: number, indirectHours: number, billableHours: number, percentage: number, inner: any) => {
-  return {
-    name,
-    workHours,
-    indirectHours,
-    billableHours,
-    percentage,
-    inner
-  };
-};
+interface GroupByEmployeeProps {
+  date: Date;
+}
 
-const inner1 = [
-  {
-    id: '1',
-    name: 'Project 1',
-    isBillable: true,
-    workHours: 10,
-    indirectHours: 1.0,
-    percentage: Math.round((10 / 60) * 100)
-  },
-  {
-    id: '2',
-    name: 'Project 2',
-    isBillable: false,
-    workHours: 50,
-    indirectHours: 5.0,
-    percentage: Math.round((50 / 60) * 100)
-  }
-];
+export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
+  // get all employees with records
+  const { data } = useGetEmployeeListWithRecordQuery({
+    variables: {
+      date: startOfWeek(date, { weekStartsOn: 1 })
+    }
+  });
 
-const inner2 = [
-  {
-    id: '1',
-    name: 'Project 1',
-    isBillable: true,
-    workHours: 10,
-    indirectHours: 2.5,
-    percentage: Math.round((10 / 40) * 100)
-  },
-  {
-    id: '2',
-    name: 'Project 2',
-    isBillable: false,
-    workHours: 30,
-    indirectHours: 7.5,
-    percentage: Math.round((30 / 40) * 100)
-  }
-];
+  // construct rows
+  const rows = data
+    ? data.employees.map((employee) => {
+        const totalWorkHours = employee.records
+          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+          .reduce((sum, currentValue) => sum + currentValue.hours, 0);
 
-export const GroupByEmployee = () => {
-  const rows = [createData('Employee 1', 60, 6, 66, Math.round((40 / 100) * 100), inner1), createData('Employee 2', 40, 10, 50, Math.round((60 / 100) * 100), inner2)];
+        let totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
 
+        // projects in record that belongs the employee, excludes indirect and absence
+        const inner = employee.records
+          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+          .map((record) => {
+            const indirectHour = (record.hours / totalWorkHours) * totalIndirectHours;
+            return {
+              id: record.project.id,
+              name: record.project.name,
+              isBillable: record.project.isBillable,
+              workHours: record.hours,
+              indirectHours: Math.round(indirectHour),
+              percentage: Math.round((indirectHour / totalIndirectHours) * 100) + '%'
+            };
+          });
+
+        return {
+          name: employee.name,
+          workHours: totalWorkHours,
+          indirectHours: totalIndirectHours,
+          billableHours: totalWorkHours + totalIndirectHours,
+          inner: inner
+        };
+      })
+    : [];
+
+  // outer table column name and render config
   const outerTableConfig = [
     {
       name: 'Employees',
@@ -64,18 +62,15 @@ export const GroupByEmployee = () => {
     },
     {
       name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours.toFixed(1)
+      render: (row: any) => row.indirectHours
     },
     {
       name: 'Billable Hours (Work + Indirect)',
       render: (row: any) => row.billableHours
-    },
-    {
-      name: 'Percentage',
-      render: (row: any) => row.percentage + '%'
     }
   ];
 
+  // inner table column name and render config
   const innerTableConfig = [
     {
       name: 'Name',
@@ -103,12 +98,11 @@ export const GroupByEmployee = () => {
     },
     {
       name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours,
-      align: 'right'
+      render: (row: any) => row.indirectHours
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage + '%'
+      render: (row: any) => row.percentage
     }
   ];
 

@@ -1,54 +1,66 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
+import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
+import { startOfWeek } from 'date-fns';
+import { FC } from 'react';
 
-function createData(name: string, isBillable: boolean, workHours: number, indirectHours: number, billableHours: number, percentage: number, inner: any) {
-  return {
-    name,
-    isBillable,
-    workHours,
-    indirectHours,
-    billableHours,
-    percentage,
-    inner
-  };
+interface GroupByEmployeeProps {
+  date: Date;
 }
 
-const inner1 = [
-  {
-    id: '1',
-    name: 'Employee 1',
-    workHours: 10,
-    indirectHours: Math.round(1.5),
-    percentage: (10 / 20) * 100
-  },
-  {
-    id: '2',
-    name: 'Employee 2',
-    workHours: 10,
-    indirectHours: Math.round(1.5),
-    percentage: Math.round((10 / 20) * 100)
-  }
-];
+export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
+  // get all employees with records
+  const { data } = useGetProjectListWithRecordQuery({
+    variables: {
+      date: startOfWeek(date, { weekStartsOn: 1 })
+    }
+  });
 
-const inner2 = [
-  {
-    id: '1',
-    name: 'Employee 1',
-    workHours: 50,
-    indirectHours: 7.5,
-    percentage: Math.round((50 / 80) * 100)
-  },
-  {
-    id: '2',
-    name: 'Employee 2',
-    workHours: 30,
-    indirectHours: 4.5,
-    percentage: Math.round((30 / 80) * 100)
-  }
-];
+  let indirectHours = 0;
+  data?.projects.forEach((project) => {
+    if (project.name === 'Indirect') {
+      indirectHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
+    }
+  });
 
-export const GroupByProject = () => {
-  const rows = [createData('Project 1', true, 20, 3, 23, Math.round((20 / 100) * 100), inner1), createData('Project 2', true, 80, 12, 92, Math.round((80 / 100) * 100), inner2)];
+  const totalWorkHours = data
+    ? data.projects
+        .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence')
+        .map((project) => {
+          return project.records.reduce((sum, currentValue) => currentValue.hours + sum, 0);
+        })
+        .reduce((sum, currentValue) => sum + currentValue, 0)
+    : 0;
+
+  // construct rows
+  const rowsData = data
+    ? data.projects
+        .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence')
+        .map((project) => {
+          const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
+          const indirectHour = Math.round((workHours / totalWorkHours) * indirectHours);
+
+          const inner = project.records.map((record) => {
+            return {
+              id: record.employee.id,
+              name: record.employee.name,
+              workHours: record.hours,
+              indirectHours: Math.round((record.hours / workHours) * indirectHour),
+              percentage: Math.round((record.hours / workHours) * 100) + '%'
+            };
+          });
+
+          return {
+            name: project.name,
+            isBillable: project.isBillable,
+            workHours: workHours,
+            indirectHours: indirectHour,
+            percentage: Math.round((workHours / totalWorkHours) * 100) + '%',
+            billableHours: workHours + indirectHour,
+            inner: inner
+          };
+        })
+    : [];
 
   const outerTableConfig = [
     {
@@ -85,7 +97,7 @@ export const GroupByProject = () => {
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage + '%'
+      render: (row: any) => row.percentage
     }
   ];
 
@@ -104,9 +116,9 @@ export const GroupByProject = () => {
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage + '%'
+      render: (row: any) => row.percentage
     }
   ];
 
-  return <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
+  return <CollapsibleTable rows={rowsData} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
 };

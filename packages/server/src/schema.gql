@@ -9,7 +9,7 @@ type EmployeeModel {
   rate: Float!
   status: String
   projects: [ProjectModel!]!
-  records(date: DateTime!): [RecordModel!]!
+  records(date: DateTime!): [RecordModelWithProject!]!
   recordsWithFavoriteProjects(date: DateTime!): [RecordWithFavoriteProjectModel!]!
 }
 
@@ -28,6 +28,7 @@ type ProjectModel {
   status: String!
   description: String!
   isBillable: Boolean!
+  records(date: DateTime!): [RecordModelWithEmployee!]!
 }
 
 type ProjectDeleteReturnModel {
@@ -41,12 +42,18 @@ type RecordInsertOrUpdateModel {
   hours: Float!
 }
 
-type RecordModel {
-  employeeId: ID!
-  projectId: ID!
+type RecordModelWithProject {
   startDate: DateTime!
   endDate: DateTime!
   hours: Float!
+  project: ProjectModel!
+}
+
+type RecordModelWithEmployee {
+  startDate: DateTime!
+  endDate: DateTime!
+  hours: Float!
+  employee: EmployeeModel!
 }
 
 type RecordWithFavoriteProjectModel {
@@ -55,6 +62,7 @@ type RecordWithFavoriteProjectModel {
   status: String!
   description: String!
   isBillable: Boolean!
+  records(date: DateTime!): [RecordModelWithEmployee!]!
   isFavorite: Boolean!
   hours: Float!
   previousWeek: Float!

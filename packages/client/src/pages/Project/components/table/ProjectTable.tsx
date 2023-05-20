@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
-import { ProjectModel } from '@graphql/graphql';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
 
 interface ProjectTableProps {
-  rows: ProjectModel[];
+  rows: any[];
 }
 
 export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
