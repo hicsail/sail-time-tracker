@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
 import { startOfWeek } from 'date-fns';
 import { FC } from 'react';
+import { formatHours } from '../../utils/formatHours';
 
 interface GroupByEmployeeProps {
   date: Date;
@@ -38,25 +39,25 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
         .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence')
         .map((project) => {
           const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
-          const indirectHour = Math.round((workHours / totalWorkHours) * indirectHours);
+          const indirectHour = (workHours / totalWorkHours) * indirectHours;
 
           const inner = project.records.map((record) => {
             return {
               id: record.employee.id,
               name: record.employee.name,
-              workHours: record.hours,
-              indirectHours: Math.round((record.hours / workHours) * indirectHour),
-              percentage: Math.round((record.hours / workHours) * 100) + '%'
+              workHours: formatHours(record.hours),
+              indirectHours: formatHours((record.hours / workHours) * indirectHour),
+              percentage: formatHours((record.hours / workHours) * 100)
             };
           });
 
           return {
             name: project.name,
             isBillable: project.isBillable,
-            workHours: workHours,
-            indirectHours: indirectHour,
-            percentage: Math.round((workHours / totalWorkHours) * 100) + '%',
-            billableHours: workHours + indirectHour,
+            workHours: formatHours(workHours),
+            indirectHours: formatHours(indirectHour),
+            percentage: formatHours((workHours / totalWorkHours) * 100),
+            billableHours: formatHours(workHours + indirectHour),
             inner: inner
           };
         })
@@ -97,7 +98,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage
+      render: (row: any) => row.percentage + '%'
     }
   ];
 
@@ -116,7 +117,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage
+      render: (row: any) => row.percentage + '%'
     }
   ];
 
