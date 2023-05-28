@@ -37,7 +37,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
               isBillable: record.project.isBillable,
               workHours: formatHours(record.hours),
               indirectHours: formatHours(indirectHour),
-              percentage: formatHours((record.hours / totalWorkHours) * 100) + '%'
+              percentage: formatHours((record.hours / totalWorkHours) * 100)
             };
           });
 
@@ -103,7 +103,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage
+      render: (row: any) => row.percentage + '%'
     }
   ];
 
