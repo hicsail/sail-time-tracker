@@ -12,3 +12,7 @@ export const formatHours = (value: number) => {
 
   return integer;
 };
+
+export const formatPercentage = (value: number) => {
+  return (value * 100).toFixed(1);
+};
