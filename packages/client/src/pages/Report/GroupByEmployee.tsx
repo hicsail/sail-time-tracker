@@ -13,7 +13,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
   // get all employees with records
   const { data } = useGetEmployeeListWithRecordQuery({
     variables: {
-      date: startOfWeek(date, { weekStartsOn: 1 })
+      date: date
     }
   });
 
