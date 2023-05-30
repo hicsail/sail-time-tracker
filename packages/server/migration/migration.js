@@ -1,0 +1,223 @@
+const sqlite3 = require('sqlite3').verbose();
+const postgres = require('postgres');
+require('dotenv').config();
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const {startOfWeek} = require("date-fns");
+
+// Specify the path to your SQLite database file
+const dbPath = './timetracker.db';
+const sql = postgres('postgres://cxyue:@localhost:5432/postgres');
+// const sql = postgres('postgres://chenxinyue:@localhost:5432/postgres');
+
+// Create a new SQLite database instance
+const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
+  if (err) {
+    console.error(err.message);
+    return;
+  }
+  console.log('Connected to the SQLite database.');
+});
+
+let employeeMapList = [];
+let employeeMap = new Map();
+
+let projectMapList = [];
+let projectMap = new Map();
+
+const readOldEmployeeData = (employees) => {
+  if (employees && employees.length > 0) {
+    employees.forEach((employee) => {
+      if (!employeeMap.get(employee.id)) {
+        let newEmployeeId = uuidv4();
+        employeeMap.set(employee.id, newEmployeeId);
+        employeeMapList.push({ oldEmployeeId: employee.id, newEmployeeId: newEmployeeId });
+      };
+    });
+
+    insertEmployees(employees);
+  }
+};
+
+const readOldProjectData = (projects) => {
+  if (projects && projects.length > 0) {
+    projects.forEach((project) => {
+      if (!projectMap.get(project.id)) {
+        let newProjectId = uuidv4();
+        projectMap.set(project.id, newProjectId);
+        projectMapList.push({ oldProjectId: project.id, newProjectId: newProjectId });
+      }
+    });
+
+    insertProjects(projects);
+  }
+};
+
+const readEmployeeIdMapData = (employees) => {
+  // retrieve employee data from file
+  if (employees && employees.length > 0) {
+    employees.forEach((employee) => {
+      if (!employeeMap.get(employee.oldEmployeeId)) {
+        employeeMap.set(employee.oldEmployeeId, employee.newEmployeeId);
+        employeeMapList.push({ oldEmployeeId: employee.oldEmployeeId, newEmployeeId: employee.newEmployeeId });
+      }
+    });
+  }
+};
+
+const readProjectIdMapData = (projects) => {
+  if(projects && projects.length > 0) {
+    projects.forEach((project) => {
+      if (!projectMap.get(project.oldProjectId)) {
+        projectMap.set(project.oldProjectId, project.newProjectId);
+        projectMapList.push({ oldProjectId: project.oldProjectId, newProjectId: project.newProjectId });
+      }
+    });
+  }
+}
+
+const insertEmployees = (employees) => {
+  employees.forEach(async (employee, index) => {
+    const newEmployee = {
+      id: employeeMap.get(employee.id),
+      email: `employee${index}@bu.edu`,
+      name: employee.name,
+      rate: 65,
+      status: `${employee.archive ? 'Inactive' : 'Active'}`
+    };
+
+    await sql`
+      INSERT INTO "Employee" ("id", "email", "name", "rate", "status")
+      VALUES (${newEmployee.id}, ${newEmployee.email}, ${newEmployee.name}, ${newEmployee.rate}, ${newEmployee.status})
+      ON CONFLICT DO NOTHING
+    `;
+  });
+}
+
+const insertProjects = (projects) => {
+  projects.forEach(async (project, index) => {
+    if (project.id !== 'sick' || project.id !== 'vacation') {
+      let newProject = {
+        id: projectMap.get(project.id),
+        name: project.name,
+        description: project.name,
+        status: `${project.archive ? 'Inactive' : 'Active'}`,
+        isBillable: true
+      };
+
+      try {
+        await sql`
+          INSERT INTO "Project" ("id", "name", "description", "status", "isBillable")
+          VALUES (${newProject.id}, ${newProject.name}, ${newProject.description}, ${newProject.status}, ${newProject.isBillable})
+        `;
+      } catch (e) {
+        await sql`
+          INSERT INTO "Project" ("id", "name", "description", "status", "isBillable")
+          VALUES (${newProject.id}, ${newProject.name + "2"}, ${newProject.description}, ${newProject.status}, ${newProject.isBillable})
+          ON CONFLICT DO NOTHING
+        `;
+      }
+    }
+  });
+}
+
+// Perform database operations
+db.serialize(() => {
+
+  /**
+   * retrieve employee id map
+   * {oldEmployeeId: string, newEmployeeId: string}
+   * from employee.json
+   */
+  try {
+    const data = fs.readFileSync('./employee.json', 'utf-8');
+    readEmployeeIdMapData(JSON.parse(data));
+  } catch (e) {
+    console.log(e.message);
+  }
+
+  /**
+   * retrieve project id map
+   * {oldProjectId: string, newProjectId: string}
+   * from employee.json
+   */
+  try {
+    const data = fs.readFileSync('./project.json', 'utf-8');
+    readProjectIdMapData(JSON.parse(data));
+  } catch (e) {
+    console.log(e.message);
+  }
+
+  /**
+   * retrieve old employee data
+   * id, name, rate, archive
+   * from emloyees.json
+   */
+  try {
+    const data = fs.readFileSync('./employees.json', 'utf-8');
+    readOldEmployeeData(JSON.parse(data));
+  } catch (e) {
+    console.log(e.message);
+  }
+
+  /**
+   * retrieve old project data
+   * id, name, archive
+   * from projects.json
+   */
+  try {
+    const data = fs.readFileSync('./projects.json', 'utf-8');
+    readOldProjectData(JSON.parse(data));
+  } catch (e) {
+    console.log(e.message);
+  }
+
+  db.all('SELECT * FROM hours', [], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return;
+    }
+
+    // insert record into new database
+    rows.forEach(async (row) => {
+      if (row.project_id !== 'sick' && row.project_id !== 'vacation') {
+        const date = new Date(row.date).setUTCHours(4, 0, 0, 0);
+
+        try {
+          await sql`
+          INSERT INTO "Record" ("date", "employeeId", "projectId", "hours")
+          VALUES (${date}, ${employeeMap.get(row.employee_id)}, ${projectMap.get(row.project_id)}, ${row.hours})
+          ON CONFLICT DO NOTHING
+        `;
+        } catch (e) {
+          console.log(e.message);
+          console.log(row)
+        }
+      }
+    });
+  });
+
+  // write employee id map to a file
+  fs.writeFile('./employee.json', JSON.stringify(employeeMapList), (err) => {
+    if (!err) {
+      console.log('done');
+    }
+  });
+
+  // write project id map to a file
+  fs.writeFile('./project.json', JSON.stringify(projectMapList), (err) => {
+    if (!err) {
+      console.log('done');
+    }
+  });
+});
+
+
+// Close the database connection
+db.close((err) => {
+  if (err) {
+    console.error(err.message);
+    return;
+  }
+  console.log('Closed the SQLite database connection.');
+});
