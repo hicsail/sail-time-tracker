@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
 import { startOfWeek } from 'date-fns';
 import { FC } from 'react';
-import { formatHours } from '../../utils/formatHours';
+import { formatHours, formatPercentage } from '../../utils/formatHours';
 
 interface GroupByEmployeeProps {
   date: Date;
@@ -47,7 +47,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
               name: record.employee.name,
               workHours: formatHours(record.hours),
               indirectHours: formatHours((record.hours / workHours) * indirectHour),
-              percentage: formatHours((record.hours / workHours) * 100)
+              percentage: formatPercentage(record.hours / workHours)
             };
           });
 
@@ -56,7 +56,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
             isBillable: project.isBillable,
             workHours: formatHours(workHours),
             indirectHours: formatHours(indirectHour),
-            percentage: formatHours((workHours / totalWorkHours) * 100),
+            percentage: formatPercentage(workHours / totalWorkHours),
             billableHours: formatHours(workHours + indirectHour),
             inner: inner
           };
