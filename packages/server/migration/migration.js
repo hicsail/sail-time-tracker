@@ -3,7 +3,6 @@ const postgres = require('postgres');
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
-const {startOfWeek} = require("date-fns");
 
 // Specify the path to your SQLite database file
 const dbPath = './timetracker.db';
@@ -32,7 +31,7 @@ const readOldEmployeeData = (employees) => {
         let newEmployeeId = uuidv4();
         employeeMap.set(employee.id, newEmployeeId);
         employeeMapList.push({ oldEmployeeId: employee.id, newEmployeeId: newEmployeeId });
-      };
+      }
     });
 
     insertEmployees(employees);
@@ -95,8 +94,9 @@ const insertEmployees = (employees) => {
 }
 
 const insertProjects = (projects) => {
-  projects.forEach(async (project, index) => {
-    if (project.id !== 'sick' || project.id !== 'vacation') {
+  projects.forEach(async (project) => {
+    if (project.id !== 'sick' && project.id !== 'vacation' && project.name !== "Development") {
+      console.log(project);
       let newProject = {
         id: projectMap.get(project.id),
         name: project.name,
@@ -181,17 +181,28 @@ db.serialize(() => {
     // insert record into new database
     rows.forEach(async (row) => {
       if (row.project_id !== 'sick' && row.project_id !== 'vacation') {
-        const date = new Date(row.date).setUTCHours(4, 0, 0, 0);
+        if(row.project_id === 1000) {
+          try {
+            await sql`
+              UPDATE "Record"
+              SET hours = hours + ${row.hours}
+              WHERE "date" = ${row.date} AND "employeeId" = ${employeeMap.get(row.employee_id)} AND "projectId" = ${projectMap.get(0)}
+            `;
+          } catch (e) {
+            console.log(e.message);
+          }
+        } else {
+          const date = new Date(row.date).setUTCHours(4, 0, 0, 0);
 
-        try {
-          await sql`
-          INSERT INTO "Record" ("date", "employeeId", "projectId", "hours")
-          VALUES (${date}, ${employeeMap.get(row.employee_id)}, ${projectMap.get(row.project_id)}, ${row.hours})
-          ON CONFLICT DO NOTHING
-        `;
-        } catch (e) {
-          console.log(e.message);
-          console.log(row)
+          try {
+            await sql`
+              INSERT INTO "Record" ("date", "employeeId", "projectId", "hours")
+              VALUES (${date}, ${employeeMap.get(row.employee_id)}, ${projectMap.get(row.project_id)}, ${row.hours})
+              ON CONFLICT DO NOTHING
+            `;
+          } catch (e) {
+            console.log(e.message);
+          }
         }
       }
     });
