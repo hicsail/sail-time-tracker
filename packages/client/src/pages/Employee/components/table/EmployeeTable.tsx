@@ -1,8 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { Box, Chip, TableBody, Table, TableCell, TableContainer, TableRow, Paper, Checkbox, Button } from '@mui/material';
-
+import { Box, Chip, TableBody, Table, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, TablePagination } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
@@ -15,8 +13,10 @@ interface EmployeeTableProps {
 }
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const [selected, setSelected] = useState<readonly string[]>([]);
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
   const rows = data?.employees ? data.employees : [];
 
@@ -71,6 +71,17 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
     return selected.indexOf(id) !== -1;
   };
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper
@@ -87,7 +98,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
             <TableBody>
-              {rows.map((row, index) => {
+              {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -156,6 +167,15 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
         {rows.length == 0 && (
           <Box>
             <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
