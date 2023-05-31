@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { useGetEmployeeListWithRecordQuery } from '@graphql/employee/employee';
 import { startOfWeek } from 'date-fns';
 import { FC } from 'react';
+import { formatHours, formatPercentage } from '../../utils/formatHours';
 
 interface GroupByEmployeeProps {
   date: Date;
@@ -34,17 +35,17 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
               id: record.project.id,
               name: record.project.name,
               isBillable: record.project.isBillable,
-              workHours: record.hours,
-              indirectHours: Math.round(indirectHour),
-              percentage: Math.round((indirectHour / totalIndirectHours) * 100) + '%'
+              workHours: formatHours(record.hours),
+              indirectHours: formatHours(indirectHour),
+              percentage: formatPercentage((record.hours / totalWorkHours) * 100)
             };
           });
 
         return {
           name: employee.name,
-          workHours: totalWorkHours,
-          indirectHours: totalIndirectHours,
-          billableHours: totalWorkHours + totalIndirectHours,
+          workHours: formatHours(totalWorkHours),
+          indirectHours: formatHours(totalIndirectHours),
+          billableHours: formatHours(totalWorkHours + totalIndirectHours),
           inner: inner
         };
       })
@@ -102,7 +103,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage
+      render: (row: any) => row.percentage + '%'
     }
   ];
 
