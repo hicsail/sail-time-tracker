@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip, TablePagination } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
@@ -15,6 +15,8 @@ interface ProjectTableProps {
 export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
 
   /**
@@ -71,6 +73,17 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
     return selected.indexOf(id) !== -1;
   };
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper
@@ -87,7 +100,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
             <TableBody>
-              {rows.map((row, index) => {
+              {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -177,6 +190,15 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
             </FormDialog>
           </Box>
         )}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Paper>
     </Box>
   );
