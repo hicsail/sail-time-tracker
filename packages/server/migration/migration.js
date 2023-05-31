@@ -1,6 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
 const postgres = require('postgres');
-require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
@@ -95,8 +94,8 @@ const insertEmployees = (employees) => {
 
 const insertProjects = (projects) => {
   projects.forEach(async (project) => {
+    // inserting projects excludes sick, vacation, development project
     if (project.id !== 'sick' && project.id !== 'vacation' && project.name !== "Development") {
-      console.log(project);
       let newProject = {
         id: projectMap.get(project.id),
         name: project.name,
@@ -172,6 +171,7 @@ db.serialize(() => {
     console.log(e.message);
   }
 
+  // select all hours from old database
   db.all('SELECT * FROM hours', [], (err, rows) => {
     if (err) {
       console.error(err.message);
@@ -181,6 +181,7 @@ db.serialize(() => {
     // insert record into new database
     rows.forEach(async (row) => {
       if (row.project_id !== 'sick' && row.project_id !== 'vacation') {
+        // if record is belong to Development, add its hours to Indirect
         if(row.project_id === 1000) {
           try {
             await sql`
