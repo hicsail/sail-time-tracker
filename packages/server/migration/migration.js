@@ -5,8 +5,8 @@ const fs = require('fs');
 require('dotenv').config({ path: '../.env' });
 
 // Specify the path to your SQLite database file
-const dbPath = `${process.env.S3_BUCKET}`;
-const sql = postgres(`${process.env.NEWDB_PATH}`);
+const dbPath = `${process.env.OLDDB_PATH}`;
+const sql= postgres(`${process.env.NEWDB_PATH}`);
 
 // Create a new SQLite database instance
 const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
