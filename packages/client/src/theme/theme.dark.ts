@@ -14,15 +14,29 @@ export const themeDark = createTheme({
       dark: '#002884',
       contrastText: '#fff'
     },
+    secondary: {
+      light: '#B6B3C3',
+      main: '#767575',
+      dark: '#262626',
+      contrastText: '#fff'
+    },
+    success: {
+      light: '#2A4947',
+      main: '#5da49f',
+      dark: ''
+    },
+    error: {
+      light: '#8B3B3D',
+      main: '#dd8e94',
+      dark: ''
+    },
     customColors: {
       iconHoverColor: '#64ffda',
       iconColor: '#ccd6f6',
       sidebarBg: '#171C22',
       cardBg: '#171C22',
       cardTextTopColor: '#a3a3a3',
-      cardTextBottomColor: 'white',
-      statusBtnBg: '#2A4947',
-      statusBtnText: '#5da49f'
+      cardTextBottomColor: 'white'
     }
   }
 });
