@@ -144,8 +144,8 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       <Chip
                         label={row.status}
                         sx={{
-                          backgroundColor: 'customColors.statusBtnBg',
-                          color: 'customColors.statusBtnText',
+                          backgroundColor: row.status === 'Active' ? 'success.light' : 'error.light',
+                          color: row.status === 'Active' ? 'success.main' : 'error.main',
                           padding: '0 10px'
                         }}
                       />
@@ -154,8 +154,8 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       <Chip
                         label={row.isBillable.toString()}
                         sx={{
-                          backgroundColor: 'customColors.statusBtnBg',
-                          color: 'customColors.statusBtnText',
+                          backgroundColor: row.isBillable ? 'success.light' : 'error.light',
+                          color: row.isBillable ? 'success.main' : 'error.main',
                           padding: '0 10px'
                         }}
                       />
@@ -167,6 +167,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                           navigate(`${Paths.PROJECT_lIST}/${row.id}`);
                           handleClickOpen();
                         }}
+                        color="secondary"
                       >
                         Edit
                       </Button>

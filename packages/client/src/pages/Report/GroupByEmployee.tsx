@@ -36,7 +36,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
               isBillable: record.project.isBillable,
               workHours: formatHours(record.hours),
               indirectHours: formatHours(indirectHour),
-              percentage: formatPercentage((record.hours / totalWorkHours) * 100)
+              percentage: formatPercentage(record.hours / totalWorkHours)
             };
           });
 

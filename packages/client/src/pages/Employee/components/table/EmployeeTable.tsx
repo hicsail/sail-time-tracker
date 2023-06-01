@@ -141,8 +141,8 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                       <Chip
                         label={row.status}
                         sx={{
-                          backgroundColor: 'customColors.statusBtnBg',
-                          color: 'customColors.statusBtnText',
+                          backgroundColor: row.status === 'Active' ? 'success.light' : 'error.light',
+                          color: row.status === 'Active' ? 'success.main' : 'error.main',
                           padding: '0 10px'
                         }}
                       />
@@ -154,6 +154,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                           navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
                           handleClickOpen();
                         }}
+                        color="secondary"
                       >
                         Edit
                       </Button>
