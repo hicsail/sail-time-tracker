@@ -6,7 +6,7 @@ export const Admin = () => {
   return (
     <Box>
       <Navbar />
-      <Box sx={{marginLeft: 40, width: "100%"}}>
+      <Box sx={{marginLeft: 40, width: "80%"}}>
         <Outlet />
       </Box>
     </Box>
