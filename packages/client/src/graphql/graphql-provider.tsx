@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache } from '@apollo/client';
 import { useSettings } from '@context/setting.context';
+import { LoadingScreen } from '@components/loading-screen';
 
 const uri = `${import.meta.env.VITE_BACKEND_URL}/graphql`;
 
@@ -10,12 +11,7 @@ export interface GraphqlProviderProps {
 
 export const GraphqlProvider: FC<GraphqlProviderProps> = ({ children }) => {
   const { settings } = useSettings();
-  const [httpLink, setHttpLink] = React.useState<HttpLink>(
-    new HttpLink({
-      uri: uri,
-      fetch: fetch
-    })
-  );
+  const [httpLink, setHttpLink] = React.useState<HttpLink>();
 
   useEffect(() => {
     if (settings?.VITE_BACKEND_URL) {
@@ -27,6 +23,10 @@ export const GraphqlProvider: FC<GraphqlProviderProps> = ({ children }) => {
       );
     }
   }, [settings]);
+
+  if (!httpLink) {
+    return <LoadingScreen />;
+  }
 
   const apolloClient = new ApolloClient({
     cache: new InMemoryCache({
