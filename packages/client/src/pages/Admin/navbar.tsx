@@ -24,7 +24,7 @@ export const Navbar = () => {
         maxWidth: 250,
         backgroundColor: 'customColors.sidebarBg',
         position: 'fixed',
-        height: '100vh',
+        height: '100vh'
       }}
     >
       <nav aria-label="main employees projects">
