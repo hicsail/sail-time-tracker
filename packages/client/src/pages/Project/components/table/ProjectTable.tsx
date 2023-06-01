@@ -171,13 +171,13 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                       >
                         Edit
                       </Button>
-                      <FormDialog open={open} title="Edit Project" onClose={handleClose}>
-                        <ProjectForm handleClose={handleClose} />
-                      </FormDialog>
                     </TableCell>
                   </TableRow>
                 );
               })}
+              <FormDialog open={open} title="Edit Project" onClose={handleClose}>
+                <ProjectForm handleClose={handleClose} />
+              </FormDialog>
             </TableBody>
           </Table>
         </TableContainer>

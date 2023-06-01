@@ -158,13 +158,13 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                       >
                         Edit
                       </Button>
-                      <FormDialog open={open} title="Edit Employee" onClose={handleClose}>
-                        <EmployeeForm handleClose={handleClose} />
-                      </FormDialog>
                     </TableCell>
                   </TableRow>
                 );
               })}
+              <FormDialog open={open} title="Edit Employee" onClose={handleClose}>
+                <EmployeeForm handleClose={handleClose} />
+              </FormDialog>
             </TableBody>
           </Table>
         </TableContainer>
