@@ -55,7 +55,7 @@ export const EnhancedTableHead: FC<EnhancedTableProps> = (props) => {
           <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount} onChange={onSelectAllClick} />
         </TableCell>
         {headCells.map((headCell) => (
-          <TableCell key={headCell.id} align="left" padding={headCell.disablePadding ? 'none' : 'normal'}>
+          <TableCell key={headCell.id} align="left" padding={headCell.disablePadding ? 'none' : 'normal'} sx={{ color: 'grey.500', fontWeight: 'bold' }}>
             {headCell.label}
           </TableCell>
         ))}
