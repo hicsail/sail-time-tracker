@@ -167,6 +167,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
                           navigate(`${Paths.PROJECT_lIST}/${row.id}`);
                           handleClickOpen();
                         }}
+                        color="secondary"
                       >
                         Edit
                       </Button>

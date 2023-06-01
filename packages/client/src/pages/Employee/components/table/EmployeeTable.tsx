@@ -154,6 +154,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                           navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
                           handleClickOpen();
                         }}
+                        color="secondary"
                       >
                         Edit
                       </Button>
