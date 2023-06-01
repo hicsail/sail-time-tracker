@@ -83,7 +83,7 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
             }}
             sx={{
               '&:hover': {
-                backgroundColor: '#1565c0',
+                backgroundColor: 'primary.main',
                 color: 'white'
               }
             }}
