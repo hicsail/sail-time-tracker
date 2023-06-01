@@ -38,6 +38,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "date-fns": "^2.29.3",
+    "dotenv": "^16.1.2",
     "graphql": "^16.6.0",
     "nestjs-prisma": "^0.20.0",
     "postgres": "^3.3.4",

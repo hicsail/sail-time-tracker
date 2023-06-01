@@ -2,11 +2,11 @@ const sqlite3 = require('sqlite3').verbose();
 const postgres = require('postgres');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
+require('dotenv').config({ path: '../.env' });
 
 // Specify the path to your SQLite database file
-const dbPath = './timetracker.db';
-const sql = postgres('postgres://cxyue:@localhost:5432/postgres');
-// const sql = postgres('postgres://chenxinyue:@localhost:5432/postgres');
+const dbPath = `${process.env.OLDDB_PATH}`;
+const sql= postgres(`${process.env.NEWDB_PATH}`);
 
 // Create a new SQLite database instance
 const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
