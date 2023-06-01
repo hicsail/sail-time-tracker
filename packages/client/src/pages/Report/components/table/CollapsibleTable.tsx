@@ -27,7 +27,7 @@ export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, outerTableCo
         </TableHead>
         <TableBody>
           {rows.map((row: any) => (
-            <Row key={row.name} row={row} innerTableConfig={innerTableConfig} innerTitle={innerTitle} outerTableConfig={outerTableConfig} />
+            <Row key={row.id} row={row} innerTableConfig={innerTableConfig} innerTitle={innerTitle} outerTableConfig={outerTableConfig} />
           ))}
         </TableBody>
       </Table>

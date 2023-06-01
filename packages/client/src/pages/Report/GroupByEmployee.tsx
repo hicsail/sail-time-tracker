@@ -1,7 +1,6 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
 import { useGetEmployeeListWithRecordQuery } from '@graphql/employee/employee';
-import { startOfWeek } from 'date-fns';
 import { FC } from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
 
@@ -13,7 +12,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
   // get all employees with records
   const { data } = useGetEmployeeListWithRecordQuery({
     variables: {
-      date: startOfWeek(date, { weekStartsOn: 1 })
+      date: date
     }
   });
 

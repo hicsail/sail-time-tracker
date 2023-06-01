@@ -1,0 +1,14 @@
+[
+    {
+		"id": 1,
+		"name": "John Smith",
+		"rate": 60,
+		"archive": true
+	},
+	{
+		"id": 2,
+		"name": "Jane Doe",
+		"rate": 60,
+		"archive": true
+	}
+]
