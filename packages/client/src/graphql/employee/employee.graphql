@@ -12,6 +12,7 @@ query getEmployeeListWithRecord($date: DateTime!) {
   employees {
     id
     name
+    status
     records(date: $date) {
       startDate
       endDate
