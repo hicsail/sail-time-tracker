@@ -18,36 +18,38 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
 
   // construct rows
   const rows = data
-    ? data.employees.map((employee) => {
-        const totalWorkHours = employee.records
-          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
-          .reduce((sum, currentValue) => sum + currentValue.hours, 0);
+    ? data.employees
+        .filter((employee) => employee.status !== 'Inactive')
+        .map((employee) => {
+          const totalWorkHours = employee.records
+            .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+            .reduce((sum, currentValue) => sum + currentValue.hours, 0);
 
-        let totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
+          let totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
 
-        // projects in record that belongs the employee, excludes indirect and absence
-        const inner = employee.records
-          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
-          .map((record) => {
-            const indirectHour = (record.hours / totalWorkHours) * totalIndirectHours;
-            return {
-              id: record.project.id,
-              name: record.project.name,
-              isBillable: record.project.isBillable,
-              workHours: formatHours(record.hours),
-              indirectHours: formatHours(indirectHour),
-              percentage: formatPercentage(record.hours / totalWorkHours)
-            };
-          });
+          // projects in record that belongs the employee, excludes indirect and absence
+          const inner = employee.records
+            .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+            .map((record) => {
+              const indirectHour = (record.hours / totalWorkHours) * totalIndirectHours;
+              return {
+                id: record.project.id,
+                name: record.project.name,
+                isBillable: record.project.isBillable,
+                workHours: formatHours(record.hours),
+                indirectHours: formatHours(indirectHour),
+                percentage: formatPercentage(record.hours / totalWorkHours)
+              };
+            });
 
-        return {
-          name: employee.name,
-          workHours: formatHours(totalWorkHours),
-          indirectHours: formatHours(totalIndirectHours),
-          billableHours: formatHours(totalWorkHours + totalIndirectHours),
-          inner: inner
-        };
-      })
+          return {
+            name: employee.name,
+            workHours: formatHours(totalWorkHours),
+            indirectHours: formatHours(totalIndirectHours),
+            billableHours: formatHours(totalWorkHours + totalIndirectHours),
+            inner: inner
+          };
+        })
     : [];
 
   // outer table column name and render config
