@@ -1,4 +1,4 @@
-import { Checkbox, TextField, Autocomplete } from '@mui/material';
+import { Checkbox, TextField, Autocomplete, Box, Button } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
 import { SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
@@ -9,6 +9,7 @@ import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
 import { startOfWeek } from 'date-fns';
+import { Banner } from '@components/Banner';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -16,7 +17,7 @@ const checkedIcon = <CheckBox fontSize="small" />;
 export const CheckboxesSearch = () => {
   const [selectedProjects, setSelectedProjects] = useState<ProjectModel[]>([]);
   const { data } = useGetProjectListQuery();
-  const [addFavoriteProjectMutation] = useAddFavoriteProjectMutation();
+  const [addFavoriteProjectMutation, { data: addFavoriteProjectData, loading, error }] = useAddFavoriteProjectMutation();
   const { settings } = useSettings();
   const { employeeId } = useEmployee();
   const { date } = useDate();
@@ -61,36 +62,42 @@ export const CheckboxesSearch = () => {
   };
 
   return (
-    <Autocomplete
-      sx={{ marginTop: '3rem' }}
-      multiple
-      id="checkboxes-tags-favoriteProject"
-      options={data ? data.projects : []}
-      disableCloseOnSelect
-      getOptionLabel={(option) => option.name}
-      filterOptions={(options, { inputValue }) => {
-        if (employeeData) {
-          const ignoredValues = employeeData.employee.projects.map((project: any) => project.id);
-          return options.filter((option) => {
-            return !ignoredValues.includes(option.id) && option.name.toLowerCase().includes(inputValue.toLowerCase());
-          });
-        }
+    <Box>
+      {!loading && !error && addFavoriteProjectData && <Banner content={`Successfully add ${addFavoriteProjectData.addFavoriteProject.count} favorite project`} state="success" />}
+      {error && <Banner content={`${error.message}`} state="error" />}
+      <Autocomplete
+        sx={{ marginTop: '3rem' }}
+        multiple
+        id="checkboxes-tags-favoriteProject"
+        options={data ? data.projects : []}
+        disableCloseOnSelect
+        getOptionLabel={(option) => option.name}
+        filterOptions={(options, { inputValue }) => {
+          if (employeeData) {
+            const ignoredValues = employeeData.employee.projects.map((project: any) => project.id);
+            return options.filter((option) => {
+              return !ignoredValues.includes(option.id) && option.name.toLowerCase().includes(inputValue.toLowerCase());
+            });
+          }
 
-        return options.filter((option) => option.name.toLowerCase().includes(inputValue.toLowerCase()));
-      }}
-      renderOption={(props, option, { selected }) => {
-        return (
-          <li {...props}>
-            <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} disabled={selected} />
-            {option.name}
-          </li>
-        );
-      }}
-      style={{ width: 500 }}
-      renderInput={(params) => <TextField {...params} label="Add Your Favorite Project" placeholder="Projects" />}
-      onChange={handleOnChange}
-      onClose={handleOnSubmit}
-      value={selectedProjects}
-    />
+          return options.filter((option) => option.name.toLowerCase().includes(inputValue.toLowerCase()));
+        }}
+        renderOption={(props, option, { selected }) => {
+          return (
+            <li {...props}>
+              <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} disabled={selected} />
+              {option.name}
+            </li>
+          );
+        }}
+        style={{ width: 500 }}
+        renderInput={(params) => <TextField {...params} label="Add Your Favorite Project" placeholder="Projects" />}
+        onChange={handleOnChange}
+        value={selectedProjects}
+      />
+      <Button onClick={handleOnSubmit} sx={{ width: 500, marginTop: '1rem' }} variant="contained">
+        Add
+      </Button>
+    </Box>
   );
 };
