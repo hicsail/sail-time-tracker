@@ -11,7 +11,7 @@ interface CollapsibleTableProps {
 
 export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, outerTableConfig, innerTableConfig, innerTitle }) => {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} elevation={0} sx={{ backgroundColor: 'customColors.sidebarBg' }}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
