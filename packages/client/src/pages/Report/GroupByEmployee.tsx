@@ -83,7 +83,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
       render: (row: any) => {
         return (
           <Box
-            sx={row.isBillable ? { backgroundColor: 'rgb(250, 236,204)' } : { backgroundColor: 'rgb(250, 227,222)' }}
+            sx={row.isBillable ? { backgroundColor: 'success.light', color: 'success.main' } : { backgroundColor: 'error.light', color: 'error.main' }}
             width={40}
             height={20}
             textAlign="center"
