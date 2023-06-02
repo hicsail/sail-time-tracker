@@ -25,7 +25,8 @@
     "migrate:deploy": "npx prisma migrate deploy",
     "prisma:generate": "npx prisma generate",
     "prisma:studio": "npx prisma studio",
-    "prisma:seed": "npx prisma db seed"
+    "prisma:seed": "npx prisma db seed",
+    "migration": "cd ./migration && node migration.js"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.2.0",
