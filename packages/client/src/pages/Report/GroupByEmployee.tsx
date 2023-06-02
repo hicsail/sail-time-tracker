@@ -12,7 +12,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
   // get all employees with records
   const { data } = useGetEmployeeListWithRecordQuery({
     variables: {
-      date: date
+      date: date.setUTCHours(4, 0, 0, 0)
     }
   });
 
