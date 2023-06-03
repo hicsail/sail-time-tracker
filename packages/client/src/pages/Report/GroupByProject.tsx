@@ -36,7 +36,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
   // construct rows
   const rowsData = data
     ? data.projects
-        .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence')
+        .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence' && project.status !== 'Inactive')
         .map((project) => {
           const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
           const indirectHour = (workHours / totalWorkHours) * indirectHours;
@@ -73,7 +73,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
       render: (row: any) => {
         return (
           <Box
-            sx={row.isBillable ? { backgroundColor: 'rgb(250, 236,204)' } : { backgroundColor: 'rgb(250, 227,222)' }}
+            sx={row.isBillable ? { backgroundColor: 'success.light', color: 'success.main' } : { backgroundColor: 'error.light', color: 'error.main' }}
             width={40}
             height={20}
             textAlign="center"
