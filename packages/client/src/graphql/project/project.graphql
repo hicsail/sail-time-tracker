@@ -13,6 +13,7 @@ query getProjectListWithRecord($date: DateTime!) {
     id
     name
     isBillable
+    status
     records(date: $date) {
       startDate
       endDate
