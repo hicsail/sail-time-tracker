@@ -1,8 +1,7 @@
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export const InvoiceDetails = () => {

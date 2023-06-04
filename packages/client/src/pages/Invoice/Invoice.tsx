@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 
@@ -21,10 +21,6 @@ const CustomIDCellRender = (props: { id: string; value: string }) => {
     </Link>
   );
 };
-
-interface CustomStatusCellRenderProps {
-  value: string;
-}
 
 const columns: GridColDef[] = [
   {
