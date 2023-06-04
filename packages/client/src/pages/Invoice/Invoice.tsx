@@ -2,8 +2,6 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { Box, Chip, styled } from '@mui/material';
 import { FC, SyntheticEvent, useState } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 
@@ -118,59 +116,9 @@ const rows = [
 ];
 
 export const Invoice = () => {
-  const [filterModel, setFilterModel] = useState({
-    items: [
-      {
-        field: 'status',
-        operator: 'contains',
-        value: 'UNPAID'
-      }
-    ]
-  });
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event: SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-    switch (newValue) {
-      case 0:
-        setFilterModel({
-          items: [
-            {
-              field: 'status',
-              operator: 'equals',
-              value: 'UNPAID'
-            }
-          ]
-        });
-        break;
-      case 1:
-        setFilterModel({
-          items: [
-            {
-              field: 'status',
-              operator: 'equals',
-              value: 'PAID'
-            }
-          ]
-        });
-        break;
-      case 2:
-        setFilterModel({
-          items: []
-        });
-    }
-  };
-
   return (
     <div style={{ height: 400, width: '100%' }}>
       <Box sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={value} onChange={handleChange} aria-label="basic tabs">
-            <Tab label="Open invoices" value={0} />
-            <Tab label="Past invoices" value={1} />
-            <Tab label="All invoices" value={2} />
-          </Tabs>
-        </Box>
         <DataGrid
           sx={{ m: 2, color: '#021352' }}
           rows={rows}
@@ -182,7 +130,6 @@ export const Invoice = () => {
           }}
           pageSizeOptions={[5, 10]}
           disableRowSelectionOnClick
-          filterModel={filterModel}
         />
       </Box>
     </div>
