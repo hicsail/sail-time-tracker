@@ -117,7 +117,6 @@ export const InvoiceDetails = () => {
       </Box>
       <Box sx={{ display: 'flex', gap: 3 }}>
         <Button variant="contained">Export to Clickup</Button>
-        <Button variant="contained">Export as CSV</Button>
       </Box>
     </Box>
   );
