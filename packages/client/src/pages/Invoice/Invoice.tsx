@@ -1,6 +1,7 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LaunchIcon from '@mui/icons-material/Launch';
 import { Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
@@ -46,13 +47,18 @@ const columns: GridColDef[] = [
     align: 'left',
     type: 'number',
     renderCell: (params) => `${USDollar.format(params.row.amount)}`,
-    width: 160,
-    sortable: false
+    width: 160
   },
   {
     field: 'delete',
-    headerName: '',
+    headerName: 'Delete',
     renderCell: () => <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} />
+  },
+  {
+    field: 'export',
+    width: 160,
+    headerName: 'Export to Clickup',
+    renderCell: () => <LaunchIcon color="secondary" sx={{ cursor: 'pointer' }} />
   }
 ];
 
