@@ -6,14 +6,17 @@ import { FC } from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
 
 interface GroupByEmployeeProps {
-  date: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
-export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
+export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
   // get all employees with records
+  console.log(startDate.setUTCHours(4, 0, 0, 0));
+  console.log(endDate.setUTCHours(4, 0, 0, 0));
   const { data } = useGetProjectListWithRecordQuery({
     variables: {
-      date: startOfWeek(date, { weekStartsOn: 1 })
+      date: startDate.setUTCHours(4, 0, 0, 0)
     }
   });
 

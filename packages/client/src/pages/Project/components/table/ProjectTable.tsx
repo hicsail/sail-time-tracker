@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip, TablePagination } from '@mui/material';
@@ -7,7 +7,7 @@ import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTable
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
-import TextField from "@mui/material/TextField";
+import TextField from '@mui/material/TextField';
 
 interface ProjectTableProps {
   data: any[];
@@ -88,12 +88,12 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   useEffect(() => {
-    if(searchText !== '' && searchText !== undefined){
+    if (searchText !== '' && searchText !== undefined) {
       setRows(data.filter((row) => row.name.toLowerCase().includes(searchText.toLowerCase())));
-    } else  {
+    } else {
       setRows(data);
     }
-  }, [searchText])
+  }, [searchText]);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -106,9 +106,15 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           padding: '1rem'
         }}
       >
-        <TextField id="outlined-basic" label="Search Employees" variant="outlined" onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setSearchText(event.target.value);
-        }} value={searchText} />
+        <TextField
+          id="outlined-basic"
+          label="Search Employees"
+          variant="outlined"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchText(event.target.value);
+          }}
+          value={searchText}
+        />
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
