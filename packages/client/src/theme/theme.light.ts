@@ -23,12 +23,12 @@ export const themeLight = createTheme({
     success: {
       light: '#EAF8F1',
       main: '#1D7F54',
-      dark: ''
+      dark: '#1d5329'
     },
     error: {
       light: '#FFE3EC',
       main: '#C6325E',
-      dark: ''
+      dark: '#751e3a'
     },
     customColors: {
       listNavHoverColor: '#eef2ff',

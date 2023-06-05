@@ -22,6 +22,7 @@ export type GetEmployeeListWithRecordQuery = {
     __typename?: 'EmployeeModel';
     id: string;
     name: string;
+    status?: string | null;
     records: Array<{
       __typename?: 'RecordModelWithProject';
       startDate: any;
@@ -141,6 +142,7 @@ export const GetEmployeeListWithRecordDocument = gql`
     employees {
       id
       name
+      status
       records(date: $date) {
         startDate
         endDate

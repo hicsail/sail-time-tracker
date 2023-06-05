@@ -23,6 +23,7 @@ export const Navbar = () => {
         width: '100%',
         maxWidth: 250,
         backgroundColor: 'customColors.sidebarBg',
+        position: 'fixed',
         height: '100vh'
       }}
     >

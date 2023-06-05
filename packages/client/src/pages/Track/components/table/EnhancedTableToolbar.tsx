@@ -87,7 +87,7 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
+        <Tooltip title="unfavorite">
           <IconButton onClick={handleOnClickDelete}>
             <DeleteIcon />
           </IconButton>
