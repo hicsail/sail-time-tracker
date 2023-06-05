@@ -9,7 +9,7 @@ export const Employee = () => {
 
   return (
     <Box component="div" maxWidth="xl" sx={{ display: 'flex', flexDirection: 'column', gap: '4rem', alignItems: 'start', width: '100%' }}>
-      {error ? <pre>{error.message}</pre> : <EmployeeTable data={data} />}
+      {error ? <pre>{error.message}</pre> : <EmployeeTable data={data.employees} />}
     </Box>
   );
 };
