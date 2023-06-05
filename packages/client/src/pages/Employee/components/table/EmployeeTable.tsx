@@ -1,12 +1,10 @@
-import React, {ChangeEvent, FC, useEffect, useState} from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Checkbox, Chip, List,
-  ListItem, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
+import { Box, Button, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
-import { GetEmployeeListQuery } from '@graphql/employee/employee';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 import TextField from '@mui/material/TextField';
 
@@ -86,12 +84,12 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   useEffect(() => {
-    if(searchText !== '' && searchText !== undefined){
+    if (searchText !== '' && searchText !== undefined) {
       setRows(data.filter((row) => row.name.toLowerCase().includes(searchText.toLowerCase())));
-    } else  {
+    } else {
       setRows(data);
     }
-  }, [searchText])
+  }, [searchText]);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -104,9 +102,15 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
           padding: '1rem'
         }}
       >
-        <TextField id="outlined-basic" label="Search Projects" variant="outlined" onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setSearchText(event.target.value);
-        }} value={searchText} />
+        <TextField
+          id="outlined-basic"
+          label="Search Projects"
+          variant="outlined"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchText(event.target.value);
+          }}
+          value={searchText}
+        />
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
