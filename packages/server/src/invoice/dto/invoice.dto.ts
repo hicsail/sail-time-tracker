@@ -1,5 +1,5 @@
 import { InputType, Field, ID } from '@nestjs/graphql';
-import {IsEmail, IsNotEmpty, IsString, IsOptional, IsNumber, IsDate, isNumber} from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsDate } from 'class-validator';
 
 /**
  * input type for creating new invoice

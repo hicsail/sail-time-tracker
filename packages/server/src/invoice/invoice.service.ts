@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import {Prisma, Invoice} from "@prisma/client";
-import {InvoiceCreateInput} from "./dto/invoice.dto";
+import { Prisma, Invoice } from '@prisma/client';
+import { InvoiceCreateInput } from './dto/invoice.dto';
 
 @Injectable()
 export class InvoiceService {
@@ -15,5 +15,4 @@ export class InvoiceService {
       data: invoices
     });
   }
-
 }
