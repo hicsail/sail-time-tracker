@@ -35,8 +35,8 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }
           // from startDate to endDate
           employee.records
             .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
-            .map((record) => {
-              if(!projectHoursMap.get(record.project.id)) {
+            .forEach((record) => {
+              if (!projectHoursMap.get(record.project.id)) {
                 projectHoursMap.set(record.project.id, record.hours);
                 uniqueProjectList.push(record);
               } else {
@@ -55,7 +55,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }
               indirectHours: formatHours(indirectHour),
               percentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
             };
-          })
+          });
 
           return {
             name: employee.name,
