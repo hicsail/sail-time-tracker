@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Folder, AssignmentInd, Assessment, WatchLater } from '@mui/icons-material';
+import { Folder, AssignmentInd, Assessment, WatchLater, Receipt } from '@mui/icons-material';
 import { Paths } from '@constants/paths';
 import { SideListItem } from '@pages/Admin/sideListItem';
 import { SideList } from '@pages/Admin/sideList';
@@ -31,12 +31,13 @@ export const Navbar = () => {
         <SideList>
           <SideListItem path={Paths.EMPLOYEE_lIST} icon={<AssignmentInd sx={{ color: 'customColors.iconColor' }} />} info="Employees" />
           <SideListItem path={Paths.PROJECT_lIST} icon={<Folder sx={{ color: 'customColors.iconColor' }} />} info="Projects" />
+          <SideListItem path={Paths.REPORT} icon={<Assessment sx={{ color: 'customColors.iconColor' }} />} info="Reports" />
+          <SideListItem path={Paths.INVOICE} icon={<Receipt sx={{ color: 'customColors.iconColor' }} />} info="Billing & Invoices" />
         </SideList>
       </nav>
       <nav aria-label="secondary track reports">
         <SideList>
           <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Track" />
-          <SideListItem path={Paths.REPORT} icon={<Assessment sx={{ color: 'customColors.iconColor' }} />} info="Reports" />
           <SwitchBtn onClick={handleOnClick} />
         </SideList>
       </nav>

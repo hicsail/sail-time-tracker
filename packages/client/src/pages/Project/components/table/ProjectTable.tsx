@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip, TablePagination } from '@mui/material';
@@ -7,17 +7,20 @@ import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTable
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
+import TextField from '@mui/material/TextField';
 
 interface ProjectTableProps {
-  rows: any[];
+  data: any[];
 }
 
-export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
+export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
+  const [searchText, setSearchText] = useState<string>();
+  const [rows, setRows] = useState(data ? data : []);
 
   /**
    * this method is used to handle model open and close
@@ -84,6 +87,14 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
 
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+  useEffect(() => {
+    if (searchText !== '' && searchText !== undefined) {
+      setRows(data.filter((row) => row.name.toLowerCase().includes(searchText.toLowerCase())));
+    } else {
+      setRows(data);
+    }
+  }, [searchText]);
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper
@@ -95,6 +106,15 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
           padding: '1rem'
         }}
       >
+        <TextField
+          id="outlined-basic"
+          label="Search Employees"
+          variant="outlined"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchText(event.target.value);
+          }}
+          value={searchText}
+        />
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -181,7 +201,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ rows }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        {rows.length == 0 && (
+        {data.length === 0 && (
           <Box>
             <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
               Add Your First Project

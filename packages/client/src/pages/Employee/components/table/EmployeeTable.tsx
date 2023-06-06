@@ -1,15 +1,15 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Chip, TableBody, Table, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, TablePagination } from '@mui/material';
+import { Box, Button, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
-import { GetEmployeeListQuery } from '@graphql/employee/employee';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
+import TextField from '@mui/material/TextField';
 
 interface EmployeeTableProps {
-  data: GetEmployeeListQuery | undefined;
+  data: any[];
 }
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
@@ -18,7 +18,8 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
-  const rows = data?.employees ? data.employees : [];
+  const [searchText, setSearchText] = useState<string>();
+  const [rows, setRows] = useState(data ? data : []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -82,6 +83,14 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
 
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+  useEffect(() => {
+    if (searchText !== '' && searchText !== undefined) {
+      setRows(data.filter((row) => row.name.toLowerCase().includes(searchText.toLowerCase())));
+    } else {
+      setRows(data);
+    }
+  }, [searchText]);
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper
@@ -93,6 +102,15 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
           padding: '1rem'
         }}
       >
+        <TextField
+          id="outlined-basic"
+          label="Search Projects"
+          variant="outlined"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchText(event.target.value);
+          }}
+          value={searchText}
+        />
         <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -177,7 +195,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        {rows.length == 0 && (
+        {data.length === 0 && (
           <Box>
             <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
               Add Your First Employee

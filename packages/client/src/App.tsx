@@ -14,7 +14,9 @@ import { EmployeeProvider } from '@context/employee.context';
 import { DateProvider } from '@context/date.context';
 import { TrackLayout } from '@pages/Track/components/Layout';
 import { Report } from '@pages/Report/Report';
+import { Invoice } from '@pages/Invoice/Invoice';
 import enLocale from 'date-fns/locale/en-US';
+import { InvoiceDetails } from '@pages/Invoice/InvoiceDetails';
 
 function App() {
   if (enLocale && enLocale.options) {
@@ -43,6 +45,8 @@ function App() {
                         <Route path={Paths.ADD_EMPLOYEE} />
                       </Route>
                       <Route path={Paths.REPORT} element={<Report />} />
+                      <Route path={Paths.INVOICE} element={<Invoice />} />
+                      <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
                     </Route>
                   </Routes>
                 </EmployeeProvider>

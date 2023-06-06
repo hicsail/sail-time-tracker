@@ -1,5 +1,5 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
 import { startOfWeek } from 'date-fns';
 import { FC } from 'react';
@@ -99,6 +99,10 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
     {
       name: 'Percentage',
       render: (row: any) => row.percentage + '%'
+    },
+    {
+      name: '',
+      render: () => <Button variant="outlined">Generate Invoice</Button>
     }
   ];
 

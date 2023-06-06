@@ -18,7 +18,7 @@ export const Project = () => {
         width: '100%'
       }}
     >
-      {error ? <pre>{error.message}</pre> : <ProjectTable rows={data.projects} />}
+      {error ? <pre>{error.message}</pre> : <ProjectTable data={data.projects} />}
     </Box>
   );
 };
