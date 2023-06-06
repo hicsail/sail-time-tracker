@@ -13,7 +13,8 @@ export type GetProjectListQuery = {
 };
 
 export type GetProjectListWithRecordQueryVariables = Types.Exact<{
-  date: Types.Scalars['DateTime'];
+  startDate: Types.Scalars['DateTime'];
+  endDate: Types.Scalars['DateTime'];
 }>;
 
 export type GetProjectListWithRecordQuery = {
@@ -91,13 +92,13 @@ export type GetProjectListQueryHookResult = ReturnType<typeof useGetProjectListQ
 export type GetProjectListLazyQueryHookResult = ReturnType<typeof useGetProjectListLazyQuery>;
 export type GetProjectListQueryResult = Apollo.QueryResult<GetProjectListQuery, GetProjectListQueryVariables>;
 export const GetProjectListWithRecordDocument = gql`
-  query getProjectListWithRecord($date: DateTime!) {
+  query getProjectListWithRecord($startDate: DateTime!, $endDate: DateTime!) {
     projects {
       id
       name
       isBillable
       status
-      records(date: $date) {
+      records(startDate: $startDate, endDate: $endDate) {
         startDate
         endDate
         hours
@@ -122,7 +123,8 @@ export const GetProjectListWithRecordDocument = gql`
  * @example
  * const { data, loading, error } = useGetProjectListWithRecordQuery({
  *   variables: {
- *      date: // value for 'date'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
  *   },
  * });
  */

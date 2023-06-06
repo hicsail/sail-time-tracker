@@ -8,13 +8,13 @@ query getProjectList {
   }
 }
 
-query getProjectListWithRecord($date: DateTime!) {
+query getProjectListWithRecord($startDate: DateTime!, $endDate: DateTime!) {
   projects {
     id
     name
     isBillable
     status
-    records(date: $date) {
+    records(startDate: $startDate, endDate: $endDate,) {
       startDate
       endDate
       hours

@@ -13,7 +13,7 @@ query getEmployeeListWithRecord($startDate: DateTime!, $endDate: DateTime!) {
     id
     name
     status
-    records(startDate: $startDate, endDate: $endDate,) {
+    records(startDate: $startDate, endDate: $endDate) {
       startDate
       endDate
       hours
