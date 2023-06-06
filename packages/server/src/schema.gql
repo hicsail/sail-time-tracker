@@ -9,7 +9,7 @@ type EmployeeModel {
   rate: Float!
   status: String
   projects: [ProjectModel!]!
-  records(date: DateTime!): [RecordModelWithProject!]!
+  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithProject!]!
   recordsWithFavoriteProjects(date: DateTime!): [RecordWithFavoriteProjectModel!]!
 }
 
