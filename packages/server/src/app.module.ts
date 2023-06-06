@@ -8,6 +8,7 @@ import { join } from 'path';
 import { ProjectModule } from './project/project.module';
 import { FavoriteProjectModule } from './favorite-project/favorite-project.module';
 import { RecordModule } from './record/record.module';
+import { InvoiceModule } from './invoice/invoice.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { RecordModule } from './record/record.module';
     }),
     ProjectModule,
     FavoriteProjectModule,
-    RecordModule
+    RecordModule,
+    InvoiceModule
   ],
   controllers: [AppController],
   providers: [AppService]
