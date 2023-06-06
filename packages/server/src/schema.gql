@@ -28,7 +28,7 @@ type ProjectModel {
   status: String!
   description: String!
   isBillable: Boolean!
-  records(date: DateTime!): [RecordModelWithEmployee!]!
+  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithEmployee!]!
 }
 
 type ProjectDeleteReturnModel {
@@ -62,7 +62,7 @@ type RecordWithFavoriteProjectModel {
   status: String!
   description: String!
   isBillable: Boolean!
-  records(date: DateTime!): [RecordModelWithEmployee!]!
+  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithEmployee!]!
   isFavorite: Boolean!
   hours: Float!
   previousWeek: Float!
