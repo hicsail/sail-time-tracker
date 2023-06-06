@@ -81,6 +81,8 @@ type InvoiceModel {
   rate: Float!
   hours: Float!
   amount: Float!
+  employee: EmployeeModel!
+  project: ProjectModel!
 }
 
 type Query {
