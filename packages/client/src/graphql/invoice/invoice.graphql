@@ -1,6 +1,5 @@
 query getAllInvoices {
     invoices {
-        id
         employeeId
         projectId
         startDate

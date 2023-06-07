@@ -79,10 +79,11 @@ export type InvoiceCreateInput = {
 export type InvoiceModel = {
   __typename?: 'InvoiceModel';
   amount: Scalars['Float'];
+  employee: EmployeeModel;
   employeeId: Scalars['String'];
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
-  id: Scalars['ID'];
+  project: ProjectModel;
   projectId: Scalars['String'];
   rate: Scalars['Float'];
   startDate: Scalars['DateTime'];
