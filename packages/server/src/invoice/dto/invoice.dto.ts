@@ -42,15 +42,3 @@ export class InvoiceCreateInput {
   @IsNumber()
   amount: number;
 }
-
-/**
- * input type for updating invoice
- */
-
-@InputType()
-export class InvoiceUpdateInput extends InvoiceCreateInput {
-  @Field(() => ID)
-  @IsString()
-  @IsNotEmpty()
-  id: string;
-}

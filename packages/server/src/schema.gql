@@ -73,7 +73,6 @@ type BatchPayload {
 }
 
 type InvoiceModel {
-  id: ID!
   projectId: String!
   employeeId: String!
   startDate: DateTime!

@@ -6,9 +6,6 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 
 @ObjectType()
 export class InvoiceModel {
-  @Field(() => ID)
-  id: string;
-
   @Field()
   projectId: string;
 

@@ -1,6 +1,5 @@
 -- CreateTable
 CREATE TABLE "Invoice" (
-    "id" TEXT NOT NULL,
     "projectId" TEXT NOT NULL,
     "employeeId" TEXT NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL,
@@ -9,7 +8,7 @@ CREATE TABLE "Invoice" (
     "hours" DOUBLE PRECISION NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
 
-    CONSTRAINT "Invoice_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Invoice_pkey" PRIMARY KEY ("employeeId","projectId","startDate","endDate")
 );
 
 -- AddForeignKey
