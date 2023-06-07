@@ -1,10 +1,11 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box, Button } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
-import { FC } from 'react';
+import {FC, useEffect, useState} from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
 import { formatUTCHours } from '../../utils/formatDate';
 import { useCreateOrUpdateManyInvoiceMutation } from '@graphql/invoice/invoice';
+import {Banner} from "@components/Banner";
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -12,6 +13,7 @@ interface GroupByEmployeeProps {
 }
 
 export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
+  const [displayContent, setDisplayContent] = useState(false);
   // get all employees with records
   const { data } = useGetProjectListWithRecordQuery({
     variables: {
@@ -102,7 +104,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
       variables: {
         invoices: invoices
       }
-    });
+    }).then(() => setDisplayContent(true))
   };
 
   const outerTableConfig = [
@@ -171,5 +173,25 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     }
   ];
 
-  return <CollapsibleTable rows={rowsData} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
+  useEffect(() => {
+    // Set the displayContent state to true after a delay of 2000 milliseconds (2 seconds)
+    const timeoutId = setTimeout(() => {
+      setDisplayContent(false);
+    }, 1500);
+
+    // Clean up the timeout when the component unmounts or the state changes
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [displayContent]);
+
+  return <>
+    {displayContent && (
+      <Box>
+        {!loading && !error && createManyInvoiceData && <Banner content={`Successfully add and update ${createManyInvoiceData.createOrUpdateManyInvoice.count} invoices`} state="success" />}
+        {error && <Banner content={`${error.message}`} state="error" />}
+      </Box>
+    )}
+    <CollapsibleTable rows={rowsData} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
+  </>
 };
