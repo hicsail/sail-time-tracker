@@ -46,15 +46,14 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
 
           // store unique projects and total hours to uniqueProjectList
           // from startDate to endDate
-          project.records
-            .map((record) => {
-              if (!employeeHoursMap.get(record.employee.id)) {
-                employeeHoursMap.set(record.employee.id, record.hours);
-                uniqueEmployeeList.push(record);
-              } else {
-                employeeHoursMap.set(record.employee.id, employeeHoursMap.get(record.employee.id) + record.hours);
-              }
-            });
+          project.records.map((record) => {
+            if (!employeeHoursMap.get(record.employee.id)) {
+              employeeHoursMap.set(record.employee.id, record.hours);
+              uniqueEmployeeList.push(record);
+            } else {
+              employeeHoursMap.set(record.employee.id, employeeHoursMap.get(record.employee.id) + record.hours);
+            }
+          });
 
           const inner = uniqueEmployeeList.map((record) => {
             return {
