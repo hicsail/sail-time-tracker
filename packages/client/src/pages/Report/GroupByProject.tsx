@@ -1,11 +1,11 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box, Button } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
-import {FC, useEffect, useState} from 'react';
+import { FC, useEffect, useState } from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
 import { formatUTCHours } from '../../utils/formatDate';
 import { useCreateOrUpdateManyInvoiceMutation } from '@graphql/invoice/invoice';
-import {Banner} from "@components/Banner";
+import { Banner } from '@components/Banner';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -104,7 +104,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
       variables: {
         invoices: invoices
       }
-    }).then(() => setDisplayContent(true))
+    }).then(() => setDisplayContent(true));
   };
 
   const outerTableConfig = [
@@ -185,13 +185,17 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     };
   }, [displayContent]);
 
-  return <>
-    {displayContent && (
-      <Box>
-        {!loading && !error && createManyInvoiceData && <Banner content={`Successfully add and update ${createManyInvoiceData.createOrUpdateManyInvoice.count} invoices`} state="success" />}
-        {error && <Banner content={`${error.message}`} state="error" />}
-      </Box>
-    )}
-    <CollapsibleTable rows={rowsData} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
-  </>
+  return (
+    <>
+      {displayContent && (
+        <Box>
+          {!loading && !error && createManyInvoiceData && (
+            <Banner content={`Successfully add and update ${createManyInvoiceData.createOrUpdateManyInvoice.count} invoices`} state="success" />
+          )}
+          {error && <Banner content={`${error.message}`} state="error" />}
+        </Box>
+      )}
+      <CollapsibleTable rows={rowsData} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
+    </>
+  );
 };
