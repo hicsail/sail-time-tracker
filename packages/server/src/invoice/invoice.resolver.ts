@@ -28,13 +28,13 @@ export class InvoiceResolver {
   }
 
   @Mutation(() => BatchPayload)
-  async createManyInvoice(
+  async createOrUpdateManyInvoice(
     @Args({
       name: 'invoices',
       type: () => [InvoiceCreateInput]
     })
     invoices: [InvoiceCreateInput]
   ): Promise<BatchPayload> {
-    return this.invoiceService.createManyInvoice(invoices);
+    return this.invoiceService.createOrUpdateManyInvoice(invoices);
   }
 }
