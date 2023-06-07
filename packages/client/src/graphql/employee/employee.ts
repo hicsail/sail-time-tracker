@@ -13,7 +13,8 @@ export type GetEmployeeListQuery = {
 };
 
 export type GetEmployeeListWithRecordQueryVariables = Types.Exact<{
-  date: Types.Scalars['DateTime'];
+  startDate: Types.Scalars['DateTime'];
+  endDate: Types.Scalars['DateTime'];
 }>;
 
 export type GetEmployeeListWithRecordQuery = {
@@ -138,12 +139,12 @@ export type GetEmployeeListQueryHookResult = ReturnType<typeof useGetEmployeeLis
 export type GetEmployeeListLazyQueryHookResult = ReturnType<typeof useGetEmployeeListLazyQuery>;
 export type GetEmployeeListQueryResult = Apollo.QueryResult<GetEmployeeListQuery, GetEmployeeListQueryVariables>;
 export const GetEmployeeListWithRecordDocument = gql`
-  query getEmployeeListWithRecord($date: DateTime!) {
+  query getEmployeeListWithRecord($startDate: DateTime!, $endDate: DateTime!) {
     employees {
       id
       name
       status
-      records(date: $date) {
+      records(startDate: $startDate, endDate: $endDate) {
         startDate
         endDate
         hours
@@ -169,7 +170,8 @@ export const GetEmployeeListWithRecordDocument = gql`
  * @example
  * const { data, loading, error } = useGetEmployeeListWithRecordQuery({
  *   variables: {
- *      date: // value for 'date'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
  *   },
  * });
  */

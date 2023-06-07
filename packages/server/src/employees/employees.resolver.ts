@@ -25,8 +25,8 @@ export class EmployeesResolver {
   }
 
   @ResolveField(() => [RecordModelWithProject])
-  async records(@Parent() employee: EmployeeModel, @Args('date') date: Date): Promise<RecordModelWithProject[]> {
-    return this.employeesService.getRecords(employee.id, date);
+  async records(@Parent() employee: EmployeeModel, @Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<RecordModelWithProject[]> {
+    return this.employeesService.getRecords(employee.id, startDate, endDate);
   }
 
   @ResolveField(() => [RecordWithFavoriteProjectModel])

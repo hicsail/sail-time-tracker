@@ -55,9 +55,15 @@ export const Report = () => {
         </Box>
       </Box>
       {groupBy === '1' ? (
-        <GroupByEmployee date={dateRange.startDate ? startOfWeek(dateRange.startDate, { weekStartsOn: 1 }) : startOfWeek(date, { weekStartsOn: 1 })} />
+        <GroupByEmployee
+          startDate={dateRange.startDate ? startOfWeek(dateRange.startDate, { weekStartsOn: 1 }) : startOfWeek(date, { weekStartsOn: 1 })}
+          endDate={dateRange.endDate ? startOfWeek(dateRange.endDate, { weekStartsOn: 1 }) : startOfWeek(date, { weekStartsOn: 1 })}
+        />
       ) : (
-        <GroupByProject date={dateRange.startDate ? startOfWeek(dateRange.startDate, { weekStartsOn: 1 }) : startOfWeek(date, { weekStartsOn: 1 })} />
+        <GroupByProject
+          startDate={dateRange.startDate ? startOfWeek(dateRange.startDate, { weekStartsOn: 1 }) : startOfWeek(date, { weekStartsOn: 1 })}
+          endDate={dateRange.endDate ? startOfWeek(dateRange.endDate, { weekStartsOn: 1 }) : startOfWeek(date, { weekStartsOn: 1 })}
+        />
       )}
     </Box>
   );

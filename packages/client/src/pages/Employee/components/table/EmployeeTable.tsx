@@ -1,10 +1,11 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
+import { Box, Button, Checkbox, Chip, List, ListItem, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
+import { GetEmployeeListQuery } from '@graphql/employee/employee';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 import TextField from '@mui/material/TextField';
 

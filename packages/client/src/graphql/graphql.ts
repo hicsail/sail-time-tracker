@@ -45,7 +45,8 @@ export type EmployeeModel = {
 };
 
 export type EmployeeModelRecordsArgs = {
-  date: Scalars['DateTime'];
+  endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
 };
 
 export type EmployeeModelRecordsWithFavoriteProjectsArgs = {
@@ -138,7 +139,8 @@ export type ProjectModel = {
 };
 
 export type ProjectModelRecordsArgs = {
-  date: Scalars['DateTime'];
+  endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
 };
 
 export type ProjectUpdateInput = {
@@ -210,5 +212,6 @@ export type RecordWithFavoriteProjectModel = {
 };
 
 export type RecordWithFavoriteProjectModelRecordsArgs = {
-  date: Scalars['DateTime'];
+  endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
 };

@@ -19,8 +19,8 @@ export class ProjectResolver {
   }
 
   @ResolveField(() => [RecordModelWithEmployee])
-  async records(@Parent() project: ProjectModel, @Args('date') date: Date): Promise<RecordModelWithEmployee[]> {
-    return this.projectService.getRecords(project.id, date);
+  async records(@Parent() project: ProjectModel, @Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<RecordModelWithEmployee[]> {
+    return this.projectService.getRecords(project.id, startDate, endDate);
   }
 
   @Mutation(() => ProjectModel)

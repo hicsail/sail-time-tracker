@@ -99,13 +99,17 @@ export class EmployeesService {
    *
    * @return a list of projects
    * @param employeeId represents employee id
-   * @param date
+   * @param startDate
+   * @param endDate
    */
-  async getRecords(employeeId: string, date: Date): Promise<RecordModelWithProject[]> {
+  async getRecords(employeeId: string, startDate: Date, endDate: Date): Promise<RecordModelWithProject[]> {
     const records = await this.prisma.record.findMany({
       where: {
         employeeId: employeeId,
-        date: date
+        date: {
+          lte: endDate,
+          gte: startDate
+        }
       },
       include: {
         project: true

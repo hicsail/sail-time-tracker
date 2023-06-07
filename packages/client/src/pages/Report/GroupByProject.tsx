@@ -1,19 +1,20 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box, Button } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
-import { startOfWeek } from 'date-fns';
 import { FC } from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
 
 interface GroupByEmployeeProps {
-  date: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
-export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
+export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
   // get all employees with records
   const { data } = useGetProjectListWithRecordQuery({
     variables: {
-      date: startOfWeek(date, { weekStartsOn: 1 })
+      startDate: startDate.setUTCHours(4, 0, 0, 0),
+      endDate: endDate.setUTCHours(4, 0, 0, 0)
     }
   });
 
@@ -40,14 +41,27 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ date }) => {
         .map((project) => {
           const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
           const indirectHour = (workHours / totalWorkHours) * indirectHours;
+          let employeeHoursMap = new Map();
+          let uniqueEmployeeList: any[] = [];
 
-          const inner = project.records.map((record) => {
+          // store unique projects and total hours to uniqueProjectList
+          // from startDate to endDate
+          project.records.map((record) => {
+            if (!employeeHoursMap.get(record.employee.id)) {
+              employeeHoursMap.set(record.employee.id, record.hours);
+              uniqueEmployeeList.push(record);
+            } else {
+              employeeHoursMap.set(record.employee.id, employeeHoursMap.get(record.employee.id) + record.hours);
+            }
+          });
+
+          const inner = uniqueEmployeeList.map((record) => {
             return {
               id: record.employee.id,
               name: record.employee.name,
-              workHours: formatHours(record.hours),
-              indirectHours: formatHours((record.hours / workHours) * indirectHour),
-              percentage: formatPercentage(record.hours / workHours)
+              workHours: formatHours(employeeHoursMap.get(record.employee.id)),
+              indirectHours: formatHours((employeeHoursMap.get(record.employee.id) / workHours) * indirectHour),
+              percentage: formatPercentage(employeeHoursMap.get(record.employee.id) / workHours)
             };
           });
 

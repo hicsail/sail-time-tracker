@@ -5,14 +5,16 @@ import { FC } from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
 
 interface GroupByEmployeeProps {
-  date: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
-export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
+export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
   // get all employees with records
   const { data } = useGetEmployeeListWithRecordQuery({
     variables: {
-      date: date.setUTCHours(4, 0, 0, 0)
+      startDate: startDate.setUTCHours(4, 0, 0, 0),
+      endDate: endDate.setUTCHours(4, 0, 0, 0)
     }
   });
 
@@ -26,21 +28,34 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ date }) => {
             .reduce((sum, currentValue) => sum + currentValue.hours, 0);
 
           let totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
+          let projectHoursMap = new Map();
+          let uniqueProjectList: any[] = [];
 
-          // projects in record that belongs the employee, excludes indirect and absence
-          const inner = employee.records
+          // store unique projects and total hours to uniqueProjectList
+          // from startDate to endDate
+          employee.records
             .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
-            .map((record) => {
-              const indirectHour = (record.hours / totalWorkHours) * totalIndirectHours;
-              return {
-                id: record.project.id,
-                name: record.project.name,
-                isBillable: record.project.isBillable,
-                workHours: formatHours(record.hours),
-                indirectHours: formatHours(indirectHour),
-                percentage: formatPercentage(record.hours / totalWorkHours)
-              };
+            .forEach((record) => {
+              if (!projectHoursMap.get(record.project.id)) {
+                projectHoursMap.set(record.project.id, record.hours);
+                uniqueProjectList.push(record);
+              } else {
+                projectHoursMap.set(record.project.id, projectHoursMap.get(record.project.id) + record.hours);
+              }
             });
+
+          // get inner table data
+          const inner = uniqueProjectList.map((record) => {
+            const indirectHour = (projectHoursMap.get(record.project.id) / totalWorkHours) * totalIndirectHours;
+            return {
+              id: record.project.id,
+              name: record.project.name,
+              isBillable: record.project.isBillable,
+              workHours: formatHours(projectHoursMap.get(record.project.id)),
+              indirectHours: formatHours(indirectHour),
+              percentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
+            };
+          });
 
           return {
             name: employee.name,
