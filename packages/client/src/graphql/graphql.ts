@@ -94,7 +94,7 @@ export type Mutation = {
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
-  createManyInvoice: BatchPayload;
+  createOrUpdateManyInvoice: BatchPayload;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
@@ -115,7 +115,7 @@ export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
 };
 
-export type MutationCreateManyInvoiceArgs = {
+export type MutationCreateOrUpdateManyInvoiceArgs = {
   invoices: Array<InvoiceCreateInput>;
 };
 

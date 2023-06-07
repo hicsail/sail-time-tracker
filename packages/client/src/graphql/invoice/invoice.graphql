@@ -9,8 +9,8 @@ query getAllInvoices {
         amount
     }
 }
-mutation CreateManyInvoice($invoices: [InvoiceCreateInput!]!) {
-    createManyInvoice(invoices: $invoices) {
+mutation createOrUpdateManyInvoice($invoices: [InvoiceCreateInput!]!) {
+    createOrUpdateManyInvoice(invoices: $invoices) {
         count
     }
 }
