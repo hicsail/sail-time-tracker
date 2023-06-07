@@ -3,8 +3,8 @@ import { Box, Button } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
 import { FC } from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
-import {formatUTCHours} from "../../utils/formatDate";
-import {useCreateManyInvoiceMutation} from "@graphql/invoice/invoice";
+import { formatUTCHours } from '../../utils/formatDate';
+import { useCreateManyInvoiceMutation } from '@graphql/invoice/invoice';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -21,7 +21,6 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
   });
 
   const [createManyInvoiceMutation, { data: createManyInvoiceData, loading, error }] = useCreateManyInvoiceMutation();
-
 
   let indirectHours = 0;
   data?.projects.forEach((project) => {
@@ -102,8 +101,8 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     createManyInvoiceMutation({
       variables: {
         invoices: invoices
-      },
-    })
+      }
+    });
   };
 
   const outerTableConfig = [
