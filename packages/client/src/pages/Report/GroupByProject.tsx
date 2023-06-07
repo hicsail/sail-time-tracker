@@ -3,6 +3,8 @@ import { Box, Button } from '@mui/material';
 import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
 import { FC } from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
+import {formatUTCHours} from "../../utils/formatDate";
+import {useCreateManyInvoiceMutation} from "@graphql/invoice/invoice";
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -13,10 +15,13 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
   // get all employees with records
   const { data } = useGetProjectListWithRecordQuery({
     variables: {
-      startDate: startDate.setUTCHours(4, 0, 0, 0),
-      endDate: endDate.setUTCHours(4, 0, 0, 0)
+      startDate: formatUTCHours(startDate),
+      endDate: formatUTCHours(endDate)
     }
   });
+
+  const [createManyInvoiceMutation, { data: createManyInvoiceData, loading, error }] = useCreateManyInvoiceMutation();
+
 
   let indirectHours = 0;
   data?.projects.forEach((project) => {
@@ -46,20 +51,20 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
 
           // store unique projects and total hours to uniqueProjectList
           // from startDate to endDate
-          project.records
-            .map((record) => {
-              if (!employeeHoursMap.get(record.employee.id)) {
-                employeeHoursMap.set(record.employee.id, record.hours);
-                uniqueEmployeeList.push(record);
-              } else {
-                employeeHoursMap.set(record.employee.id, employeeHoursMap.get(record.employee.id) + record.hours);
-              }
-            });
+          project.records.map((record) => {
+            if (!employeeHoursMap.get(record.employee.id)) {
+              employeeHoursMap.set(record.employee.id, record.hours);
+              uniqueEmployeeList.push(record);
+            } else {
+              employeeHoursMap.set(record.employee.id, employeeHoursMap.get(record.employee.id) + record.hours);
+            }
+          });
 
           const inner = uniqueEmployeeList.map((record) => {
             return {
               id: record.employee.id,
               name: record.employee.name,
+              rate: record.employee.rate,
               workHours: formatHours(employeeHoursMap.get(record.employee.id)),
               indirectHours: formatHours((employeeHoursMap.get(record.employee.id) / workHours) * indirectHour),
               percentage: formatPercentage(employeeHoursMap.get(record.employee.id) / workHours)
@@ -67,6 +72,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
           });
 
           return {
+            projectId: project.id,
             name: project.name,
             isBillable: project.isBillable,
             workHours: formatHours(workHours),
@@ -77,6 +83,28 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
           };
         })
     : [];
+
+  const handleOnClick = (row: any) => {
+    const { projectId, billableHours } = row;
+
+    const invoices = row.inner.map((employee: any) => {
+      return {
+        employeeId: employee.id,
+        projectId: projectId,
+        startDate: formatUTCHours(startDate),
+        endDate: formatUTCHours(endDate),
+        hours: billableHours,
+        rate: employee.rate,
+        amount: parseFloat(billableHours) * parseFloat(employee.rate)
+      };
+    });
+
+    createManyInvoiceMutation({
+      variables: {
+        invoices: invoices
+      },
+    })
+  };
 
   const outerTableConfig = [
     {
@@ -117,7 +145,11 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     },
     {
       name: '',
-      render: () => <Button variant="outlined">Generate Invoice</Button>
+      render: (row: any) => (
+        <Button variant="outlined" onClick={() => handleOnClick(row)}>
+          Generate Invoice
+        </Button>
+      )
     }
   ];
 
