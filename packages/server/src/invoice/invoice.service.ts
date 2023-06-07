@@ -7,7 +7,12 @@ import { InvoiceCreateInput } from './dto/invoice.dto';
 export class InvoiceService {
   constructor(private prisma: PrismaService) {}
   async getAllInvoices(): Promise<Invoice[]> {
-    return this.prisma.invoice.findMany();
+    return this.prisma.invoice.findMany({
+      include: {
+        project: true,
+        employee: true
+      }
+    });
   }
 
   async createManyInvoice(invoices: InvoiceCreateInput[]): Promise<Prisma.BatchPayload> {

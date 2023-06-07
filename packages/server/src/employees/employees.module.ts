@@ -5,6 +5,7 @@ import { EmployeesResolver } from './employees.resolver';
 
 @Module({
   imports: [PrismaModule.forRoot()],
-  providers: [EmployeesService, EmployeesResolver]
+  providers: [EmployeesService, EmployeesResolver],
+  exports: [EmployeesService]
 })
 export class EmployeesModule {}
