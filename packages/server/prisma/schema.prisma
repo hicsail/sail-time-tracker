@@ -53,7 +53,6 @@ model FavoriteProject {
 }
 
 model Invoice {
-  id         String   @id @default(uuid())
   projectId  String
   project    Project  @relation(fields: [projectId], references: [id])
   employeeId String
@@ -63,4 +62,6 @@ model Invoice {
   rate       Float
   hours      Float
   amount     Float
+
+  @@id([employeeId, projectId, startDate, endDate])
 }
