@@ -25,7 +25,13 @@ export type GetProjectListWithRecordQuery = {
     name: string;
     isBillable: boolean;
     status: string;
-    records: Array<{ __typename?: 'RecordModelWithEmployee'; startDate: any; endDate: any; hours: number; employee: { __typename?: 'EmployeeModel'; id: string; name: string } }>;
+    records: Array<{
+      __typename?: 'RecordModelWithEmployee';
+      startDate: any;
+      endDate: any;
+      hours: number;
+      employee: { __typename?: 'EmployeeModel'; id: string; name: string; rate: number };
+    }>;
   }>;
 };
 
@@ -105,6 +111,7 @@ export const GetProjectListWithRecordDocument = gql`
         employee {
           id
           name
+          rate
         }
       }
     }
