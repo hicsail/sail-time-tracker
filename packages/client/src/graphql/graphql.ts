@@ -66,11 +66,34 @@ export type FavoriteProjectCreateInput = {
   projectId: Scalars['ID'];
 };
 
+export type InvoiceCreateInput = {
+  amount: Scalars['Float'];
+  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  projectId: Scalars['String'];
+  rate: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+};
+
+export type InvoiceModel = {
+  __typename?: 'InvoiceModel';
+  amount: Scalars['Float'];
+  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  id: Scalars['ID'];
+  projectId: Scalars['String'];
+  rate: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
+  createManyInvoice: BatchPayload;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
@@ -89,6 +112,10 @@ export type MutationAddFavoriteProjectArgs = {
 
 export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
+};
+
+export type MutationCreateManyInvoiceArgs = {
+  invoices: Array<InvoiceCreateInput>;
 };
 
 export type MutationDeleteEmployeesArgs = {
@@ -155,6 +182,7 @@ export type Query = {
   __typename?: 'Query';
   employee: EmployeeModel;
   employees: Array<EmployeeModel>;
+  invoices: Array<InvoiceModel>;
   project: ProjectModel;
   projects: Array<ProjectModel>;
 };

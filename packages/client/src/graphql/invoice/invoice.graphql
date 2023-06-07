@@ -1,0 +1,17 @@
+query getAllInvoices {
+    invoices {
+        id
+        employeeId
+        projectId
+        startDate
+        endDate
+        rate
+        hours
+        amount
+    }
+}
+mutation CreateManyInvoice($invoices: [InvoiceCreateInput!]!) {
+    createManyInvoice(invoices: $invoices) {
+        count
+    }
+}
