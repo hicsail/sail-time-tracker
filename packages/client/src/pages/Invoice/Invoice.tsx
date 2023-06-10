@@ -5,8 +5,10 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
+import { useGetAllInvoicesQuery, useGetInvoiceSummaryQuery } from '@graphql/invoice/invoice';
+import { format } from 'date-fns';
 
-let USDollar = new Intl.NumberFormat('en-US', {
+const USDollar = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD'
 });
@@ -28,7 +30,7 @@ const columns: GridColDef[] = [
     field: 'projectName',
     headerName: 'PROJECT NAME',
     width: 130,
-    renderCell: (params) => <CustomIDCellRender id={params.row.id} value={params.row.projectName} />
+    renderCell: (params) => <CustomIDCellRender id={`${params.row.id}`} value={params.row.projectName} />
   },
   { field: 'startDate', headerName: 'START DATE', width: 130 },
   { field: 'endDate', headerName: 'END DATE', width: 130 },
@@ -62,50 +64,20 @@ const columns: GridColDef[] = [
   }
 ];
 
-const rows = [
-  {
-    id: 1,
-    projectName: 'MPC-WEB',
-    startDate: '5/1/2023',
-    endDate: '5/7/2023',
-    hours: 35,
-    amount: 3500
-  },
-  {
-    id: 2,
-    projectName: 'ASL-LEX',
-    startDate: '5/8/2023',
-    endDate: '5/14/2023',
-    hours: 42,
-    amount: 4200
-  },
-  {
-    id: 3,
-    projectName: 'ASL-LEX',
-    startDate: '5/15/2023',
-    endDate: '5/21/2023',
-    hours: 45,
-    amount: 4500
-  },
-  {
-    id: 4,
-    projectName: 'SIEVE',
-    startDate: '5/22/2023',
-    endDate: '5/28/2023',
-    hours: 16,
-    amount: 1600
-  },
-  {
-    id: 5,
-    projectName: 'DAMPLAB',
-    startDate: '5/29/2023',
-    endDate: '6/5/2023',
-    hours: 20,
-    amount: 2000
-  }
-];
-
 export const Invoice = () => {
+  const { data, loading, error } = useGetInvoiceSummaryQuery();
+
+  const rows = data?.invoiceSummary
+    ? data.invoiceSummary.map((summary) => {
+        const formattedStartDate = format(new Date(summary.startDate), 'MM/dd/yyyy');
+        const formattedEndDate = format(new Date(summary.endDate), 'MM/dd/yyyy');
+        const projectId = summary.projectId;
+        const key = `${summary.projectId}/${summary.startDate}/${summary.endDate}`;
+
+        return { ...summary, startDate: formattedStartDate, endDate: formattedEndDate, projectId: projectId, id: key };
+      })
+    : [];
+
   return (
     <Box sx={{ width: '100%', height: 400 }}>
       <DataGrid

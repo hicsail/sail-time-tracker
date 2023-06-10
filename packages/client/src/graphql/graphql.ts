@@ -89,6 +89,16 @@ export type InvoiceModel = {
   startDate: Scalars['DateTime'];
 };
 
+export type InvoiceSummaryModel = {
+  __typename?: 'InvoiceSummaryModel';
+  amount: Scalars['Float'];
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  projectId: Scalars['String'];
+  projectName: Scalars['String'];
+  startDate: Scalars['DateTime'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
@@ -183,6 +193,7 @@ export type Query = {
   __typename?: 'Query';
   employee: EmployeeModel;
   employees: Array<EmployeeModel>;
+  invoiceSummary: Array<InvoiceSummaryModel>;
   invoices: Array<InvoiceModel>;
   project: ProjectModel;
   projects: Array<ProjectModel>;

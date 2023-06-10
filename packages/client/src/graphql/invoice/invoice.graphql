@@ -1,7 +1,13 @@
 query getAllInvoices {
     invoices {
         employeeId
+        employee {
+            name
+        }
         projectId
+        project {
+            name
+        }
         startDate
         endDate
         rate
@@ -9,6 +15,18 @@ query getAllInvoices {
         amount
     }
 }
+
+query getInvoiceSummary {
+    invoiceSummary {
+        projectId
+        projectName
+        startDate
+        endDate
+        hours
+        amount
+    }
+}
+
 mutation createOrUpdateManyInvoice($invoices: [InvoiceCreateInput!]!) {
     createOrUpdateManyInvoice(invoices: $invoices) {
         count
