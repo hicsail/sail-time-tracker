@@ -30,7 +30,7 @@ const columns: GridColDef[] = [
     field: 'projectName',
     headerName: 'PROJECT NAME',
     width: 130,
-    renderCell: (params) => <CustomIDCellRender id={`${params.row.id}`} value={params.row.projectName} />
+    renderCell: (params) => <CustomIDCellRender id={`${params.row.projectId}`} value={params.row.projectName} />
   },
   { field: 'startDate', headerName: 'START DATE', width: 130 },
   { field: 'endDate', headerName: 'END DATE', width: 130 },
