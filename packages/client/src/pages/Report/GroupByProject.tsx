@@ -4,7 +4,7 @@ import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
 import { FC, useEffect, useState } from 'react';
 import { formatHours, formatPercentage } from '../../utils/formatHours';
 import { formatUTCHours } from '../../utils/formatDate';
-import { useCreateOrUpdateManyInvoiceMutation } from '@graphql/invoice/invoice';
+import { GetInvoiceSummaryDocument, useCreateOrUpdateManyInvoiceMutation } from '@graphql/invoice/invoice';
 import { Banner } from '@components/Banner';
 
 interface GroupByEmployeeProps {
@@ -86,7 +86,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     : [];
 
   const handleOnClick = (row: any) => {
-    const { projectId, billableHours } = row;
+    const { projectId } = row;
 
     const invoices = row.inner.map((employee: any) => {
       return {
@@ -94,16 +94,17 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
         projectId: projectId,
         startDate: formatUTCHours(startDate),
         endDate: formatUTCHours(endDate),
-        hours: billableHours,
+        hours: parseFloat(employee.workHours) + parseFloat(employee.indirectHours),
         rate: employee.rate,
-        amount: parseFloat(billableHours) * parseFloat(employee.rate)
+        amount: (parseFloat(employee.workHours) + parseFloat(employee.indirectHours)) * parseFloat(employee.rate)
       };
     });
 
     createOrUpdateManyInvoiceMutation({
       variables: {
         invoices: invoices
-      }
+      },
+      refetchQueries: [{ query: GetInvoiceSummaryDocument }]
     }).then(() => setDisplayContent(true));
   };
 
