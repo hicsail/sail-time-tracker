@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 
 /**
  * return types for querying employee
@@ -20,6 +20,27 @@ export class InvoiceModel {
 
   @Field()
   rate: number;
+
+  @Field()
+  hours: number;
+
+  @Field()
+  amount: number;
+}
+
+@ObjectType()
+export class InvoiceSummaryModel {
+  @Field()
+  projectId: string;
+
+  @Field()
+  projectName: string;
+
+  @Field()
+  startDate: Date;
+
+  @Field()
+  endDate: Date;
 
   @Field()
   hours: number;

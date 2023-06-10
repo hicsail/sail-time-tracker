@@ -1,6 +1,6 @@
-import { Args, Field, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { InvoiceService } from './invoice.service';
-import { InvoiceModel } from './model/invoice.model';
+import { InvoiceModel, InvoiceSummaryModel } from './model/invoice.model';
 import { InvoiceCreateInput } from './dto/invoice.dto';
 import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 import { EmployeeModel } from '../employees/model/employee.model';
@@ -15,6 +15,11 @@ export class InvoiceResolver {
   @Query(() => [InvoiceModel])
   async invoices(): Promise<InvoiceModel[]> {
     return this.invoiceService.getAllInvoices();
+  }
+
+  @Query(() => [InvoiceSummaryModel])
+  async invoiceSummary(): Promise<InvoiceSummaryModel[]> {
+    return await this.invoiceService.getInvoiceSummary();
   }
 
   @ResolveField(() => EmployeeModel)

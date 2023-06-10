@@ -84,12 +84,22 @@ type InvoiceModel {
   project: ProjectModel!
 }
 
+type InvoiceSummaryModel {
+  projectId: String!
+  projectName: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  hours: Float!
+  amount: Float!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
   projects: [ProjectModel!]!
   project(id: String!): ProjectModel!
   invoices: [InvoiceModel!]!
+  invoiceSummary: [InvoiceSummaryModel!]!
 }
 
 type Mutation {

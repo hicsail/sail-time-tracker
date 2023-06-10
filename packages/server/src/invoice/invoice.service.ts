@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Invoice } from '@prisma/client';
 import { InvoiceCreateInput } from './dto/invoice.dto';
+import { InvoiceSummaryModel } from './model/invoice.model';
 
 @Injectable()
 export class InvoiceService {
@@ -13,6 +14,42 @@ export class InvoiceService {
         employee: true
       }
     });
+  }
+
+  async getInvoiceSummary(): Promise<InvoiceSummaryModel[]> {
+    const invoices = await this.prisma.invoice.findMany({
+      include: {
+        project: true,
+        employee: true
+      }
+    });
+
+    const uniqueEntriesMap = new Map();
+
+    invoices.forEach((invoice) => {
+      const { projectId, startDate, endDate, amount, hours } = invoice;
+      const { name } = invoice.project;
+
+      const key = `${projectId}/${name}/${startDate}/${endDate}`;
+
+      if (uniqueEntriesMap.has(key)) {
+        const entry = uniqueEntriesMap.get(key);
+        entry.amount += amount;
+        entry.hours += hours;
+      } else {
+        const entry = {
+          projectId: projectId,
+          projectName: name,
+          startDate: startDate,
+          endDate: endDate,
+          amount,
+          hours
+        };
+        uniqueEntriesMap.set(key, entry);
+      }
+    });
+
+    return Array.from(uniqueEntriesMap.values());
   }
 
   async createOrUpdateManyInvoice(invoices: InvoiceCreateInput[]): Promise<Prisma.BatchPayload> {
