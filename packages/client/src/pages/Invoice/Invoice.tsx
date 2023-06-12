@@ -5,7 +5,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
-import { useGetAllInvoicesQuery, useGetInvoiceSummaryQuery } from '@graphql/invoice/invoice';
+import { useGetInvoiceSummaryQuery } from '@graphql/invoice/invoice';
 import { format } from 'date-fns';
 
 const USDollar = new Intl.NumberFormat('en-US', {
@@ -13,10 +13,25 @@ const USDollar = new Intl.NumberFormat('en-US', {
   currency: 'USD'
 });
 
-const CustomIDCellRender = (props: { id: string; value: string }) => {
-  const { id, value } = props;
+const CustomIDCellRender = (props: { projectId: string; value: string; startDate: Date; endDate: Date }) => {
+  const { projectId, value, startDate, endDate } = props;
+
+  const start_date = new Date(startDate);
+  const end_date = new Date(endDate);
+
+  const startDateYear = start_date.getFullYear();
+  const startDateMonth = start_date.getMonth() + 1;
+  const startDateDate = start_date.getDate();
+
+  const endDateYear = end_date.getFullYear();
+  const endDateMonth = end_date.getMonth() + 1;
+  const endDateDate = end_date.getDate();
+
   return (
-    <Link to={`${Paths.INVOICE}/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+    <Link
+      to={`${Paths.INVOICE}/${projectId}/${startDateYear + '-' + startDateMonth + '-' + startDateDate}/${endDateYear + '-' + endDateMonth + '-' + endDateDate}`}
+      style={{ textDecoration: 'none', color: 'inherit' }}
+    >
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center', gap: 2 }}>
         <DescriptionOutlinedIcon sx={{ color: 'rgb(115,126,137)', fontSize: 'large' }} />
         <Box sx={{ margin: 'auto' }}>{value}</Box>
@@ -30,7 +45,9 @@ const columns: GridColDef[] = [
     field: 'projectName',
     headerName: 'PROJECT NAME',
     width: 130,
-    renderCell: (params) => <CustomIDCellRender id={`${params.row.projectId}`} value={params.row.projectName} />
+    renderCell: (params) => (
+      <CustomIDCellRender projectId={`${params.row.projectId}`} startDate={params.row.startDate} endDate={params.row.endDate} value={params.row.projectName} />
+    )
   },
   { field: 'startDate', headerName: 'START DATE', width: 130 },
   { field: 'endDate', headerName: 'END DATE', width: 130 },

@@ -3,7 +3,7 @@ export enum Paths {
   ADMIN = '/admin',
   REPORT = '/admin/report',
   INVOICE = '/admin/invoice',
-  INVOICE_DETAIL = '/admin/invoice/:id',
+  INVOICE_DETAIL = '/admin/invoice/:id/:startDate/:endDate',
   PROJECT_lIST = '/admin/projects',
   ADD_PROJECT = '/admin/projects/add',
   EDIT_PROJECT = '/admin/projects/:id',
