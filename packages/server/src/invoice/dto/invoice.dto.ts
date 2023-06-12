@@ -42,3 +42,21 @@ export class InvoiceCreateInput {
   @IsNumber()
   amount: number;
 }
+
+@InputType()
+export class SearchInvoiceInput {
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  projectId: string;
+
+  @Field()
+  @IsNotEmpty()
+  @IsDate()
+  startDate: Date;
+
+  @Field()
+  @IsNotEmpty()
+  @IsDate()
+  endDate: Date;
+}

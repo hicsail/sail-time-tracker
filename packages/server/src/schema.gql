@@ -112,6 +112,7 @@ type Mutation {
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
   deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
+  searchInvoices(searchInvoiceInput: SearchInvoiceInput!): [InvoiceModel!]!
   createOrUpdateManyInvoice(invoices: [InvoiceCreateInput!]!): BatchPayload!
 }
 
@@ -155,6 +156,12 @@ input RecordCreateInput {
   projectId: ID!
   hours: Float!
   date: DateTime!
+}
+
+input SearchInvoiceInput {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
 }
 
 input InvoiceCreateInput {

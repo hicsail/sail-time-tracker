@@ -16,6 +16,20 @@ export class InvoiceService {
     });
   }
 
+  async searchInvoices(projectId: string, startDate: Date, endDate: Date): Promise<Invoice[]> {
+    return this.prisma.invoice.findMany({
+      include: {
+        project: true,
+        employee: true
+      },
+      where: {
+        projectId: projectId,
+        startDate: startDate,
+        endDate: endDate
+      }
+    });
+  }
+
   async getInvoiceSummary(): Promise<InvoiceSummaryModel[]> {
     const invoices = await this.prisma.invoice.findMany({
       include: {

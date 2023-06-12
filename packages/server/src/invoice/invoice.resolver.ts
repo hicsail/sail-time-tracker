@@ -1,7 +1,7 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { InvoiceService } from './invoice.service';
 import { InvoiceModel, InvoiceSummaryModel } from './model/invoice.model';
-import { InvoiceCreateInput } from './dto/invoice.dto';
+import { InvoiceCreateInput, SearchInvoiceInput } from './dto/invoice.dto';
 import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 import { EmployeeModel } from '../employees/model/employee.model';
 import { EmployeesService } from '../employees/employees.service';
@@ -30,6 +30,18 @@ export class InvoiceResolver {
   @ResolveField(() => ProjectModel)
   async project(@Parent() invoice: InvoiceModel): Promise<ProjectModel> {
     return this.projectService.getProjectById(invoice.projectId);
+  }
+
+  @Mutation(() => [InvoiceModel])
+  async searchInvoices(
+    @Args({
+      name: 'searchInvoiceInput',
+      type: () => SearchInvoiceInput
+    })
+    searchInvoiceInput: SearchInvoiceInput
+  ): Promise<InvoiceModel[]> {
+    const { projectId, startDate, endDate } = searchInvoiceInput;
+    return this.invoiceService.searchInvoices(projectId, startDate, endDate);
   }
 
   @Mutation(() => BatchPayload)
