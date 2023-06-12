@@ -32,3 +32,21 @@ mutation createOrUpdateManyInvoice($invoices: [InvoiceCreateInput!]!) {
         count
     }
 }
+
+mutation searchInvoices($searchInvoiceInput: SearchInvoiceInput!) {
+    searchInvoices(searchInvoiceInput: $searchInvoiceInput) {
+        employeeId
+        employee {
+            name
+        }
+        projectId
+        project {
+            name
+        }
+        startDate
+        endDate
+        rate
+        hours
+        amount
+    }
+}

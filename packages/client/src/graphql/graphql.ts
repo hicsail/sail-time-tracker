@@ -109,6 +109,7 @@ export type Mutation = {
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
+  searchInvoices: Array<InvoiceModel>;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
 };
@@ -144,6 +145,10 @@ export type MutationDeleteProjectsArgs = {
 
 export type MutationInsertOrUpdateRecordArgs = {
   record: RecordCreateInput;
+};
+
+export type MutationSearchInvoicesArgs = {
+  searchInvoiceInput: SearchInvoiceInput;
 };
 
 export type MutationUpdateEmployeeArgs = {
@@ -253,5 +258,11 @@ export type RecordWithFavoriteProjectModel = {
 
 export type RecordWithFavoriteProjectModelRecordsArgs = {
   endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
+};
+
+export type SearchInvoiceInput = {
+  endDate: Scalars['DateTime'];
+  projectId: Scalars['String'];
   startDate: Scalars['DateTime'];
 };

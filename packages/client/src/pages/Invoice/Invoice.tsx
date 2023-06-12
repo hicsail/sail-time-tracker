@@ -7,11 +7,8 @@ import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { useGetInvoiceSummaryQuery } from '@graphql/invoice/invoice';
 import { format } from 'date-fns';
-
-const USDollar = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD'
-});
+import { USDollar } from '../../utils/formatDollar';
+import { formatUTCDate } from '../../utils/formatDate';
 
 const CustomIDCellRender = (props: { projectId: string; value: string; startDate: Date; endDate: Date }) => {
   const { projectId, value, startDate, endDate } = props;
@@ -86,8 +83,8 @@ export const Invoice = () => {
 
   const rows = data?.invoiceSummary
     ? data.invoiceSummary.map((summary) => {
-        const formattedStartDate = format(new Date(summary.startDate), 'MM/dd/yyyy');
-        const formattedEndDate = format(new Date(summary.endDate), 'MM/dd/yyyy');
+        const formattedStartDate = format(formatUTCDate(new Date(summary.startDate)), 'MM/dd/yy');
+        const formattedEndDate = format(formatUTCDate(new Date(summary.endDate)), 'MM/dd/yy');
         const projectId = summary.projectId;
         const key = `${summary.projectId}/${summary.startDate}/${summary.endDate}`;
 
