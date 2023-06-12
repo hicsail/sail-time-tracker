@@ -42,7 +42,7 @@ export const InvoiceDetails = () => {
       width: 200,
       renderCell: (params) => params.row.projectName
     },
-    { field: 'rate', headerName: 'Rate', width: 200 },
+    { field: 'hours', headerName: 'Billable Hours', width: 200 },
     { field: 'amount', headerName: 'Amount', width: 200, renderCell: (params) => USDollar.format(params.row.amount) }
   ];
 
@@ -51,7 +51,7 @@ export const InvoiceDetails = () => {
         return {
           id: invoice.employeeId,
           employeeName: invoice.employee.name,
-          rate: invoice.rate,
+          hours: invoice.hours,
           amount: invoice.amount
         };
       })
