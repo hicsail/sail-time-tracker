@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Project, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { ProjectUpdateInput } from './dto/project.dto';
-import { ProjectDeleteReturnModel, ProjectModel, ProjectWithRecord } from './model/project.model';
-import { getTotalIndirectHours, getTotalWorkHours } from './helperFun';
-import { formatHours, formatPercentage } from './helperFun';
+import { ProjectDeleteReturnModel, ProjectWithRecord } from './model/project.model';
+import { getTotalIndirectHours, getTotalWorkHours } from '../utils/helperFun';
+import { formatHours, formatPercentage } from '../utils/helperFun';
 
 @Injectable()
 export class ProjectService {

@@ -39,14 +39,8 @@ export type EmployeeModel = {
   name: Scalars['String'];
   projects: Array<ProjectModel>;
   rate: Scalars['Float'];
-  records: Array<RecordModelWithProject>;
   recordsWithFavoriteProjects: Array<RecordWithFavoriteProjectModel>;
   status?: Maybe<Scalars['String']>;
-};
-
-export type EmployeeModelRecordsArgs = {
-  endDate: Scalars['DateTime'];
-  startDate: Scalars['DateTime'];
 };
 
 export type EmployeeModelRecordsWithFavoriteProjectsArgs = {
@@ -59,6 +53,25 @@ export type EmployeeUpdateInput = {
   name: Scalars['String'];
   rate: Scalars['Float'];
   status?: InputMaybe<Scalars['String']>;
+};
+
+export type EmployeeWithRecord = {
+  __typename?: 'EmployeeWithRecord';
+  id: Scalars['String'];
+  indirectHours: Scalars['Float'];
+  inner: Array<EmployeeWithRecordInner>;
+  name: Scalars['String'];
+  workHours: Scalars['Float'];
+};
+
+export type EmployeeWithRecordInner = {
+  __typename?: 'EmployeeWithRecordInner';
+  isBillable: Scalars['Boolean'];
+  projectId: Scalars['String'];
+  projectIndirectHours: Scalars['Float'];
+  projectName: Scalars['String'];
+  projectPercentage: Scalars['String'];
+  projectWorkHours: Scalars['Float'];
 };
 
 export type FavoriteProjectCreateInput = {
@@ -162,13 +175,7 @@ export type ProjectModel = {
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
-  records: Array<RecordModelWithEmployee>;
   status: Scalars['String'];
-};
-
-export type ProjectModelRecordsArgs = {
-  endDate: Scalars['DateTime'];
-  startDate: Scalars['DateTime'];
 };
 
 export type ProjectUpdateInput = {
@@ -204,6 +211,7 @@ export type Query = {
   __typename?: 'Query';
   employee: EmployeeModel;
   employees: Array<EmployeeModel>;
+  getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectsWithRecord: Array<ProjectWithRecord>;
   invoices: Array<InvoiceModel>;
   project: ProjectModel;
@@ -212,6 +220,11 @@ export type Query = {
 
 export type QueryEmployeeArgs = {
   id: Scalars['String'];
+};
+
+export type QueryGetEmployeesWithRecordArgs = {
+  endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
 };
 
 export type QueryGetProjectsWithRecordArgs = {
@@ -238,22 +251,6 @@ export type RecordInsertOrUpdateModel = {
   projectId: Scalars['ID'];
 };
 
-export type RecordModelWithEmployee = {
-  __typename?: 'RecordModelWithEmployee';
-  employee: EmployeeModel;
-  endDate: Scalars['DateTime'];
-  hours: Scalars['Float'];
-  startDate: Scalars['DateTime'];
-};
-
-export type RecordModelWithProject = {
-  __typename?: 'RecordModelWithProject';
-  endDate: Scalars['DateTime'];
-  hours: Scalars['Float'];
-  project: ProjectModel;
-  startDate: Scalars['DateTime'];
-};
-
 export type RecordWithFavoriteProjectModel = {
   __typename?: 'RecordWithFavoriteProjectModel';
   description: Scalars['String'];
@@ -263,11 +260,5 @@ export type RecordWithFavoriteProjectModel = {
   isFavorite: Scalars['Boolean'];
   name: Scalars['String'];
   previousWeek: Scalars['Float'];
-  records: Array<RecordModelWithEmployee>;
   status: Scalars['String'];
-};
-
-export type RecordWithFavoriteProjectModelRecordsArgs = {
-  endDate: Scalars['DateTime'];
-  startDate: Scalars['DateTime'];
 };

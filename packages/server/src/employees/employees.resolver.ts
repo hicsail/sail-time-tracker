@@ -1,9 +1,9 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { EmployeesService } from './employees.service';
-import { EmployeeDeleteReturnModel, EmployeeModel } from './model/employee.model';
+import { EmployeeDeleteReturnModel, EmployeeModel, EmployeeWithRecord } from './model/employee.model';
 import { EmployeeCreateInput, EmployeeUpdateInput } from './dto/employee.dto';
 import { ProjectModel } from '../project/model/project.model';
-import { RecordModelWithProject, RecordWithFavoriteProjectModel } from '../record/model/record.model';
+import { RecordWithFavoriteProjectModel } from '../record/model/record.model';
 
 @Resolver(() => EmployeeModel)
 export class EmployeesResolver {
@@ -19,14 +19,14 @@ export class EmployeesResolver {
     return this.employeesService.getEmployeeById(id);
   }
 
+  @Query(() => [EmployeeWithRecord])
+  async getEmployeesWithRecord(@Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<EmployeeWithRecord[]> {
+    return this.employeesService.getEmployeesWithRecord(startDate, endDate);
+  }
+
   @ResolveField(() => [ProjectModel])
   async projects(@Parent() employee: EmployeeModel): Promise<ProjectModel[]> {
     return this.employeesService.getFavoriteProjects(employee.id);
-  }
-
-  @ResolveField(() => [RecordModelWithProject])
-  async records(@Parent() employee: EmployeeModel, @Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<RecordModelWithProject[]> {
-    return this.employeesService.getRecords(employee.id, startDate, endDate);
   }
 
   @ResolveField(() => [RecordWithFavoriteProjectModel])

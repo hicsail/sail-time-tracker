@@ -9,7 +9,6 @@ type EmployeeModel {
   rate: Float!
   status: String
   projects: [ProjectModel!]!
-  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithProject!]!
   recordsWithFavoriteProjects(date: DateTime!): [RecordWithFavoriteProjectModel!]!
 }
 
@@ -20,6 +19,23 @@ scalar DateTime
 
 type EmployeeDeleteReturnModel {
   count: Float!
+}
+
+type EmployeeWithRecord {
+  id: String!
+  name: String!
+  workHours: Float!
+  indirectHours: Float!
+  inner: [EmployeeWithRecordInner!]!
+}
+
+type EmployeeWithRecordInner {
+  projectId: String!
+  projectName: String!
+  isBillable: Boolean!
+  projectWorkHours: Float!
+  projectIndirectHours: Float!
+  projectPercentage: String!
 }
 
 type ProjectModel {
@@ -60,13 +76,6 @@ type RecordInsertOrUpdateModel {
   hours: Float!
 }
 
-type RecordModelWithProject {
-  startDate: DateTime!
-  endDate: DateTime!
-  hours: Float!
-  project: ProjectModel!
-}
-
 type RecordWithFavoriteProjectModel {
   id: ID!
   name: String!
@@ -97,6 +106,7 @@ type InvoiceModel {
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
+  getEmployeesWithRecord(startDate: DateTime!, endDate: DateTime!): [EmployeeWithRecord!]!
   projects: [ProjectModel!]!
   project(id: String!): ProjectModel!
   getProjectsWithRecord(startDate: DateTime!, endDate: DateTime!): [ProjectWithRecord!]!

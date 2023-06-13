@@ -1,8 +1,8 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
-import { useGetEmployeeListWithRecordQuery } from '@graphql/employee/employee';
 import { FC } from 'react';
-import { formatHours, formatPercentage } from '../../utils/formatHours';
+
+import { useGetEmployeesWithRecordQuery } from '@graphql/employee/employee';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -11,61 +11,14 @@ interface GroupByEmployeeProps {
 
 export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
   // get all employees with records
-  const { data } = useGetEmployeeListWithRecordQuery({
+  const { data } = useGetEmployeesWithRecordQuery({
     variables: {
       startDate: startDate.setUTCHours(4, 0, 0, 0),
       endDate: endDate.setUTCHours(4, 0, 0, 0)
     }
   });
 
-  // construct rows
-  const rows = data
-    ? data.employees
-        .filter((employee) => employee.status !== 'Inactive')
-        .map((employee) => {
-          const totalWorkHours = employee.records
-            .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
-            .reduce((sum, currentValue) => sum + currentValue.hours, 0);
-
-          let totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
-          let projectHoursMap = new Map();
-          let uniqueProjectList: any[] = [];
-
-          // store unique projects and total hours to uniqueProjectList
-          // from startDate to endDate
-          employee.records
-            .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
-            .forEach((record) => {
-              if (!projectHoursMap.get(record.project.id)) {
-                projectHoursMap.set(record.project.id, record.hours);
-                uniqueProjectList.push(record);
-              } else {
-                projectHoursMap.set(record.project.id, projectHoursMap.get(record.project.id) + record.hours);
-              }
-            });
-
-          // get inner table data
-          const inner = uniqueProjectList.map((record) => {
-            const indirectHour = (projectHoursMap.get(record.project.id) / totalWorkHours) * totalIndirectHours;
-            return {
-              id: record.project.id,
-              name: record.project.name,
-              isBillable: record.project.isBillable,
-              workHours: formatHours(projectHoursMap.get(record.project.id)),
-              indirectHours: formatHours(indirectHour),
-              percentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
-            };
-          });
-
-          return {
-            name: employee.name,
-            workHours: formatHours(totalWorkHours),
-            indirectHours: formatHours(totalIndirectHours),
-            billableHours: formatHours(totalWorkHours + totalIndirectHours),
-            inner: inner
-          };
-        })
-    : [];
+  const rows = data ? [...data.getEmployeesWithRecord.filter((row) => row.workHours !== 0), ...data.getEmployeesWithRecord.filter((row) => row.workHours === 0)] : [];
 
   // outer table column name and render config
   const outerTableConfig = [
@@ -91,7 +44,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }
   const innerTableConfig = [
     {
       name: 'Name',
-      render: (row: any) => row.name
+      render: (row: any) => row.projectName
     },
     {
       name: 'IsBillable',
@@ -111,15 +64,15 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }
     },
     {
       name: 'Work Hours',
-      render: (row: any) => row.workHours
+      render: (row: any) => row.projectWorkHours
     },
     {
       name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours
+      render: (row: any) => row.projectIndirectHours
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage + '%'
+      render: (row: any) => row.projectPercentage + '%'
     }
   ];
 
