@@ -17,8 +17,6 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     }
   });
 
-  console.log(data?.getProjectsWithRecord);
-
   const outerTableConfig = [
     {
       name: 'Projects',
