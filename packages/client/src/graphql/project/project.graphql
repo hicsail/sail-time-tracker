@@ -8,20 +8,21 @@ query getProjectList {
   }
 }
 
-query getProjectListWithRecord($startDate: DateTime!, $endDate: DateTime!) {
-  projects {
+query getProjectsWithRecord ($startDate: DateTime!, $endDate: DateTime!) {
+  getProjectsWithRecord(startDate: $startDate, endDate: $endDate) {
     id
     name
     isBillable
-    status
-    records(startDate: $startDate, endDate: $endDate,) {
-      startDate
-      endDate
-      hours
-      employee {
-        id
-        name
-      }
+    workHours
+    indirectHours
+    percentage
+    billableHours
+    inner {
+      employeeId
+      employeeName
+      employeeWorkHours
+      employeeIndirectHours
+      employeePercentage
     }
   }
 }

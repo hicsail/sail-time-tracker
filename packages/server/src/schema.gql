@@ -28,11 +28,29 @@ type ProjectModel {
   status: String!
   description: String!
   isBillable: Boolean!
-  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithEmployee!]!
 }
 
 type ProjectDeleteReturnModel {
   count: Float!
+}
+
+type ProjectWithRecord {
+  id: String!
+  name: String!
+  isBillable: Boolean!
+  workHours: Float!
+  indirectHours: Float!
+  percentage: String!
+  billableHours: Float!
+  inner: [ProjectWithRecordInner!]!
+}
+
+type ProjectWithRecordInner {
+  employeeId: String!
+  employeeName: String!
+  employeeWorkHours: Float!
+  employeeIndirectHours: Float!
+  employeePercentage: String!
 }
 
 type RecordInsertOrUpdateModel {
@@ -49,20 +67,12 @@ type RecordModelWithProject {
   project: ProjectModel!
 }
 
-type RecordModelWithEmployee {
-  startDate: DateTime!
-  endDate: DateTime!
-  hours: Float!
-  employee: EmployeeModel!
-}
-
 type RecordWithFavoriteProjectModel {
   id: ID!
   name: String!
   status: String!
   description: String!
   isBillable: Boolean!
-  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithEmployee!]!
   isFavorite: Boolean!
   hours: Float!
   previousWeek: Float!
@@ -89,6 +99,7 @@ type Query {
   employee(id: String!): EmployeeModel!
   projects: [ProjectModel!]!
   project(id: String!): ProjectModel!
+  getProjectsWithRecord(startDate: DateTime!, endDate: DateTime!): [ProjectWithRecord!]!
   invoices: [InvoiceModel!]!
 }
 

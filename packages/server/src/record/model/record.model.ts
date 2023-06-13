@@ -37,21 +37,6 @@ export class RecordModelWithProject {
 }
 
 @ObjectType()
-export class RecordModelWithEmployee {
-  @Field()
-  startDate: Date;
-
-  @Field()
-  endDate: Date;
-
-  @Field()
-  hours: number;
-
-  @Field()
-  employee: EmployeeModel;
-}
-
-@ObjectType()
 export class RecordWithFavoriteProjectModel extends ProjectModel {
   @Field()
   isFavorite: Boolean;

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Project, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { ProjectUpdateInput } from './dto/project.dto';
-import { ProjectDeleteReturnModel } from './model/project.model';
-import { RecordModelWithEmployee } from '../record/model/record.model';
-import { endOfWeek } from 'date-fns';
+import { ProjectDeleteReturnModel, ProjectModel, ProjectWithRecord } from './model/project.model';
+import { getTotalIndirectHours, getTotalWorkHours } from './helperFun';
+import { formatHours, formatPercentage } from './helperFun';
 
 @Injectable()
 export class ProjectService {
@@ -74,34 +74,78 @@ export class ProjectService {
   }
 
   /**
-   * Get records of the project
+   * Get projects with records
    *
-   * @return a list of records with employee data
-   * @param projectId represents project id
+   * @return a list of projects with records
    * @param startDate
    * @param endDate
    */
-  async getRecords(projectId: string, startDate: Date, endDate: Date): Promise<RecordModelWithEmployee[]> {
-    const records = await this.prisma.record.findMany({
-      where: {
-        projectId: projectId,
-        date: {
-          lte: endDate,
-          gte: startDate
-        }
-      },
+
+  async getProjectsWithRecord(startDate: Date, endDate: Date): Promise<ProjectWithRecord[]> {
+    const projects = await this.prisma.project.findMany({
       include: {
-        employee: true
+        records: {
+          where: {
+            date: {
+              lte: endDate,
+              gte: startDate
+            }
+          },
+          include: {
+            employee: true
+          }
+        }
       }
     });
 
-    return records.map((record) => {
-      return {
-        startDate: record.date,
-        endDate: endOfWeek(record.date, { weekStartsOn: 0 }),
-        hours: record.hours,
-        employee: record.employee
-      };
-    });
+    const indirectHours = getTotalIndirectHours(projects);
+    const totalWorkHours = getTotalWorkHours(projects);
+
+    // hide project that not contains any record, is not Indirect, Absence and the status is Active
+    return projects
+      .filter((project) => project.records.length > 0 && project.name !== 'Indirect' && project.name !== 'Absence' && project.status !== 'Inactive')
+      .map((project) => {
+        const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
+        const indirectHour = (workHours / totalWorkHours) * indirectHours;
+
+        let employeeHoursMap = new Map();
+        let uniqueEmployeeList: any[] = [];
+
+        // calculate total work hours per employee per project
+        project.records.map((record) => {
+          const employeeId = record.employee.id;
+          const hours = record.hours;
+
+          if (!employeeHoursMap.has(employeeId)) {
+            employeeHoursMap.set(employeeId, hours);
+            uniqueEmployeeList.push(record);
+          } else {
+            const currentHours = employeeHoursMap.get(employeeId);
+            employeeHoursMap.set(employeeId, currentHours + hours);
+          }
+        });
+
+        const inner = uniqueEmployeeList.map((record) => {
+          const { id, name } = record.employee;
+          return {
+            employeeId: id,
+            employeeName: name,
+            employeeWorkHours: formatHours(employeeHoursMap.get(id)),
+            employeeIndirectHours: formatHours((employeeHoursMap.get(id) / workHours) * indirectHour),
+            employeePercentage: formatPercentage(employeeHoursMap.get(id) / workHours)
+          };
+        });
+
+        return {
+          id: project.id,
+          name: project.name,
+          isBillable: project.isBillable,
+          workHours: formatHours(workHours),
+          indirectHours: formatHours(indirectHour),
+          percentage: formatPercentage(workHours / totalWorkHours),
+          billableHours: formatHours(workHours + indirectHour),
+          inner: inner
+        };
+      });
   }
 }

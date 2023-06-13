@@ -66,11 +66,35 @@ export type FavoriteProjectCreateInput = {
   projectId: Scalars['ID'];
 };
 
+export type InvoiceCreateInput = {
+  amount: Scalars['Float'];
+  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  projectId: Scalars['String'];
+  rate: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+};
+
+export type InvoiceModel = {
+  __typename?: 'InvoiceModel';
+  amount: Scalars['Float'];
+  employee: EmployeeModel;
+  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  project: ProjectModel;
+  projectId: Scalars['String'];
+  rate: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
+  createOrUpdateManyInvoice: BatchPayload;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
@@ -89,6 +113,10 @@ export type MutationAddFavoriteProjectArgs = {
 
 export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
+};
+
+export type MutationCreateOrUpdateManyInvoiceArgs = {
+  invoices: Array<InvoiceCreateInput>;
 };
 
 export type MutationDeleteEmployeesArgs = {
@@ -151,16 +179,44 @@ export type ProjectUpdateInput = {
   status: Scalars['String'];
 };
 
+export type ProjectWithRecord = {
+  __typename?: 'ProjectWithRecord';
+  billableHours: Scalars['Float'];
+  id: Scalars['String'];
+  indirectHours: Scalars['Float'];
+  inner: Array<ProjectWithRecordInner>;
+  isBillable: Scalars['Boolean'];
+  name: Scalars['String'];
+  percentage: Scalars['String'];
+  workHours: Scalars['Float'];
+};
+
+export type ProjectWithRecordInner = {
+  __typename?: 'ProjectWithRecordInner';
+  employeeId: Scalars['String'];
+  employeeIndirectHours: Scalars['Float'];
+  employeeName: Scalars['String'];
+  employeePercentage: Scalars['String'];
+  employeeWorkHours: Scalars['Float'];
+};
+
 export type Query = {
   __typename?: 'Query';
   employee: EmployeeModel;
   employees: Array<EmployeeModel>;
+  getProjectsWithRecord: Array<ProjectWithRecord>;
+  invoices: Array<InvoiceModel>;
   project: ProjectModel;
   projects: Array<ProjectModel>;
 };
 
 export type QueryEmployeeArgs = {
   id: Scalars['String'];
+};
+
+export type QueryGetProjectsWithRecordArgs = {
+  endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
 };
 
 export type QueryProjectArgs = {
