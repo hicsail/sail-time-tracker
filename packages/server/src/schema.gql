@@ -91,6 +91,25 @@ type BatchPayload {
   count: Float!
 }
 
+type InvoiceModel {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  rate: Float!
+  hours: Float!
+  amount: Float!
+}
+
+type InvoiceModelWithProject {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  rate: Float!
+  hours: Float!
+  amount: Float!
+  project: ProjectModel!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -98,6 +117,7 @@ type Query {
   projects: [ProjectModel!]!
   project(id: String!): ProjectModel!
   getProjectsWithRecord(startDate: DateTime!, endDate: DateTime!): [ProjectWithRecord!]!
+  invoices: [InvoiceModelWithProject!]!
 }
 
 type Mutation {
@@ -110,6 +130,7 @@ type Mutation {
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
   deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
+  createOrUpdateManyInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
 }
 
 input EmployeeCreateInput {
@@ -152,4 +173,13 @@ input RecordCreateInput {
   projectId: ID!
   hours: Float!
   date: DateTime!
+}
+
+input InvoiceCreateInput {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  rate: Float!
+  hours: Float!
+  amount: Float!
 }

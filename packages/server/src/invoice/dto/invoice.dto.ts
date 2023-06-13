@@ -14,11 +14,6 @@ export class InvoiceCreateInput {
 
   @Field()
   @IsNotEmpty()
-  @IsString()
-  employeeId: string;
-
-  @Field()
-  @IsNotEmpty()
   @IsDate()
   startDate: Date;
 

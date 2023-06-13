@@ -1,40 +1,20 @@
-import { Args, Field, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InvoiceService } from './invoice.service';
-import { InvoiceModel } from './model/invoice.model';
+import { InvoiceModel, InvoiceModelWithProject } from './model/invoice.model';
 import { InvoiceCreateInput } from './dto/invoice.dto';
-import { BatchPayload } from '../favorite-project/model/favorite-project.model';
-import { EmployeeModel } from '../employees/model/employee.model';
-import { EmployeesService } from '../employees/employees.service';
-import { ProjectModel } from '../project/model/project.model';
-import { ProjectService } from '../project/project.service';
+import { Invoice } from '@prisma/client';
 
 @Resolver(() => InvoiceModel)
 export class InvoiceResolver {
-  constructor(private invoiceService: InvoiceService, private employeeService: EmployeesService, private projectService: ProjectService) {}
+  constructor(private invoiceService: InvoiceService) {}
 
-  @Query(() => [InvoiceModel])
-  async invoices(): Promise<InvoiceModel[]> {
+  @Query(() => [InvoiceModelWithProject])
+  async invoices(): Promise<InvoiceModelWithProject[]> {
     return this.invoiceService.getAllInvoices();
   }
 
-  @ResolveField(() => EmployeeModel)
-  async employee(@Parent() invoice: InvoiceModel): Promise<EmployeeModel> {
-    return this.employeeService.getEmployeeById(invoice.employeeId);
-  }
-
-  @ResolveField(() => ProjectModel)
-  async project(@Parent() invoice: InvoiceModel): Promise<ProjectModel> {
-    return this.projectService.getProjectById(invoice.projectId);
-  }
-
-  @Mutation(() => BatchPayload)
-  async createOrUpdateManyInvoice(
-    @Args({
-      name: 'invoices',
-      type: () => [InvoiceCreateInput]
-    })
-    invoices: [InvoiceCreateInput]
-  ): Promise<BatchPayload> {
-    return this.invoiceService.createOrUpdateManyInvoice(invoices);
+  @Mutation(() => InvoiceModel)
+  async createOrUpdateInvoice(@Args('invoice') invoice: InvoiceCreateInput): Promise<Invoice> {
+    return this.invoiceService.createOrUpdateInvoice(invoice);
   }
 }
