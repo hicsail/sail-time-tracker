@@ -1,6 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ProjectModel } from '../../project/model/project.model';
-import { EmployeeModel } from '../../employees/model/employee.model';
 
 /**
  * return types for querying employee
@@ -19,21 +18,6 @@ export class RecordInsertOrUpdateModel {
 
   @Field()
   hours: number;
-}
-
-@ObjectType()
-export class RecordModelWithProject {
-  @Field()
-  startDate: Date;
-
-  @Field()
-  endDate: Date;
-
-  @Field()
-  hours: number;
-
-  @Field()
-  project: ProjectModel;
 }
 
 @ObjectType()
