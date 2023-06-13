@@ -1,0 +1,7 @@
+mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
+    createOrUpdateInvoice(invoice: $invoice) {
+        projectId
+        startDate
+        endDate
+    }
+}
