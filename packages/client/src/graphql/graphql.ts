@@ -57,6 +57,7 @@ export type EmployeeUpdateInput = {
 
 export type EmployeeWithRecord = {
   __typename?: 'EmployeeWithRecord';
+  billableHours: Scalars['Float'];
   id: Scalars['String'];
   indirectHours: Scalars['Float'];
   inner: Array<EmployeeWithRecordInner>;
@@ -81,7 +82,6 @@ export type FavoriteProjectCreateInput = {
 
 export type InvoiceCreateInput = {
   amount: Scalars['Float'];
-  employeeId: Scalars['String'];
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
   projectId: Scalars['String'];
@@ -92,8 +92,16 @@ export type InvoiceCreateInput = {
 export type InvoiceModel = {
   __typename?: 'InvoiceModel';
   amount: Scalars['Float'];
-  employee: EmployeeModel;
-  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  projectId: Scalars['String'];
+  rate: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+};
+
+export type InvoiceModelWithProject = {
+  __typename?: 'InvoiceModelWithProject';
+  amount: Scalars['Float'];
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
   project: ProjectModel;
@@ -107,7 +115,7 @@ export type Mutation = {
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
-  createOrUpdateManyInvoice: BatchPayload;
+  createOrUpdateInvoice: InvoiceModel;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
@@ -128,8 +136,8 @@ export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
 };
 
-export type MutationCreateOrUpdateManyInvoiceArgs = {
-  invoices: Array<InvoiceCreateInput>;
+export type MutationCreateOrUpdateInvoiceArgs = {
+  invoice: InvoiceCreateInput;
 };
 
 export type MutationDeleteEmployeesArgs = {
@@ -213,7 +221,7 @@ export type Query = {
   employees: Array<EmployeeModel>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectsWithRecord: Array<ProjectWithRecord>;
-  invoices: Array<InvoiceModel>;
+  invoices: Array<InvoiceModelWithProject>;
   project: ProjectModel;
   projects: Array<ProjectModel>;
 };

@@ -42,6 +42,9 @@ export class EmployeeWithRecord {
   @Field()
   indirectHours: number;
 
+  @Field()
+  billableHours: number;
+
   @Field(() => [EmployeeWithRecordInner])
   inner: EmployeeWithRecordInner[];
 }

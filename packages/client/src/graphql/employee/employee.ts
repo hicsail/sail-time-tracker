@@ -25,6 +25,7 @@ export type GetEmployeesWithRecordQuery = {
     name: string;
     workHours: number;
     indirectHours: number;
+    billableHours: number;
     inner: Array<{
       __typename?: 'EmployeeWithRecordInner';
       projectId: string;
@@ -148,6 +149,7 @@ export const GetEmployeesWithRecordDocument = gql`
       name
       workHours
       indirectHours
+      billableHours
       inner {
         projectId
         projectName

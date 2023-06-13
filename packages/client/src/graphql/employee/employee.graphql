@@ -14,6 +14,7 @@ query getEmployeesWithRecord($startDate: DateTime!, $endDate: DateTime!) {
     name
     workHours
     indirectHours
+    billableHours
     inner {
       projectId
       projectName
