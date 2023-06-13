@@ -130,7 +130,7 @@ type Mutation {
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
   deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
-  createOrUpdateManyInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
+  createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
 }
 
 input EmployeeCreateInput {
