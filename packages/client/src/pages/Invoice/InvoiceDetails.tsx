@@ -1,10 +1,12 @@
-import { Box } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectsWithRecordQuery } from '@graphql/project/project';
 import { formatDate, formatUTCHours, USDollar } from '../../utils/helperFun';
+import IconButton from '@mui/material/IconButton';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 const columns: GridColDef[] = [
   {
@@ -61,10 +63,17 @@ export const InvoiceDetails = () => {
             <div>{`${formatDate(startDateValue)} - ${formatDate(endDateValue)}`}</div>
           </Box>
         </Box>
-        <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} />
+        <Box sx={{ display: 'flex', gap: 3 }}>
+          <IconButton>
+            <LaunchIcon color="secondary" />
+          </IconButton>
+          <IconButton>
+            <DeleteIcon color="secondary" />
+          </IconButton>
+        </Box>
       </Box>
       <DataGrid
-        sx={{ marginTop: 6, color: '#021352' }}
+        sx={{ marginTop: 6, color: '#021352', backgroundColor: 'white', border: 'none' }}
         rows={rows}
         columns={columns}
         initialState={{
@@ -75,6 +84,9 @@ export const InvoiceDetails = () => {
         pageSizeOptions={[5, 10]}
         disableRowSelectionOnClick
       />
+      <Box sx={{ marginTop: 2 }}>
+        <Paper elevation={0} sx={{ backgroundColor: 'white', height: '80px', width: '100%' }} />
+      </Box>
     </Box>
   );
 };

@@ -19,12 +19,11 @@ export const formatUTCDate = (date: Date) => {
   );
 }
 
-export const formatDate = (date: Date | undefined) => {
+export const formatDate = (date: Date | undefined): string => {
   if(date) {
     return format(date, "MM/dd/yyyy")
   }
-
-  return null;
+  return 'No date provided';
 }
 
 export const USDollar = new Intl.NumberFormat('en-US', {

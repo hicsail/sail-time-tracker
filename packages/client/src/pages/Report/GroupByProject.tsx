@@ -132,7 +132,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
           {error && <Banner content={`${error.message}`} state="error" />}
         </Box>
       )}
-      <CollapsibleTable rows={data ? data.getProjectsWithRecord : []} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
+      <CollapsibleTable rows={data ? data.getProjectsWithRecord : []} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />
     </>
   );
 };

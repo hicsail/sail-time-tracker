@@ -1,5 +1,4 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { Box } from '@mui/material';
@@ -7,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 import { formatDate, formatUTCDate, USDollar } from '../../utils/helperFun';
+import FolderIcon from '@mui/icons-material/Folder';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -16,7 +16,7 @@ const CustomIDCellRender = (props: { id: string; value: string; startDate: Date;
   return (
     <Link to={`${Paths.INVOICE}/${id}/${start_date}/${end_date}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center', gap: 2 }}>
-        <DescriptionOutlinedIcon sx={{ color: 'rgb(115,126,137)', fontSize: 'large' }} />
+        <FolderIcon sx={{ color: 'rgb(115,126,137)', fontSize: 'large' }} />
         <Box sx={{ margin: 'auto' }}>{value}</Box>
       </Box>
     </Link>
