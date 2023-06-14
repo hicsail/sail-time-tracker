@@ -8,14 +8,13 @@ import { Paths } from '@constants/paths';
 import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 import { formatDate, formatUTCDate, USDollar } from '../../utils/helperFun';
 
-const CustomIDCellRender = (props: { id: string; value: string, startDate: Date, endDate: Date }) => {
+const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
   const start_date = formatDate(new Date(startDate)).split('/').join('-');
   const end_date = formatDate(new Date(endDate)).split('/').join('-');
 
   return (
-    <Link to={`${Paths.INVOICE}/${id}/${start_date}/${end_date}`}
-          style={{ textDecoration: 'none', color: 'inherit' }}>
+    <Link to={`${Paths.INVOICE}/${id}/${start_date}/${end_date}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center', gap: 2 }}>
         <DescriptionOutlinedIcon sx={{ color: 'rgb(115,126,137)', fontSize: 'large' }} />
         <Box sx={{ margin: 'auto' }}>{value}</Box>
