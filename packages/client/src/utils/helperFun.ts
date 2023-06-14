@@ -1,7 +1,10 @@
 import {format} from "date-fns";
 
-export const formatUTCHours = (date: Date) => {
-  return date.setUTCHours(4, 0, 0, 0);
+export const formatUTCHours = (date: Date | undefined) => {
+  if(date) {
+    return date.setUTCHours(4, 0, 0, 0);
+  }
+  return null;
 }
 
 export const formatUTCDate = (date: Date) => {
@@ -16,8 +19,12 @@ export const formatUTCDate = (date: Date) => {
   );
 }
 
-export const formatDate = (date: Date) => {
-  return format(date, "MM/dd/yyyy")
+export const formatDate = (date: Date | undefined) => {
+  if(date) {
+    return format(date, "MM/dd/yyyy")
+  }
+
+  return null;
 }
 
 export const USDollar = new Intl.NumberFormat('en-US', {
