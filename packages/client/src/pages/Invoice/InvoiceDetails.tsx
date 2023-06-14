@@ -1,4 +1,4 @@
-import { Box, Paper } from '@mui/material';
+import { Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -84,9 +84,6 @@ export const InvoiceDetails = () => {
         pageSizeOptions={[5, 10]}
         disableRowSelectionOnClick
       />
-      <Box sx={{ marginTop: 2 }}>
-        <Paper elevation={0} sx={{ backgroundColor: 'white', height: '80px', width: '100%' }} />
-      </Box>
     </Box>
   );
 };
