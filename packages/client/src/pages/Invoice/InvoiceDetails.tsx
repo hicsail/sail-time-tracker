@@ -4,7 +4,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectsWithRecordQuery } from '@graphql/project/project';
-import {formatDate, formatUTCHours, USDollar} from '../../utils/helperFun';
+import { formatDate, formatUTCHours, USDollar } from '../../utils/helperFun';
 
 const columns: GridColDef[] = [
   {
@@ -33,7 +33,6 @@ export const InvoiceDetails = () => {
   });
 
   const project = data?.getProjectsWithRecord.find((project) => project.id === id);
-
   const rows = project
     ? project.inner
         .filter((employee) => employee.employeeWorkHours !== 0)
