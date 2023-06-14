@@ -26,6 +26,7 @@ type EmployeeWithRecord {
   name: String!
   workHours: Float!
   indirectHours: Float!
+  billableHours: Float!
   inner: [EmployeeWithRecordInner!]!
 }
 

@@ -2,7 +2,7 @@ import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTabl
 import { Box, Button } from '@mui/material';
 import { useGetProjectsWithRecordQuery } from '@graphql/project/project';
 import { FC, useEffect, useState } from 'react';
-import { useCreateOrUpdateInvoiceMutation } from '@graphql/invoice/invoice';
+import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation } from '@graphql/invoice/invoice';
 import { Banner } from '@components/Banner';
 import { formatUTCHours } from '../../utils/helperFun';
 
@@ -42,7 +42,8 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     createOrUpdateInvoiceMutation({
       variables: {
         invoice: invoice
-      }
+      },
+      refetchQueries: [{ query: GetAllInvoicesDocument }]
     }).then(() => setDisplayContent(true));
   };
 

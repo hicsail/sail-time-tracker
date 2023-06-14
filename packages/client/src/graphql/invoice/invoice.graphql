@@ -5,3 +5,16 @@ mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
         endDate
     }
 }
+
+query getAllInvoices {
+    invoices {
+        startDate
+        endDate
+        hours
+        amount
+        project {
+            id
+            name
+        }
+    }
+}
