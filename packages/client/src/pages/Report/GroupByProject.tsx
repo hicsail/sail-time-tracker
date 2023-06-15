@@ -21,7 +21,9 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
   });
   const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
 
-  const rows = data ? [...data.getProjectsWithRecord.filter((project) => project.billableHours !== 0), ...data.getProjectsWithRecord.filter((project) => project.billableHours === 0)] : [];
+  const rows = data
+    ? [...data.getProjectsWithRecord.filter((project) => project.billableHours !== 0), ...data.getProjectsWithRecord.filter((project) => project.billableHours === 0)]
+    : [];
 
   /**
    * generate invoice

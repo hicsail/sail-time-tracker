@@ -42,18 +42,18 @@ export const InvoiceDetails = () => {
 
   const project = data?.getProjectsWithRecord.find((project) => project.id === id);
   const [SearchInvoiceQuery, { data: searchData, loading: searchLoading, error: searchError }] = useSearchInvoiceLazyQuery();
-
+  const searchVariable = {
+    projectId_startDate_endDate: {
+      projectId: id as string,
+      startDate: formatUTCHours(startDateValue),
+      endDate: formatUTCHours(endDateValue)
+    }
+  }
   useEffect(() => {
     SearchInvoiceQuery({
-      variables: {
-        projectId_startDate_endDate: {
-          projectId: id as string,
-          startDate: formatUTCHours(startDateValue),
-          endDate: formatUTCHours(endDateValue)
-        }
-      },
+      variables: searchVariable,
       fetchPolicy: 'cache-and-network'
-    });
+    }).then((r) => r.data && setInput(r.data.searchInvoice.hours));
   }, [project]);
 
   const rows = project
@@ -93,14 +93,18 @@ export const InvoiceDetails = () => {
         variables: {
           invoice: invoice
         },
-        refetchQueries: [{ query: GetAllInvoicesDocument }, { query: SearchInvoiceDocument }]
-      });
+        refetchQueries: [
+          { query: GetAllInvoicesDocument },
+          {
+            query: SearchInvoiceDocument,
+            variables: searchVariable
+          }
+        ]
+      }).then((r) => console.log(r));
 
       setOpen(false);
     }
   };
-
-  console.log(searchData?.searchInvoice);
 
   return (
     <Box sx={{ width: '100%', height: 400 }}>
@@ -131,8 +135,8 @@ export const InvoiceDetails = () => {
         autoHeight={true}
       />
       <Box>
-        <Paper elevation={0} sx={{ backgroundColor: 'white', height: '100px', width: '100%', borderRadius: '0', display: 'flex', justifyContent: 'end' }}>
-          <Stack direction="row" gap="15rem" sx={{ fontSize: '14px', fontWeight: 'medium', color: 'customColors.interstellarBlue' }}>
+        <Paper elevation={0} sx={{ backgroundColor: 'white', height: 'auto', width: '100%', borderRadius: '0', display: 'flex', justifyContent: 'end' }}>
+          <Stack direction="row" gap="15rem" sx={{ fontSize: '14px', fontWeight: 'medium', color: 'customColors.interstellarBlue', paddingTop: 5 }}>
             <List>
               <ListItem sx={{ color: 'secondary.main' }}>Original billable hours:</ListItem>
               <ListItem sx={{ color: 'secondary.main' }}>Original Invoice Amount:</ListItem>
@@ -148,9 +152,6 @@ export const InvoiceDetails = () => {
               <ListItem>{searchData && USDollar.format(searchData.searchInvoice.amount)}</ListItem>
             </List>
           </Stack>
-        </Paper>
-        <Paper elevation={0} sx={{ backgroundColor: 'white', height: '100px', width: '100%', borderRadius: '0', display: 'flex', justifyContent: 'start' }}>
-          Notes:
         </Paper>
         <Box>
           <Button variant="contained" sx={{ marginTop: 5 }} onClick={() => setOpen(true)}>
@@ -168,7 +169,7 @@ export const InvoiceDetails = () => {
               sx={{ width: '100%', marginTop: 2 }}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(parseFloat(e.target.value))}
             />
-            <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} onClick={handleSubmit}>
+            <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} onClick={handleSubmit} onKeyPress={handleSubmit}>
               Submit
             </Button>
           </FormDialog>
