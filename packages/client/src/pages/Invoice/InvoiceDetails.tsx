@@ -1,12 +1,15 @@
-import { Box } from '@mui/material';
+import { Box, Button, List, ListItem, Paper, Stack, TextField } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridSlotsComponentsProps } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectsWithRecordQuery } from '@graphql/project/project';
 import { formatDate, formatUTCHours, USDollar } from '../../utils/helperFun';
 import IconButton from '@mui/material/IconButton';
 import LaunchIcon from '@mui/icons-material/Launch';
+import { FormDialog } from '@components/form/FormDialog';
+import { ChangeEvent, useState } from 'react';
+import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation } from '@graphql/invoice/invoice';
 
 const columns: GridColDef[] = [
   {
@@ -22,10 +25,11 @@ const columns: GridColDef[] = [
 ];
 
 export const InvoiceDetails = () => {
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState<number>(0);
   const { id, startDate, endDate } = useParams();
   const startDateValue = startDate ? new Date(startDate) : undefined;
   const endDateValue = endDate ? new Date(endDate) : undefined;
-
   const { data, loading, error } = useGetProjectsWithRecordQuery({
     variables: {
       startDate: formatUTCHours(startDateValue),
@@ -34,7 +38,10 @@ export const InvoiceDetails = () => {
     fetchPolicy: 'cache-and-network'
   });
 
+  const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading: createOrUpdateLoading, error: createOrUpdateError }] = useCreateOrUpdateInvoiceMutation();
+
   const project = data?.getProjectsWithRecord.find((project) => project.id === id);
+
   const rows = project
     ? project.inner
         .filter((employee) => employee.employeeWorkHours !== 0)
@@ -53,10 +60,34 @@ export const InvoiceDetails = () => {
         })
     : [];
 
+  const handleSubmit = () => {
+    if (project && input > 0 && startDateValue && endDateValue) {
+      const { id } = project;
+      const rate = 65; // fake data
+      const amount = rate * input;
+
+      const invoice = {
+        projectId: id,
+        startDate: formatUTCHours(startDateValue),
+        endDate: formatUTCHours(endDateValue),
+        hours: input,
+        rate: rate,
+        amount: amount
+      };
+
+      createOrUpdateInvoiceMutation({
+        variables: {
+          invoice: invoice
+        },
+        refetchQueries: [{ query: GetAllInvoicesDocument }]
+      });
+    }
+  };
+
   return (
     <Box sx={{ width: '100%', height: 400 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box>
+        <Box sx={{ marginTop: 8 }}>
           <h3>{`Project Name: ${project?.name}`}</h3>
           <Box sx={{ display: 'flex', alignItem: 'center', gap: 1 }}>
             <CalendarTodayIcon />
@@ -76,14 +107,55 @@ export const InvoiceDetails = () => {
         sx={{ marginTop: 6, color: '#021352', backgroundColor: 'white', border: 'none' }}
         rows={rows}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 }
-          }
-        }}
-        pageSizeOptions={[5, 10]}
         disableRowSelectionOnClick
+        hideFooterPagination={true}
+        hideFooter={true}
+        autoHeight={true}
       />
+      <Box>
+        <Paper elevation={0} sx={{ backgroundColor: 'white', height: '100px', width: '100%', borderRadius: '0', display: 'flex', justifyContent: 'end' }}>
+          <Stack direction="row" gap="15rem" sx={{ fontSize: '14px', fontWeight: 'medium', color: 'customColors.interstellarBlue' }}>
+            <List>
+              <ListItem>Original billable hours:</ListItem>
+              <ListItem>Adjustments:</ListItem>
+              <ListItem>Revised total billable hours:</ListItem>
+              <ListItem>Original Invoice Amount:</ListItem>
+              <ListItem>Total Invoice Amount:</ListItem>
+            </List>
+            <List>
+              <ListItem>{project?.billableHours}</ListItem>
+              <ListItem>{project?.billableHours}</ListItem>
+              <ListItem>{project && USDollar.format(project.billableHours * 65)}</ListItem>
+              <ListItem>{project && USDollar.format(project.billableHours * 65)}</ListItem>
+              <ListItem>{project && USDollar.format(project.billableHours * 65)}</ListItem>
+            </List>
+          </Stack>
+        </Paper>
+        <Paper elevation={0} sx={{ backgroundColor: 'white', height: '100px', width: '100%', borderRadius: '0', display: 'flex', justifyContent: 'start' }}>
+          Notes:
+        </Paper>
+        <Box>
+          <Button variant="contained" sx={{ marginTop: 5 }} onClick={() => setOpen(true)}>
+            Change Total Billable Hours
+          </Button>
+          <FormDialog open={open} title="Update Total Billable Hours" onClose={() => setOpen(false)}>
+            <TextField
+              id="billableHours"
+              type="number"
+              name="hours"
+              label="Billable Hours"
+              placeholder="Billable Hours"
+              value={input}
+              required
+              sx={{ width: '100%', marginTop: 2 }}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(parseFloat(e.target.value))}
+            />
+            <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} onClick={handleSubmit}>
+              Submit
+            </Button>
+          </FormDialog>
+        </Box>
+      </Box>
     </Box>
   );
 };
