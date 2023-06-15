@@ -21,6 +21,8 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
   });
   const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
 
+  const rows = data ? [...data.getProjectsWithRecord.filter((project) => project.billableHours !== 0), ...data.getProjectsWithRecord.filter((project) => project.billableHours === 0)] : [];
+
   /**
    * generate invoice
    * @param row
@@ -124,6 +126,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
       render: (row: any) => row.employeePercentage + '%'
     }
   ];
+
   return (
     <>
       {displayContent && (
@@ -132,7 +135,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
           {error && <Banner content={`${error.message}`} state="error" />}
         </Box>
       )}
-      <CollapsibleTable rows={data ? data.getProjectsWithRecord : []} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />
+      <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />
     </>
   );
 };
