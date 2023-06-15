@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Invoice, Project } from '@prisma/client';
-import {InvoiceCreateInput, InvoiceSearchInput} from './dto/invoice.dto';
+import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
 
 @Injectable()
 export class InvoiceService {
@@ -33,7 +33,7 @@ export class InvoiceService {
   }
 
   async searchInvoice(projectId_startDate_endDate: InvoiceSearchInput): Promise<Invoice & { project: Project }> {
-    const {projectId, startDate, endDate} = projectId_startDate_endDate;
+    const { projectId, startDate, endDate } = projectId_startDate_endDate;
     return this.prisma.invoice.findUnique({
       where: {
         projectId_startDate_endDate: {
@@ -45,6 +45,6 @@ export class InvoiceService {
       include: {
         project: true
       }
-    })
+    });
   }
 }

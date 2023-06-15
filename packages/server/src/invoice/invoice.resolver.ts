@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InvoiceService } from './invoice.service';
 import { InvoiceModel, InvoiceModelWithProject } from './model/invoice.model';
-import {InvoiceCreateInput, InvoiceSearchInput} from './dto/invoice.dto';
+import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { Invoice } from '@prisma/client';
 
 @Resolver(() => InvoiceModel)

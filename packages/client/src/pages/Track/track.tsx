@@ -47,9 +47,11 @@ export const Track = () => {
     setEmployeeId(e.target.value);
   };
 
-  const employees = employeeListData?.employees.filter((employee) => employee.status === "Active").map((employee) => {
-    return { id: employee.id, name: employee.name };
-  });
+  const employees = employeeListData?.employees
+    .filter((employee) => employee.status === 'Active')
+    .map((employee) => {
+      return { id: employee.id, name: employee.name };
+    });
 
   return (
     <Box

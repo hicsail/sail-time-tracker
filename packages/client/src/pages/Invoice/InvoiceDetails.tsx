@@ -9,12 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { FormDialog } from '@components/form/FormDialog';
 import { ChangeEvent, useEffect, useState } from 'react';
-import {
-  GetAllInvoicesDocument,
-  SearchInvoiceDocument,
-  useCreateOrUpdateInvoiceMutation,
-  useSearchInvoiceLazyQuery,
-} from '@graphql/invoice/invoice';
+import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceLazyQuery } from '@graphql/invoice/invoice';
 
 const columns: GridColDef[] = [
   {
@@ -57,7 +52,7 @@ export const InvoiceDetails = () => {
           endDate: formatUTCHours(endDateValue)
         }
       },
-      fetchPolicy: "cache-and-network"
+      fetchPolicy: 'cache-and-network'
     });
   }, [project]);
 
@@ -139,16 +134,16 @@ export const InvoiceDetails = () => {
         <Paper elevation={0} sx={{ backgroundColor: 'white', height: '100px', width: '100%', borderRadius: '0', display: 'flex', justifyContent: 'end' }}>
           <Stack direction="row" gap="15rem" sx={{ fontSize: '14px', fontWeight: 'medium', color: 'customColors.interstellarBlue' }}>
             <List>
-              <ListItem sx={{color: 'secondary.main'}}>Original billable hours:</ListItem>
-              <ListItem sx={{color: 'secondary.main'}}>Original Invoice Amount:</ListItem>
-              <ListItem sx={{color: 'secondary.main'}}>Adjustments:</ListItem>
+              <ListItem sx={{ color: 'secondary.main' }}>Original billable hours:</ListItem>
+              <ListItem sx={{ color: 'secondary.main' }}>Original Invoice Amount:</ListItem>
+              <ListItem sx={{ color: 'secondary.main' }}>Adjustments:</ListItem>
               <ListItem>Revised total billable hours:</ListItem>
               <ListItem>Total Invoice Amount:</ListItem>
             </List>
             <List>
-              <ListItem sx={{color: 'secondary.main'}}>{project?.billableHours}</ListItem>
-              <ListItem sx={{color: 'secondary.main'}}>{project && USDollar.format(project.billableHours * 65)}</ListItem>
-              <ListItem sx={{color: 'secondary.main'}}>{searchData && project && (searchData.searchInvoice.hours - project.billableHours)}</ListItem>
+              <ListItem sx={{ color: 'secondary.main' }}>{project?.billableHours}</ListItem>
+              <ListItem sx={{ color: 'secondary.main' }}>{project && USDollar.format(project.billableHours * 65)}</ListItem>
+              <ListItem sx={{ color: 'secondary.main' }}>{searchData && project && searchData.searchInvoice.hours - project.billableHours}</ListItem>
               <ListItem>{searchData?.searchInvoice?.hours}</ListItem>
               <ListItem>{searchData && USDollar.format(searchData.searchInvoice.amount)}</ListItem>
             </List>
