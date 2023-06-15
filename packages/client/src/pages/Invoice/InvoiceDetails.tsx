@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Box, Button, Divider, Stack, TextField } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -8,9 +8,10 @@ import { formatDate, formatUTCHours, USDollar } from '../../utils/helperFun';
 import IconButton from '@mui/material/IconButton';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { FormDialog } from '@components/form/FormDialog';
-import { ChangeEvent, KeyboardEvent, KeyboardEventHandler, useEffect, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceLazyQuery } from '@graphql/invoice/invoice';
 import { DisplayCard } from '@components/DisplayCard.component';
+import { Comments } from '@pages/Invoice/Comment';
 
 const columns: GridColDef[] = [
   {
@@ -101,7 +102,7 @@ export const InvoiceDetails = () => {
             variables: searchVariable
           }
         ]
-      }).then((r) => console.log(r));
+      });
 
       setOpen(false);
     }
@@ -115,7 +116,7 @@ export const InvoiceDetails = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', height: 400 }}>
+    <Box sx={{ width: '80%', height: 400, margin: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ marginTop: 8 }}>
           <h3>{`Project Name: ${project?.name}`}</h3>
@@ -140,38 +141,42 @@ export const InvoiceDetails = () => {
         <DisplayCard id="Original billable hours" title="Revised total billable hours" data={searchData?.searchInvoice?.hours} />
         <DisplayCard id="Original billable hours" title="Revised Invoice Amount" data={searchData && USDollar.format(searchData.searchInvoice.amount)} />
       </Stack>
-      <DataGrid
-        sx={{ marginTop: 6, color: '#021352', backgroundColor: 'white', border: 'none' }}
-        rows={rows}
-        columns={columns}
-        disableRowSelectionOnClick
-        hideFooterPagination={true}
-        hideFooter={true}
-        autoHeight={true}
-      />
       <Box>
-        <Box>
-          <Button variant="contained" sx={{ marginTop: 5 }} onClick={() => setOpen(true)}>
-            Change Total Billable Hours
+        <DataGrid
+          sx={{ marginTop: 6, color: '#021352', backgroundColor: 'white', border: 'none' }}
+          rows={rows}
+          columns={columns}
+          disableRowSelectionOnClick
+          hideFooterPagination={true}
+          hideFooter={true}
+          autoHeight={true}
+        />
+      </Box>
+      <Box>
+        <Button variant="contained" sx={{ marginTop: 5 }} onClick={() => setOpen(true)}>
+          Change Total Billable Hours
+        </Button>
+        <FormDialog open={open} title="Update Total Billable Hours" onClose={() => setOpen(false)}>
+          <TextField
+            id="billableHours"
+            type="number"
+            name="hours"
+            label="Billable Hours"
+            placeholder="Billable Hours"
+            value={input}
+            required
+            sx={{ width: '100%', marginTop: 2 }}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(parseFloat(e.target.value))}
+            onKeyDown={(e) => handleKeyPress(e)}
+          />
+          <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} onClick={handleSubmit}>
+            Submit
           </Button>
-          <FormDialog open={open} title="Update Total Billable Hours" onClose={() => setOpen(false)}>
-            <TextField
-              id="billableHours"
-              type="number"
-              name="hours"
-              label="Billable Hours"
-              placeholder="Billable Hours"
-              value={input}
-              required
-              sx={{ width: '100%', marginTop: 2 }}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(parseFloat(e.target.value))}
-              onKeyDown={(e) => handleKeyPress(e)}
-            />
-            <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} onClick={handleSubmit}>
-              Submit
-            </Button>
-          </FormDialog>
-        </Box>
+        </FormDialog>
+      </Box>
+      <Box sx={{ marginTop: 5 }}>
+        <Comments />
+        <Divider sx={{ color: 'grey.400', fontSize: '0.8rem', marginTop: 5 }}>comments</Divider>
       </Box>
     </Box>
   );
