@@ -23,6 +23,7 @@ declare module '@mui/material/styles' {
       cardTextBottomColor: string;
       statusBtnBg: string;
       statusBtnText: string;
+      interstellarBlue: string;
     };
   }
 
@@ -37,6 +38,7 @@ declare module '@mui/material/styles' {
       cardTextBottomColor?: string;
       statusBtnBg?: string;
       statusBtnText?: string;
+      interstellarBlue?: string;
     };
   }
 }

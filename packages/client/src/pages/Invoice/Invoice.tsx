@@ -1,12 +1,14 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { formatDate, formatUTCDate, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
 import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import IconButton from '@mui/material/IconButton';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -85,8 +87,16 @@ export const Invoice = () => {
 
   return (
     <Box sx={{ width: '100%', height: 400 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 5 }}>
+        <Typography variant="h5" sx={{ marginTop: 8, fontWeight: 'bold', color: 'customColors.interstellarBlue' }}>
+          Billing & Invoices
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'secondary.light' }}>
+          Managing and viewing all your invoices.
+        </Typography>
+      </Box>
       <DataGrid
-        sx={{ m: 2, color: '#021352' }}
+        sx={{ color: 'customColors.interstellarBlue', border: 'none', backgroundColor: 'white' }}
         rows={rows}
         columns={columns}
         initialState={{
