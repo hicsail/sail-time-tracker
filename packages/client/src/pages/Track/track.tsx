@@ -9,6 +9,7 @@ import { useDate } from '@context/date.context';
 import { startOfWeek } from 'date-fns';
 import { useEffect } from 'react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { WorkOff, WorkOutlined } from '@mui/icons-material';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
@@ -75,8 +76,8 @@ export const Track = () => {
           }}
           renderInput={(params) => <TextField {...params} />}
         />
-        <DisplayCard key="work" id="work" title="Total Work Hours" hours={totalWorkHours ? totalWorkHours : 0} />
-        <DisplayCard key="absence" id="absence" title="Total Absence Hours" hours={absenceRecord ? absenceRecord[0].hours : 0} />
+        <DisplayCard key="work" id="work" title="Total Work Hours" data={totalWorkHours ? totalWorkHours : 0} icon={<WorkOutlined fontSize="large" />} />
+        <DisplayCard key="absence" id="absence" title="Total Absence Hours" data={absenceRecord ? absenceRecord[0].hours : 0} icon={<WorkOff fontSize="large" />} />
       </Stack>
       {employeeId ? <ProjectTable data={employeeData} /> : <div>Please Select the Employee</div>}
     </Box>

@@ -1,4 +1,4 @@
-import { Box, Button, List, ListItem, Paper, Stack, TextField } from '@mui/material';
+import { Box, Button, Stack, TextField } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -8,8 +8,9 @@ import { formatDate, formatUTCHours, USDollar } from '../../utils/helperFun';
 import IconButton from '@mui/material/IconButton';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { FormDialog } from '@components/form/FormDialog';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, KeyboardEventHandler, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceLazyQuery } from '@graphql/invoice/invoice';
+import { DisplayCard } from '@pages/Track/components/DisplayCard.component';
 
 const columns: GridColDef[] = [
   {
@@ -48,7 +49,7 @@ export const InvoiceDetails = () => {
       startDate: formatUTCHours(startDateValue),
       endDate: formatUTCHours(endDateValue)
     }
-  }
+  };
   useEffect(() => {
     SearchInvoiceQuery({
       variables: searchVariable,
@@ -106,6 +107,13 @@ export const InvoiceDetails = () => {
     }
   };
 
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent the default form submission behavior
+      handleSubmit(); // Call your submit function or trigger your desired action
+    }
+  };
+
   return (
     <Box sx={{ width: '100%', height: 400 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -125,6 +133,13 @@ export const InvoiceDetails = () => {
           </IconButton>
         </Box>
       </Box>
+      <Stack direction="row" justifyContent="space-between" marginTop={5}>
+        <DisplayCard id="Original billable hours" title="Original Billable Hour" data={project?.billableHours} />
+        <DisplayCard id="Original billable hours" title="Original Invoice Amount" data={project && USDollar.format(project.billableHours * 65)} />
+        <DisplayCard id="Original billable hours" title="Adjustment Hours" data={searchData && project && searchData.searchInvoice.hours - project.billableHours} />
+        <DisplayCard id="Original billable hours" title="Revised total billable hours" data={searchData?.searchInvoice?.hours} />
+        <DisplayCard id="Original billable hours" title="Revised Invoice Amount" data={searchData && USDollar.format(searchData.searchInvoice.amount)} />
+      </Stack>
       <DataGrid
         sx={{ marginTop: 6, color: '#021352', backgroundColor: 'white', border: 'none' }}
         rows={rows}
@@ -135,24 +150,6 @@ export const InvoiceDetails = () => {
         autoHeight={true}
       />
       <Box>
-        <Paper elevation={0} sx={{ backgroundColor: 'white', height: 'auto', width: '100%', borderRadius: '0', display: 'flex', justifyContent: 'end' }}>
-          <Stack direction="row" gap="15rem" sx={{ fontSize: '14px', fontWeight: 'medium', color: 'customColors.interstellarBlue', paddingTop: 5 }}>
-            <List>
-              <ListItem sx={{ color: 'secondary.main' }}>Original billable hours:</ListItem>
-              <ListItem sx={{ color: 'secondary.main' }}>Original Invoice Amount:</ListItem>
-              <ListItem sx={{ color: 'secondary.main' }}>Adjustments:</ListItem>
-              <ListItem>Revised total billable hours:</ListItem>
-              <ListItem>Total Invoice Amount:</ListItem>
-            </List>
-            <List>
-              <ListItem sx={{ color: 'secondary.main' }}>{project?.billableHours}</ListItem>
-              <ListItem sx={{ color: 'secondary.main' }}>{project && USDollar.format(project.billableHours * 65)}</ListItem>
-              <ListItem sx={{ color: 'secondary.main' }}>{searchData && project && searchData.searchInvoice.hours - project.billableHours}</ListItem>
-              <ListItem>{searchData?.searchInvoice?.hours}</ListItem>
-              <ListItem>{searchData && USDollar.format(searchData.searchInvoice.amount)}</ListItem>
-            </List>
-          </Stack>
-        </Paper>
         <Box>
           <Button variant="contained" sx={{ marginTop: 5 }} onClick={() => setOpen(true)}>
             Change Total Billable Hours
@@ -168,8 +165,9 @@ export const InvoiceDetails = () => {
               required
               sx={{ width: '100%', marginTop: 2 }}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(parseFloat(e.target.value))}
+              onKeyDown={(e) => handleKeyPress(e)}
             />
-            <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} onClick={handleSubmit} onKeyPress={handleSubmit}>
+            <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} onClick={handleSubmit}>
               Submit
             </Button>
           </FormDialog>
