@@ -1,0 +1,20 @@
+mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
+    createOrUpdateInvoice(invoice: $invoice) {
+        projectId
+        startDate
+        endDate
+    }
+}
+
+query getAllInvoices {
+    invoices {
+        startDate
+        endDate
+        hours
+        amount
+        project {
+            id
+            name
+        }
+    }
+}

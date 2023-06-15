@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Prisma, Employee } from '@prisma/client';
-import { EmployeeDeleteReturnModel } from './model/employee.model';
+import { EmployeeDeleteReturnModel, EmployeeWithRecord } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
-import { endOfWeek, previousDay } from 'date-fns';
-import { RecordModelWithProject, RecordWithFavoriteProjectModel } from '../record/model/record.model';
+import { previousDay } from 'date-fns';
+import { RecordWithFavoriteProjectModel } from '../record/model/record.model';
+import { formatHours, formatPercentage } from '../utils/helperFun';
 
 @Injectable()
 export class EmployeesService {
@@ -95,35 +96,77 @@ export class EmployeesService {
   }
 
   /**
-   * Get favorite projects of an employee
+   * Get employees with records
    *
-   * @return a list of projects
-   * @param employeeId represents employee id
+   * @return a list of employees with records
    * @param startDate
    * @param endDate
    */
-  async getRecords(employeeId: string, startDate: Date, endDate: Date): Promise<RecordModelWithProject[]> {
-    const records = await this.prisma.record.findMany({
-      where: {
-        employeeId: employeeId,
-        date: {
-          lte: endDate,
-          gte: startDate
-        }
-      },
+
+  async getEmployeesWithRecord(startDate: Date, endDate: Date): Promise<EmployeeWithRecord[]> {
+    const employees = await this.prisma.employee.findMany({
       include: {
-        project: true
+        records: {
+          where: {
+            date: {
+              lte: endDate,
+              gte: startDate
+            }
+          },
+          include: {
+            project: true
+          }
+        }
       }
     });
 
-    return records.map((record) => {
-      return {
-        startDate: record.date,
-        endDate: endOfWeek(record.date, { weekStartsOn: 0 }),
-        hours: record.hours,
-        project: record.project
-      };
-    });
+    // hide project that not contains any record, is not Indirect, Absence and the status is Active
+    return employees
+      .filter((employee) => employee.status !== 'Inactive')
+      .map((employee) => {
+        const totalWorkHours = employee.records
+          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+          .reduce((sum, currentValue) => sum + currentValue.hours, 0);
+
+        let totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
+        let projectHoursMap = new Map();
+        let uniqueProjectList: any[] = [];
+
+        // store unique projects and total hours to uniqueProjectList
+        // from startDate to endDate
+        employee.records
+          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+          .forEach((record) => {
+            if (!projectHoursMap.get(record.project.id)) {
+              projectHoursMap.set(record.project.id, record.hours);
+              uniqueProjectList.push(record);
+            } else {
+              projectHoursMap.set(record.project.id, projectHoursMap.get(record.project.id) + record.hours);
+            }
+          });
+
+        // get inner table data
+        const inner = uniqueProjectList.map((record) => {
+          const indirectHour = (projectHoursMap.get(record.project.id) / totalWorkHours) * totalIndirectHours;
+          return {
+            projectId: record.project.id,
+            projectName: record.project.name,
+            isBillable: record.project.isBillable,
+            projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
+            projectIndirectHours: formatHours(indirectHour),
+            projectPercentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
+          };
+        });
+
+        return {
+          id: employee.id,
+          name: employee.name,
+          workHours: formatHours(totalWorkHours),
+          indirectHours: formatHours(totalIndirectHours),
+          billableHours: formatHours(totalWorkHours + totalIndirectHours),
+          inner: inner
+        };
+      });
   }
 
   /**

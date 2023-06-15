@@ -9,7 +9,6 @@ type EmployeeModel {
   rate: Float!
   status: String
   projects: [ProjectModel!]!
-  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithProject!]!
   recordsWithFavoriteProjects(date: DateTime!): [RecordWithFavoriteProjectModel!]!
 }
 
@@ -22,17 +21,53 @@ type EmployeeDeleteReturnModel {
   count: Float!
 }
 
+type EmployeeWithRecord {
+  id: String!
+  name: String!
+  workHours: Float!
+  indirectHours: Float!
+  billableHours: Float!
+  inner: [EmployeeWithRecordInner!]!
+}
+
+type EmployeeWithRecordInner {
+  projectId: String!
+  projectName: String!
+  isBillable: Boolean!
+  projectWorkHours: Float!
+  projectIndirectHours: Float!
+  projectPercentage: String!
+}
+
 type ProjectModel {
   id: ID!
   name: String!
   status: String!
   description: String!
   isBillable: Boolean!
-  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithEmployee!]!
 }
 
 type ProjectDeleteReturnModel {
   count: Float!
+}
+
+type ProjectWithRecord {
+  id: String!
+  name: String!
+  isBillable: Boolean!
+  workHours: Float!
+  indirectHours: Float!
+  percentage: String!
+  billableHours: Float!
+  inner: [ProjectWithRecordInner!]!
+}
+
+type ProjectWithRecordInner {
+  employeeId: String!
+  employeeName: String!
+  employeeWorkHours: Float!
+  employeeIndirectHours: Float!
+  employeePercentage: String!
 }
 
 type RecordInsertOrUpdateModel {
@@ -42,27 +77,12 @@ type RecordInsertOrUpdateModel {
   hours: Float!
 }
 
-type RecordModelWithProject {
-  startDate: DateTime!
-  endDate: DateTime!
-  hours: Float!
-  project: ProjectModel!
-}
-
-type RecordModelWithEmployee {
-  startDate: DateTime!
-  endDate: DateTime!
-  hours: Float!
-  employee: EmployeeModel!
-}
-
 type RecordWithFavoriteProjectModel {
   id: ID!
   name: String!
   status: String!
   description: String!
   isBillable: Boolean!
-  records(startDate: DateTime!, endDate: DateTime!): [RecordModelWithEmployee!]!
   isFavorite: Boolean!
   hours: Float!
   previousWeek: Float!
@@ -72,11 +92,33 @@ type BatchPayload {
   count: Float!
 }
 
+type InvoiceModel {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  rate: Float!
+  hours: Float!
+  amount: Float!
+}
+
+type InvoiceModelWithProject {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  rate: Float!
+  hours: Float!
+  amount: Float!
+  project: ProjectModel!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
+  getEmployeesWithRecord(startDate: DateTime!, endDate: DateTime!): [EmployeeWithRecord!]!
   projects: [ProjectModel!]!
   project(id: String!): ProjectModel!
+  getProjectsWithRecord(startDate: DateTime!, endDate: DateTime!): [ProjectWithRecord!]!
+  invoices: [InvoiceModelWithProject!]!
 }
 
 type Mutation {
@@ -89,6 +131,7 @@ type Mutation {
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
   deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
+  createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
 }
 
 input EmployeeCreateInput {
@@ -131,4 +174,13 @@ input RecordCreateInput {
   projectId: ID!
   hours: Float!
   date: DateTime!
+}
+
+input InvoiceCreateInput {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  rate: Float!
+  hours: Float!
+  amount: Float!
 }

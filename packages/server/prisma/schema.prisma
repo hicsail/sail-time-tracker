@@ -11,39 +11,54 @@ datasource db {
 }
 
 model Employee {
-  id                String              @default(uuid()) @id
-  email             String              @unique
-  name              String
-  rate              Float
-  status            String?
-  records           Record[]
-  projects          FavoriteProject[]
+  id       String            @id @default(uuid())
+  email    String            @unique
+  name     String
+  rate     Float
+  status   String?
+  records  Record[]
+  projects FavoriteProject[]
 }
 
 model Project {
-    id               String             @default(uuid()) @id
-    name             String             @unique
-    description      String
-    status           String
-    isBillable       Boolean            @default(true)
-    records          Record[]
-    employees        FavoriteProject[]
+  id          String            @id @default(uuid())
+  name        String            @unique
+  description String
+  status      String
+  isBillable  Boolean           @default(true)
+  records     Record[]
+  employees   FavoriteProject[]
+  invoices    Invoice[]
 }
 
 model Record {
-  date           DateTime   @default(now())
-  employeeId     String
-  employee       Employee   @relation(fields: [employeeId], references: [id])
-  projectId      String
-  project        Project    @relation(fields: [projectId], references: [id])
-  hours          Float      @default(0)
+  date       DateTime @default(now())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id])
+  hours      Float    @default(0)
+
   @@id([date, employeeId, projectId])
 }
 
 model FavoriteProject {
-    employeeId    String
-    employee      Employee  @relation(fields: [employeeId], references: [id])
-    projectId     String
-    project       Project   @relation(fields: [projectId], references: [id])
-    @@id([employeeId, projectId])
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id])
+
+  @@id([employeeId, projectId])
+}
+
+model Invoice {
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  startDate DateTime
+  endDate   DateTime
+  rate      Float
+  hours     Float
+  amount    Float
+
+  @@id([projectId, startDate, endDate])
 }

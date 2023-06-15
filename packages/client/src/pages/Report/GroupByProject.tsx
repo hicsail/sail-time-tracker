@@ -1,8 +1,10 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box, Button } from '@mui/material';
-import { useGetProjectListWithRecordQuery } from '@graphql/project/project';
-import { FC } from 'react';
-import { formatHours, formatPercentage } from '../../utils/formatHours';
+import { useGetProjectsWithRecordQuery } from '@graphql/project/project';
+import { FC, useEffect, useState } from 'react';
+import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation } from '@graphql/invoice/invoice';
+import { Banner } from '@components/Banner';
+import { formatUTCHours } from '../../utils/helperFun';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -10,72 +12,52 @@ interface GroupByEmployeeProps {
 }
 
 export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
-  // get all employees with records
-  const { data } = useGetProjectListWithRecordQuery({
+  const [displayContent, setDisplayContent] = useState(false);
+  const { data } = useGetProjectsWithRecordQuery({
     variables: {
-      startDate: startDate.setUTCHours(4, 0, 0, 0),
-      endDate: endDate.setUTCHours(4, 0, 0, 0)
+      startDate: formatUTCHours(startDate),
+      endDate: formatUTCHours(endDate)
     }
   });
+  const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
 
-  let indirectHours = 0;
-  data?.projects.forEach((project) => {
-    if (project.name === 'Indirect') {
-      indirectHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
-    }
-  });
+  /**
+   * generate invoice
+   * @param row
+   */
+  const handleClick = (row: any) => {
+    const { id, billableHours } = row;
+    const rate = 65; // fake data
+    const amount = rate * billableHours;
 
-  const totalWorkHours = data
-    ? data.projects
-        .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence')
-        .map((project) => {
-          return project.records.reduce((sum, currentValue) => currentValue.hours + sum, 0);
-        })
-        .reduce((sum, currentValue) => sum + currentValue, 0)
-    : 0;
+    const invoice = {
+      projectId: id,
+      startDate: formatUTCHours(startDate),
+      endDate: formatUTCHours(endDate),
+      hours: billableHours,
+      rate: rate,
+      amount: amount
+    };
 
-  // construct rows
-  const rowsData = data
-    ? data.projects
-        .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence' && project.status !== 'Inactive')
-        .map((project) => {
-          const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
-          const indirectHour = (workHours / totalWorkHours) * indirectHours;
-          let employeeHoursMap = new Map();
-          let uniqueEmployeeList: any[] = [];
+    createOrUpdateInvoiceMutation({
+      variables: {
+        invoice: invoice
+      },
+      refetchQueries: [{ query: GetAllInvoicesDocument }]
+    }).then(() => setDisplayContent(true));
+  };
 
-          // store unique projects and total hours to uniqueProjectList
-          // from startDate to endDate
-          project.records.map((record) => {
-            if (!employeeHoursMap.get(record.employee.id)) {
-              employeeHoursMap.set(record.employee.id, record.hours);
-              uniqueEmployeeList.push(record);
-            } else {
-              employeeHoursMap.set(record.employee.id, employeeHoursMap.get(record.employee.id) + record.hours);
-            }
-          });
+  useEffect(() => {
+    // Set the displayContent state to true after a delay of 1500 milliseconds (1.5 seconds)
+    const timeoutId = setTimeout(() => {
+      setDisplayContent(false);
+    }, 1500);
 
-          const inner = uniqueEmployeeList.map((record) => {
-            return {
-              id: record.employee.id,
-              name: record.employee.name,
-              workHours: formatHours(employeeHoursMap.get(record.employee.id)),
-              indirectHours: formatHours((employeeHoursMap.get(record.employee.id) / workHours) * indirectHour),
-              percentage: formatPercentage(employeeHoursMap.get(record.employee.id) / workHours)
-            };
-          });
-
-          return {
-            name: project.name,
-            isBillable: project.isBillable,
-            workHours: formatHours(workHours),
-            indirectHours: formatHours(indirectHour),
-            percentage: formatPercentage(workHours / totalWorkHours),
-            billableHours: formatHours(workHours + indirectHour),
-            inner: inner
-          };
-        })
-    : [];
+    // Clean up the timeout when the component unmounts or the state changes
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [displayContent]);
 
   const outerTableConfig = [
     {
@@ -116,28 +98,41 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     },
     {
       name: '',
-      render: () => <Button variant="outlined">Generate Invoice</Button>
+      render: (row: any) => (
+        <Button variant="outlined" onClick={() => handleClick(row)}>
+          Generate Invoice
+        </Button>
+      )
     }
   ];
 
   const innerTableConfig = [
     {
       name: 'Name',
-      render: (row: any) => row.name
+      render: (row: any) => row.employeeName
     },
     {
       name: 'Work Hours',
-      render: (row: any) => row.workHours
+      render: (row: any) => row.employeeWorkHours
     },
     {
       name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours
+      render: (row: any) => row.employeeIndirectHours
     },
     {
       name: 'Percentage',
-      render: (row: any) => row.percentage + '%'
+      render: (row: any) => row.employeePercentage + '%'
     }
   ];
-
-  return <CollapsibleTable rows={rowsData} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />;
+  return (
+    <>
+      {displayContent && (
+        <Box>
+          {!loading && !error && createOrUpdateDate && <Banner content={`Successfully add or update the invoice`} state="success" />}
+          {error && <Banner content={`${error.message}`} state="error" />}
+        </Box>
+      )}
+      <CollapsibleTable rows={data ? data.getProjectsWithRecord : []} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />
+    </>
+  );
 };

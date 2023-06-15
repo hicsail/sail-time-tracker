@@ -27,3 +27,48 @@ export class ProjectDeleteReturnModel {
   @Field()
   count: number;
 }
+
+@ObjectType()
+export class ProjectWithRecord {
+  @Field()
+  id: string;
+
+  @Field()
+  name: string;
+
+  @Field()
+  isBillable: boolean;
+
+  @Field()
+  workHours: number;
+
+  @Field()
+  indirectHours: number;
+
+  @Field()
+  percentage: string;
+
+  @Field()
+  billableHours: number;
+
+  @Field(() => [ProjectWithRecordInner])
+  inner: ProjectWithRecordInner[];
+}
+
+@ObjectType()
+class ProjectWithRecordInner {
+  @Field()
+  employeeId: string;
+
+  @Field()
+  employeeName: string;
+
+  @Field()
+  employeeWorkHours: number;
+
+  @Field()
+  employeeIndirectHours: number;
+
+  @Field()
+  employeePercentage: string;
+}
