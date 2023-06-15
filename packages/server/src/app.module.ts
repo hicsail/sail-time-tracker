@@ -14,7 +14,8 @@ import { RecordModule } from './record/record.module';
     EmployeesModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql')
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      cors: true
     }),
     ProjectModule,
     FavoriteProjectModule,
