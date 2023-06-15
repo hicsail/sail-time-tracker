@@ -92,7 +92,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   }, [searchText]);
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', marginTop: 8 }}>
       <Paper
         elevation={0}
         sx={{
