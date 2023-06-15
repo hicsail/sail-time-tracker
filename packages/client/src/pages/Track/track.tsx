@@ -1,4 +1,4 @@
-import { DisplayCard } from '@pages/Track/components/DisplayCard.component';
+import { DisplayCard } from '@components/DisplayCard.component';
 import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 

@@ -10,7 +10,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { FormDialog } from '@components/form/FormDialog';
 import { ChangeEvent, KeyboardEvent, KeyboardEventHandler, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceLazyQuery } from '@graphql/invoice/invoice';
-import { DisplayCard } from '@pages/Track/components/DisplayCard.component';
+import { DisplayCard } from '@components/DisplayCard.component';
 
 const columns: GridColDef[] = [
   {
