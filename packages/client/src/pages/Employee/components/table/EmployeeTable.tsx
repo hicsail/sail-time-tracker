@@ -105,7 +105,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
       >
         <TextField
           id="outlined-basic"
-          label="Search Projects"
+          label="Search Employees"
           variant="outlined"
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearchText(event.target.value);

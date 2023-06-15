@@ -108,7 +108,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
       >
         <TextField
           id="outlined-basic"
-          label="Search Employees"
+          label="Search Projects"
           variant="outlined"
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearchText(event.target.value);
