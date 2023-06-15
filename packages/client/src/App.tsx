@@ -25,8 +25,8 @@ function App() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enLocale}>
-      <GraphqlProvider>
-        <SettingsProvider>
+      <SettingsProvider>
+        <GraphqlProvider>
           <ThemeProvider>
             <DateProvider>
               <Router>
@@ -53,8 +53,8 @@ function App() {
               </Router>
             </DateProvider>
           </ThemeProvider>
-        </SettingsProvider>
-      </GraphqlProvider>
+        </GraphqlProvider>
+      </SettingsProvider>
     </LocalizationProvider>
   );
 }
