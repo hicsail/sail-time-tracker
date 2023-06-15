@@ -110,6 +110,12 @@ export type InvoiceModelWithProject = {
   startDate: Scalars['DateTime'];
 };
 
+export type InvoiceSearchInput = {
+  endDate: Scalars['DateTime'];
+  projectId: Scalars['String'];
+  startDate: Scalars['DateTime'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addEmployee: EmployeeModel;
@@ -224,6 +230,7 @@ export type Query = {
   invoices: Array<InvoiceModelWithProject>;
   project: ProjectModel;
   projects: Array<ProjectModel>;
+  searchInvoice: InvoiceModelWithProject;
 };
 
 export type QueryEmployeeArgs = {
@@ -242,6 +249,10 @@ export type QueryGetProjectsWithRecordArgs = {
 
 export type QueryProjectArgs = {
   id: Scalars['String'];
+};
+
+export type QuerySearchInvoiceArgs = {
+  projectId_startDate_endDate: InvoiceSearchInput;
 };
 
 export type RecordCreateInput = {

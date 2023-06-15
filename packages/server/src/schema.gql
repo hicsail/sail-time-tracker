@@ -119,6 +119,13 @@ type Query {
   project(id: String!): ProjectModel!
   getProjectsWithRecord(startDate: DateTime!, endDate: DateTime!): [ProjectWithRecord!]!
   invoices: [InvoiceModelWithProject!]!
+  searchInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModelWithProject!
+}
+
+input InvoiceSearchInput {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
 }
 
 type Mutation {

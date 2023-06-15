@@ -18,3 +18,16 @@ query getAllInvoices {
         }
     }
 }
+
+query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
+    searchInvoice(projectId_startDate_endDate: $projectId_startDate_endDate) {
+        startDate
+        endDate
+        hours
+        amount
+        project {
+            id
+            name
+        }
+    }
+}

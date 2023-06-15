@@ -25,6 +25,22 @@ export type GetAllInvoicesQuery = {
   }>;
 };
 
+export type SearchInvoiceQueryVariables = Types.Exact<{
+  projectId_startDate_endDate: Types.InvoiceSearchInput;
+}>;
+
+export type SearchInvoiceQuery = {
+  __typename?: 'Query';
+  searchInvoice: {
+    __typename?: 'InvoiceModelWithProject';
+    startDate: any;
+    endDate: any;
+    hours: number;
+    amount: number;
+    project: { __typename?: 'ProjectModel'; id: string; name: string };
+  };
+};
+
 export const CreateOrUpdateInvoiceDocument = gql`
   mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
     createOrUpdateInvoice(invoice: $invoice) {
@@ -101,3 +117,45 @@ export function useGetAllInvoicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAllInvoicesQueryHookResult = ReturnType<typeof useGetAllInvoicesQuery>;
 export type GetAllInvoicesLazyQueryHookResult = ReturnType<typeof useGetAllInvoicesLazyQuery>;
 export type GetAllInvoicesQueryResult = Apollo.QueryResult<GetAllInvoicesQuery, GetAllInvoicesQueryVariables>;
+export const SearchInvoiceDocument = gql`
+  query searchInvoice($projectId_startDate_endDate: InvoiceSearchInput!) {
+    searchInvoice(projectId_startDate_endDate: $projectId_startDate_endDate) {
+      startDate
+      endDate
+      hours
+      amount
+      project {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * __useSearchInvoiceQuery__
+ *
+ * To run a query within a React component, call `useSearchInvoiceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchInvoiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchInvoiceQuery({
+ *   variables: {
+ *      projectId_startDate_endDate: // value for 'projectId_startDate_endDate'
+ *   },
+ * });
+ */
+export function useSearchInvoiceQuery(baseOptions: Apollo.QueryHookOptions<SearchInvoiceQuery, SearchInvoiceQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SearchInvoiceQuery, SearchInvoiceQueryVariables>(SearchInvoiceDocument, options);
+}
+export function useSearchInvoiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchInvoiceQuery, SearchInvoiceQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SearchInvoiceQuery, SearchInvoiceQueryVariables>(SearchInvoiceDocument, options);
+}
+export type SearchInvoiceQueryHookResult = ReturnType<typeof useSearchInvoiceQuery>;
+export type SearchInvoiceLazyQueryHookResult = ReturnType<typeof useSearchInvoiceLazyQuery>;
+export type SearchInvoiceQueryResult = Apollo.QueryResult<SearchInvoiceQuery, SearchInvoiceQueryVariables>;
