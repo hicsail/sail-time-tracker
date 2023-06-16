@@ -11,6 +11,7 @@ import { FC, useEffect, useState } from 'react';
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
   description: Yup.string(),
+  rate: Yup.number().required('Required'),
   status: Yup.string().required('Required'),
   isBillable: Yup.string().required('Required')
 });
@@ -22,8 +23,8 @@ interface ProjectFormProps {
 export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
   const [addProject] = useProjectCreateInputMutation();
   const [updateProject] = useProjectUpdateInputMutation();
-  const [initialValue, setInitialValue] = useState({ name: '', description: '', status: '', isBillable: '' });
-  let { id } = useParams();
+  const [initialValue, setInitialValue] = useState({ name: '', description: '', rate: 0, status: '', isBillable: '' });
+  const { id } = useParams();
 
   const { data } = useGetProjectByIdQuery({
     variables: {
@@ -38,7 +39,8 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
         name: data?.project.name,
         description: data?.project.description,
         status: data?.project.status ? data.project.status : '',
-        isBillable: data?.project.isBillable.toString()
+        isBillable: data?.project.isBillable.toString(),
+        rate: data?.project.rate
       });
   }, [data]);
 
@@ -54,7 +56,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
           // after submitting the new project re-fetch the project via graphql
           await addProject({
             variables: {
-              newProject: { ...values, status: values.status.toString(), isBillable: values.isBillable == 'true' }
+              newProject: { ...values, status: values.status.toString(), isBillable: values.isBillable == 'true', rate: values.rate }
             },
             refetchQueries: [{ query: GetProjectListDocument }]
           });
@@ -63,7 +65,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
           // after updating the project, re-fetch the projects via graphql
           await updateProject({
             variables: {
-              updateProject: { ...values, status: values.status.toString(), id: id, isBillable: values.isBillable == 'true' }
+              updateProject: { ...values, status: values.status.toString(), id: id, isBillable: values.isBillable == 'true', rate: values.rate }
             }
           });
         }
@@ -75,6 +77,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
           <TextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
           <TextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
+          <TextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" required />
           <TextInput name="status" select label="Status" placeholder="Status">
             <MenuItem value="Inactive">Inactive</MenuItem>
             <MenuItem value="Active">Active</MenuItem>

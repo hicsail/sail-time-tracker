@@ -32,7 +32,7 @@ const columns: GridColDef[] = [
 
 export const InvoiceDetails = () => {
   const [open, setOpen] = useState(false);
-  const [input, setInput] = useState<number>(0);
+  const [totalBillableHours, setTotalBillableHours] = useState<number>(0);
   const { id, startDate, endDate } = useParams();
   const startDateValue = startDate ? new Date(startDate) : undefined;
   const endDateValue = endDate ? new Date(endDate) : undefined;
@@ -43,54 +43,55 @@ export const InvoiceDetails = () => {
     },
     fetchPolicy: 'cache-and-network'
   });
-  const [createOrUpdateInvoiceMutation, { data: createOrUpdateData, loading: createOrUpdateLoading, error: createOrUpdateError }] = useCreateOrUpdateInvoiceMutation();
+
   const project = data?.getProjectsWithRecord.find((project) => project.id === id);
-  const [SearchInvoiceQuery, { data: searchData, loading: searchLoading, error: searchError }] = useSearchInvoiceLazyQuery();
-  const searchVariable = {
+  const [createOrUpdateInvoiceMutation, { data: createOrUpdateData, loading: createOrUpdateLoading, error: createOrUpdateError }] = useCreateOrUpdateInvoiceMutation();
+  const [SearchInvoiceQuery, { data: searchInvoiceData, loading: searchInvoiceLoading, error: searchInvoiceError }] = useSearchInvoiceLazyQuery();
+  const [addCommentMutation, { data: addCommentData, loading: addCommentLoading, error: addCommentError }] = useAddCommentMutation();
+  const [deleteCommentMutation] = useDeleteCommentMutation();
+  const searchInvoiceVariable = {
     projectId_startDate_endDate: {
       projectId: id as string,
       startDate: formatUTCHours(startDateValue),
       endDate: formatUTCHours(endDateValue)
     }
   };
-  const [addCommentMutation, { data: addCommentData, loading: addCommentLoading, error: addCommentError }] = useAddCommentMutation();
 
   useEffect(() => {
     SearchInvoiceQuery({
-      variables: searchVariable,
+      variables: searchInvoiceVariable,
       fetchPolicy: 'cache-and-network'
-    }).then((r) => r.data && setInput(r.data.searchInvoice.hours));
+    }).then((r) => r.data && setTotalBillableHours(r.data.searchInvoice.hours));
   }, [project]);
 
-  const rows = project
-    ? project.inner
-        .filter((employee) => employee.employeeWorkHours !== 0)
-        .map((employee) => {
-          const { employeeName, employeeId, employeeWorkHours, employeeIndirectHours } = employee;
-          const billableHours = employeeIndirectHours + employeeWorkHours;
-          const amount = billableHours * 65;
-          return {
-            employeeName: employeeName,
-            id: employeeId,
-            workHours: employeeWorkHours,
-            indirectHours: employeeIndirectHours,
-            billableHours: billableHours,
-            amount: amount
-          };
-        })
-    : [];
+  const rows =
+    project?.inner
+      ?.filter((employee) => employee.employeeWorkHours !== 0)
+      ?.map((employee) => {
+        const { employeeName, employeeId, employeeWorkHours, employeeIndirectHours } = employee;
+        const billableHours = employeeIndirectHours + employeeWorkHours;
+        const amount = billableHours * 65;
+        return {
+          employeeName,
+          id: employeeId,
+          workHours: employeeWorkHours,
+          indirectHours: employeeIndirectHours,
+          billableHours,
+          amount
+        };
+      }) ?? [];
 
   const handleSubmit = () => {
-    if (project && input > 0 && startDateValue && endDateValue) {
+    if (project && totalBillableHours > 0 && startDateValue && endDateValue) {
       const { id } = project;
       const rate = 65; // fake data
-      const amount = rate * input;
+      const amount = rate * totalBillableHours;
 
       const invoice = {
         projectId: id,
         startDate: formatUTCHours(startDateValue),
         endDate: formatUTCHours(endDateValue),
-        hours: input,
+        hours: totalBillableHours,
         rate: rate,
         amount: amount
       };
@@ -103,7 +104,7 @@ export const InvoiceDetails = () => {
           { query: GetAllInvoicesDocument },
           {
             query: SearchInvoiceDocument,
-            variables: searchVariable
+            variables: searchInvoiceVariable
           }
         ]
       });
@@ -120,25 +121,23 @@ export const InvoiceDetails = () => {
   };
 
   const handleOnSubmitComment = (value: string | undefined) => {
-    if (value && searchData) {
+    if (value && searchInvoiceData) {
       addCommentMutation({
         variables: {
           input: {
             content: value,
-            invoiceId: searchData?.searchInvoice.invoiceId
+            invoiceId: searchInvoiceData?.searchInvoice.invoiceId
           }
         },
         refetchQueries: [
           {
             query: SearchInvoiceDocument,
-            variables: searchVariable
+            variables: searchInvoiceVariable
           }
         ]
       });
     }
   };
-
-  const [deleteCommentMutation] = useDeleteCommentMutation();
 
   const handleOnDelete = (id: string) => {
     deleteCommentMutation({
@@ -148,7 +147,7 @@ export const InvoiceDetails = () => {
       refetchQueries: [
         {
           query: SearchInvoiceDocument,
-          variables: searchVariable
+          variables: searchInvoiceVariable
         }
       ]
     });
@@ -176,9 +175,9 @@ export const InvoiceDetails = () => {
       <Stack direction="row" justifyContent="space-between" marginTop={5}>
         <DisplayCard id="Original billable hours" title="Original Billable Hour" data={project?.billableHours} />
         <DisplayCard id="Original billable hours" title="Original Invoice Amount" data={project && USDollar.format(project.billableHours * 65)} />
-        <DisplayCard id="Original billable hours" title="Adjustment Hours" data={searchData && project && searchData.searchInvoice.hours - project.billableHours} />
-        <DisplayCard id="Original billable hours" title="Revised total billable hours" data={searchData?.searchInvoice?.hours} />
-        <DisplayCard id="Original billable hours" title="Revised Invoice Amount" data={searchData && USDollar.format(searchData.searchInvoice.amount)} />
+        <DisplayCard id="Original billable hours" title="Adjustment Hours" data={searchInvoiceData && project && searchInvoiceData.searchInvoice.hours - project.billableHours} />
+        <DisplayCard id="Original billable hours" title="Revised total billable hours" data={searchInvoiceData?.searchInvoice?.hours} />
+        <DisplayCard id="Original billable hours" title="Revised Invoice Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
       </Stack>
       <Box>
         <DataGrid
@@ -202,10 +201,10 @@ export const InvoiceDetails = () => {
             name="hours"
             label="Billable Hours"
             placeholder="Billable Hours"
-            value={input}
+            value={totalBillableHours}
             required
             sx={{ width: '100%', marginTop: 2 }}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(parseFloat(e.target.value))}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setTotalBillableHours(parseFloat(e.target.value))}
             onKeyDown={(e) => handleKeyPress(e)}
           />
           <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} onClick={handleSubmit}>
@@ -218,8 +217,8 @@ export const InvoiceDetails = () => {
         <Divider sx={{ color: 'grey.400', fontSize: '0.8rem', marginTop: 5 }}>comments</Divider>
         <CommentDisplayComponent>
           <CommentList>
-            {searchData &&
-              searchData.searchInvoice.comments.map((item: any) => {
+            {searchInvoiceData &&
+              searchInvoiceData.searchInvoice.comments.map((item: any) => {
                 return <CommentListItem date={new Date(item.createDate)} content={item.content} onDelete={() => handleOnDelete(item.commentId)} key={item.commentId} />;
               })}
           </CommentList>

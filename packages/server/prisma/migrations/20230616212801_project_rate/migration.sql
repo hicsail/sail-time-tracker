@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Project" ADD COLUMN     "rate" DOUBLE PRECISION NOT NULL DEFAULT 65;

@@ -20,6 +20,9 @@ export class ProjectModel {
 
   @Field()
   isBillable: boolean;
+
+  @Field()
+  rate: number;
 }
 
 @ObjectType()
@@ -38,6 +41,9 @@ export class ProjectWithRecord {
 
   @Field()
   isBillable: boolean;
+
+  @Field()
+  rate: number;
 
   @Field()
   workHours: number;
