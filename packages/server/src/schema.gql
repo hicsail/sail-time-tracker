@@ -95,7 +95,6 @@ type BatchPayload {
 type CommentModel {
   commentId: String!
   createDate: DateTime!
-  modifiedDate: DateTime!
   content: String!
   invoiceId: String!
 }

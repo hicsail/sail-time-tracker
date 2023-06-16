@@ -33,7 +33,6 @@ query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
         }
         comments {
             createDate
-            modifiedDate
             commentId
             invoiceId
             content

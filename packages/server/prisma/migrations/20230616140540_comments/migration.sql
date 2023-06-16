@@ -12,7 +12,6 @@ ALTER TABLE "Invoice" ADD COLUMN     "invoiceId" TEXT NOT NULL;
 CREATE TABLE "Comment" (
     "commentId" TEXT NOT NULL,
     "createDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "modifiedDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "content" TEXT NOT NULL,
     "invoiceId" TEXT NOT NULL,
 

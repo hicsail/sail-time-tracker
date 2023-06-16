@@ -9,9 +9,6 @@ export class CommentModel {
   createDate: Date;
 
   @Field()
-  modifiedDate: Date;
-
-  @Field()
   content: string;
 
   @Field()
