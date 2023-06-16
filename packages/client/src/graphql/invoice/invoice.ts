@@ -40,7 +40,7 @@ export type SearchInvoiceQuery = {
     hours: number;
     amount: number;
     project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; modifiedDate: any; commentId: string; invoiceId: string; content: string }>;
+    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string }>;
   };
 };
 
@@ -135,7 +135,6 @@ export const SearchInvoiceDocument = gql`
       }
       comments {
         createDate
-        modifiedDate
         commentId
         invoiceId
         content

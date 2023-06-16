@@ -31,7 +31,6 @@ export type CommentModel = {
   content: Scalars['String'];
   createDate: Scalars['DateTime'];
   invoiceId: Scalars['String'];
-  modifiedDate: Scalars['DateTime'];
 };
 
 export type CommentUpdateInput = {
