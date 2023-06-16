@@ -33,13 +33,14 @@ export type SearchInvoiceQueryVariables = Types.Exact<{
 export type SearchInvoiceQuery = {
   __typename?: 'Query';
   searchInvoice: {
-    __typename?: 'InvoiceModelWithProject';
+    __typename?: 'InvoiceModelWithProjectAndComments';
     invoiceId: string;
     startDate: any;
     endDate: any;
     hours: number;
     amount: number;
     project: { __typename?: 'ProjectModel'; id: string; name: string };
+    comments: Array<{ __typename?: 'CommentModel'; createDate: any; modifiedDate: any; commentId: string; invoiceId: string; content: string }>;
   };
 };
 
@@ -131,6 +132,13 @@ export const SearchInvoiceDocument = gql`
       project {
         id
         name
+      }
+      comments {
+        createDate
+        modifiedDate
+        commentId
+        invoiceId
+        content
       }
     }
   }

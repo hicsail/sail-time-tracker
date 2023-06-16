@@ -131,6 +131,19 @@ export type InvoiceModelWithProject = {
   startDate: Scalars['DateTime'];
 };
 
+export type InvoiceModelWithProjectAndComments = {
+  __typename?: 'InvoiceModelWithProjectAndComments';
+  amount: Scalars['Float'];
+  comments: Array<CommentModel>;
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  invoiceId: Scalars['String'];
+  project: ProjectModel;
+  projectId: Scalars['String'];
+  rate: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+};
+
 export type InvoiceSearchInput = {
   endDate: Scalars['DateTime'];
   projectId: Scalars['String'];
@@ -263,7 +276,7 @@ export type Query = {
   invoices: Array<InvoiceModelWithProject>;
   project: ProjectModel;
   projects: Array<ProjectModel>;
-  searchInvoice: InvoiceModelWithProject;
+  searchInvoice: InvoiceModelWithProjectAndComments;
 };
 
 export type QueryCommentArgs = {
