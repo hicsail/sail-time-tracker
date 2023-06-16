@@ -20,6 +20,25 @@ export type BatchPayload = {
   count: Scalars['Float'];
 };
 
+export type CommentCreateInput = {
+  content: Scalars['String'];
+  invoiceId: Scalars['String'];
+};
+
+export type CommentModel = {
+  __typename?: 'CommentModel';
+  commentId: Scalars['String'];
+  content: Scalars['String'];
+  createDate: Scalars['DateTime'];
+  invoiceId: Scalars['String'];
+  modifiedDate: Scalars['DateTime'];
+};
+
+export type CommentUpdateInput = {
+  commentId: Scalars['String'];
+  content: Scalars['String'];
+};
+
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
@@ -118,6 +137,7 @@ export type InvoiceSearchInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addComment: CommentModel;
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
@@ -126,8 +146,13 @@ export type Mutation = {
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
+  updateComment: CommentModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
+};
+
+export type MutationAddCommentArgs = {
+  input: CommentCreateInput;
 };
 
 export type MutationAddEmployeeArgs = {
@@ -161,6 +186,10 @@ export type MutationDeleteProjectsArgs = {
 
 export type MutationInsertOrUpdateRecordArgs = {
   record: RecordCreateInput;
+};
+
+export type MutationUpdateCommentArgs = {
+  input: CommentUpdateInput;
 };
 
 export type MutationUpdateEmployeeArgs = {
@@ -223,6 +252,8 @@ export type ProjectWithRecordInner = {
 
 export type Query = {
   __typename?: 'Query';
+  comment: CommentModel;
+  comments: Array<CommentModel>;
   employee: EmployeeModel;
   employees: Array<EmployeeModel>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
@@ -231,6 +262,10 @@ export type Query = {
   project: ProjectModel;
   projects: Array<ProjectModel>;
   searchInvoice: InvoiceModelWithProject;
+};
+
+export type QueryCommentArgs = {
+  id: Scalars['String'];
 };
 
 export type QueryEmployeeArgs = {

@@ -1,0 +1,39 @@
+query comment($id: String!) {
+    comment(id: $id) {
+        commentId
+        createDate
+        modifiedDate
+        content
+        invoiceId
+    }
+}
+
+query comments {
+    comments {
+        commentId
+        createDate
+        modifiedDate
+        content
+        invoiceId
+    }
+}
+
+mutation addComment($input: CommentCreateInput!) {
+    addComment(input: $input) {
+        content
+        commentId
+        createDate
+        modifiedDate
+        invoiceId
+    }
+}
+
+mutation updateComment($input: CommentUpdateInput!) {
+    updateComment(input: $input) {
+        content
+        commentId
+        createDate
+        modifiedDate
+        invoiceId
+    }
+}
