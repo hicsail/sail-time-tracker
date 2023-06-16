@@ -220,15 +220,7 @@ export const InvoiceDetails = () => {
           <CommentList>
             {searchData &&
               searchData.searchInvoice.comments.map((item: any) => {
-                return (
-                  <CommentListItem
-                    title="Xinyue Chen"
-                    date={new Date(item.createDate)}
-                    content={item.content}
-                    onDelete={() => handleOnDelete(item.commentId)}
-                    key={item.commentId}
-                  />
-                );
+                return <CommentListItem date={new Date(item.createDate)} content={item.content} onDelete={() => handleOnDelete(item.commentId)} key={item.commentId} />;
               })}
           </CommentList>
         </CommentDisplayComponent>
