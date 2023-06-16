@@ -55,7 +55,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     // Set the displayContent state to true after a delay of 1500 milliseconds (1.5 seconds)
     const timeoutId = setTimeout(() => {
       setDisplayContent(false);
-    }, 1500);
+    }, 700);
 
     // Clean up the timeout when the component unmounts or the state changes
     return () => {
@@ -133,7 +133,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     <>
       {displayContent && (
         <Box>
-          {!loading && !error && createOrUpdateDate && <Banner content={`Successfully add or update the invoice`} state="success" />}
+          {!loading && !error && createOrUpdateDate && <Banner content={`Successfully generate the invoice`} state="success" />}
           {error && <Banner content={`${error.message}`} state="error" />}
         </Box>
       )}

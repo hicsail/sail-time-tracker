@@ -24,6 +24,9 @@ export class InvoiceModel {
 
   @Field()
   amount: number;
+
+  @Field()
+  invoiceId: string;
 }
 
 @ObjectType()

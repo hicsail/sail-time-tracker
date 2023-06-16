@@ -113,6 +113,7 @@ export type InvoiceModel = {
   amount: Scalars['Float'];
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
+  invoiceId: Scalars['String'];
   projectId: Scalars['String'];
   rate: Scalars['Float'];
   startDate: Scalars['DateTime'];
@@ -123,6 +124,7 @@ export type InvoiceModelWithProject = {
   amount: Scalars['Float'];
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
+  invoiceId: Scalars['String'];
   project: ProjectModel;
   projectId: Scalars['String'];
   rate: Scalars['Float'];

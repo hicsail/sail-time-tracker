@@ -17,6 +17,7 @@ export type GetAllInvoicesQuery = {
   __typename?: 'Query';
   invoices: Array<{
     __typename?: 'InvoiceModelWithProject';
+    invoiceId: string;
     startDate: any;
     endDate: any;
     hours: number;
@@ -33,6 +34,7 @@ export type SearchInvoiceQuery = {
   __typename?: 'Query';
   searchInvoice: {
     __typename?: 'InvoiceModelWithProject';
+    invoiceId: string;
     startDate: any;
     endDate: any;
     hours: number;
@@ -79,6 +81,7 @@ export type CreateOrUpdateInvoiceMutationOptions = Apollo.BaseMutationOptions<Cr
 export const GetAllInvoicesDocument = gql`
   query getAllInvoices {
     invoices {
+      invoiceId
       startDate
       endDate
       hours
@@ -120,6 +123,7 @@ export type GetAllInvoicesQueryResult = Apollo.QueryResult<GetAllInvoicesQuery, 
 export const SearchInvoiceDocument = gql`
   query searchInvoice($projectId_startDate_endDate: InvoiceSearchInput!) {
     searchInvoice(projectId_startDate_endDate: $projectId_startDate_endDate) {
+      invoiceId
       startDate
       endDate
       hours

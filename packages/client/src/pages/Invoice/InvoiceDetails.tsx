@@ -12,6 +12,7 @@ import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceLazyQuery } from '@graphql/invoice/invoice';
 import { DisplayCard } from '@components/DisplayCard.component';
 import { Comments } from '@pages/Invoice/Comments';
+import { useAddCommentMutation } from '@graphql/comment/comment';
 
 const columns: GridColDef[] = [
   {
@@ -49,6 +50,7 @@ export const InvoiceDetails = () => {
       endDate: formatUTCHours(endDateValue)
     }
   };
+  const [addCommentMutation, { data: addCommentData, loading: addCommentLoading, error: addCommentError }] = useAddCommentMutation();
 
   useEffect(() => {
     SearchInvoiceQuery({
@@ -115,8 +117,15 @@ export const InvoiceDetails = () => {
   };
 
   const handleOnSubmitComment = (value: string | undefined) => {
-    if (value) {
-      console.log(value);
+    if (value && searchData) {
+      addCommentMutation({
+        variables: {
+          input: {
+            content: value,
+            invoiceId: searchData?.searchInvoice.invoiceId
+          }
+        }
+      });
     }
   };
 

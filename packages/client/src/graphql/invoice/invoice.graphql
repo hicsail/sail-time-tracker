@@ -8,6 +8,7 @@ mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
 
 query getAllInvoices {
     invoices {
+        invoiceId
         startDate
         endDate
         hours
@@ -21,6 +22,7 @@ query getAllInvoices {
 
 query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
     searchInvoice(projectId_startDate_endDate: $projectId_startDate_endDate) {
+        invoiceId
         startDate
         endDate
         hours

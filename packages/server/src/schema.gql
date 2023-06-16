@@ -99,6 +99,7 @@ type InvoiceModel {
   rate: Float!
   hours: Float!
   amount: Float!
+  invoiceId: String!
 }
 
 type InvoiceModelWithProject {
@@ -108,6 +109,7 @@ type InvoiceModelWithProject {
   rate: Float!
   hours: Float!
   amount: Float!
+  invoiceId: String!
   project: ProjectModel!
 }
 
