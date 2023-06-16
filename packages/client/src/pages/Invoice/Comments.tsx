@@ -1,7 +1,14 @@
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import { Button, Stack, styled, Typography, Divider } from '@mui/material';
+import { ChangeEvent, ChangeEventHandler, FC, useRef, useState } from 'react';
 
-export const Comments = () => {
+interface CommentsProps {
+  onSubmit: (value: string | undefined) => void;
+}
+
+export const Comments: FC<CommentsProps> = ({ onSubmit }) => {
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+
   const StyledTextarea = styled(TextareaAutosize)(
     ({ theme }) => `
     width: 100%;
@@ -32,8 +39,8 @@ export const Comments = () => {
       <Typography variant="h6" sx={{ marginBottom: 3 }}>
         Comments
       </Typography>
-      <StyledTextarea minRows={5} />
-      <Button variant="contained" sx={{ backgroundColor: 'black', marginTop: 5 }}>
+      <StyledTextarea minRows={5} ref={inputRef} />
+      <Button variant="contained" sx={{ backgroundColor: 'black', marginTop: 5 }} onClick={() => onSubmit(inputRef.current?.value)}>
         Post Comment
       </Button>
     </Stack>

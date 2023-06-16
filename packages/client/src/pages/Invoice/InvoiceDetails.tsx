@@ -11,7 +11,7 @@ import { FormDialog } from '@components/form/FormDialog';
 import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceLazyQuery } from '@graphql/invoice/invoice';
 import { DisplayCard } from '@components/DisplayCard.component';
-import { Comments } from '@pages/Invoice/Comment';
+import { Comments } from '@pages/Invoice/Comments';
 
 const columns: GridColDef[] = [
   {
@@ -39,9 +39,7 @@ export const InvoiceDetails = () => {
     },
     fetchPolicy: 'cache-and-network'
   });
-
   const [createOrUpdateInvoiceMutation, { data: createOrUpdateData, loading: createOrUpdateLoading, error: createOrUpdateError }] = useCreateOrUpdateInvoiceMutation();
-
   const project = data?.getProjectsWithRecord.find((project) => project.id === id);
   const [SearchInvoiceQuery, { data: searchData, loading: searchLoading, error: searchError }] = useSearchInvoiceLazyQuery();
   const searchVariable = {
@@ -51,6 +49,7 @@ export const InvoiceDetails = () => {
       endDate: formatUTCHours(endDateValue)
     }
   };
+
   useEffect(() => {
     SearchInvoiceQuery({
       variables: searchVariable,
@@ -115,6 +114,12 @@ export const InvoiceDetails = () => {
     }
   };
 
+  const handleOnSubmitComment = (value: string | undefined) => {
+    if (value) {
+      console.log(value);
+    }
+  };
+
   return (
     <Box sx={{ width: '80%', height: 400, margin: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -175,7 +180,7 @@ export const InvoiceDetails = () => {
         </FormDialog>
       </Box>
       <Box sx={{ marginTop: 5 }}>
-        <Comments />
+        <Comments onSubmit={handleOnSubmitComment} />
         <Divider sx={{ color: 'grey.400', fontSize: '0.8rem', marginTop: 5 }}>comments</Divider>
       </Box>
     </Box>
