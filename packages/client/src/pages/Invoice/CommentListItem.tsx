@@ -3,7 +3,6 @@ import { FC } from 'react';
 import { format } from 'date-fns';
 
 interface CommentListItemProps {
-  title: string;
   date: Date;
   content: string;
   onDelete: () => void;
@@ -22,7 +21,7 @@ export const CommentListItem: FC<CommentListItemProps> = ({ date, content, onDel
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
         <Button size="small" color="secondary" onClick={onDelete}>
-          Delete
+          DELETE
         </Button>
       </Box>
     </ListItem>

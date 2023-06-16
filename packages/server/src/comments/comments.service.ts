@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CommentCreateInput } from './dto/comments.dto';
-import { Comment, Prisma, PrismaClient } from '@prisma/client';
+import { Comment } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
-import { EmployeeDeleteReturnModel } from '../employees/model/employee.model';
 
 @Injectable()
 export class CommentsService {
