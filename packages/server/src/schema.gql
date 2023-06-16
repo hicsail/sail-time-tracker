@@ -92,6 +92,14 @@ type BatchPayload {
   count: Float!
 }
 
+type CommentModel {
+  commentId: String!
+  createDate: DateTime!
+  modifiedDate: DateTime!
+  content: String!
+  invoiceId: String!
+}
+
 type InvoiceModel {
   projectId: String!
   startDate: DateTime!
@@ -113,12 +121,16 @@ type InvoiceModelWithProject {
   project: ProjectModel!
 }
 
-type CommentModel {
-  commentId: String!
-  createDate: DateTime!
-  modifiedDate: DateTime!
-  content: String!
+type InvoiceModelWithProjectAndComments {
+  projectId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  rate: Float!
+  hours: Float!
+  amount: Float!
   invoiceId: String!
+  project: ProjectModel!
+  comments: [CommentModel!]!
 }
 
 type Query {
@@ -129,7 +141,7 @@ type Query {
   project(id: String!): ProjectModel!
   getProjectsWithRecord(startDate: DateTime!, endDate: DateTime!): [ProjectWithRecord!]!
   invoices: [InvoiceModelWithProject!]!
-  searchInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModelWithProject!
+  searchInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModelWithProjectAndComments!
   comment(id: String!): CommentModel!
   comments: [CommentModel!]!
 }
