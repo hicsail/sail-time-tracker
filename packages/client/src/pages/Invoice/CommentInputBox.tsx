@@ -6,7 +6,7 @@ interface CommentsProps {
   onSubmit: (value: string | undefined) => void;
 }
 
-export const Comments: FC<CommentsProps> = ({ onSubmit }) => {
+export const CommentInputBox: FC<CommentsProps> = ({ onSubmit }) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const StyledTextarea = styled(TextareaAutosize)(

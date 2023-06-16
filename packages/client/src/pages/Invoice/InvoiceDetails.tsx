@@ -11,8 +11,9 @@ import { FormDialog } from '@components/form/FormDialog';
 import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceLazyQuery } from '@graphql/invoice/invoice';
 import { DisplayCard } from '@components/DisplayCard.component';
-import { Comments } from '@pages/Invoice/Comments';
+import { CommentInputBox } from '@pages/Invoice/CommentInputBox';
 import { useAddCommentMutation } from '@graphql/comment/comment';
+import { CommentDisplayComponent } from '@pages/Invoice/CommentDisplayComponent';
 
 const columns: GridColDef[] = [
   {
@@ -124,13 +125,19 @@ export const InvoiceDetails = () => {
             content: value,
             invoiceId: searchData?.searchInvoice.invoiceId
           }
-        }
+        },
+        refetchQueries: [
+          {
+            query: SearchInvoiceDocument,
+            variables: searchVariable
+          }
+        ]
       });
     }
   };
 
   return (
-    <Box sx={{ width: '80%', height: 400, margin: 'auto' }}>
+    <Box sx={{ width: '80%', height: 'auto', margin: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ marginTop: 8 }}>
           <h3>{`Project Name: ${project?.name}`}</h3>
@@ -189,8 +196,9 @@ export const InvoiceDetails = () => {
         </FormDialog>
       </Box>
       <Box sx={{ marginTop: 5 }}>
-        <Comments onSubmit={handleOnSubmitComment} />
+        <CommentInputBox onSubmit={handleOnSubmitComment} />
         <Divider sx={{ color: 'grey.400', fontSize: '0.8rem', marginTop: 5 }}>comments</Divider>
+        <CommentDisplayComponent items={searchData?.searchInvoice.comments} />
       </Box>
     </Box>
   );
