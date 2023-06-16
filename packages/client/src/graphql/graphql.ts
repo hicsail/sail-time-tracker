@@ -33,11 +33,6 @@ export type CommentModel = {
   invoiceId: Scalars['String'];
 };
 
-export type CommentUpdateInput = {
-  commentId: Scalars['String'];
-  content: Scalars['String'];
-};
-
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
@@ -160,7 +155,6 @@ export type Mutation = {
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
-  updateComment: CommentModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
 };
@@ -200,10 +194,6 @@ export type MutationDeleteProjectsArgs = {
 
 export type MutationInsertOrUpdateRecordArgs = {
   record: RecordCreateInput;
-};
-
-export type MutationUpdateCommentArgs = {
-  input: CommentUpdateInput;
 };
 
 export type MutationUpdateEmployeeArgs = {

@@ -24,12 +24,3 @@ mutation addComment($input: CommentCreateInput!) {
         invoiceId
     }
 }
-
-mutation updateComment($input: CommentUpdateInput!) {
-    updateComment(input: $input) {
-        content
-        commentId
-        createDate
-        invoiceId
-    }
-}

@@ -1,7 +1,7 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { CommentModel } from './model/comments.model';
 import { CommentsService } from './comments.service';
-import { CommentCreateInput, CommentUpdateInput } from './dto/comments.dto';
+import { CommentCreateInput } from './dto/comments.dto';
 import { Comment } from '@prisma/client';
 
 @Resolver(() => CommentModel)
@@ -21,10 +21,5 @@ export class CommentsResolver {
   @Mutation(() => CommentModel)
   async addComment(@Args('input') input: CommentCreateInput): Promise<Comment> {
     return this.commentService.addComment(input);
-  }
-
-  @Mutation(() => CommentModel)
-  async updateComment(@Args('input') input: CommentUpdateInput): Promise<Comment> {
-    return this.commentService.updateComment(input);
   }
 }
