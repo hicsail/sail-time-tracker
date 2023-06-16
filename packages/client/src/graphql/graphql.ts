@@ -151,6 +151,7 @@ export type Mutation = {
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
   createOrUpdateInvoice: InvoiceModel;
+  deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
@@ -177,6 +178,10 @@ export type MutationAddProjectArgs = {
 
 export type MutationCreateOrUpdateInvoiceArgs = {
   invoice: InvoiceCreateInput;
+};
+
+export type MutationDeleteCommentArgs = {
+  id: Scalars['String'];
 };
 
 export type MutationDeleteEmployeesArgs = {

@@ -12,8 +12,10 @@ import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceLazyQuery } from '@graphql/invoice/invoice';
 import { DisplayCard } from '@components/DisplayCard.component';
 import { CommentInputBox } from '@pages/Invoice/CommentInputBox';
-import { useAddCommentMutation } from '@graphql/comment/comment';
+import { useAddCommentMutation, useDeleteCommentMutation } from '@graphql/comment/comment';
 import { CommentDisplayComponent } from '@pages/Invoice/CommentDisplayComponent';
+import { CommentListItem } from '@pages/Invoice/CommentListItem';
+import { CommentList } from '@pages/Invoice/CommentList';
 
 const columns: GridColDef[] = [
   {
@@ -136,6 +138,22 @@ export const InvoiceDetails = () => {
     }
   };
 
+  const [deleteCommentMutation] = useDeleteCommentMutation();
+
+  const handleOnDelete = (id: string) => {
+    deleteCommentMutation({
+      variables: {
+        id: id
+      },
+      refetchQueries: [
+        {
+          query: SearchInvoiceDocument,
+          variables: searchVariable
+        }
+      ]
+    });
+  };
+
   return (
     <Box sx={{ width: '80%', height: 'auto', margin: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -198,7 +216,22 @@ export const InvoiceDetails = () => {
       <Box sx={{ marginTop: 5 }}>
         <CommentInputBox onSubmit={handleOnSubmitComment} />
         <Divider sx={{ color: 'grey.400', fontSize: '0.8rem', marginTop: 5 }}>comments</Divider>
-        <CommentDisplayComponent items={searchData?.searchInvoice.comments} />
+        <CommentDisplayComponent>
+          <CommentList>
+            {searchData &&
+              searchData.searchInvoice.comments.map((item: any) => {
+                return (
+                  <CommentListItem
+                    title="Xinyue Chen"
+                    date={new Date(item.createDate)}
+                    content={item.content}
+                    onDelete={() => handleOnDelete(item.commentId)}
+                    key={item.commentId}
+                  />
+                );
+              })}
+          </CommentList>
+        </CommentDisplayComponent>
       </Box>
     </Box>
   );

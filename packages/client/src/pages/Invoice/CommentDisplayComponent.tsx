@@ -1,21 +1,13 @@
-import { Box, Button, List, ListItem, Typography } from '@mui/material';
-import { FC } from 'react';
+import { Box } from '@mui/material';
+import { FC, ReactNode } from 'react';
 import { CommentList } from '@pages/Invoice/CommentList';
 import { CommentListItem } from '@pages/Invoice/CommentListItem';
+import { useDeleteCommentMutation } from '@graphql/comment/comment';
 
 interface CommentDisplayComponentProps {
-  items: any;
+  children: ReactNode;
 }
 
-export const CommentDisplayComponent: FC<CommentDisplayComponentProps> = ({ items }) => {
-  return (
-    <Box>
-      <CommentList>
-        {items &&
-          items.map((item: any) => {
-            return <CommentListItem title="Xinyue Chen" date={new Date(item.createDate)} content={item.content} />;
-          })}
-      </CommentList>
-    </Box>
-  );
+export const CommentDisplayComponent: FC<CommentDisplayComponentProps> = ({ children }) => {
+  return <Box>{children}</Box>;
 };

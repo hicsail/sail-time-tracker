@@ -24,3 +24,9 @@ mutation addComment($input: CommentCreateInput!) {
         invoiceId
     }
 }
+
+mutation deleteComment($id: String!) {
+    deleteComment(id: $id) {
+        commentId
+    }
+}
