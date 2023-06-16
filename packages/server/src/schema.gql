@@ -163,6 +163,7 @@ type Mutation {
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
   createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
   addComment(input: CommentCreateInput!): CommentModel!
+  deleteComment(id: String!): CommentModel!
 }
 
 input EmployeeCreateInput {

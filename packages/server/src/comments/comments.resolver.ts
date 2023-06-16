@@ -22,4 +22,9 @@ export class CommentsResolver {
   async addComment(@Args('input') input: CommentCreateInput): Promise<Comment> {
     return this.commentService.addComment(input);
   }
+
+  @Mutation(() => CommentModel)
+  async deleteComment(@Args('id') id: string): Promise<Comment> {
+    return this.commentService.deleteComment(id);
+  }
 }
