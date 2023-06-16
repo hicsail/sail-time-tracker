@@ -68,7 +68,7 @@ model Invoice {
 model Comment {
   commentId  String @id @default(uuid())
   createDate DateTime @default(now())
-  modifyDate DateTime @default(now())
+  modifiedDate DateTime @default(now())
   content    String
   invoiceId  String
   invoice    Invoice @relation(fields: [invoiceId], references: [invoiceId])
