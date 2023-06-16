@@ -111,6 +111,14 @@ type InvoiceModelWithProject {
   project: ProjectModel!
 }
 
+type CommentModel {
+  commentId: String!
+  createDate: DateTime!
+  modifiedDate: DateTime!
+  content: String!
+  invoiceId: String!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -120,6 +128,8 @@ type Query {
   getProjectsWithRecord(startDate: DateTime!, endDate: DateTime!): [ProjectWithRecord!]!
   invoices: [InvoiceModelWithProject!]!
   searchInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModelWithProject!
+  comment(id: String!): CommentModel!
+  comments: [CommentModel!]!
 }
 
 input InvoiceSearchInput {
@@ -139,6 +149,8 @@ type Mutation {
   deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
   createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
+  addComment(input: CommentCreateInput!): CommentModel!
+  updateComment(input: CommentUpdateInput!): CommentModel!
 }
 
 input EmployeeCreateInput {
@@ -190,4 +202,14 @@ input InvoiceCreateInput {
   rate: Float!
   hours: Float!
   amount: Float!
+}
+
+input CommentCreateInput {
+  content: String!
+  invoiceId: String!
+}
+
+input CommentUpdateInput {
+  commentId: String!
+  content: String!
 }

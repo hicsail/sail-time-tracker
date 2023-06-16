@@ -9,6 +9,7 @@ import { ProjectModule } from './project/project.module';
 import { FavoriteProjectModule } from './favorite-project/favorite-project.module';
 import { RecordModule } from './record/record.module';
 import { InvoiceModule } from './invoice/invoice.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { InvoiceModule } from './invoice/invoice.module';
     ProjectModule,
     FavoriteProjectModule,
     RecordModule,
-    InvoiceModule
+    InvoiceModule,
+    CommentsModule
   ],
   controllers: [AppController],
   providers: [AppService]

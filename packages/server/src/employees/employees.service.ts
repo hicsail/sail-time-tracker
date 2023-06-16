@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { Prisma, Employee } from '@prisma/client';
+import { Employee } from '@prisma/client';
 import { EmployeeDeleteReturnModel, EmployeeWithRecord } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
 import { previousDay } from 'date-fns';
