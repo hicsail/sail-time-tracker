@@ -52,6 +52,7 @@ model FavoriteProject {
 }
 
 model Invoice {
+  invoiceId String   @default(uuid()) @unique
   projectId String
   project   Project  @relation(fields: [projectId], references: [id])
   startDate DateTime
@@ -59,6 +60,16 @@ model Invoice {
   rate      Float
   hours     Float
   amount    Float
+  comments  Comment[]
 
   @@id([projectId, startDate, endDate])
+}
+
+model Comment {
+  commentId  String @id @default(uuid())
+  createDate DateTime @default(now())
+  modifyDate DateTime @default(now())
+  content    String
+  invoiceId  String
+  invoice    Invoice @relation(fields: [invoiceId], references: [invoiceId])
 }
