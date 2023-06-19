@@ -2,14 +2,16 @@ import { DisplayCard } from '@components/DisplayCard.component';
 import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 
-import { Box, Stack, SelectChangeEvent, TextField } from '@mui/material';
+import { Box, Stack, SelectChangeEvent } from '@mui/material';
 import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
 import { useDate } from '@context/date.context';
 import { startOfWeek } from 'date-fns';
 import { useEffect } from 'react';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { WorkOff, WorkOutlined } from '@mui/icons-material';
+import { DatePicker } from '@mui/x-date-pickers';
+
+import { Day } from './components/Day';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
@@ -69,12 +71,16 @@ export const Track = () => {
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
         <DropDownMenu data={employees} onChange={employeeChangeHandler} label="Select Employee" defaultValue={employeeId} id="select_employee" name="select_employee" />
         <DatePicker
-          label="Date"
           value={date}
           onChange={(newValue) => {
             setDate(newValue as Date);
           }}
-          renderInput={(params) => <TextField {...params} />}
+          slots={{ day: Day }}
+          slotProps={{
+            day: {
+              selectedDay: date
+            } as any
+          }}
         />
         <DisplayCard key="work" id="work" title="Total Work Hours" data={totalWorkHours ? totalWorkHours : 0} icon={<WorkOutlined fontSize="large" />} />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" data={absenceRecord ? absenceRecord[0].hours : 0} icon={<WorkOff fontSize="large" />} />

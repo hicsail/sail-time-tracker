@@ -2,7 +2,7 @@ import { GroupByEmployee } from '@pages/Report/GroupByEmployee';
 import { GroupByProject } from '@pages/Report/GroupByProject';
 import { useState } from 'react';
 import { DropDownMenu } from '@components/form/DropDownMenu';
-import { Box, SelectChangeEvent, TextField } from '@mui/material';
+import { Box, SelectChangeEvent } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { endOfWeek, startOfWeek } from 'date-fns';
 
@@ -39,7 +39,6 @@ export const Report = () => {
                 startDate: newValue
               }));
             }}
-            renderInput={(params) => <TextField {...params} />}
           />
           <DatePicker
             label="End Date"
@@ -50,7 +49,6 @@ export const Report = () => {
                 endDate: newValue
               }));
             }}
-            renderInput={(params) => <TextField {...params} />}
           />
         </Box>
       </Box>
