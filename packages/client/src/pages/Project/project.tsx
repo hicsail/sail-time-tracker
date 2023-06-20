@@ -7,19 +7,5 @@ export const Project = () => {
 
   if (loading || !data) return <div>Loading...</div>;
 
-  return (
-    <Box
-      maxWidth="xl"
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4rem',
-        alignItems: 'start',
-        width: '80%',
-        margin: 'auto'
-      }}
-    >
-      {error ? <pre>{error.message}</pre> : <ProjectTable data={data.projects} />}
-    </Box>
-  );
+  return <Box>{error ? <pre>{error.message}</pre> : <ProjectTable data={data.projects} />}</Box>;
 };

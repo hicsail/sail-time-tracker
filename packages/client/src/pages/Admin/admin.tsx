@@ -1,14 +1,15 @@
-import { Navbar } from '@pages/Admin/navbar';
-import { Box } from '@mui/material';
+import { Navbar } from '@pages/Admin/components/navbar';
 import { Outlet } from 'react-router-dom';
+import { SplitScreen } from '@pages/Admin/components/SplitScreen';
+import { Box } from '@mui/material';
 
 export const Admin = () => {
   return (
-    <Box>
+    <SplitScreen leftWeight={1} rightWeight={7}>
       <Navbar />
-      <Box sx={{ marginLeft: 40, width: '80%' }}>
+      <Box sx={{ width: '80%', margin: 'auto' }}>
         <Outlet />
       </Box>
-    </Box>
+    </SplitScreen>
   );
 };

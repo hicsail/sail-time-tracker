@@ -2,7 +2,7 @@ import { GroupByEmployee } from '@pages/Report/GroupByEmployee';
 import { GroupByProject } from '@pages/Report/GroupByProject';
 import { useState } from 'react';
 import { DropDownMenu } from '@components/form/DropDownMenu';
-import { Box, SelectChangeEvent } from '@mui/material';
+import { Box, SelectChangeEvent, Stack } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { endOfWeek, startOfWeek } from 'date-fns';
 
@@ -24,7 +24,7 @@ export const Report = () => {
   };
 
   return (
-    <Box sx={{ width: '80%', margin: 'auto', display: 'flex', flexDirection: 'column' }}>
+    <Stack direction="column">
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 8, marginBottom: 5 }}>
         <Box>
           <DropDownMenu data={data} onChange={handleOnChange} defaultValue={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
@@ -63,6 +63,6 @@ export const Report = () => {
           endDate={dateRange.endDate ? startOfWeek(dateRange.endDate, { weekStartsOn: 1 }) : startOfWeek(date, { weekStartsOn: 1 })}
         />
       )}
-    </Box>
+    </Stack>
   );
 };
