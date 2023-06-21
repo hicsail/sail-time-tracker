@@ -8,7 +8,7 @@ import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTabl
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
 
 import { Form, Formik } from 'formik';
-import { TextInput } from '@components/form/TextInput';
+import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
 import { useEmployee } from '@context/employee.context';
@@ -126,7 +126,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                       >
                         <Form>
                           <FormObserver employeeId={employeeId as string} projectId={row.id} date={date} setLoading={setLoading} />
-                          <TextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
+                          <ObserverTextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
                         </Form>
                       </Formik>
                     </TableCell>

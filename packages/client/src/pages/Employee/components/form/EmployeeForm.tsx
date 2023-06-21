@@ -4,7 +4,7 @@ import { Box, MenuItem, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { GetEmployeeListDocument, useEmployeeCreateInputMutation, useEmployeeUpdateInputMutation, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
-import { TextInput } from '@components/form/TextInput';
+import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { useParams } from 'react-router-dom';
 import { FC, useEffect, useState } from 'react';
 
@@ -73,13 +73,13 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
       >
         <Form>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
-            <TextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
-            <TextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />
-            <TextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
-            <TextInput name="status" select label="Status" placeholder="Status">
+            <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
+            <ObserverTextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />
+            <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
+            <ObserverTextInput name="status" select label="Status" placeholder="Status">
               <MenuItem value="Inactive">Inactive</MenuItem>
               <MenuItem value="Active">Active</MenuItem>
-            </TextInput>
+            </ObserverTextInput>
             <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit">
               Submit
             </LoadingButton>

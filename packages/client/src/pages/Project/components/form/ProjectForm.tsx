@@ -4,7 +4,7 @@ import { Box, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { GetProjectListDocument, useGetProjectByIdQuery, useProjectCreateInputMutation, useProjectUpdateInputMutation } from '@graphql/project/project';
-import { TextInput } from '@components/form/TextInput';
+import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { useParams } from 'react-router-dom';
 import { FC, useEffect, useState } from 'react';
 
@@ -82,17 +82,17 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
     >
       <Form>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
-          <TextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
-          <TextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
-          <TextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" required />
-          <TextInput name="status" select label="Status" placeholder="Status">
+          <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
+          <ObserverTextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
+          <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" required />
+          <ObserverTextInput name="status" select label="Status" placeholder="Status">
             <MenuItem value="Inactive">Inactive</MenuItem>
             <MenuItem value="Active">Active</MenuItem>
-          </TextInput>
-          <TextInput name="isBillable" select label="isBillable" placeholder="IsBillable">
+          </ObserverTextInput>
+          <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable">
             <MenuItem value="true">True</MenuItem>
             <MenuItem value="false">False</MenuItem>
-          </TextInput>
+          </ObserverTextInput>
           <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit">
             Submit
           </LoadingButton>

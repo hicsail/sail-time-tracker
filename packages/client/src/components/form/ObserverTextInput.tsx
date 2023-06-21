@@ -6,7 +6,7 @@ export type TextInputProps = TextFieldProps & {
   name: string;
 };
 
-export const TextInput: FC<TextInputProps> = (props) => {
+export const ObserverTextInput: FC<TextInputProps> = (props) => {
   const { handleChange, handleBlur, values, touched, errors, isSubmitting } = useFormikContext<any>();
 
   return (
