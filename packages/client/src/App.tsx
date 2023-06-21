@@ -1,10 +1,10 @@
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Employee } from '@pages/Employee/employee';
+import { Employee } from '@pages/Employee/Employee';
 
 import { GraphqlProvider } from '@graphql/graphql-provider';
-import { Project } from '@pages/Project/project';
+import { Project } from '@pages/Project/Project';
 import { Track } from '@pages/Track/track';
 import { Paths } from '@constants/paths';
 import { Admin } from '@pages/Admin/Admin';

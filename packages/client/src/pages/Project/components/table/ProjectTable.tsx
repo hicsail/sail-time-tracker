@@ -8,6 +8,7 @@ import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
 import TextField from '@mui/material/TextField';
+import { StyledPaper } from '@components/StyledPaper';
 
 interface ProjectTableProps {
   data: any[];
@@ -94,13 +95,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
       setRows(data);
     }
   }, [searchText]);
-
-  const StyledPaper = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'light' ? 'white' : theme.palette.grey['800'],
-    width: '100%',
-    mb: 2,
-    padding: '1rem'
-  }));
 
   return (
     <Box sx={{ width: '100%', marginTop: 8 }}>

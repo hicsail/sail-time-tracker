@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
@@ -7,6 +7,7 @@ import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 import TextField from '@mui/material/TextField';
+import { StyledPaper } from '@components/StyledPaper';
 
 interface EmployeeTableProps {
   data: any[];
@@ -93,20 +94,12 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
 
   return (
     <Box sx={{ width: '100%', marginTop: 8 }}>
-      <Paper
-        elevation={0}
-        sx={{
-          width: '100%',
-          mb: 2,
-          backgroundColor: 'customColors.sidebarBg',
-          padding: '1rem'
-        }}
-      >
+      <StyledPaper elevation={0}>
         <TextField
-          id="outlined-basic"
+          id="search-employees"
           label="Search Employees"
           variant="outlined"
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
             setSearchText(event.target.value);
           }}
           value={searchText}
@@ -205,7 +198,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
             </FormDialog>
           </Box>
         )}
-      </Paper>
+      </StyledPaper>
     </Box>
   );
 };
