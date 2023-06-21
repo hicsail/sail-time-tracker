@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip, TablePagination } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip, TablePagination, styled } from '@mui/material';
 import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
@@ -95,17 +95,16 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     }
   }, [searchText]);
 
+  const StyledPaper = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'light' ? 'white' : theme.palette.grey['800'],
+    width: '100%',
+    mb: 2,
+    padding: '1rem'
+  }));
+
   return (
     <Box sx={{ width: '100%', marginTop: 8 }}>
-      <Paper
-        elevation={0}
-        sx={{
-          width: '100%',
-          mb: 2,
-          backgroundColor: 'customColors.sidebarBg',
-          padding: '1rem'
-        }}
-      >
+      <StyledPaper elevation={0}>
         <TextField
           id="outlined-basic"
           label="Search Projects"
@@ -223,7 +222,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
+      </StyledPaper>
     </Box>
   );
 };

@@ -7,7 +7,7 @@ import { GraphqlProvider } from '@graphql/graphql-provider';
 import { Project } from '@pages/Project/project';
 import { Track } from '@pages/Track/track';
 import { Paths } from '@constants/paths';
-import { Admin } from '@pages/Admin/admin';
+import { Admin } from '@pages/Admin/Admin';
 import { ThemeProvider } from '@theme/theme.provider';
 import { SettingsProvider } from '@context/setting.context';
 import { EmployeeProvider } from '@context/employee.context';

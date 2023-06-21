@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { SideList } from '@pages/Admin/sideList';
+import { SideList } from '@pages/Admin/components/SideList';
 import { SwitchBtn } from '@components/switch/switchBtn';
 import { useSettings } from '@context/setting.context';
 

@@ -1,4 +1,4 @@
-import { Navbar } from '@pages/Admin/components/navbar';
+import { Navbar } from '@pages/Admin/components/Navbar';
 import { Outlet } from 'react-router-dom';
 import { SplitScreen } from '@pages/Admin/components/SplitScreen';
 import { Box } from '@mui/material';

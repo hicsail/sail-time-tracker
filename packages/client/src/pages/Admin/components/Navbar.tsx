@@ -1,32 +1,33 @@
-import { Box } from '@mui/material';
+import { styled } from '@mui/material';
 import { Folder, AssignmentInd, Assessment, WatchLater, Receipt } from '@mui/icons-material';
 import { Paths } from '@constants/paths';
-import { SideListItem } from '@pages/Admin/sideListItem';
-import { SideList } from '@pages/Admin/sideList';
+import { SideListItem } from '@pages/Admin/components/SideListItem';
 import { SwitchBtn } from '@components/switch/switchBtn';
 import { useSettings } from '@context/setting.context';
+import { SideList } from '@pages/Admin/components/SideList';
 
 export const Navbar = () => {
   const { settings, setSettings } = useSettings();
 
   const handleOnClick = () => {
     if (settings.theme === 'light') {
-      setSettings({ theme: 'dark' });
-    } else {
-      setSettings({ theme: 'light' });
+      return setSettings({ theme: 'dark' });
     }
+
+    return setSettings({ theme: 'light' });
   };
 
+  const Nav = styled('nav')(({ theme }) => ({
+    padding: '0 1rem',
+    borderRight: `1px dashed rgba(145, 158, 171, 0.2)`,
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey['100'] : theme.palette.grey['900'],
+    position: 'fixed',
+    height: '100vh',
+    color: theme.palette.mode === 'light' ? theme.palette.grey['600'] : theme.palette.grey['500']
+  }));
+
   return (
-    <Box
-      component="nav"
-      sx={{
-        paddingRight: '2rem',
-        backgroundColor: 'customColors.sidebarBg',
-        position: 'fixed',
-        height: '100vh'
-      }}
-    >
+    <Nav>
       <SideList>
         <SideListItem path={Paths.EMPLOYEE_lIST} icon={<AssignmentInd sx={{ color: 'customColors.iconColor' }} />} info="Employees" />
         <SideListItem path={Paths.PROJECT_lIST} icon={<Folder sx={{ color: 'customColors.iconColor' }} />} info="Projects" />
@@ -37,6 +38,6 @@ export const Navbar = () => {
         <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Track" />
         <SwitchBtn onClick={handleOnClick} />
       </SideList>
-    </Box>
+    </Nav>
   );
 };
