@@ -5,7 +5,9 @@ const NewPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light' ? 'white' : theme.palette.grey['800'],
   width: '100%',
   mb: 2,
-  padding: '1rem'
+  padding: '1rem',
+  display: 'flex',
+  flexDirection: 'column'
 }));
 
 interface StyledPaperProps extends PaperProps {

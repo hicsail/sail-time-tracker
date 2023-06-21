@@ -69,7 +69,7 @@ export const Track = () => {
       }}
     >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
-        <DropDownMenu data={employees} onChange={employeeChangeHandler} label="Select Employee" defaultValue={employeeId} id="select_employee" name="select_employee" />
+        <DropDownMenu data={employees} onChange={employeeChangeHandler} label="Select Employee" value={employeeId ? employeeId : ''} id="select_employee" name="select_employee" />
         <DatePicker
           value={date}
           onChange={(newValue) => {

@@ -1,13 +1,32 @@
-import { ChangeEvent, FC, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
-import { EnhancedTableToolbar } from '@pages/Employee/components/table/EnhancedTableToolbar';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  InputAdornment,
+  SelectChangeEvent,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TablePagination,
+  TableRow,
+  Typography
+} from '@mui/material';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
-import TextField from '@mui/material/TextField';
 import { StyledPaper } from '@components/StyledPaper';
+import { DropDownMenu } from '@components/form/DropDownMenu';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import { GetEmployeeListDocument, useDeleteEmployeesMutation } from '@graphql/employee/employee';
+import { TableHeadCover } from '@pages/Employee/components/table/TableHeadCover';
+import { TextInput } from '@components/TextInput';
 
 interface EmployeeTableProps {
   data: any[];
@@ -15,22 +34,34 @@ interface EmployeeTableProps {
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState({
+    add: false,
+    edit: false
+  });
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const navigate = useNavigate();
-  const [searchText, setSearchText] = useState<string>();
+  const [rowsPerPage, setRowsPerPage] = useState(8);
+  const [searchText, setSearchText] = useState<string>('');
   const [rows, setRows] = useState(data ? data : []);
+  const [filter, setFilter] = useState<string>('active');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [deleteEmployees] = useDeleteEmployeesMutation();
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleEditClickOpen = () => {
+    setOpen((prevState) => ({ ...prevState, edit: true }));
   };
 
-  /**
-   * close Model and navigate to Track Page
-   */
-  const handleClose = () => {
-    setOpen(false);
+  const handleEditClose = () => {
+    setOpen((prevState) => ({ ...prevState, edit: false }));
+    navigate(Paths.EMPLOYEE_lIST);
+  };
+
+  const handleAddClickOpen = () => {
+    setOpen((prevState) => ({ ...prevState, add: true }));
+  };
+
+  const handleAddClose = () => {
+    setOpen((prevState) => ({ ...prevState, add: false }));
     navigate(Paths.EMPLOYEE_lIST);
   };
 
@@ -38,7 +69,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
    * this method is used to handle select all employees' event.
    * @param event
    */
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.id);
       setSelected(newSelected);
@@ -77,7 +108,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -92,27 +123,92 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
     }
   }, [searchText]);
 
+  useEffect(() => {
+    filter === 'all' && setRows(data);
+    filter === 'active' && setRows(data.filter((row) => row.status === 'Active'));
+    filter === 'inActive' && setRows(data.filter((row) => row.status === 'Inactive'));
+  }, [filter]);
+
+  const dropdownData = [
+    {
+      id: 'all',
+      name: 'All'
+    },
+    {
+      id: 'active',
+      name: 'Active'
+    },
+    {
+      id: 'inActive',
+      name: 'Inactive'
+    }
+  ];
+
+  const handleDropdownOnChange = (e: SelectChangeEvent<string>) => {
+    setFilter(e.target.value);
+  };
+
+  /**
+   * delete one or more employees
+   */
+  const handleClickDelete = async () => {
+    await deleteEmployees({
+      variables: {
+        ids: selected as string[]
+      },
+      refetchQueries: [{ query: GetEmployeeListDocument }]
+    });
+    setSelected([]);
+  };
+
   return (
     <Box sx={{ width: '100%', marginTop: 8 }}>
       <StyledPaper elevation={0}>
-        <TextField
-          id="search-employees"
-          label="Search Employees"
-          variant="outlined"
-          onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            setSearchText(event.target.value);
-          }}
-          value={searchText}
-        />
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
+        <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
+          <Typography variant="h6">All Employees</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
+            onClick={handleAddClickOpen}
+          >
+            New Employee
+          </Button>
+          <FormDialog open={open.add} onClose={handleAddClose}>
+            <EmployeeForm handleClose={handleAddClose} />
+          </FormDialog>
+        </Stack>
+        <Stack direction="row" gap={2} mb={3}>
+          <DropDownMenu data={dropdownData} onChange={handleDropdownOnChange} label="Status" name="employee-status-dropdown" id="employee-status-dropdown" value={filter} />
+          <TextInput
+            value={searchText}
+            setValue={setSearchText}
+            id="search-employee"
+            variant="outlined"
+            placeholder="Search..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ mr: 1, color: 'grey.500' }} />
+                </InputAdornment>
+              )
+            }}
+          />
+        </Stack>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+          <Table sx={{ minWidth: 750, position: 'relative' }}>
+            <TableHeadCover
+              rowCount={rows.length}
+              selected={selected}
+              setSelected={setSelected}
+              handleSelectAllClick={handleSelectAllClick}
+              handleClickDelete={handleClickDelete}
+            />
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
             <TableBody>
               {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
-
                 return (
                   <TableRow
                     hover
@@ -163,7 +259,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                         variant="outlined"
                         onClick={() => {
                           navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
-                          handleClickOpen();
+                          handleAddClickOpen();
                         }}
                         color="secondary"
                       >
@@ -173,8 +269,8 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                   </TableRow>
                 );
               })}
-              <FormDialog open={open} title="Edit Employee" onClose={handleClose}>
-                <EmployeeForm handleClose={handleClose} />
+              <FormDialog open={open.edit} onClose={handleEditClose}>
+                <EmployeeForm handleClose={handleEditClose} />
               </FormDialog>
             </TableBody>
           </Table>
@@ -190,11 +286,11 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
         />
         {data.length === 0 && (
           <Box>
-            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
+            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleAddClickOpen}>
               Add Your First Employee
             </Button>
-            <FormDialog open={open} title="Edit Employee" onClose={handleClose}>
-              <EmployeeForm handleClose={handleClose} />
+            <FormDialog open={open.add} onClose={handleAddClose}>
+              <EmployeeForm handleClose={handleAddClose} />
             </FormDialog>
           </Box>
         )}
