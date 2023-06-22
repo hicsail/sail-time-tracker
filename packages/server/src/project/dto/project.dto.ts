@@ -1,5 +1,5 @@
 import { Field, InputType, ID } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 /**
  * input type for adding new project
@@ -22,7 +22,13 @@ export class ProjectCreateInput {
 
   @Field()
   @IsNotEmpty()
+  @IsBoolean()
   isBillable: boolean;
+
+  @Field()
+  @IsNotEmpty()
+  @IsNumber()
+  rate: number;
 }
 
 /**

@@ -213,6 +213,7 @@ export type ProjectCreateInput = {
   description: Scalars['String'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
+  rate: Scalars['Float'];
   status: Scalars['String'];
 };
 
@@ -227,6 +228,7 @@ export type ProjectModel = {
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
+  rate: Scalars['Float'];
   status: Scalars['String'];
 };
 
@@ -235,6 +237,7 @@ export type ProjectUpdateInput = {
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
+  rate: Scalars['Float'];
   status: Scalars['String'];
 };
 
@@ -247,6 +250,7 @@ export type ProjectWithRecord = {
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   percentage: Scalars['String'];
+  rate: Scalars['Float'];
   workHours: Scalars['Float'];
 };
 
@@ -323,5 +327,6 @@ export type RecordWithFavoriteProjectModel = {
   isFavorite: Scalars['Boolean'];
   name: Scalars['String'];
   previousWeek: Scalars['Float'];
+  rate: Scalars['Float'];
   status: Scalars['String'];
 };

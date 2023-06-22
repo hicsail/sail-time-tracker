@@ -9,7 +9,7 @@ export type GetProjectListQueryVariables = Types.Exact<{ [key: string]: never }>
 
 export type GetProjectListQuery = {
   __typename?: 'Query';
-  projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
+  projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; rate: number; description: string; status: string; isBillable: boolean }>;
 };
 
 export type GetProjectsWithRecordQueryVariables = Types.Exact<{
@@ -28,6 +28,7 @@ export type GetProjectsWithRecordQuery = {
     indirectHours: number;
     percentage: string;
     billableHours: number;
+    rate: number;
     inner: Array<{
       __typename?: 'ProjectWithRecordInner';
       employeeId: string;
@@ -43,19 +44,28 @@ export type GetProjectByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
 
-export type GetProjectByIdQuery = { __typename?: 'Query'; project: { __typename?: 'ProjectModel'; name: string; description: string; status: string; isBillable: boolean } };
+export type GetProjectByIdQuery = {
+  __typename?: 'Query';
+  project: { __typename?: 'ProjectModel'; name: string; description: string; rate: number; status: string; isBillable: boolean };
+};
 
 export type ProjectCreateInputMutationVariables = Types.Exact<{
   newProject: Types.ProjectCreateInput;
 }>;
 
-export type ProjectCreateInputMutation = { __typename?: 'Mutation'; addProject: { __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string } };
+export type ProjectCreateInputMutation = {
+  __typename?: 'Mutation';
+  addProject: { __typename?: 'ProjectModel'; id: string; name: string; rate: number; description: string; status: string };
+};
 
 export type ProjectUpdateInputMutationVariables = Types.Exact<{
   updateProject: Types.ProjectUpdateInput;
 }>;
 
-export type ProjectUpdateInputMutation = { __typename?: 'Mutation'; updateProject: { __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string } };
+export type ProjectUpdateInputMutation = {
+  __typename?: 'Mutation';
+  updateProject: { __typename?: 'ProjectModel'; id: string; name: string; rate: number; description: string; status: string };
+};
 
 export type DeleteProjectsMutationVariables = Types.Exact<{
   ids: Array<Types.Scalars['String']> | Types.Scalars['String'];
@@ -68,6 +78,7 @@ export const GetProjectListDocument = gql`
     projects {
       id
       name
+      rate
       description
       status
       isBillable
@@ -111,6 +122,7 @@ export const GetProjectsWithRecordDocument = gql`
       indirectHours
       percentage
       billableHours
+      rate
       inner {
         employeeId
         employeeName
@@ -155,6 +167,7 @@ export const GetProjectByIdDocument = gql`
     project(id: $id) {
       name
       description
+      rate
       status
       isBillable
     }
@@ -193,6 +206,7 @@ export const ProjectCreateInputDocument = gql`
     addProject(project: $newProject) {
       id
       name
+      rate
       description
       status
     }
@@ -229,6 +243,7 @@ export const ProjectUpdateInputDocument = gql`
     updateProject(updateProject: $updateProject) {
       id
       name
+      rate
       description
       status
     }

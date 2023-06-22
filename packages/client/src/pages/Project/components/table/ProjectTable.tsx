@@ -160,6 +160,9 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
                       {row.description}
                     </TableCell>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                      {row.rate}
+                    </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
                       <Chip
                         label={row.status}

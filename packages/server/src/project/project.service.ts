@@ -139,6 +139,7 @@ export class ProjectService {
         return {
           id: project.id,
           name: project.name,
+          rate: project.rate,
           isBillable: project.isBillable,
           workHours: formatHours(workHours),
           indirectHours: formatHours(indirectHour),
