@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import { Box, MenuItem, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
-import { GetProjectListDocument, useGetProjectByIdQuery, useProjectCreateInputMutation, useProjectUpdateInputMutation } from '@graphql/project/project';
+import { GetProjectByIdDocument, GetProjectListDocument, useGetProjectByIdLazyQuery, useProjectCreateInputMutation, useProjectUpdateInputMutation } from '@graphql/project/project';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { useParams } from 'react-router-dom';
 import { FC, useEffect, useState } from 'react';
@@ -33,23 +33,28 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
 
   const { id } = useParams();
 
-  const { data } = useGetProjectByIdQuery({
-    variables: {
-      id: id as string
-    },
-    nextFetchPolicy: 'cache-and-network'
-  });
+  const [getProjectById] = useGetProjectByIdLazyQuery();
 
   useEffect(() => {
-    data &&
-      setInitialValue({
-        name: data?.project.name,
-        description: data?.project.description,
-        status: data?.project.status ? data.project.status : '',
-        isBillable: data?.project.isBillable.toString(),
-        rate: data?.project.rate.toString()
+    id &&
+      getProjectById({
+        variables: {
+          id: id as string
+        },
+        nextFetchPolicy: 'cache-and-network'
+      }).then((res) => {
+        if (res && res.data) {
+          const { name, description, status, isBillable, rate } = res.data.project;
+          setInitialValue({
+            name,
+            description,
+            status,
+            isBillable: isBillable.toString(),
+            rate: rate.toString()
+          });
+        }
       });
-  }, [data]);
+  }, [id, open]);
 
   return (
     <>
@@ -75,7 +80,15 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
             await updateProject({
               variables: {
                 updateProject: { ...values, status: values.status.toString(), id: id, isBillable: values.isBillable == 'true', rate: parseFloat(values.rate) }
-              }
+              },
+              refetchQueries: [
+                {
+                  query: GetProjectByIdDocument,
+                  variables: {
+                    id: id as string
+                  }
+                }
+              ]
             });
           }
 

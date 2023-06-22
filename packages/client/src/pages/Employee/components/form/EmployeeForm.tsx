@@ -3,7 +3,13 @@ import { Form, Formik } from 'formik';
 import { Box, MenuItem, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
-import { GetEmployeeListDocument, useEmployeeCreateInputMutation, useEmployeeUpdateInputMutation, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
+import {
+  GetEmployeeByIdDocument,
+  GetEmployeeListDocument,
+  useEmployeeCreateInputMutation,
+  useEmployeeUpdateInputMutation,
+  useGetEmployeeByIdLazyQuery
+} from '@graphql/employee/employee';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { useParams } from 'react-router-dom';
 import { FC, useEffect, useState } from 'react';
@@ -25,22 +31,27 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
   const [updateEmployee] = useEmployeeUpdateInputMutation();
   const [addEmployee] = useEmployeeCreateInputMutation();
 
-  const { data } = useGetEmployeeByIdQuery({
-    variables: {
-      id: id as string
-    },
-    nextFetchPolicy: 'cache-and-network'
-  });
+  const [getEmployeeById] = useGetEmployeeByIdLazyQuery();
 
   useEffect(() => {
-    data &&
-      setInitialValue({
-        name: data?.employee.name,
-        email: data?.employee.email,
-        rate: data?.employee.rate.toString(),
-        status: data?.employee.status ? data.employee.status : ''
+    id &&
+      getEmployeeById({
+        variables: {
+          id: id as string
+        },
+        nextFetchPolicy: 'cache-and-network'
+      }).then((res) => {
+        if (res && res.data) {
+          const { name, email, status, rate } = res.data.employee;
+          setInitialValue({
+            name,
+            email,
+            status: status as string,
+            rate: rate.toString()
+          });
+        }
       });
-  }, [data]);
+  }, [id, open]);
 
   return (
     <>
@@ -65,7 +76,15 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
             await updateEmployee({
               variables: {
                 updateEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString(), id: id }
-              }
+              },
+              refetchQueries: [
+                {
+                  query: GetEmployeeByIdDocument,
+                  variables: {
+                    id: id as string
+                  }
+                }
+              ]
             });
           }
           return handleClose();
