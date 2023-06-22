@@ -148,9 +148,6 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
     setFilter(e.target.value);
   };
 
-  /**
-   * delete one or more employees
-   */
   const handleClickDelete = async () => {
     await deleteEmployees({
       variables: {

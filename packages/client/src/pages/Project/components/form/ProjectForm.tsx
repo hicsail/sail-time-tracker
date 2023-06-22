@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
-import { Box, MenuItem } from '@mui/material';
+import { Box, MenuItem, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { GetProjectListDocument, useGetProjectByIdQuery, useProjectCreateInputMutation, useProjectUpdateInputMutation } from '@graphql/project/project';
@@ -52,52 +52,55 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
   }, [data]);
 
   return (
-    <Formik
-      validateOnChange={true}
-      initialValues={initialValue}
-      validationSchema={FormValidation}
-      enableReinitialize={true}
-      onSubmit={async (values) => {
-        // if no id, create project
-        if (!id) {
-          // after submitting the new project re-fetch the project via graphql
-          await addProject({
-            variables: {
-              newProject: { ...values, status: values.status.toString(), isBillable: values.isBillable == 'true', rate: parseFloat(values.rate) }
-            },
-            refetchQueries: [{ query: GetProjectListDocument }]
-          });
-          return handleClose();
-        } else {
-          // after updating the project, re-fetch the projects via graphql
-          await updateProject({
-            variables: {
-              updateProject: { ...values, status: values.status.toString(), id: id, isBillable: values.isBillable == 'true', rate: parseFloat(values.rate) }
-            }
-          });
-        }
+    <>
+      <Typography variant="h5">{id ? 'Edit' : 'Create a new project'}</Typography>
+      <Formik
+        validateOnChange={true}
+        initialValues={initialValue}
+        validationSchema={FormValidation}
+        enableReinitialize={true}
+        onSubmit={async (values) => {
+          // if no id, create project
+          if (!id) {
+            // after submitting the new project re-fetch the project via graphql
+            await addProject({
+              variables: {
+                newProject: { ...values, status: values.status.toString(), isBillable: values.isBillable == 'true', rate: parseFloat(values.rate) }
+              },
+              refetchQueries: [{ query: GetProjectListDocument }]
+            });
+            return handleClose();
+          } else {
+            // after updating the project, re-fetch the projects via graphql
+            await updateProject({
+              variables: {
+                updateProject: { ...values, status: values.status.toString(), id: id, isBillable: values.isBillable == 'true', rate: parseFloat(values.rate) }
+              }
+            });
+          }
 
-        return handleClose();
-      }}
-    >
-      <Form>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
-          <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
-          <ObserverTextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
-          <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" required />
-          <ObserverTextInput name="status" select label="Status" placeholder="Status">
-            <MenuItem value="Inactive">Inactive</MenuItem>
-            <MenuItem value="Active">Active</MenuItem>
-          </ObserverTextInput>
-          <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable">
-            <MenuItem value="true">True</MenuItem>
-            <MenuItem value="false">False</MenuItem>
-          </ObserverTextInput>
-          <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit">
-            Submit
-          </LoadingButton>
-        </Box>
-      </Form>
-    </Formik>
+          return handleClose();
+        }}
+      >
+        <Form>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
+            <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
+            <ObserverTextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
+            <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" required />
+            <ObserverTextInput name="status" select label="Status" placeholder="Status">
+              <MenuItem value="Inactive">Inactive</MenuItem>
+              <MenuItem value="Active">Active</MenuItem>
+            </ObserverTextInput>
+            <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable">
+              <MenuItem value="true">True</MenuItem>
+              <MenuItem value="false">False</MenuItem>
+            </ObserverTextInput>
+            <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit">
+              Submit
+            </LoadingButton>
+          </Box>
+        </Form>
+      </Formik>
+    </>
   );
 };

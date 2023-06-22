@@ -1,14 +1,34 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, Button, Chip, TablePagination, styled } from '@mui/material';
-import { EnhancedTableToolbar } from '@pages/Project/components/table/EnhancedTableToolbar';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Checkbox,
+  Button,
+  Chip,
+  TablePagination,
+  Typography,
+  Stack,
+  InputAdornment,
+  SelectChangeEvent
+} from '@mui/material';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
-import TextField from '@mui/material/TextField';
 import { StyledPaper } from '@components/StyledPaper';
+import AddIcon from '@mui/icons-material/Add';
+import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
+import { DropDownMenu } from '@components/form/DropDownMenu';
+import { TextInput } from '@components/TextInput';
+import SearchIcon from '@mui/icons-material/Search';
+import { TableHeadCover } from '@pages/Employee/components/table/TableHeadCover';
+import { GetProjectListDocument, useDeleteProjectsMutation } from '@graphql/project/project';
 
 interface ProjectTableProps {
   data: any[];
@@ -16,26 +36,33 @@ interface ProjectTableProps {
 
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState({
+    add: false,
+    edit: false
+  });
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(8);
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState<string>();
+  const [searchText, setSearchText] = useState<string>('');
   const [rows, setRows] = useState(data ? data : []);
+  const [filter, setFilter] = useState<string>('Active');
+  const [deleteProjects] = useDeleteProjectsMutation();
 
-  /**
-   * this method is used to handle model open and close
-   */
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpen = (type: string) => {
+    if (type === 'edit') {
+      return setOpen((prevState) => ({ ...prevState, edit: true }));
+    }
+    return setOpen((prevState) => ({ ...prevState, add: true }));
   };
 
-  /**
-   * close Model and navigate to Track Page.
-   */
-  const handleClose = () => {
-    setOpen(false);
-    navigate(Paths.PROJECT_lIST);
+  const handleOnClose = (type: string) => {
+    if (type === 'edit') {
+      setOpen((prevState) => ({ ...prevState, edit: false }));
+      navigate(Paths.PROJECT_lIST);
+    } else {
+      setOpen((prevState) => ({ ...prevState, add: false }));
+      navigate(Paths.PROJECT_lIST);
+    }
   };
 
   /**
@@ -89,28 +116,107 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   useEffect(() => {
-    if (searchText !== '' && searchText !== undefined) {
-      setRows(data.filter((row) => row.name.toLowerCase().includes(searchText.toLowerCase())));
-    } else {
-      setRows(data);
+    let filteredRows = data;
+
+    if (searchText && searchText !== '') {
+      const searchFilter = (row: any) => row.name.toLowerCase().includes(searchText.toLowerCase());
+
+      filteredRows = filteredRows.filter(searchFilter);
     }
-  }, [searchText]);
+
+    if (filter && filter !== 'All') {
+      const statusFilter = (row: any) => row.status === filter;
+
+      filteredRows = filteredRows.filter(statusFilter);
+    }
+
+    setRows(filteredRows);
+  }, [searchText, filter, data]);
+
+  useEffect(() => {
+    let filteredRows = data;
+
+    if (filter === 'Active') {
+      filteredRows = data.filter((row) => row.status === 'Active');
+    } else if (filter === 'Inactive') {
+      filteredRows = data.filter((row) => row.status === 'Inactive');
+    }
+
+    setRows(filteredRows);
+  }, [filter, data]);
+
+  const dropdownData = [
+    {
+      id: 'All',
+      name: 'All'
+    },
+    {
+      id: 'Active',
+      name: 'Active'
+    },
+    {
+      id: 'Inactive',
+      name: 'Inactive'
+    }
+  ];
+
+  const handleDropdownOnChange = (e: SelectChangeEvent<string>) => {
+    setFilter(e.target.value);
+  };
+
+  const handleClickDelete = async () => {
+    await deleteProjects({
+      variables: {
+        ids: selected as string[]
+      },
+      refetchQueries: [{ query: GetProjectListDocument }]
+    });
+    setSelected([]);
+  };
 
   return (
     <Box sx={{ width: '100%', marginTop: 8 }}>
       <StyledPaper elevation={0}>
-        <TextField
-          id="outlined-basic"
-          label="Search Projects"
-          variant="outlined"
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setSearchText(event.target.value);
-          }}
-          value={searchText}
-        />
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
+        <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
+          <Typography variant="h6">All Projects</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
+            onClick={() => handleClickOpen('add')}
+          >
+            New Project
+          </Button>
+          <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
+            <ProjectForm handleClose={() => handleOnClose('add')} />
+          </FormDialog>
+        </Stack>
+        <Stack direction="row" gap={2} mb={3}>
+          <DropDownMenu data={dropdownData} onChange={handleDropdownOnChange} label="Status" name="employee-status-dropdown" id="employee-status-dropdown" value={filter} />
+          <TextInput
+            value={searchText}
+            setValue={setSearchText}
+            id="search-employee"
+            variant="outlined"
+            placeholder="Search..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ mr: 1, color: 'grey.500' }} />
+                </InputAdornment>
+              )
+            }}
+          />
+        </Stack>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+          <Table sx={{ minWidth: 750, position: 'relative' }}>
+            <TableHeadCover
+              rowCount={rows.length}
+              selected={selected}
+              setSelected={setSelected}
+              handleSelectAllClick={handleSelectAllClick}
+              handleClickDelete={handleClickDelete}
+            />
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
             <TableBody>
               {visibleRows.map((row, index) => {
@@ -181,7 +287,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                         variant="outlined"
                         onClick={() => {
                           navigate(`${Paths.PROJECT_lIST}/${row.id}`);
-                          handleClickOpen();
+                          handleClickOpen('edit');
                         }}
                         color="secondary"
                       >
@@ -191,19 +297,19 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                   </TableRow>
                 );
               })}
-              <FormDialog open={open} title="Edit Project" onClose={handleClose}>
-                <ProjectForm handleClose={handleClose} />
+              <FormDialog open={open.edit} onClose={() => handleOnClose('edit')}>
+                <ProjectForm handleClose={() => handleOnClose('edit')} />
               </FormDialog>
             </TableBody>
           </Table>
         </TableContainer>
         {data.length === 0 && (
           <Box>
-            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
+            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => handleClickOpen('add')}>
               Add Your First Project
             </Button>
-            <FormDialog open={open} title="Add Project" onClose={handleClose}>
-              <ProjectForm handleClose={handleClose} />
+            <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
+              <ProjectForm handleClose={() => handleOnClose('add')} />
             </FormDialog>
           </Box>
         )}
