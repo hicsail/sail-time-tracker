@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, styled } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
 import { ChangeEvent, useEffect, useState, MouseEvent, FC } from 'react';
@@ -8,7 +8,7 @@ import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTabl
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
 
 import { Form, Formik } from 'formik';
-import { TextInput } from '@components/form/TextInput';
+import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
 import { useEmployee } from '@context/employee.context';
@@ -80,8 +80,24 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     return selected.indexOf(id) !== -1;
   };
 
+  const Div = styled('div')(({ theme }) => ({
+    color: theme.palette.customColors.cardTextTopColor
+  }));
+
+  const welcomeString = () => {
+    const hours = new Date().getHours();
+    if (hours >= 18) {
+      return 'Good Evening,';
+    } else if (hours >= 12) {
+      return 'Good Afternoon,';
+    } else {
+      return 'Good Morning,';
+    }
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
+      <Div>{`${welcomeString()} ${data?.employee.name}! Please Log Your Weekly Hours Here.`}</Div>
       <Paper
         elevation={0}
         sx={{
@@ -126,7 +142,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                       >
                         <Form>
                           <FormObserver employeeId={employeeId as string} projectId={row.id} date={date} setLoading={setLoading} />
-                          <TextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
+                          <ObserverTextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
                         </Form>
                       </Formik>
                     </TableCell>

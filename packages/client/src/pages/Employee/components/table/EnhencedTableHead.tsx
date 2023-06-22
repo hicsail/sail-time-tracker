@@ -1,19 +1,13 @@
-/**
- * This component is used to display table head (employee name, email, rate)
- * @param props
- */
-
-import React, { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import TableHead from '@mui/material/TableHead';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { EmployeeModel } from '@graphql/graphql';
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof EmployeeModel;
-  label: string;
+  id: string;
+  label: ReactNode | string;
 }
 
 const headCells: readonly HeadCell[] = [
@@ -49,7 +43,7 @@ export const EnhancedTableHead: FC<EnhancedTableProps> = (props) => {
   const { onSelectAllClick, numSelected, rowCount } = props;
 
   return (
-    <TableHead>
+    <TableHead sx={{ width: '100%', height: '58px' }}>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount} onChange={onSelectAllClick} />

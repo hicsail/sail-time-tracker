@@ -7,9 +7,5 @@ export const Employee = () => {
 
   if (loading || !data) return <div>Loading...</div>;
 
-  return (
-    <Box component="div" maxWidth="xl" sx={{ display: 'flex', flexDirection: 'column', gap: '4rem', alignItems: 'start', width: '80%', margin: 'auto' }}>
-      {error ? <pre>{error.message}</pre> : <EmployeeTable data={data.employees} />}
-    </Box>
-  );
+  return <Box>{error ? <pre>{error.message}</pre> : <EmployeeTable data={data.employees} />}</Box>;
 };

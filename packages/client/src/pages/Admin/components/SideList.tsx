@@ -1,8 +1,8 @@
 import { List } from '@mui/material';
-import React, { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 interface SideBarProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const SideList: FC<SideBarProps> = ({ children }) => {
