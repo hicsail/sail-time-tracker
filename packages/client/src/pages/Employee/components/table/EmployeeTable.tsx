@@ -44,7 +44,6 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [rows, setRows] = useState(data ? data : []);
   const [filter, setFilter] = useState<string>('Active');
   const navigate = useNavigate();
-  const location = useLocation();
   const [deleteEmployees] = useDeleteEmployeesMutation();
 
   const handleClickOpen = (type: string) => {

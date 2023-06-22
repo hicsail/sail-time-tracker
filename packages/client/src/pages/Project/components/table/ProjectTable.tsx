@@ -23,7 +23,6 @@ import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
 import { StyledPaper } from '@components/StyledPaper';
 import AddIcon from '@mui/icons-material/Add';
-import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import { TextInput } from '@components/TextInput';
 import SearchIcon from '@mui/icons-material/Search';
