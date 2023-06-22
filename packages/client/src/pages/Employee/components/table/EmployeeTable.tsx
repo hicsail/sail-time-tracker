@@ -42,26 +42,17 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [rowsPerPage, setRowsPerPage] = useState(8);
   const [searchText, setSearchText] = useState<string>('');
   const [rows, setRows] = useState(data ? data : []);
-  const [filter, setFilter] = useState<string>('active');
+  const [filter, setFilter] = useState<string>('Active');
   const navigate = useNavigate();
   const location = useLocation();
   const [deleteEmployees] = useDeleteEmployeesMutation();
 
-  const handleEditClickOpen = () => {
-    setOpen((prevState) => ({ ...prevState, edit: true }));
+  const handleClickOpen = (type: string) => {
+    setOpen((prevState) => ({ ...prevState, [type]: true }));
   };
 
-  const handleEditClose = () => {
-    setOpen((prevState) => ({ ...prevState, edit: false }));
-    navigate(Paths.EMPLOYEE_lIST);
-  };
-
-  const handleAddClickOpen = () => {
-    setOpen((prevState) => ({ ...prevState, add: true }));
-  };
-
-  const handleAddClose = () => {
-    setOpen((prevState) => ({ ...prevState, add: false }));
+  const handleOnClose = (type: string) => {
+    setOpen((prevState) => ({ ...prevState, [type]: false }));
     navigate(Paths.EMPLOYEE_lIST);
   };
 
@@ -116,30 +107,46 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   useEffect(() => {
-    if (searchText !== '' && searchText !== undefined) {
-      setRows(data.filter((row) => row.name.toLowerCase().includes(searchText.toLowerCase())));
-    } else {
-      setRows(data);
+    let filteredRows = data;
+
+    if (searchText && searchText !== '') {
+      const searchFilter = (row: any) => row.name.toLowerCase().includes(searchText.toLowerCase());
+
+      filteredRows = filteredRows.filter(searchFilter);
     }
-  }, [searchText]);
+
+    if (filter && filter !== 'All') {
+      const statusFilter = (row: any) => row.status === filter;
+
+      filteredRows = filteredRows.filter(statusFilter);
+    }
+
+    setRows(filteredRows);
+  }, [searchText, filter, data]);
 
   useEffect(() => {
-    filter === 'all' && setRows(data);
-    filter === 'active' && setRows(data.filter((row) => row.status === 'Active'));
-    filter === 'inActive' && setRows(data.filter((row) => row.status === 'Inactive'));
-  }, [filter]);
+    let filteredRows = data;
+
+    if (filter === 'Active') {
+      filteredRows = data.filter((row) => row.status === 'Active');
+    } else if (filter === 'Inactive') {
+      filteredRows = data.filter((row) => row.status === 'Inactive');
+    }
+
+    setRows(filteredRows);
+  }, [filter, data]);
 
   const dropdownData = [
     {
-      id: 'all',
+      id: 'All',
       name: 'All'
     },
     {
-      id: 'active',
+      id: 'Active',
       name: 'Active'
     },
     {
-      id: 'inActive',
+      id: 'Inactive',
       name: 'Inactive'
     }
   ];
@@ -167,12 +174,12 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
             variant="contained"
             startIcon={<AddIcon />}
             sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
-            onClick={handleAddClickOpen}
+            onClick={() => handleClickOpen('add')}
           >
             New Employee
           </Button>
-          <FormDialog open={open.add} onClose={handleAddClose}>
-            <EmployeeForm handleClose={handleAddClose} />
+          <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
+            <EmployeeForm handleClose={() => handleOnClose('add')} />
           </FormDialog>
         </Stack>
         <Stack direction="row" gap={2} mb={3}>
@@ -256,7 +263,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                         variant="outlined"
                         onClick={() => {
                           navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
-                          handleAddClickOpen();
+                          handleClickOpen('edit');
                         }}
                         color="secondary"
                       >
@@ -266,8 +273,8 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                   </TableRow>
                 );
               })}
-              <FormDialog open={open.edit} onClose={handleEditClose}>
-                <EmployeeForm handleClose={handleEditClose} />
+              <FormDialog open={open.edit} onClose={() => handleOnClose('edit')}>
+                <EmployeeForm handleClose={() => handleOnClose('edit')} />
               </FormDialog>
             </TableBody>
           </Table>
@@ -283,11 +290,11 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
         />
         {data.length === 0 && (
           <Box>
-            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleAddClickOpen}>
+            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => handleClickOpen('new')}>
               Add Your First Employee
             </Button>
-            <FormDialog open={open.add} onClose={handleAddClose}>
-              <EmployeeForm handleClose={handleAddClose} />
+            <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
+              <EmployeeForm handleClose={() => handleOnClose('add')} />
             </FormDialog>
           </Box>
         )}

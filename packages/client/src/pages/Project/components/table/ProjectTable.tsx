@@ -49,20 +49,12 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [deleteProjects] = useDeleteProjectsMutation();
 
   const handleClickOpen = (type: string) => {
-    if (type === 'edit') {
-      return setOpen((prevState) => ({ ...prevState, edit: true }));
-    }
-    return setOpen((prevState) => ({ ...prevState, add: true }));
+    setOpen((prevState) => ({ ...prevState, [type]: true }));
   };
 
   const handleOnClose = (type: string) => {
-    if (type === 'edit') {
-      setOpen((prevState) => ({ ...prevState, edit: false }));
-      navigate(Paths.PROJECT_lIST);
-    } else {
-      setOpen((prevState) => ({ ...prevState, add: false }));
-      navigate(Paths.PROJECT_lIST);
-    }
+    setOpen((prevState) => ({ ...prevState, [type]: false }));
+    navigate(Paths.PROJECT_lIST);
   };
 
   /**
