@@ -1,4 +1,4 @@
-import { Checkbox, TextField, Autocomplete, Box, Button } from '@mui/material';
+import { Checkbox, TextField, Autocomplete, Box, Button, Typography } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
 import { SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
@@ -65,6 +65,7 @@ export const CheckboxesSearch = () => {
     <Box>
       {!loading && !error && addFavoriteProjectData && <Banner content={`Successfully add ${addFavoriteProjectData.addFavoriteProject.count} favorite project`} state="success" />}
       {error && <Banner content={`${error.message}`} state="error" />}
+      <Typography variant="h6">Add your favorite project</Typography>
       <Autocomplete
         sx={{ marginTop: '3rem' }}
         multiple

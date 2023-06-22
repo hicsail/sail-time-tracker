@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Stack, TextField } from '@mui/material';
+import { Box, Button, Divider, Stack, TextField, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -154,7 +154,7 @@ export const InvoiceDetails = () => {
   };
 
   return (
-    <Box sx={{ width: '80%', height: 'auto', margin: 'auto' }}>
+    <Box sx={{ height: 'auto', margin: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ marginTop: 8 }}>
           <h3>{`Project Name: ${project?.name}`}</h3>
@@ -194,7 +194,8 @@ export const InvoiceDetails = () => {
         <Button variant="contained" sx={{ marginTop: 5 }} onClick={() => setOpen(true)}>
           Change Total Billable Hours
         </Button>
-        <FormDialog open={open} title="Update Total Billable Hours" onClose={() => setOpen(false)}>
+        <FormDialog open={open} onClose={() => setOpen(false)}>
+          <Typography variant="h6">Update Total Billable Hours</Typography>
           <TextField
             id="billableHours"
             type="number"

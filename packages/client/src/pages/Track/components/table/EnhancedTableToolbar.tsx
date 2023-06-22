@@ -105,7 +105,7 @@ export const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = ({ numSelecte
           >
             <AddIcon />
           </IconButton>
-          <FormDialog open={open} onClose={handleClose} title="Add Favorite Projects">
+          <FormDialog open={open} onClose={handleClose}>
             <CheckboxesSearch />
           </FormDialog>
         </>

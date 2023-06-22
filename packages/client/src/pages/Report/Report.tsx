@@ -27,7 +27,7 @@ export const Report = () => {
     <Stack direction="column">
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 8, marginBottom: 5 }}>
         <Box>
-          <DropDownMenu data={data} onChange={handleOnChange} defaultValue={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
+          <DropDownMenu data={data} onChange={handleOnChange} value={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
         </Box>
         <Box sx={{ display: 'flex', gap: 5 }}>
           <DatePicker
