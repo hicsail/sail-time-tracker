@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { formatDate, formatUTCDate, USDollar } from '../../utils/helperFun';
@@ -84,9 +84,17 @@ export const Invoice = () => {
     : [];
 
   return (
-    <Box sx={{ width: '100%', height: 400 }}>
+    <Box sx={{ width: '80%', height: 400, margin: 'auto' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 8 }}>
+        <Typography variant="h5" sx={{ marginTop: 8, fontWeight: 'bold', color: 'customColors.interstellarBlue' }}>
+          Billing & Invoices
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'secondary.light' }}>
+          Managing and viewing all your invoices.
+        </Typography>
+      </Box>
       <DataGrid
-        sx={{ m: 2, color: '#021352' }}
+        sx={{ color: 'customColors.interstellarBlue', border: 'none', backgroundColor: 'white' }}
         rows={rows}
         columns={columns}
         initialState={{

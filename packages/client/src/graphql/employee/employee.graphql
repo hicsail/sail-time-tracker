@@ -9,7 +9,7 @@ query getEmployeeList {
 }
 
 query getEmployeesWithRecord($startDate: DateTime!, $endDate: DateTime!) {
-  getEmployeesWithRecord,(startDate: $startDate, endDate: $endDate) {
+  getEmployeesWithRecord(startDate: $startDate, endDate: $endDate) {
     id
     name
     workHours

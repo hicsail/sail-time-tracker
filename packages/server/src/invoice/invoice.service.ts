@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { Invoice, Project } from '@prisma/client';
-import { InvoiceCreateInput } from './dto/invoice.dto';
+import { Invoice } from '@prisma/client';
+import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
+import { InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
 
 @Injectable()
 export class InvoiceService {
   constructor(private prisma: PrismaService) {}
-  async getAllInvoices(): Promise<(Invoice & { project: Project })[]> {
+  async getAllInvoices(): Promise<InvoiceModelWithProject[]> {
     return this.prisma.invoice.findMany({
       include: {
-        project: true
+        project: true,
+        comments: true
       }
     });
   }
@@ -28,6 +30,23 @@ export class InvoiceService {
         rate: invoice.rate,
         hours: invoice.hours,
         amount: invoice.amount
+      }
+    });
+  }
+
+  async searchInvoice(projectId_startDate_endDate: InvoiceSearchInput): Promise<InvoiceModelWithProjectAndComments> {
+    const { projectId, startDate, endDate } = projectId_startDate_endDate;
+    return this.prisma.invoice.findUnique({
+      where: {
+        projectId_startDate_endDate: {
+          projectId,
+          startDate,
+          endDate
+        }
+      },
+      include: {
+        project: true,
+        comments: true
       }
     });
   }

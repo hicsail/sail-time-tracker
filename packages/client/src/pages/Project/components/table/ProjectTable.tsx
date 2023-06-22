@@ -96,7 +96,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   }, [searchText]);
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', marginTop: 8 }}>
       <Paper
         elevation={0}
         sx={{
@@ -108,7 +108,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
       >
         <TextField
           id="outlined-basic"
-          label="Search Employees"
+          label="Search Projects"
           variant="outlined"
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearchText(event.target.value);
@@ -159,6 +159,9 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
                       {row.description}
+                    </TableCell>
+                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                      {row.rate}
                     </TableCell>
                     <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
                       <Chip

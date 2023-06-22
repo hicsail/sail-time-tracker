@@ -2,6 +2,7 @@ query getProjectList {
   projects {
     id
     name
+    rate
     description
     status
     isBillable
@@ -17,6 +18,7 @@ query getProjectsWithRecord ($startDate: DateTime!, $endDate: DateTime!) {
     indirectHours
     percentage
     billableHours
+    rate
     inner {
       employeeId
       employeeName
@@ -31,6 +33,7 @@ query getProjectById($id: String!) {
   project(id: $id) {
     name
     description
+    rate
     status
     isBillable
   }
@@ -40,6 +43,7 @@ mutation ProjectCreateInput($newProject: ProjectCreateInput!) {
   addProject(project: $newProject) {
     id
     name
+    rate
     description
     status
   }
@@ -49,6 +53,7 @@ mutation ProjectUpdateInput($updateProject: ProjectUpdateInput!) {
   updateProject(updateProject: $updateProject) {
     id
     name
+    rate
     description
     status
   }

@@ -3,8 +3,6 @@ import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache } from '@ap
 import { useSettings } from '@context/setting.context';
 import { LoadingScreen } from '@components/loading-screen';
 
-const uri = `${import.meta.env.VITE_BACKEND_URL}/graphql`;
-
 export interface GraphqlProviderProps {
   children: React.ReactNode;
 }

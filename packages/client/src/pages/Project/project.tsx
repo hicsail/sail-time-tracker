@@ -15,7 +15,8 @@ export const Project = () => {
         flexDirection: 'column',
         gap: '4rem',
         alignItems: 'start',
-        width: '100%'
+        width: '80%',
+        margin: 'auto'
       }}
     >
       {error ? <pre>{error.message}</pre> : <ProjectTable data={data.projects} />}

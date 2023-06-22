@@ -103,7 +103,7 @@ export class ProjectService {
 
     // hide project that not contains any record, is not Indirect, Absence and the status is Active
     return projects
-      .filter((project) => project.records.length > 0 && project.name !== 'Indirect' && project.name !== 'Absence' && project.status !== 'Inactive')
+      .filter((project) => project.name !== 'Indirect' && project.name !== 'Absence' && project.status !== 'Inactive')
       .map((project) => {
         const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
         const indirectHour = (workHours / totalWorkHours) * indirectHours;
@@ -139,6 +139,7 @@ export class ProjectService {
         return {
           id: project.id,
           name: project.name,
+          rate: project.rate,
           isBillable: project.isBillable,
           workHours: formatHours(workHours),
           indirectHours: formatHours(indirectHour),

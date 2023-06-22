@@ -20,6 +20,19 @@ export type BatchPayload = {
   count: Scalars['Float'];
 };
 
+export type CommentCreateInput = {
+  content: Scalars['String'];
+  invoiceId: Scalars['String'];
+};
+
+export type CommentModel = {
+  __typename?: 'CommentModel';
+  commentId: Scalars['String'];
+  content: Scalars['String'];
+  createDate: Scalars['DateTime'];
+  invoiceId: Scalars['String'];
+};
+
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
@@ -94,6 +107,7 @@ export type InvoiceModel = {
   amount: Scalars['Float'];
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
+  invoiceId: Scalars['String'];
   projectId: Scalars['String'];
   rate: Scalars['Float'];
   startDate: Scalars['DateTime'];
@@ -104,24 +118,50 @@ export type InvoiceModelWithProject = {
   amount: Scalars['Float'];
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
+  invoiceId: Scalars['String'];
   project: ProjectModel;
   projectId: Scalars['String'];
   rate: Scalars['Float'];
   startDate: Scalars['DateTime'];
 };
 
+export type InvoiceModelWithProjectAndComments = {
+  __typename?: 'InvoiceModelWithProjectAndComments';
+  amount: Scalars['Float'];
+  comments: Array<CommentModel>;
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  invoiceId: Scalars['String'];
+  project: ProjectModel;
+  projectId: Scalars['String'];
+  rate: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+};
+
+export type InvoiceSearchInput = {
+  endDate: Scalars['DateTime'];
+  projectId: Scalars['String'];
+  startDate: Scalars['DateTime'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addComment: CommentModel;
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
   createOrUpdateInvoice: InvoiceModel;
+  deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteFavoriteProjects: BatchPayload;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
+};
+
+export type MutationAddCommentArgs = {
+  input: CommentCreateInput;
 };
 
 export type MutationAddEmployeeArgs = {
@@ -138,6 +178,10 @@ export type MutationAddProjectArgs = {
 
 export type MutationCreateOrUpdateInvoiceArgs = {
   invoice: InvoiceCreateInput;
+};
+
+export type MutationDeleteCommentArgs = {
+  id: Scalars['String'];
 };
 
 export type MutationDeleteEmployeesArgs = {
@@ -169,6 +213,7 @@ export type ProjectCreateInput = {
   description: Scalars['String'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
+  rate: Scalars['Float'];
   status: Scalars['String'];
 };
 
@@ -183,6 +228,7 @@ export type ProjectModel = {
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
+  rate: Scalars['Float'];
   status: Scalars['String'];
 };
 
@@ -191,6 +237,7 @@ export type ProjectUpdateInput = {
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
+  rate: Scalars['Float'];
   status: Scalars['String'];
 };
 
@@ -203,6 +250,7 @@ export type ProjectWithRecord = {
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   percentage: Scalars['String'];
+  rate: Scalars['Float'];
   workHours: Scalars['Float'];
 };
 
@@ -217,6 +265,8 @@ export type ProjectWithRecordInner = {
 
 export type Query = {
   __typename?: 'Query';
+  comment: CommentModel;
+  comments: Array<CommentModel>;
   employee: EmployeeModel;
   employees: Array<EmployeeModel>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
@@ -224,6 +274,11 @@ export type Query = {
   invoices: Array<InvoiceModelWithProject>;
   project: ProjectModel;
   projects: Array<ProjectModel>;
+  searchInvoice: InvoiceModelWithProjectAndComments;
+};
+
+export type QueryCommentArgs = {
+  id: Scalars['String'];
 };
 
 export type QueryEmployeeArgs = {
@@ -242,6 +297,10 @@ export type QueryGetProjectsWithRecordArgs = {
 
 export type QueryProjectArgs = {
   id: Scalars['String'];
+};
+
+export type QuerySearchInvoiceArgs = {
+  projectId_startDate_endDate: InvoiceSearchInput;
 };
 
 export type RecordCreateInput = {
@@ -268,5 +327,6 @@ export type RecordWithFavoriteProjectModel = {
   isFavorite: Scalars['Boolean'];
   name: Scalars['String'];
   previousWeek: Scalars['Float'];
+  rate: Scalars['Float'];
   status: Scalars['String'];
 };

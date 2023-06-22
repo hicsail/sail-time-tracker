@@ -39,7 +39,8 @@ export const themeLight = createTheme({
       cardTextTopColor: '#a3a3a3',
       cardTextBottomColor: '#525252',
       statusBtnBg: '#E9F5F5',
-      statusBtnText: '#6E9596'
+      statusBtnText: '#6E9596',
+      interstellarBlue: '#021352'
     }
   }
 });

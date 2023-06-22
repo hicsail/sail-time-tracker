@@ -24,8 +24,8 @@ export const Report = () => {
   };
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, padding: '3rem 0' }}>
+    <Box sx={{ width: '80%', margin: 'auto', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 8, marginBottom: 5 }}>
         <Box>
           <DropDownMenu data={data} onChange={handleOnChange} defaultValue={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
         </Box>
