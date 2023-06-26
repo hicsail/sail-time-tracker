@@ -30,8 +30,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
    * @param row
    */
   const handleClick = (row: any) => {
-    const { id, billableHours } = row;
-    const rate = 65; // fake data
+    const { id, billableHours, rate } = row;
     const amount = rate * billableHours;
     const invoice = {
       projectId: id,
