@@ -46,7 +46,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
         invoice: invoice
       },
       refetchQueries: [{ query: GetAllInvoicesDocument }]
-    }).then(() => setDisplayContent(true));
+    }).then((r) => r.data && setDisplayContent(true));
   };
 
   useEffect(() => {

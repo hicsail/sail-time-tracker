@@ -1,6 +1,6 @@
 import { Checkbox, TextField, Autocomplete, Box, Button, Typography } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
-import { SyntheticEvent, useState } from 'react';
+import {SyntheticEvent, useEffect, useState} from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
 import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
@@ -17,6 +17,7 @@ const checkedIcon = <CheckBox fontSize="small" />;
 
 export const CheckboxesSearch = () => {
   const [selectedProjects, setSelectedProjects] = useState<ProjectModel[]>([]);
+  const [isShowBanner, setIsShowBanner] = useState(false);
   const { data } = useGetProjectListQuery();
   const [addFavoriteProjectMutation, { data: addFavoriteProjectData, loading, error }] = useAddFavoriteProjectMutation();
   const { settings } = useSettings();
@@ -31,6 +32,18 @@ export const CheckboxesSearch = () => {
       id: employeeId as string
     }
   });
+
+  useEffect(() => {
+    // Set the displayContent state to true after a delay of 700 milliseconds (0.7 seconds)
+    const timeoutId = setTimeout(() => {
+      setIsShowBanner(false);
+    }, 700);
+
+    // Clean up the timeout when the component unmounts or the state changes
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isShowBanner]);
 
   // handle user select projects from search checkbox
   const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any[]) => {
@@ -58,21 +71,29 @@ export const CheckboxesSearch = () => {
             }
           }
         ]
-      });
+      }).then((r) => r.data && setIsShowBanner(true));
     }
     setSelectedProjects([]);
   };
 
+  const activeProjects = data?.projects.filter(project => project.status === "Active") ?? [];
+
   return (
     <Box>
-      {!loading && !error && addFavoriteProjectData && <Banner content={`Successfully add ${addFavoriteProjectData.addFavoriteProject.count} favorite project`} state="success" />}
-      {error && <Banner content={`${error.message}`} state="error" />}
+      {
+        isShowBanner && (
+          <>
+            {!loading && !error && addFavoriteProjectData && <Banner content={`Successfully add ${addFavoriteProjectData.addFavoriteProject.count} favorite project`} state="success" />}
+            {error && <Banner content={`${error.message}`} state="error" />}
+          </>
+        )
+      }
       <Typography variant="h6">Add your favorite project</Typography>
       <Autocomplete
         sx={{ marginTop: '3rem' }}
         multiple
         id="checkboxes-tags-favoriteProject"
-        options={data ? data.projects : []}
+        options={activeProjects}
         disableCloseOnSelect
         getOptionLabel={(option) => option.name}
         filterOptions={(options, { inputValue }) => {
