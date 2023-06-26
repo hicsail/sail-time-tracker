@@ -3,7 +3,7 @@ import { FC, useEffect } from 'react';
 import { useAddRecordMutation } from '@graphql/record/record';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { endOfWeek, startOfWeek } from 'date-fns';
-import { formatDateWithDash } from '../../../../utils/helperFun';
+import { formatDateToDashFormat } from '../../../../utils/helperFun';
 
 interface FormObserverProps {
   projectId: string;
@@ -49,8 +49,8 @@ export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, dat
               query: GetRecordWithFavoriteProjectDocument,
               variables: {
                 id: employeeId as string,
-                startDate: formatDateWithDash(startOfWeek(date, { weekStartsOn: 1 })),
-                endDate: formatDateWithDash(endOfWeek(date, { weekStartsOn: 1 }))
+                startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
+                endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
               }
             }
           ]
