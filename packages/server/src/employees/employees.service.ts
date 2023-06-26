@@ -3,9 +3,8 @@ import { PrismaService } from 'nestjs-prisma';
 import { Employee } from '@prisma/client';
 import { EmployeeDeleteReturnModel, EmployeeWithRecord } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
-import { previousDay } from 'date-fns';
-import { RecordWithFavoriteProjectModel } from '../record/model/record.model';
-import { formatHours, formatPercentage } from '../utils/helperFun';
+import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
+import { convertToUTCDate, formatDateToDashFormat, formatHours, formatPercentage } from '../utils/helperFun';
 import { EmployeeCreateInput, EmployeeUpdateInput } from './dto/employee.dto';
 
 @Injectable()
@@ -68,7 +67,7 @@ export class EmployeesService {
    * @param ids represents array of ids
    */
 
-  async deleteEmployees(ids: String[]): Promise<EmployeeDeleteReturnModel> {
+  async deleteEmployees(ids: string[]): Promise<EmployeeDeleteReturnModel> {
     return this.prisma.employee.deleteMany({
       where: {
         id: {
@@ -129,9 +128,9 @@ export class EmployeesService {
           .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
           .reduce((sum, currentValue) => sum + currentValue.hours, 0);
 
-        let totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
-        let projectHoursMap = new Map();
-        let uniqueProjectList: any[] = [];
+        const totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
+        const projectHoursMap = new Map();
+        const uniqueProjectList: any[] = [];
 
         // store unique projects and total hours to uniqueProjectList
         // from startDate to endDate
@@ -171,79 +170,84 @@ export class EmployeesService {
   }
 
   /**
-   * Get favorite projects With Record
+   * Get favorite projects With Record grouped by projectId
    *
-   * @return a combined list of projects
+   * @return a list of projects With Record grouped by projectId
    * @param employeeId represents employee id
-   * @param date
+   * @param startDate
+   * @param endDate
    */
-  async getRecordsWithFavoriteProject(employeeId: string, date: Date): Promise<RecordWithFavoriteProjectModel[]> {
-    // get current week records
-    const records = await this.prisma.record.findMany({
-      where: {
-        employeeId: employeeId,
-        date: date
-      },
-      include: {
-        project: true
-      }
-    });
+  async getRecordsWithFavoriteProject(employeeId: string, startDate: Date, endDate: Date): Promise<GroupedRecordWithFavoriteProjectModel[]> {
+    // get current week records and all favorite projects
+    const [records, favoriteProjects] = await Promise.all([
+      this.prisma.record.findMany({
+        where: {
+          employeeId: employeeId,
+          date: {
+            lte: endDate,
+            gte: startDate
+          }
+        },
+        include: {
+          project: true
+        }
+      }),
+      this.getFavoriteProjects(employeeId)
+    ]);
 
-    // get previous week records
-    const previousWeekRecords = await this.prisma.record.findMany({
-      where: {
-        employeeId: employeeId,
-        date: previousDay(date, 1)
-      }
-    });
-
-    // get favorite project by employee id
-    const favoriteProjects = await this.getFavoriteProjects(employeeId);
     const isRecordMap = new Set();
     const isFavoriteMap = new Set();
-    const previousWeekMap = new Map();
-    let combined = [];
+    const combined = [];
 
     // add all project in record to combined list
     records.forEach((record: any) => {
       isRecordMap.add(record.projectId);
-      combined.push({ ...record.project, hours: record.hours });
+      combined.push({ date: record.date, projectId: record.projectId, hours: record.hours, projectName: record.project.name, description: record.project.description });
     });
 
     // add all project in favorite project that is not in record to combined list
     favoriteProjects.forEach((project: any) => {
       if (!isRecordMap.has(project.id)) {
-        combined.push({ ...project, hours: 0 });
+        combined.push({ date: null, projectId: project.id, hours: 0, projectName: project.name, description: project.description });
       }
       isFavoriteMap.add(project.id);
     });
 
-    // create previous week map to store previous week project hours
-    // (key: projectId, value: hours)
-    previousWeekRecords.forEach((record) => {
-      previousWeekMap.set(record.projectId, record.hours);
-    });
-
     // check project in combined list is favorite or not
     combined.forEach((project) => {
-      // add field isFavorite
       project.isFavorite = isFavoriteMap.has(project.id);
-
-      // add field previousWeek
-      project.previousWeek = previousWeekMap.has(project.id) ? previousWeekMap.get(project.id) : 0;
     });
 
-    // find indirect and absence project
-    const indirectRecord = combined.find((project) => project.name === 'Indirect');
-    const absenceRecord = combined.find((project) => project.name === 'Absence');
+    // group combined list by project id
+    const groupedData = combined.reduce((acc, projectRecord) => {
+      const { projectId, projectName, isFavorite, description, date, hours } = projectRecord;
+      const existingGroup = acc.find((group) => group.projectId === projectId);
+      const formatDate = date ? formatDateToDashFormat(convertToUTCDate(date)) : null;
 
-    // remove indirect and absence from combined array
-    // and add them at the front of the combined array
-    combined.splice(combined.indexOf(indirectRecord), 1);
-    combined.splice(combined.indexOf(absenceRecord), 1);
-    combined.splice(0, 0, indirectRecord);
-    combined.splice(1, 0, absenceRecord);
+      if (!existingGroup) {
+        acc.push({ projectId, projectName, isFavorite, description, records: [{ date: formatDate, hours: hours }] });
+      } else {
+        existingGroup.records.push({ date: formatDate, hours: hours });
+      }
+      return acc;
+    }, []);
 
-    return combined;
+    // find indirect and absence project from groupedData
+    const indirectRecord = groupedData.find((data) => data.projectName === 'Indirect');
+    const absenceRecord = groupedData.find((data) => data.projectName === 'Absence');
+
+    // remove indirect and absence from groupedData
+    // and add them at the front of the groupedData
+    if (indirectRecord) {
+      groupedData.splice(groupedData.indexOf(indirectRecord), 1);
+      groupedData.splice(0, 0, indirectRecord);
+    }
+
+    if (absenceRecord) {
+      groupedData.splice(groupedData.indexOf(absenceRecord), 1);
+      groupedData.splice(1, 0, absenceRecord);
+    }
+
+    return groupedData;
   }
 }

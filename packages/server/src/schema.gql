@@ -9,7 +9,7 @@ type EmployeeModel {
   rate: Float!
   status: String
   projects: [ProjectModel!]!
-  recordsWithFavoriteProjects(date: DateTime!): [RecordWithFavoriteProjectModel!]!
+  recordsWithFavoriteProjects(startDate: DateTime!, endDate: DateTime!): [GroupedRecordWithFavoriteProjectModel!]!
 }
 
 """
@@ -80,15 +80,16 @@ type RecordInsertOrUpdateModel {
 }
 
 type RecordWithFavoriteProjectModel {
-  id: ID!
-  name: String!
-  status: String!
-  description: String!
-  isBillable: Boolean!
-  rate: Float!
-  isFavorite: Boolean!
+  date: String
   hours: Float!
-  previousWeek: Float!
+}
+
+type GroupedRecordWithFavoriteProjectModel {
+  projectId: String!
+  projectName: String!
+  description: String!
+  isFavorite: Boolean!
+  records: [RecordWithFavoriteProjectModel!]!
 }
 
 type BatchPayload {

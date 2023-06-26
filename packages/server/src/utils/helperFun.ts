@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 export const getTotalIndirectHours = (data) => {
   const result = data.filter((data) => data.name === 'Indirect').map((indirect) => indirect.records.reduce((sum, currentValue) => sum + currentValue.hours, 0));
   return result[0];
@@ -14,7 +16,7 @@ export const getTotalWorkHours = (data) => {
 
 export const formatHours = (value: number) => {
   const integer = Math.floor(value);
-  let fractionalPart = value - integer;
+  const fractionalPart = value - integer;
 
   if (fractionalPart > 0 && fractionalPart <= 0.5) {
     return integer + 0.5;
@@ -29,4 +31,16 @@ export const formatHours = (value: number) => {
 
 export const formatPercentage = (value: number) => {
   return (value * 100).toFixed(1);
+};
+
+export const convertToUTCDate = (utcDate: Date) => {
+  return new Date(utcDate.getUTCFullYear(), utcDate.getUTCMonth(), utcDate.getUTCDate(), utcDate.getUTCHours(), utcDate.getUTCMinutes(), utcDate.getUTCSeconds());
+};
+
+export const formatDateToDashFormat = (date: Date | undefined) => {
+  if (date) {
+    return format(date, 'MM-dd-yyyy');
+  }
+
+  return 'invalid date';
 };
