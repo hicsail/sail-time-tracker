@@ -4,7 +4,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectsWithRecordQuery } from '@graphql/project/project';
-import { formatDate, formatUTCHours, USDollar } from '../../utils/helperFun';
+import { formatDateToForwardSlashFormat, formatDateToDashFormat, USDollar } from '../../utils/helperFun';
 import IconButton from '@mui/material/IconButton';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { FormDialog } from '@components/form/FormDialog';
@@ -38,8 +38,8 @@ export const InvoiceDetails = () => {
   const endDateValue = endDate ? new Date(endDate) : undefined;
   const { data, loading, error } = useGetProjectsWithRecordQuery({
     variables: {
-      startDate: formatUTCHours(startDateValue),
-      endDate: formatUTCHours(endDateValue)
+      startDate: formatDateToDashFormat(startDateValue),
+      endDate: formatDateToDashFormat(endDateValue)
     },
     fetchPolicy: 'cache-and-network'
   });
@@ -52,8 +52,8 @@ export const InvoiceDetails = () => {
   const searchInvoiceVariable = {
     projectId_startDate_endDate: {
       projectId: id as string,
-      startDate: formatUTCHours(startDateValue),
-      endDate: formatUTCHours(endDateValue)
+      startDate: formatDateToDashFormat(startDateValue),
+      endDate: formatDateToDashFormat(endDateValue)
     }
   };
 
@@ -89,8 +89,8 @@ export const InvoiceDetails = () => {
 
       const invoice = {
         projectId: id,
-        startDate: formatUTCHours(startDateValue),
-        endDate: formatUTCHours(endDateValue),
+        startDate: formatDateToDashFormat(startDateValue),
+        endDate: formatDateToDashFormat(endDateValue),
         hours: totalBillableHours,
         rate: rate,
         amount: amount
@@ -160,7 +160,7 @@ export const InvoiceDetails = () => {
           <h3>{`Project Name: ${project?.name}`}</h3>
           <Box sx={{ display: 'flex', alignItem: 'center', gap: 1 }}>
             <CalendarTodayIcon />
-            <div>{`${formatDate(startDateValue)} - ${formatDate(endDateValue)}`}</div>
+            <div>{`${formatDateToForwardSlashFormat(startDateValue)} - ${formatDateToForwardSlashFormat(endDateValue)}`}</div>
           </Box>
         </Box>
         <Box sx={{ display: 'flex', gap: 3 }}>

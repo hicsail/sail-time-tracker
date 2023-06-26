@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { FC } from 'react';
 
 import { useGetEmployeesWithRecordQuery } from '@graphql/employee/employee';
+import { formatDateToDashFormat } from '../../utils/helperFun';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -10,11 +11,10 @@ interface GroupByEmployeeProps {
 }
 
 export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
-  // get all employees with records
   const { data } = useGetEmployeesWithRecordQuery({
     variables: {
-      startDate: startDate.setUTCHours(4, 0, 0, 0),
-      endDate: endDate.setUTCHours(4, 0, 0, 0)
+      startDate: formatDateToDashFormat(startDate),
+      endDate: formatDateToDashFormat(endDate)
     }
   });
 

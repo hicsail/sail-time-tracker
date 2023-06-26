@@ -33,7 +33,7 @@ export class ProjectResolver {
   }
 
   @Mutation(() => ProjectDeleteReturnModel)
-  async deleteProjects(@Args({ name: 'ids', type: () => [String] }) ids: String[]): Promise<ProjectDeleteReturnModel> {
+  async deleteProjects(@Args({ name: 'ids', type: () => [String] }) ids: string[]): Promise<ProjectDeleteReturnModel> {
     return this.projectService.deleteProjects(ids);
   }
 }

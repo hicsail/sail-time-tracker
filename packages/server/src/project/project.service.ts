@@ -63,7 +63,7 @@ export class ProjectService {
    * @return total number of deleted project
    * @param ids represents array of ids
    */
-  async deleteProjects(ids: String[]): Promise<ProjectDeleteReturnModel> {
+  async deleteProjects(ids: string[]): Promise<ProjectDeleteReturnModel> {
     return this.prisma.project.deleteMany({
       where: {
         id: {
@@ -108,8 +108,8 @@ export class ProjectService {
         const workHours = project.records.reduce((sum, currentValue) => sum + currentValue.hours, 0);
         const indirectHour = (workHours / totalWorkHours) * indirectHours;
 
-        let employeeHoursMap = new Map();
-        let uniqueEmployeeList: any[] = [];
+        const employeeHoursMap = new Map();
+        const uniqueEmployeeList: any[] = [];
 
         // calculate total work hours per employee per project
         project.records.map((record) => {

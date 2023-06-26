@@ -56,8 +56,8 @@ model Invoice {
   invoiceId String   @default(uuid()) @unique
   projectId String
   project   Project  @relation(fields: [projectId], references: [id])
-  startDate DateTime
-  endDate   DateTime
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
   rate      Float
   hours     Float
   amount    Float
@@ -68,7 +68,7 @@ model Invoice {
 
 model Comment {
   commentId  String @id @default(uuid())
-  createDate DateTime @default(now())
+  createDate DateTime @default(now()) @db.Date
   content    String
   invoiceId  String
   invoice    Invoice @relation(fields: [invoiceId], references: [invoiceId])

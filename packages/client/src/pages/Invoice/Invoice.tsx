@@ -4,14 +4,14 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
-import { formatDate, formatUTCDate, USDollar } from '../../utils/helperFun';
+import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
 import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
-  const start_date = formatDate(new Date(startDate)).split('/').join('-');
-  const end_date = formatDate(new Date(endDate)).split('/').join('-');
+  const start_date = formatDateToDashFormat(new Date(startDate));
+  const end_date = formatDateToDashFormat(new Date(endDate));
 
   return (
     <Link to={`${Paths.INVOICE}/${id}/${start_date}/${end_date}`} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -68,15 +68,15 @@ export const Invoice = () => {
     ? data.invoices.map((invoice) => {
         const projectName = invoice.project.name;
         const { startDate, endDate, hours, amount, project } = invoice;
-        const formatedStartDate = formatDate(formatUTCDate(new Date(startDate)));
-        const formatedEndDate = formatDate(formatUTCDate(new Date(endDate)));
-        const id = `${invoice.project.id}-${formatedStartDate}-${formatedEndDate}`;
+        const formattedStartDate = formatDateToForwardSlashFormat(convertToUTCDate(new Date(startDate)));
+        const formattedEndDate = formatDateToForwardSlashFormat(convertToUTCDate(new Date(endDate)));
+        const id = `${invoice.project.id}-${formattedStartDate}-${formattedEndDate}`;
         return {
           id: id,
           projectId: project.id,
           projectName: projectName,
-          startDate: formatedStartDate,
-          endDate: formatedEndDate,
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
           hours,
           amount
         };
