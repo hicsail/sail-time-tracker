@@ -43,28 +43,18 @@ query getEmployeeById($id: String!) {
   }
 }
 
-query getRecordWithFavoriteProject($id: String!, $date: DateTime!) {
+query getRecordWithFavoriteProject($id: String!, $startDate: DateTime!, $endDate: DateTime!) {
   employee(id: $id) {
-    id
-    name
-    email
-    rate
-    status
-    projects {
-      id
-      name
+    recordsWithFavoriteProjects(startDate: $startDate, endDate: $endDate) {
+      projectId,
+      projectName
+      projectId
       description
-      status
-      isBillable
-    }
-    recordsWithFavoriteProjects(date: $date) {
-      id
-      name
-      description
-      status
-      hours
       isFavorite
-      previousWeek
+      records {
+        date
+        hours
+      }
     }
   }
 }

@@ -57,28 +57,21 @@ export type GetEmployeeByIdQuery = {
 
 export type GetRecordWithFavoriteProjectQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
-  date: Types.Scalars['DateTime'];
+  startDate: Types.Scalars['DateTime'];
+  endDate: Types.Scalars['DateTime'];
 }>;
 
 export type GetRecordWithFavoriteProjectQuery = {
   __typename?: 'Query';
   employee: {
     __typename?: 'EmployeeModel';
-    id: string;
-    name: string;
-    email: string;
-    rate: number;
-    status?: string | null;
-    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
     recordsWithFavoriteProjects: Array<{
-      __typename?: 'RecordWithFavoriteProjectModel';
-      id: string;
-      name: string;
+      __typename?: 'GroupedRecordWithFavoriteProjectModel';
+      projectId: string;
+      projectName: string;
       description: string;
-      status: string;
-      hours: number;
       isFavorite: boolean;
-      previousWeek: number;
+      records: Array<{ __typename?: 'RecordWithFavoriteProjectModel'; date?: string | null; hours: number }>;
     }>;
   };
 };
@@ -237,28 +230,18 @@ export type GetEmployeeByIdQueryHookResult = ReturnType<typeof useGetEmployeeByI
 export type GetEmployeeByIdLazyQueryHookResult = ReturnType<typeof useGetEmployeeByIdLazyQuery>;
 export type GetEmployeeByIdQueryResult = Apollo.QueryResult<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>;
 export const GetRecordWithFavoriteProjectDocument = gql`
-  query getRecordWithFavoriteProject($id: String!, $date: DateTime!) {
+  query getRecordWithFavoriteProject($id: String!, $startDate: DateTime!, $endDate: DateTime!) {
     employee(id: $id) {
-      id
-      name
-      email
-      rate
-      status
-      projects {
-        id
-        name
+      recordsWithFavoriteProjects(startDate: $startDate, endDate: $endDate) {
+        projectId
+        projectName
+        projectId
         description
-        status
-        isBillable
-      }
-      recordsWithFavoriteProjects(date: $date) {
-        id
-        name
-        description
-        status
-        hours
         isFavorite
-        previousWeek
+        records {
+          date
+          hours
+        }
       }
     }
   }
@@ -277,7 +260,8 @@ export const GetRecordWithFavoriteProjectDocument = gql`
  * const { data, loading, error } = useGetRecordWithFavoriteProjectQuery({
  *   variables: {
  *      id: // value for 'id'
- *      date: // value for 'date'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
  *   },
  * });
  */
