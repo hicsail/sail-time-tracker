@@ -1,21 +1,23 @@
 import { useFormikContext } from 'formik';
 import { FC, useEffect } from 'react';
-import startOfWeek from 'date-fns/startOfWeek';
 import { useAddRecordMutation } from '@graphql/record/record';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
+import { endOfWeek, startOfWeek } from 'date-fns';
+import { formatDateWithDash } from '../../../../utils/helperFun';
 
 interface FormObserverProps {
   projectId: string;
   employeeId: string;
   date: Date;
   setLoading: (loading: boolean) => void;
+  id: string;
 }
 
 interface FormValues {
-  hours: number | string;
+  [id: string]: number | string;
 }
 
-export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, date, setLoading }) => {
+export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, date, setLoading, id }) => {
   const { values } = useFormikContext<FormValues>();
   const [addRecordMutation, { loading }] = useAddRecordMutation();
 
@@ -31,27 +33,33 @@ export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, dat
   }, [loading]);
 
   useEffect(() => {
-    if (typeof values.hours == 'number' && values.hours >= 0) {
-      addRecordMutation({
-        variables: {
-          record: {
-            projectId: projectId,
-            employeeId: employeeId,
-            hours: values.hours as number,
-            date: startOfWeek(date, { weekStartsOn: 1 })
-          }
-        },
-        refetchQueries: [
-          {
-            query: GetRecordWithFavoriteProjectDocument,
-            variables: {
-              id: employeeId,
-              date: startOfWeek(date, { weekStartsOn: 1 })
+    const timeout = setTimeout(() => {
+      if (typeof values[id] === 'number' && values[id] >= 0) {
+        addRecordMutation({
+          variables: {
+            record: {
+              projectId: projectId,
+              employeeId: employeeId,
+              hours: values[id] as number,
+              date: id
             }
-          }
-        ]
-      });
-    }
+          },
+          refetchQueries: [
+            {
+              query: GetRecordWithFavoriteProjectDocument,
+              variables: {
+                id: employeeId as string,
+                startDate: formatDateWithDash(startOfWeek(date, { weekStartsOn: 1 })),
+                endDate: formatDateWithDash(endOfWeek(date, { weekStartsOn: 1 }))
+              }
+            }
+          ]
+        });
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
   }, [values]);
+
   return null;
 };

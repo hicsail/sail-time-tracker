@@ -8,63 +8,39 @@ import TableHead from '@mui/material/TableHead';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { Data } from '@pages/Track/components/table/ProjectTable';
-
-interface HeadCellKey {
-  name: string;
-  hours: number;
-  description: string;
-  previousWeek: string;
-}
-export interface HeadCell {
-  disablePadding: boolean;
-  id: keyof HeadCellKey;
-  label: string;
-}
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'name',
-    disablePadding: true,
-    label: 'Project Name'
-  },
-  {
-    id: 'hours',
-    disablePadding: true,
-    label: 'Hours'
-  },
-  {
-    id: 'previousWeek',
-    disablePadding: true,
-    label: 'Previous Week'
-  },
-  {
-    id: 'description',
-    disablePadding: false,
-    label: 'Description'
-  }
-];
+import { Typography } from '@mui/material';
 
 interface EnhancedTableProps {
   numSelected: number;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   rowCount: number;
+  dates: { dateOfMonth: string; dateOfWeek: string }[];
 }
 
 export const EnhancedTableHead = (props: EnhancedTableProps) => {
-  const { onSelectAllClick, numSelected, rowCount } = props;
+  const { onSelectAllClick, numSelected, rowCount, dates } = props;
 
   return (
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount - 2} onChange={onSelectAllClick} />
+          <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount} onChange={onSelectAllClick} />
         </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell key={headCell.id} align="left" padding={headCell.disablePadding ? 'none' : 'normal'}>
-            {headCell.label}
+        <TableCell key="projectName" align="left" padding="normal" sx={{ width: '150px' }}>
+          Project Name
+        </TableCell>
+        {dates.map((dateValue) => (
+          <TableCell key={dateValue.dateOfMonth} align="left" padding="normal">
+            <Typography>{dateValue.dateOfWeek}</Typography>
+            <Typography>{dateValue.dateOfMonth}</Typography>
           </TableCell>
         ))}
+        <TableCell key="totalHours" align="left" padding="normal" sx={{ width: '150px' }}>
+          Total Hours
+        </TableCell>
+        <TableCell key="description" align="left" padding="normal">
+          Description
+        </TableCell>
       </TableRow>
     </TableHead>
   );

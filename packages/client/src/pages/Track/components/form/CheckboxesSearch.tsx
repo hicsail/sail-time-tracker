@@ -8,8 +8,9 @@ import { FavoriteProjectCreateInput, ProjectModel } from '@graphql/graphql';
 import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
-import { startOfWeek } from 'date-fns';
+import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Banner } from '@components/Banner';
+import { formatDateToDashFormat } from '../../../../utils/helperFun';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -51,8 +52,9 @@ export const CheckboxesSearch = () => {
           {
             query: GetRecordWithFavoriteProjectDocument,
             variables: {
-              id: employeeId,
-              date: startOfWeek(date, { weekStartsOn: 1 })
+              id: employeeId as string,
+              startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
+              endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
             }
           }
         ]
