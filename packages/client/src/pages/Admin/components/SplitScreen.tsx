@@ -1,5 +1,5 @@
 import { FC, ReactNode } from 'react';
-import { Box, Stack, styled } from '@mui/material';
+import { Stack, styled } from '@mui/material';
 
 interface SplitScreenProps {
   children: ReactNode[];

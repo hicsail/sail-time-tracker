@@ -8,7 +8,7 @@ import { FavoriteProjectCreateInput, ProjectModel } from '@graphql/graphql';
 import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument, useGetEmployeeByIdQuery } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
-import { endOfWeek, format, startOfWeek } from 'date-fns';
+import { endOfWeek, startOfWeek } from 'date-fns';
 import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
 
