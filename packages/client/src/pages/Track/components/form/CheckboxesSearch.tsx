@@ -1,6 +1,6 @@
 import { Checkbox, TextField, Autocomplete, Box, Button, Typography } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
-import {SyntheticEvent, useEffect, useState} from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
 import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
@@ -76,18 +76,18 @@ export const CheckboxesSearch = () => {
     setSelectedProjects([]);
   };
 
-  const activeProjects = data?.projects.filter(project => project.status === "Active") ?? [];
+  const activeProjects = data?.projects.filter((project) => project.status === 'Active') ?? [];
 
   return (
     <Box>
-      {
-        isShowBanner && (
-          <>
-            {!loading && !error && addFavoriteProjectData && <Banner content={`Successfully add ${addFavoriteProjectData.addFavoriteProject.count} favorite project`} state="success" />}
-            {error && <Banner content={`${error.message}`} state="error" />}
-          </>
-        )
-      }
+      {isShowBanner && (
+        <>
+          {!loading && !error && addFavoriteProjectData && (
+            <Banner content={`Successfully add ${addFavoriteProjectData.addFavoriteProject.count} favorite project`} state="success" />
+          )}
+          {error && <Banner content={`${error.message}`} state="error" />}
+        </>
+      )}
       <Typography variant="h6">Add your favorite project</Typography>
       <Autocomplete
         sx={{ marginTop: '3rem' }}

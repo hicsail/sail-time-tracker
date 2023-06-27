@@ -1,10 +1,10 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box, Button } from '@mui/material';
-import { useGetProjectsWithRecordQuery } from '@graphql/project/project';
 import { FC, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation } from '@graphql/invoice/invoice';
 import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../utils/helperFun';
+import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -13,7 +13,7 @@ interface GroupByEmployeeProps {
 
 export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
   const [displayContent, setDisplayContent] = useState(false);
-  const { data } = useGetProjectsWithRecordQuery({
+  const { data } = useGetProjectWithEmployeeRecordsQuery({
     variables: {
       startDate: formatDateToDashFormat(startDate),
       endDate: formatDateToDashFormat(endDate)
@@ -22,7 +22,10 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
   const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
 
   const rows = data
-    ? [...data.getProjectsWithRecord.filter((project) => project.billableHours !== 0), ...data.getProjectsWithRecord.filter((project) => project.billableHours === 0)]
+    ? [
+        ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours !== 0),
+        ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours === 0)
+      ]
     : [];
 
   /**
