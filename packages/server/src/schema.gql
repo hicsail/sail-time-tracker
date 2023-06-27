@@ -33,10 +33,33 @@ type EmployeeWithRecord {
 type EmployeeWithRecordInner {
   projectId: String!
   projectName: String!
+  rate: Float!
+  status: String!
   isBillable: Boolean!
   projectWorkHours: Float!
   projectIndirectHours: Float!
   projectPercentage: String!
+}
+
+type ProjectWithEmployeeRecords {
+  id: String!
+  name: String!
+  isBillable: Boolean!
+  rate: Float!
+  status: String!
+  workHours: Float!
+  indirectHours: Float!
+  billableHours: Float!
+  percentage: String!
+  inner: [ProjectWithEmployeeRecordsInner!]!
+}
+
+type ProjectWithEmployeeRecordsInner {
+  employeeId: String!
+  employeeName: String!
+  employeeWorkHours: Float!
+  employeeIndirectHours: Float!
+  employeePercentage: String!
 }
 
 type ProjectModel {
@@ -50,18 +73,6 @@ type ProjectModel {
 
 type ProjectDeleteReturnModel {
   count: Float!
-}
-
-type ProjectWithRecord {
-  id: String!
-  name: String!
-  isBillable: Boolean!
-  rate: Float!
-  workHours: Float!
-  indirectHours: Float!
-  percentage: String!
-  billableHours: Float!
-  inner: [ProjectWithRecordInner!]!
 }
 
 type ProjectWithRecordInner {
@@ -140,9 +151,9 @@ type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
   getEmployeesWithRecord(startDate: DateTime!, endDate: DateTime!): [EmployeeWithRecord!]!
+  getProjectWithEmployeeRecords(startDate: DateTime!, endDate: DateTime!): [ProjectWithEmployeeRecords!]!
   projects: [ProjectModel!]!
   project(id: String!): ProjectModel!
-  getProjectsWithRecord(startDate: DateTime!, endDate: DateTime!): [ProjectWithRecord!]!
   invoices: [InvoiceModelWithProject!]!
   searchInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModelWithProjectAndComments!
   comment(id: String!): CommentModel!

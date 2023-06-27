@@ -17,11 +17,6 @@ export class ProjectResolver {
     return this.projectService.getProjectById(id);
   }
 
-  @Query(() => [ProjectWithRecord])
-  async getProjectsWithRecord(@Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<ProjectWithRecord[]> {
-    return this.projectService.getProjectsWithRecord(startDate, endDate);
-  }
-
   @Mutation(() => ProjectModel)
   async addProject(@Args('project') project: ProjectCreateInput): Promise<ProjectModel> {
     return this.projectService.addProject(project);

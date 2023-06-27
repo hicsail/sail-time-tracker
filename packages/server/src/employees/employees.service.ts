@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Employee } from '@prisma/client';
-import { EmployeeDeleteReturnModel, EmployeeWithRecord } from './model/employee.model';
+import { EmployeeDeleteReturnModel, EmployeeWithRecord, ProjectWithEmployeeRecords, ProjectWithEmployeeRecordsInner } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
 import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
 import { convertToUTCDate, formatDateToDashFormat, formatHours, formatPercentage } from '../utils/helperFun';
@@ -151,6 +151,8 @@ export class EmployeesService {
           return {
             projectId: record.project.id,
             projectName: record.project.name,
+            rate: record.project.rate,
+            status: record.project.status,
             isBillable: record.project.isBillable,
             projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
             projectIndirectHours: formatHours(indirectHour),
@@ -167,6 +169,107 @@ export class EmployeesService {
           inner: inner
         };
       });
+  }
+
+  async getProjectWithRecord(startDate: Date, endDate: Date): Promise<ProjectWithEmployeeRecords[]> {
+    const projectWithEmployeeRecordData = await this.getEmployeesWithRecord(startDate, endDate);
+    const projects = await this.prisma.project.findMany();
+    const transformedDate = this.transformData(projectWithEmployeeRecordData);
+
+    let totalProjectWorkHours = 0;
+
+    // calculate percentage of effort for each employee for each project
+    transformedDate.forEach((project) => {
+      totalProjectWorkHours += project.workHours;
+      project.inner.forEach((innerData) => {
+        innerData.employeePercentage = formatPercentage(innerData.employeeWorkHours / project.workHours);
+      });
+    });
+
+    // calculate the percentage effort for each project
+    transformedDate.forEach((project) => {
+      project.percentage = formatPercentage(project.workHours / totalProjectWorkHours);
+    });
+
+    const uniqueProjectMap = new Map();
+
+    transformedDate.forEach((project) => {
+      if (!uniqueProjectMap.has(project.id)) {
+        uniqueProjectMap.set(project.id, true);
+      }
+    });
+
+    projects.map((project) => {
+      if (!uniqueProjectMap.has(project.id)) {
+        const { id, name, isBillable, rate, status } = project;
+        const newProjectRecord: ProjectWithEmployeeRecords = {
+          id,
+          name,
+          isBillable,
+          status,
+          rate,
+          workHours: 0,
+          indirectHours: 0,
+          billableHours: 0,
+          percentage: '0.0',
+          inner: []
+        };
+        transformedDate.push(newProjectRecord);
+      }
+    });
+
+    return transformedDate;
+  }
+
+  transformData(inputData: EmployeeWithRecord[]): ProjectWithEmployeeRecords[] {
+    const transformedData: ProjectWithEmployeeRecords[] = [];
+
+    // Iterate through each employee record
+    for (const employeeRecord of inputData) {
+      const { id, name, inner } = employeeRecord;
+
+      // Iterate through each inner project record
+      for (const innerRecord of inner) {
+        const { projectId, projectName, status, rate, isBillable, projectWorkHours, projectIndirectHours, projectPercentage } = innerRecord;
+
+        // Check if the project already exists in the transformed data
+        let projectRecord = transformedData.find((record) => record.id === projectId);
+
+        if (!projectRecord) {
+          // Create a new project record if it doesn't exist
+          projectRecord = {
+            id: projectId,
+            name: projectName,
+            isBillable: isBillable,
+            rate: rate,
+            status: status,
+            workHours: 0,
+            indirectHours: 0,
+            billableHours: 0,
+            percentage: projectPercentage,
+            inner: []
+          };
+          transformedData.push(projectRecord);
+        }
+
+        // Update the project-level totals
+        projectRecord.workHours += projectWorkHours;
+        projectRecord.indirectHours += projectIndirectHours;
+        projectRecord.billableHours += projectWorkHours + projectIndirectHours;
+
+        // Add the employee record to the project's inner array
+        const employeeRecord: ProjectWithEmployeeRecordsInner = {
+          employeeId: id,
+          employeeName: name,
+          employeeWorkHours: projectWorkHours,
+          employeeIndirectHours: projectIndirectHours,
+          employeePercentage: projectPercentage
+        };
+        projectRecord.inner.push(employeeRecord);
+      }
+    }
+
+    return transformedData;
   }
 
   /**
