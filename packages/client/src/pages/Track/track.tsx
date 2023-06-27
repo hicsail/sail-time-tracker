@@ -3,44 +3,52 @@ import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 
 import { Box, Stack, SelectChangeEvent } from '@mui/material';
-import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
+import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectLazyQuery } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
 import { useDate } from '@context/date.context';
-import { startOfWeek } from 'date-fns';
+import { endOfWeek, startOfWeek } from 'date-fns';
 import { useEffect } from 'react';
 import { WorkOff, WorkOutlined } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers';
 
 import { Day } from './components/Day';
+import { formatDateToDashFormat } from '../../utils/helperFun';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
   const { date, setDate } = useDate();
   const { data: employeeListData } = useGetEmployeeListQuery();
-  const { data: employeeData, refetch: refechEmployeeData } = useGetRecordWithFavoriteProjectQuery({
-    variables: {
-      id: employeeId as string,
-      date: startOfWeek(date, { weekStartsOn: 1 })
-    }
-  });
+  const [getRecordWithFavoriteProject, { data: recordWithFavoriteProjectData }] = useGetRecordWithFavoriteProjectLazyQuery();
 
-  // re-fetch records with favorite projects after change the date.
   useEffect(() => {
-    refechEmployeeData({
-      id: employeeId as string,
-      date: startOfWeek(date, { weekStartsOn: 1 })
+    getRecordWithFavoriteProject({
+      variables: {
+        id: employeeId as string,
+        startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
+        endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
+      }
     });
-  }, [date, employeeId]);
+  }, [employeeId, date]);
 
-  const absenceRecord = employeeData?.employee.recordsWithFavoriteProjects.filter((project) => {
-    return project.name === 'Absence';
-  });
+  const totalAbsenceHours =
+    recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects
+      .find((project) => {
+        return project.projectName === 'Absence';
+      })
+      ?.records.reduce((sum, record) => sum + record.hours, 0) ?? 0;
 
-  const totalWorkHours = employeeData?.employee.recordsWithFavoriteProjects
+  const workProjectsHours = recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects
     .filter((project) => {
-      return project.name !== 'Absence';
+      return project.projectName !== 'Absence';
     })
-    .reduce((sum, currentProject) => sum + currentProject.hours, 0);
+    .reduce((sum, project) => {
+      return (
+        sum +
+        project.records.reduce((innerSum: number, currentValue: any) => {
+          return innerSum + currentValue.hours;
+        }, 0)
+      );
+    }, 0);
 
   /**
    * employee dropdown change handler
@@ -58,14 +66,13 @@ export const Track = () => {
 
   return (
     <Box
-      component="div"
       maxWidth="lg"
       sx={{
         display: 'flex',
         flexDirection: 'column',
         gap: '4rem',
-        alignItems: 'start',
-        paddingTop: '2rem'
+        paddingTop: '2rem',
+        margin: 'auto'
       }}
     >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
@@ -82,10 +89,10 @@ export const Track = () => {
             } as any
           }}
         />
-        <DisplayCard key="work" id="work" title="Total Work Hours" data={totalWorkHours ? totalWorkHours : 0} icon={<WorkOutlined fontSize="large" />} />
-        <DisplayCard key="absence" id="absence" title="Total Absence Hours" data={absenceRecord ? absenceRecord[0].hours : 0} icon={<WorkOff fontSize="large" />} />
+        <DisplayCard key="work" id="work" title="Total Work Hours" data={workProjectsHours} icon={<WorkOutlined fontSize="large" />} />
+        <DisplayCard key="absence" id="absence" title="Total Absence Hours" data={totalAbsenceHours} icon={<WorkOff fontSize="large" />} />
       </Stack>
-      {employeeId ? <ProjectTable data={employeeData} /> : <div>Please Select the Employee</div>}
+      {employeeId ? <ProjectTable data={recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects} /> : <div>Please Select the Employee</div>}
     </Box>
   );
 };

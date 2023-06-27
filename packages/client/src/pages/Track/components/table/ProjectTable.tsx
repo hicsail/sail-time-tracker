@@ -1,18 +1,26 @@
 import * as Yup from 'yup';
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Paper, Checkbox, styled } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
-import { ChangeEvent, useEffect, useState, MouseEvent, FC } from 'react';
-
-import { EnhancedTableToolbar } from '@pages/Track/components/table/EnhancedTableToolbar';
+import React, { ChangeEvent, useState, MouseEvent, FC } from 'react';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
 
 import { Form, Formik } from 'formik';
-import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { FormObserver } from '@pages/Track/components/table/FormObserver';
 import { useDate } from '@context/date.context';
 import { useEmployee } from '@context/employee.context';
-import { GetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
+import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
+import { StyledPaper } from '@components/StyledPaper';
+import { ObserverTextInput } from '@components/form/ObserverTextInput';
+import { FormObserver } from '@pages/Track/components/table/FormObserver';
+import { formatDateToDashFormat, getMondayToSundayDates } from '../../../../utils/helperFun';
+import { endOfWeek, startOfWeek } from 'date-fns';
+import AddIcon from '@mui/icons-material/Add';
+import { FormDialog } from '@components/form/FormDialog';
+import { Paths } from '@constants/paths';
+import { CheckboxesSearch } from '@pages/Track/components/form/CheckboxesSearch';
+import { useNavigate } from 'react-router-dom';
+import { TableHeadCover } from '@pages/Employee/components/table/TableHeadCover';
+import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 
 export interface Data {
   id: string;
@@ -25,22 +33,35 @@ export interface Data {
 }
 
 interface ProjectTableProps {
-  data: GetRecordWithFavoriteProjectQuery | undefined;
+  data: any | undefined;
 }
+
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<Data[]>([]);
+  const [open, setOpen] = useState({
+    add: false,
+    edit: false
+  });
   const { employeeId } = useEmployee();
+  const navigate = useNavigate();
   const { date } = useDate();
-
-  useEffect(() => {
-    data ? setRows(data.employee.recordsWithFavoriteProjects) : setRows([]);
-  }, [data]);
+  const dates = getMondayToSundayDates(date);
+  const rows = data || [];
+  const [deleteFavoriteProject, { error }] = useDeleteFavoriteProjectMutation();
 
   const FormValidation = Yup.object({
     hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
   });
+
+  const handleClickOpen = (type: string) => {
+    setOpen((prevState) => ({ ...prevState, [type]: true }));
+  };
+
+  const handleOnClose = (type: string) => {
+    setOpen((prevState) => ({ ...prevState, [type]: false }));
+    navigate(Paths.TRACK);
+  };
 
   /**
    * this method is used to handle select all project event.
@@ -48,10 +69,11 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
    */
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const filteredSelected = rows.filter((n: Data, index) => index !== 1 && index !== 0).map((n: Data) => n.id);
-      return setSelected(filteredSelected);
+      const filteredSelected = rows.filter((row: any, index: number) => index !== 1 && index !== 0).map((row: any) => row.projectId);
+      setSelected(filteredSelected);
+      return;
     }
-    return setSelected([]);
+    setSelected([]);
   };
 
   /**
@@ -80,74 +102,117 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     return selected.indexOf(id) !== -1;
   };
 
-  const Div = styled('div')(({ theme }) => ({
-    color: theme.palette.customColors.cardTextTopColor
-  }));
-
-  const welcomeString = () => {
-    const hours = new Date().getHours();
-    if (hours >= 18) {
-      return 'Good Evening,';
-    } else if (hours >= 12) {
-      return 'Good Afternoon,';
-    } else {
-      return 'Good Morning,';
+  const handleOnClickDelete = async () => {
+    if (employeeId && selected.length > 0) {
+      deleteFavoriteProject({
+        variables: {
+          employeeId: employeeId,
+          projectIds: selected as string[]
+        },
+        refetchQueries: [
+          {
+            query: GetRecordWithFavoriteProjectDocument,
+            variables: {
+              id: employeeId as string,
+              startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
+              endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
+            }
+          }
+        ]
+      });
     }
+
+    setSelected([]);
   };
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Div>{`${welcomeString()} ${data?.employee.name}! Please Log Your Weekly Hours Here.`}</Div>
-      <Paper
-        elevation={0}
-        sx={{
-          width: '100%',
-          mb: 2,
-          backgroundColor: 'customColors.sidebarBg',
-          padding: '1rem'
-        }}
-      >
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
+      <StyledPaper elevation={0}>
+        <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
+          <Typography variant="h6">Favorite Projects</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
+            onClick={() => handleClickOpen('add')}
+          >
+            Add Favorite Project
+          </Button>
+          <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
+            <CheckboxesSearch />
+          </FormDialog>
+        </Stack>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
+          <Table sx={{ minWidth: 750, position: 'relative' }} aria-labelledby="tableTitle">
+            <TableHeadCover
+              rowCount={rows.length - 2}
+              selected={selected}
+              setSelected={setSelected}
+              handleSelectAllClick={handleSelectAllClick}
+              handleClickDelete={handleOnClickDelete}
+            />
+            <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length - 2} dates={dates} />
             <TableBody>
-              {rows.map((row: Data, index: number) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+              {rows.map((row: any, index: number) => {
+                const isItemSelected = isSelected(row.projectId);
+                const labelId = `enhanced-table-checkbox-${row.projectId}`;
+
+                // total hours for each project in a week
+                const totalHours = row.records.reduce((totalHours: number, record: any) => {
+                  return totalHours + record.hours;
+                }, 0);
 
                 return (
-                  <TableRow hover role="checkbox" aria-checked={isItemSelected} tabIndex={-1} key={row.id} selected={isItemSelected}>
+                  <TableRow hover role="checkbox" key={row.projectId} selected={isItemSelected}>
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
-                        onClick={(event) => handleClick(event, row.id)}
+                        onClick={(event) => handleClick(event, row.projectId)}
                         inputProps={{
                           'aria-labelledby': labelId
                         }}
-                        disabled={index === 0 || index === 1}
+                        disabled={row.projectName === 'Indirect' || row.projectName === 'Absence'}
                       />
                     </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
-                      {row.name}
+                    <TableCell id="name" scope="row" padding="none" sx={{ width: '120px' }}>
+                      {row.projectName}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '180px', paddingRight: '3rem', paddingLeft: '0' }}>
-                      <Formik
-                        validateOnChange={true}
-                        initialValues={row.hours ? { hours: row.hours.toString() } : { hours: '0' }}
-                        validationSchema={FormValidation}
-                        enableReinitialize={true}
-                        onSubmit={() => {}}
-                      >
-                        <Form>
-                          <FormObserver employeeId={employeeId as string} projectId={row.id} date={date} setLoading={setLoading} />
-                          <ObserverTextInput id="hours" name="hours" type="number" label="Hours" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
-                        </Form>
-                      </Formik>
-                    </TableCell>
-                    <TableCell align="left" sx={{ width: '150px', paddingRight: '3rem' }}>
-                      {row.previousWeek}
+                    {dates.map((dateValue) => {
+                      // store hours for each date in a map.
+                      const dateHoursMap = new Map();
+                      row.records.forEach((record: any) => {
+                        if (!dateHoursMap.has(record.date)) {
+                          dateHoursMap.set(record.date, record.hours);
+                        }
+                      });
+
+                      return (
+                        <TableCell scope="row" padding="normal" key={dateValue.dateOfMonth}>
+                          <Formik
+                            validateOnChange={true}
+                            initialValues={{ [dateValue.date]: dateHoursMap.get(dateValue.date) || '' }}
+                            validationSchema={FormValidation}
+                            enableReinitialize={true}
+                            onSubmit={() => {}}
+                          >
+                            <Form>
+                              <FormObserver employeeId={employeeId as string} projectId={row.projectId} date={date} setLoading={setLoading} id={dateValue.date} />
+                              <ObserverTextInput
+                                name={dateValue.date}
+                                type="number"
+                                variant="outlined"
+                                InputProps={{ inputProps: { min: 0 } }}
+                                required
+                                sx={{ '& fieldset': { border: 'none' }, backgroundColor: 'grey.100', borderRadius: '5%' }}
+                              />
+                            </Form>
+                          </Formik>
+                        </TableCell>
+                      );
+                    })}
+                    <TableCell align="left" sx={{ width: '100px' }}>
+                      {totalHours}
                     </TableCell>
                     <TableCell align="left">{row.description}</TableCell>
                   </TableRow>
@@ -157,7 +222,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           </Table>
         </TableContainer>
         {rows.length == 0 && <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }}>Add Your First Favorite Project</Button>}
-      </Paper>
+      </StyledPaper>
 
       <LoadingButton color="primary" loading={loading} loadingPosition="start" startIcon={<Save />} variant="contained">
         <span>Save</span>

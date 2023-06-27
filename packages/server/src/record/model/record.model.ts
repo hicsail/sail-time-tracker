@@ -1,5 +1,4 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { ProjectModel } from '../../project/model/project.model';
 
 /**
  * return types for querying employee
@@ -21,13 +20,28 @@ export class RecordInsertOrUpdateModel {
 }
 
 @ObjectType()
-export class RecordWithFavoriteProjectModel extends ProjectModel {
-  @Field()
-  isFavorite: Boolean;
+export class RecordWithFavoriteProjectModel {
+  @Field(() => String, { nullable: true })
+  date: string | null;
 
   @Field()
   hours: number;
+}
+
+@ObjectType()
+export class GroupedRecordWithFavoriteProjectModel {
+  @Field()
+  projectId: string;
 
   @Field()
-  previousWeek: number;
+  projectName: string;
+
+  @Field()
+  description: string;
+
+  @Field()
+  isFavorite: boolean;
+
+  @Field(() => [RecordWithFavoriteProjectModel])
+  records: RecordWithFavoriteProjectModel[];
 }
