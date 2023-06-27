@@ -75,14 +75,6 @@ type ProjectDeleteReturnModel {
   count: Float!
 }
 
-type ProjectWithRecordInner {
-  employeeId: String!
-  employeeName: String!
-  employeeWorkHours: Float!
-  employeeIndirectHours: Float!
-  employeePercentage: String!
-}
-
 type RecordInsertOrUpdateModel {
   employeeId: ID!
   projectId: ID!
