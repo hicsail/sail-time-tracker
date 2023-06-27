@@ -25,7 +25,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
     ? [
         ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours !== 0),
         ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours === 0)
-      ]
+      ].filter((project: any) => project.status === 'Active')
     : [];
 
   /**
