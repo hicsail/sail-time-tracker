@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { ProjectService } from './project.service';
-import { ProjectDeleteReturnModel, ProjectModel, ProjectWithRecord } from './model/project.model';
+import { ProjectDeleteReturnModel, ProjectModel } from './model/project.model';
 import { ProjectCreateInput, ProjectUpdateInput } from './dto/project.dto';
 
 @Resolver(() => ProjectModel)
