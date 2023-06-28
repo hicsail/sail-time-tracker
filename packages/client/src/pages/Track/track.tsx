@@ -66,7 +66,7 @@ export const Track = () => {
 
   return (
     <Box
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         display: 'flex',
         flexDirection: 'column',
