@@ -58,6 +58,12 @@ class EmployeeWithRecordInner {
   projectName: string;
 
   @Field()
+  rate: number;
+
+  @Field()
+  status: string;
+
+  @Field()
   isBillable: boolean;
 
   @Field()
@@ -68,4 +74,55 @@ class EmployeeWithRecordInner {
 
   @Field()
   projectPercentage: string;
+}
+
+@ObjectType()
+export class ProjectWithEmployeeRecords {
+  @Field()
+  id: string;
+
+  @Field()
+  name: string;
+
+  @Field()
+  isBillable: boolean;
+
+  @Field()
+  rate: number;
+
+  @Field()
+  status: string;
+
+  @Field()
+  workHours: number;
+
+  @Field()
+  indirectHours: number;
+
+  @Field()
+  billableHours: number;
+
+  @Field()
+  percentage: string;
+
+  @Field(() => [ProjectWithEmployeeRecordsInner])
+  inner: ProjectWithEmployeeRecordsInner[];
+}
+
+@ObjectType()
+export class ProjectWithEmployeeRecordsInner {
+  @Field()
+  employeeId: string;
+
+  @Field()
+  employeeName: string;
+
+  @Field()
+  employeeWorkHours: number;
+
+  @Field()
+  employeeIndirectHours: number;
+
+  @Field()
+  employeePercentage: string;
 }

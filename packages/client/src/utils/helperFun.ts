@@ -1,31 +1,32 @@
 import { addDays, format, startOfWeek } from 'date-fns';
 
-export const formatUTCHours = (date: Date | undefined) => {
+export const USDollar = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD'
+});
+
+export const convertToUTCDate = (date: Date | undefined) => {
   if (date) {
-    return date.setUTCHours(4, 0, 0, 0);
+    return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
   }
-  return null;
+
+  return undefined;
 };
 
-export const formatUTCDate = (date: Date) => {
-  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-};
-
-export const formatEstToUtcDate = (date: Date) => {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-};
-
-export const formatDate = (date: Date | undefined): string => {
+export const formatDateToForwardSlashFormat = (date: Date | undefined): string => {
   if (date) {
     return format(date, 'MM/dd/yyyy');
   }
   return 'No date provided';
 };
 
-export const USDollar = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD'
-});
+export const formatDateToDashFormat = (date: Date | undefined) => {
+  if (date) {
+    return format(date, 'MM-dd-yyyy');
+  }
+
+  return undefined;
+};
 
 export const getMondayToSundayDates = (date: Date) => {
   const monday = startOfWeek(date, { weekStartsOn: 1 }); // Monday as the start of the week
@@ -40,12 +41,4 @@ export const getMondayToSundayDates = (date: Date) => {
   }
 
   return dates;
-};
-
-export const formatDateToDashFormat = (date: Date | undefined) => {
-  if (date) {
-    return format(date, 'MM-dd-yyyy');
-  }
-
-  return 'invalid date';
 };

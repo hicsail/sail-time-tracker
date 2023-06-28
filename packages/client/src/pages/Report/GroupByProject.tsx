@@ -1,10 +1,10 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box, Button } from '@mui/material';
-import { useGetProjectsWithRecordQuery } from '@graphql/project/project';
 import { FC, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation } from '@graphql/invoice/invoice';
 import { Banner } from '@components/Banner';
-import { formatUTCHours } from '../../utils/helperFun';
+import { formatDateToDashFormat } from '../../utils/helperFun';
+import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -13,16 +13,19 @@ interface GroupByEmployeeProps {
 
 export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
   const [displayContent, setDisplayContent] = useState(false);
-  const { data } = useGetProjectsWithRecordQuery({
+  const { data } = useGetProjectWithEmployeeRecordsQuery({
     variables: {
-      startDate: formatUTCHours(startDate),
-      endDate: formatUTCHours(endDate)
+      startDate: formatDateToDashFormat(startDate),
+      endDate: formatDateToDashFormat(endDate)
     }
   });
   const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
 
   const rows = data
-    ? [...data.getProjectsWithRecord.filter((project) => project.billableHours !== 0), ...data.getProjectsWithRecord.filter((project) => project.billableHours === 0)]
+    ? [
+        ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours !== 0),
+        ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours === 0)
+      ].filter((project: any) => project.status === 'Active')
     : [];
 
   /**
@@ -30,14 +33,12 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
    * @param row
    */
   const handleClick = (row: any) => {
-    const { id, billableHours } = row;
-    const rate = 65; // fake data
+    const { id, billableHours, rate } = row;
     const amount = rate * billableHours;
-
     const invoice = {
       projectId: id,
-      startDate: formatUTCHours(startDate),
-      endDate: formatUTCHours(endDate),
+      startDate: formatDateToDashFormat(startDate),
+      endDate: formatDateToDashFormat(endDate),
       hours: billableHours,
       rate: rate,
       amount: amount
@@ -48,11 +49,11 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
         invoice: invoice
       },
       refetchQueries: [{ query: GetAllInvoicesDocument }]
-    }).then(() => setDisplayContent(true));
+    }).then((r) => r.data && setDisplayContent(true));
   };
 
   useEffect(() => {
-    // Set the displayContent state to true after a delay of 1500 milliseconds (1.5 seconds)
+    // Set the displayContent state to true after a delay of 700 milliseconds (0.7 seconds)
     const timeoutId = setTimeout(() => {
       setDisplayContent(false);
     }, 700);

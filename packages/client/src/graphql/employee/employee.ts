@@ -38,6 +38,35 @@ export type GetEmployeesWithRecordQuery = {
   }>;
 };
 
+export type GetProjectWithEmployeeRecordsQueryVariables = Types.Exact<{
+  startDate: Types.Scalars['DateTime'];
+  endDate: Types.Scalars['DateTime'];
+}>;
+
+export type GetProjectWithEmployeeRecordsQuery = {
+  __typename?: 'Query';
+  getProjectWithEmployeeRecords: Array<{
+    __typename?: 'ProjectWithEmployeeRecords';
+    id: string;
+    name: string;
+    isBillable: boolean;
+    rate: number;
+    status: string;
+    workHours: number;
+    indirectHours: number;
+    billableHours: number;
+    percentage: string;
+    inner: Array<{
+      __typename?: 'ProjectWithEmployeeRecordsInner';
+      employeeId: string;
+      employeeName: string;
+      employeeWorkHours: number;
+      employeeIndirectHours: number;
+      employeePercentage: string;
+    }>;
+  }>;
+};
+
 export type GetEmployeeByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
@@ -183,6 +212,59 @@ export function useGetEmployeesWithRecordLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetEmployeesWithRecordQueryHookResult = ReturnType<typeof useGetEmployeesWithRecordQuery>;
 export type GetEmployeesWithRecordLazyQueryHookResult = ReturnType<typeof useGetEmployeesWithRecordLazyQuery>;
 export type GetEmployeesWithRecordQueryResult = Apollo.QueryResult<GetEmployeesWithRecordQuery, GetEmployeesWithRecordQueryVariables>;
+export const GetProjectWithEmployeeRecordsDocument = gql`
+  query getProjectWithEmployeeRecords($startDate: DateTime!, $endDate: DateTime!) {
+    getProjectWithEmployeeRecords(startDate: $startDate, endDate: $endDate) {
+      id
+      name
+      isBillable
+      rate
+      status
+      workHours
+      indirectHours
+      billableHours
+      percentage
+      inner {
+        employeeId
+        employeeName
+        employeeWorkHours
+        employeeIndirectHours
+        employeePercentage
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetProjectWithEmployeeRecordsQuery__
+ *
+ * To run a query within a React component, call `useGetProjectWithEmployeeRecordsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectWithEmployeeRecordsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectWithEmployeeRecordsQuery({
+ *   variables: {
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *   },
+ * });
+ */
+export function useGetProjectWithEmployeeRecordsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectWithEmployeeRecordsQuery, GetProjectWithEmployeeRecordsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetProjectWithEmployeeRecordsQuery, GetProjectWithEmployeeRecordsQueryVariables>(GetProjectWithEmployeeRecordsDocument, options);
+}
+export function useGetProjectWithEmployeeRecordsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetProjectWithEmployeeRecordsQuery, GetProjectWithEmployeeRecordsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetProjectWithEmployeeRecordsQuery, GetProjectWithEmployeeRecordsQueryVariables>(GetProjectWithEmployeeRecordsDocument, options);
+}
+export type GetProjectWithEmployeeRecordsQueryHookResult = ReturnType<typeof useGetProjectWithEmployeeRecordsQuery>;
+export type GetProjectWithEmployeeRecordsLazyQueryHookResult = ReturnType<typeof useGetProjectWithEmployeeRecordsLazyQuery>;
+export type GetProjectWithEmployeeRecordsQueryResult = Apollo.QueryResult<GetProjectWithEmployeeRecordsQuery, GetProjectWithEmployeeRecordsQueryVariables>;
 export const GetEmployeeByIdDocument = gql`
   query getEmployeeById($id: String!) {
     employee(id: $id) {

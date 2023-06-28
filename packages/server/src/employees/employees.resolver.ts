@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { EmployeesService } from './employees.service';
-import { EmployeeDeleteReturnModel, EmployeeModel, EmployeeWithRecord } from './model/employee.model';
+import { EmployeeDeleteReturnModel, EmployeeModel, EmployeeWithRecord, ProjectWithEmployeeRecords } from './model/employee.model';
 import { EmployeeCreateInput, EmployeeUpdateInput } from './dto/employee.dto';
 import { ProjectModel } from '../project/model/project.model';
 import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
@@ -22,6 +22,11 @@ export class EmployeesResolver {
   @Query(() => [EmployeeWithRecord])
   async getEmployeesWithRecord(@Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<EmployeeWithRecord[]> {
     return this.employeesService.getEmployeesWithRecord(startDate, endDate);
+  }
+
+  @Query(() => [ProjectWithEmployeeRecords])
+  async getProjectWithEmployeeRecords(@Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<ProjectWithEmployeeRecords[]> {
+    return this.employeesService.getProjectWithRecord(startDate, endDate);
   }
 
   @ResolveField(() => [ProjectModel])

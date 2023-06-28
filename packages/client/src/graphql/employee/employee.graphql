@@ -26,6 +26,28 @@ query getEmployeesWithRecord($startDate: DateTime!, $endDate: DateTime!) {
   }
 }
 
+query getProjectWithEmployeeRecords($startDate: DateTime!, $endDate: DateTime!) {
+  getProjectWithEmployeeRecords(startDate: $startDate, endDate: $endDate) {
+    id
+    name
+    isBillable
+    rate
+    status
+    workHours
+    indirectHours
+    billableHours
+    percentage
+    inner {
+      employeeId
+      employeeName
+      employeeWorkHours
+      employeeIndirectHours
+      employeePercentage
+    }
+
+  }
+}
+
 query getEmployeeById($id: String!) {
   employee(id: $id) {
     id
