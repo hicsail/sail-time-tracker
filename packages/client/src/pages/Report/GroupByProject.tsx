@@ -67,7 +67,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
 
   useEffect(() => {
     setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string)));
-  }, [searchText]);
+  }, [searchText, data]);
 
   const outerTableConfig = [
     {

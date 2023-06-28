@@ -23,7 +23,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
 
   useEffect(() => {
     setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string)));
-  }, [searchText]);
+  }, [searchText, data]);
 
   // outer table column name and render config
   const outerTableConfig = [
