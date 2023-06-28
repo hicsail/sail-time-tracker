@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack, TableFooter } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { Save } from '@mui/icons-material';
-import React, { ChangeEvent, useState, MouseEvent, FC } from 'react';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { ChangeEvent, useState, MouseEvent, FC } from 'react';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
 
 import { Form, Formik } from 'formik';
@@ -219,14 +219,22 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                 );
               })}
             </TableBody>
+            <TableFooter>
+              <LoadingButton
+                color="primary"
+                loading={loading}
+                loadingPosition="start"
+                startIcon={<FiberManualRecordIcon />}
+                variant="text"
+                sx={{ marginTop: 2, pointerEvents: 'none' }}
+              >
+                <span>{loading ? 'Saving' : 'Saved'}</span>
+              </LoadingButton>
+            </TableFooter>
           </Table>
         </TableContainer>
         {rows.length == 0 && <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }}>Add Your First Favorite Project</Button>}
       </StyledPaper>
-
-      <LoadingButton color="primary" loading={loading} loadingPosition="start" startIcon={<Save />} variant="contained">
-        <span>Save</span>
-      </LoadingButton>
     </Box>
   );
 };
