@@ -14,7 +14,7 @@ interface DropDownMenuProps<T> {
 export const DropDownMenu: FC<DropDownMenuProps<any>> = ({ data, onChange, label, name, id, value }) => {
   return (
     <FormControl sx={{ minWidth: '200px' }}>
-      <InputLabel>{label}</InputLabel>
+      <InputLabel sx={{ '&.Mui-focused': { color: (theme: any) => (theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.common.white) } }}>{label}</InputLabel>
       <Select
         name={name}
         label={label}
@@ -27,13 +27,37 @@ export const DropDownMenu: FC<DropDownMenuProps<any>> = ({ data, onChange, label
             borderColor: 'grey.300'
           },
           color: 'grey.500',
-          fontSize: '0.9rem'
+          fontSize: '0.9rem',
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: (theme: any) => (theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.common.white)
+          }
+        }}
+        inputProps={{
+          MenuProps: {
+            MenuListProps: {
+              sx: {
+                backgroundColor: (theme: any) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey[800]),
+                padding: '0.3rem'
+              }
+            }
+          }
         }}
       >
         {data &&
           data.map((item: any) => {
             return (
-              <MenuItem key={item.id} value={item.id}>
+              <MenuItem
+                key={item.id}
+                value={item.id}
+                sx={{
+                  margin: '0.3rem 0',
+                  '&.Mui-selected': {
+                    backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'rgba(223,227,232, 0.6)' : 'rgba(69, 79, 91, 0.5)'),
+                    borderRadius: '5px'
+                  },
+                  '&:hover': { backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'rgba(223,227,232, 0.3)' : 'rgba(69, 79, 91, 0.2)'), borderRadius: '5px' }
+                }}
+              >
                 {item.name}
               </MenuItem>
             );
