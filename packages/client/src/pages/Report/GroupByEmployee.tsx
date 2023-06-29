@@ -1,6 +1,6 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { useGetEmployeesWithRecordQuery } from '@graphql/employee/employee';
 import { formatDateToDashFormat } from '../../utils/helperFun';
@@ -8,17 +8,22 @@ import { formatDateToDashFormat } from '../../utils/helperFun';
 interface GroupByEmployeeProps {
   startDate: Date;
   endDate: Date;
+  searchText?: string;
 }
 
-export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
+export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, searchText }) => {
   const { data } = useGetEmployeesWithRecordQuery({
     variables: {
       startDate: formatDateToDashFormat(startDate),
       endDate: formatDateToDashFormat(endDate)
     }
   });
-
   const rows = data ? [...data.getEmployeesWithRecord.filter((row) => row.workHours !== 0), ...data.getEmployeesWithRecord.filter((row) => row.workHours === 0)] : [];
+  const [filteredRows, setFilteredRows] = useState<any[]>(rows);
+
+  useEffect(() => {
+    setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string)));
+  }, [searchText, data]);
 
   // outer table column name and render config
   const outerTableConfig = [
@@ -76,5 +81,5 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate }
     }
   ];
 
-  return <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Project" />;
+  return <CollapsibleTable rows={filteredRows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Project" />;
 };

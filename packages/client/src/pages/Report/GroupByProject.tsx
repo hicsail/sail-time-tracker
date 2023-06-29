@@ -9,9 +9,10 @@ import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employe
 interface GroupByEmployeeProps {
   startDate: Date;
   endDate: Date;
+  searchText?: string;
 }
 
-export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate }) => {
+export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, searchText }) => {
   const [displayContent, setDisplayContent] = useState(false);
   const { data } = useGetProjectWithEmployeeRecordsQuery({
     variables: {
@@ -19,14 +20,14 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
       endDate: formatDateToDashFormat(endDate)
     }
   });
-  const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
-
   const rows = data
     ? [
         ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours !== 0),
         ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours === 0)
       ].filter((project: any) => project.status === 'Active')
     : [];
+  const [filteredRows, setFilteredRows] = useState<any[]>(rows);
+  const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
 
   /**
    * generate invoice
@@ -63,6 +64,10 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
       clearTimeout(timeoutId);
     };
   }, [displayContent]);
+
+  useEffect(() => {
+    setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string)));
+  }, [searchText, data]);
 
   const outerTableConfig = [
     {
@@ -138,7 +143,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate })
           {error && <Banner content={`${error.message}`} state="error" />}
         </Box>
       )}
-      <CollapsibleTable rows={rows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />
+      <CollapsibleTable rows={filteredRows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />
     </>
   );
 };
