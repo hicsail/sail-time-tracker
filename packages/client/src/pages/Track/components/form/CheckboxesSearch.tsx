@@ -1,4 +1,4 @@
-import { Checkbox, TextField, Autocomplete, Box, Button, Typography, Stack } from '@mui/material';
+import { Checkbox, Autocomplete, Box, Typography, Stack, ListItem } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
@@ -11,7 +11,7 @@ import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
-import { DefaultContainedButton, DefaultTextInput } from '@components/StyledComponent';
+import { CustomOutlinedTextInput, DefaultContainedButton, DefaultOutlinedButton } from '@components/StyledComponent';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -85,7 +85,7 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) =
       )}
       <Typography variant="h6">Add your favorite project</Typography>
       <Autocomplete
-        sx={{ marginTop: '3rem' }}
+        sx={{ marginTop: '3rem', width: 500, backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']) }}
         multiple
         id="checkboxes-tags-favoriteProject"
         options={projectListDate?.projects ?? []}
@@ -104,14 +104,13 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) =
         }}
         renderOption={(props, option, { selected }) => {
           return (
-            <li {...props}>
+            <ListItem {...props} sx={{ backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']) }}>
               <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} disabled={selected} />
               {option.name}
-            </li>
+            </ListItem>
           );
         }}
-        style={{ width: 500 }}
-        renderInput={(params) => <TextField {...params} label="Add Your Favorite Project" placeholder="Projects" />}
+        renderInput={(params) => <CustomOutlinedTextInput {...params} label="Add Your Favorite Project" placeholder="Projects" />}
         onChange={handleOnChange}
         value={selectedProjects}
       />
@@ -119,9 +118,9 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) =
         <DefaultContainedButton onClick={handleOnSubmit} variant="contained" color="primary">
           Add
         </DefaultContainedButton>
-        <Button color="secondary" variant="outlined" onClick={onClose}>
+        <DefaultOutlinedButton variant="outlined" onClick={onClose}>
           cancel
-        </Button>
+        </DefaultOutlinedButton>
       </Stack>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { alpha, Box, Button, Stack, styled, TextField } from '@mui/material';
+import { Box, Button, styled, TextField } from '@mui/material';
 import DialogContent from '@mui/material/DialogContent';
 
 export const DefaultTextInput = styled(TextField)(({ theme }) => ({
@@ -17,6 +17,29 @@ export const DefaultTextInput = styled(TextField)(({ theme }) => ({
     '-webkit-appearance': 'none',
     margin: 0
   }
+}));
+
+export const CustomOutlinedTextInput = styled(TextField)(({ theme }) => ({
+  ...(theme.palette.mode === 'dark' && {
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: 'white'
+      }
+    },
+    '& label.Mui-focused': {
+      color: 'white'
+    }
+  }),
+  ...(theme.palette.mode === 'light' && {
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: theme.palette.grey['800']
+      }
+    },
+    '& label.Mui-focused': {
+      color: theme.palette.grey['800']
+    }
+  })
 }));
 
 export const DefaultContainedButton = styled(Button)(({ theme }) => ({
@@ -42,11 +65,21 @@ export const CustomStyledFormDialog = styled(DialogContent)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']
 }));
 
-// export const CustomTableHeadCover = styled(Stack)((props) => ({
-//   top: 0,
-//   left: 0,
-//   height: '58px',
-//   backgroundColor: `${alpha(props.theme.palette.primary.light, 0.8)}`,
-//   width: '100%',
-//   paddingLeft: 0.5
-// }));
+export const DefaultOutlinedButton = styled(Button)(({ theme }) => ({
+  ...(theme.palette.mode === 'light' && {
+    color: theme.palette.common.black,
+    borderColor: theme.palette.grey['300'],
+    '&:hover': {
+      backgroundColor: theme.palette.grey['200'],
+      borderColor: theme.palette.grey['700']
+    }
+  }),
+  ...(theme.palette.mode === 'dark' && {
+    color: theme.palette.common.white,
+    borderColor: theme.palette.grey['700'],
+    '&:hover': {
+      backgroundColor: theme.palette.grey['700'],
+      borderColor: theme.palette.grey['100']
+    }
+  })
+}));
