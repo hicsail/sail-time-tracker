@@ -88,6 +88,14 @@ export const Track = () => {
               selectedDay: date
             } as any
           }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: 'grey.300',
+                color: 'grey.500'
+              }
+            }
+          }}
         />
         <DisplayCard key="work" id="work" title="Total Work Hours" data={workProjectsHours} icon={<WorkOutlined fontSize="large" />} />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" data={totalAbsenceHours} icon={<WorkOff fontSize="large" />} />

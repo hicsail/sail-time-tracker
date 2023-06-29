@@ -36,10 +36,10 @@ export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, ha
         top: 0,
         left: 0,
         height: '58px',
-        backgroundColor: 'primary.light',
+        backgroundColor: `primary.light`,
         width: '100%',
-        zIndex: `${selected.length > 0 ? 10 : -10}`,
-        paddingLeft: 0.5
+        paddingLeft: 0.5,
+        zIndex: `${selected.length > 0 ? 10 : -10}`
       }}
     >
       <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={numSelected > 0 && numSelected === rowCount} onChange={handleSelectAllClick} />

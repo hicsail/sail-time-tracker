@@ -1,4 +1,4 @@
-import { Checkbox, TextField, Autocomplete, Box, Button, Typography } from '@mui/material';
+import { Checkbox, TextField, Autocomplete, Box, Button, Typography, Stack } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
@@ -11,15 +11,17 @@ import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
+import { DefaultContainedButton, DefaultTextInput } from '@components/StyledComponent';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
 
 interface CheckboxesSearchProps {
   data: any[] | undefined;
+  onClose: () => void;
 }
 
-export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data }) => {
+export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) => {
   const [selectedProjects, setSelectedProjects] = useState<ProjectModel[]>([]);
   const [isShowBanner, setIsShowBanner] = useState(false);
   const { data: projectListDate } = useGetProjectListQuery();
@@ -113,9 +115,14 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data }) => {
         onChange={handleOnChange}
         value={selectedProjects}
       />
-      <Button onClick={handleOnSubmit} sx={{ width: 500, marginTop: '1rem' }} variant="contained">
-        Add
-      </Button>
+      <Stack sx={{ width: 500, marginTop: '1rem' }} gap={2}>
+        <DefaultContainedButton onClick={handleOnSubmit} variant="contained" color="primary">
+          Add
+        </DefaultContainedButton>
+        <Button color="secondary" variant="outlined" onClick={onClose}>
+          cancel
+        </Button>
+      </Stack>
     </Box>
   );
 };
