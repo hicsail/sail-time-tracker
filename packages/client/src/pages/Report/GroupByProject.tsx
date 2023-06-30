@@ -1,10 +1,14 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box, Button } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation } from '@graphql/invoice/invoice';
+import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoicesByDateRangeQuery } from '@graphql/invoice/invoice';
 import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import { useNavigate } from 'react-router-dom';
+import { Paths } from '@constants/paths';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -14,12 +18,20 @@ interface GroupByEmployeeProps {
 
 export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, searchText }) => {
   const [displayContent, setDisplayContent] = useState(false);
+  const navigate = useNavigate();
   const { data } = useGetProjectWithEmployeeRecordsQuery({
     variables: {
       startDate: formatDateToDashFormat(startDate),
       endDate: formatDateToDashFormat(endDate)
     }
   });
+  const { data: searchInvoicesByDateRangeDate, refetch: refetchSearchInvoicesByDateRangeQuery } = useSearchInvoicesByDateRangeQuery({
+    variables: {
+      startDate: formatDateToDashFormat(startDate),
+      endDate: formatDateToDashFormat(endDate)
+    }
+  });
+
   const rows = data
     ? [
         ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours !== 0),
@@ -69,6 +81,18 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
     setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string)));
   }, [searchText, data]);
 
+  const handleActionsOnClick = (row: any, isFind: { projectId: string } | undefined) => {
+    if (isFind) {
+      const start_date = formatDateToDashFormat(startDate);
+      const end_date = formatDateToDashFormat(endDate);
+
+      navigate(`${Paths.INVOICE}/${row.id}/${start_date}/${end_date}`);
+      return;
+    }
+    handleClick(row);
+    refetchSearchInvoicesByDateRangeQuery();
+  };
+
   const outerTableConfig = [
     {
       name: 'Projects',
@@ -107,12 +131,21 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       render: (row: any) => row.percentage + '%'
     },
     {
-      name: '',
-      render: (row: any) => (
-        <Button variant="outlined" onClick={() => handleClick(row)}>
-          Generate Invoice
-        </Button>
-      )
+      name: 'Actions',
+      render: (row: any) => {
+        const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
+        return (
+          <Button
+            variant="outlined"
+            onClick={() => handleActionsOnClick(row, isFind)}
+            startIcon={isFind ? <VisibilityIcon /> : <AddBoxIcon />}
+            color="secondary"
+            sx={{ width: '12rem', display: 'flex', justifyContent: 'start' }}
+          >
+            {isFind ? 'View Invoice' : 'Generate Invoice'}
+          </Button>
+        );
+      }
     }
   ];
 

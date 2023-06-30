@@ -13,7 +13,7 @@ interface BannerProps {
 
 export const Banner: FC<BannerProps> = ({ content, state }) => {
   return (
-    <Card sx={{ position: 'fixed', top: '5%', right: '6%', transform: 'translate(-50%,-50%)', width: 'auto', padding: '3px 10px' }}>
+    <Card sx={{ position: 'fixed', top: '5%', right: '6%', transform: 'translate(-50%,-50%)', width: 'auto', padding: '3px 10px', zIndex: 10 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <CardContent>{state === 'success' ? <CheckCircleOutlineIcon color="success" fontSize="large" /> : <ReportGmailerrorredIcon color="error" fontSize="large" />}</CardContent>
         <CardContent sx={{ flex: '1 0 auto' }}>

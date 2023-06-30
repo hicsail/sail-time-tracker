@@ -32,30 +32,28 @@ function App() {
             <Router>
               <DateProvider>
                 <EmployeeProvider>
-                  <Routes>
-                    <Route path={Paths.TRACK} element={<TrackLayout />}>
-                      <Route path={Paths.TRACK} element={<Track />} />
-                    </Route>
-                  </Routes>
+                  <DateRangeProvider>
+                    <Routes>
+                      <Route path={Paths.TRACK} element={<TrackLayout />}>
+                        <Route path={Paths.TRACK} element={<Track />} />
+                      </Route>
+                      <Route path={Paths.ADMIN} element={<Admin />}>
+                        <Route path={Paths.PROJECT_lIST} element={<Project />}>
+                          <Route path={Paths.EDIT_PROJECT} />
+                          <Route path={Paths.ADD_PROJECT} />
+                        </Route>
+                        <Route path={Paths.EMPLOYEE_lIST} element={<Employee />}>
+                          <Route path={Paths.EDIT_EMPLOYEE} />
+                          <Route path={Paths.ADD_EMPLOYEE} />
+                        </Route>
+                        <Route path={Paths.REPORT} element={<Report />} />
+                        <Route path={Paths.INVOICE} element={<Invoice />} />
+                        <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
+                      </Route>
+                    </Routes>
+                  </DateRangeProvider>
                 </EmployeeProvider>
               </DateProvider>
-              <DateRangeProvider>
-                <Routes>
-                  <Route path={Paths.ADMIN} element={<Admin />}>
-                    <Route path={Paths.PROJECT_lIST} element={<Project />}>
-                      <Route path={Paths.EDIT_PROJECT} />
-                      <Route path={Paths.ADD_PROJECT} />
-                    </Route>
-                    <Route path={Paths.EMPLOYEE_lIST} element={<Employee />}>
-                      <Route path={Paths.EDIT_EMPLOYEE} />
-                      <Route path={Paths.ADD_EMPLOYEE} />
-                    </Route>
-                    <Route path={Paths.REPORT} element={<Report />} />
-                    <Route path={Paths.INVOICE} element={<Invoice />} />
-                    <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
-                  </Route>
-                </Routes>
-              </DateRangeProvider>
             </Router>
           </ThemeProvider>
         </GraphqlProvider>

@@ -39,3 +39,10 @@ query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
         }
     }
 }
+
+
+query searchInvoicesByDateRange($startDate: DateTime!, $endDate: DateTime!) {
+    searchInvoicesByDateRange(startDate: $startDate, endDate: $endDate) {
+        projectId
+    }
+}
