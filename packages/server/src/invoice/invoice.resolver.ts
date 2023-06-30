@@ -18,6 +18,11 @@ export class InvoiceResolver {
     return this.invoiceService.searchInvoice(projectId_startDate_endDate);
   }
 
+  @Query(() => [InvoiceModel])
+  async searchInvoicesByDateRange(@Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<InvoiceModel[]> {
+    return this.invoiceService.searchInvoicesByDateRange(startDate, endDate);
+  }
+
   @Mutation(() => InvoiceModel)
   async createOrUpdateInvoice(@Args('invoice') invoice: InvoiceCreateInput): Promise<Invoice> {
     return this.invoiceService.createOrUpdateInvoice(invoice);
