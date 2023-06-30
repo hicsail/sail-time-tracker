@@ -12,6 +12,7 @@ import { WorkOff, WorkOutlined } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers';
 
 import { Day } from './components/Day';
+import { CustomDatePickerLayout } from '@pages/Track/components/CustomDatePickerLayout';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 
 export const Track = () => {
@@ -37,18 +38,19 @@ export const Track = () => {
       })
       ?.records.reduce((sum, record) => sum + record.hours, 0) ?? 0;
 
-  const workProjectsHours = recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects
-    .filter((project) => {
-      return project.projectName !== 'Absence';
-    })
-    .reduce((sum, project) => {
-      return (
-        sum +
-        project.records.reduce((innerSum: number, currentValue: any) => {
-          return innerSum + currentValue.hours;
-        }, 0)
-      );
-    }, 0);
+  const workProjectsHours =
+    recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects
+      .filter((project) => {
+        return project.projectName !== 'Absence';
+      })
+      .reduce((sum, project) => {
+        return (
+          sum +
+          project.records.reduce((innerSum: number, currentValue: any) => {
+            return innerSum + currentValue.hours;
+          }, 0)
+        );
+      }, 0) ?? 0;
 
   /**
    * employee dropdown change handler
@@ -82,7 +84,7 @@ export const Track = () => {
           onChange={(newValue) => {
             setDate(newValue as Date);
           }}
-          slots={{ day: Day }}
+          slots={{ day: Day, layout: CustomDatePickerLayout }}
           slotProps={{
             day: {
               selectedDay: date
