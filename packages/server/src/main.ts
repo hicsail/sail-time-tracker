@@ -9,7 +9,7 @@ async function bootstrap() {
     origin: ['http://localhost:5173', 'https:test-time.sail.codes', 'https://time.sail.codes'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     preflightContinue: true
-  })
+  });
   await app.listen(3000);
 }
 
