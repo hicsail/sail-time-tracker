@@ -1,21 +1,6 @@
 import React, { ChangeEvent, FC, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Chip,
-  InputAdornment,
-  SelectChangeEvent,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TablePagination,
-  TableRow,
-  Typography
-} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Chip, InputAdornment, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow, Typography } from '@mui/material';
 import { EnhancedTableHead } from '@pages/Employee/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
@@ -24,8 +9,6 @@ import { StyledPaper } from '@components/StyledPaper';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import { GetEmployeeListDocument, useDeleteEmployeesMutation } from '@graphql/employee/employee';
-import { TableHeadCover } from '@pages/Employee/components/table/TableHeadCover';
 import { TextInput } from '@components/TextInput';
 
 interface EmployeeTableProps {
@@ -33,7 +16,6 @@ interface EmployeeTableProps {
 }
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
-  const [selected, setSelected] = useState<readonly string[]>([]);
   const [open, setOpen] = useState({
     add: false,
     edit: false
@@ -44,7 +26,6 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [rows, setRows] = useState(data ? data : []);
   const [filter, setFilter] = useState<string>('Active');
   const navigate = useNavigate();
-  const [deleteEmployees] = useDeleteEmployeesMutation();
 
   const handleClickOpen = (type: string) => {
     setOpen((prevState) => ({ ...prevState, [type]: true }));
@@ -53,45 +34,6 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const handleOnClose = (type: string) => {
     setOpen((prevState) => ({ ...prevState, [type]: false }));
     navigate(Paths.EMPLOYEE_lIST);
-  };
-
-  /**
-   * this method is used to handle select all employees' event.
-   * @param event
-   */
-  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  /**
-   * this method is used to handle select single employee event.
-   * @param event
-   * @param id
-   */
-  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-
-    setSelected(newSelected);
-  };
-
-  const isSelected = (id: string) => {
-    return selected.indexOf(id) !== -1;
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -154,20 +96,10 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
     setFilter(e.target.value);
   };
 
-  const handleClickDelete = async () => {
-    await deleteEmployees({
-      variables: {
-        ids: selected as string[]
-      },
-      refetchQueries: [{ query: GetEmployeeListDocument }]
-    });
-    setSelected([]);
-  };
-
   return (
     <Box sx={{ width: '100%', marginTop: 8 }}>
       <StyledPaper elevation={0}>
-        <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
+        <Stack direction="row" justifyContent="space-between" marginBottom={5}>
           <Typography variant="h6">All Employees</Typography>
           <Button
             variant="contained"
@@ -199,47 +131,18 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
           />
         </Stack>
         <TableContainer>
-          <Table sx={{ minWidth: 750, position: 'relative' }}>
-            <TableHeadCover
-              rowCount={rows.length}
-              selected={selected}
-              setSelected={setSelected}
-              handleSelectAllClick={handleSelectAllClick}
-              handleClickDelete={handleClickDelete}
-            />
-            <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
+          <Table sx={{ minWidth: 750 }}>
+            <EnhancedTableHead />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
                 return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ '& .MuiTableCell-root': { fontWeight: 'medium' } }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        onClick={(event) => handleClick(event, row.id)}
-                        inputProps={{
-                          'aria-labelledby': labelId
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
+                  <TableRow hover tabIndex={-1} key={row.id} sx={{ '& .MuiTableCell-root': { fontWeight: 'medium', borderBottom: '1px dashed', borderColor: 'grey.200' } }}>
+                    <TableCell component="th" id={labelId} scope="row" sx={{ width: '100px' }}>
                       {row.name}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingLeft: '0' }}>
+                    <TableCell align="left" sx={{ width: '100px' }}>
                       {row.email}
-                    </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
-                      {row.rate}
                     </TableCell>
                     <TableCell
                       align="left"
@@ -253,11 +156,12 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
                         sx={{
                           backgroundColor: row.status === 'Active' ? 'success.light' : 'error.light',
                           color: row.status === 'Active' ? 'success.main' : 'error.main',
-                          padding: '0 10px'
+                          padding: '0 10px',
+                          borderRadius: '8px'
                         }}
                       />
                     </TableCell>
-                    <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
+                    <TableCell align="left" sx={{ width: '100px' }}>
                       <Button
                         variant="outlined"
                         onClick={() => {
