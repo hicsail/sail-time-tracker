@@ -1,7 +1,6 @@
 import Dialog from '@mui/material/Dialog';
 import { FC, ReactNode } from 'react';
 import { CustomStyledFormDialog } from '@components/StyledComponent';
-import DialogContent from '@mui/material/DialogContent';
 
 interface FormDialogProps {
   open: boolean;
