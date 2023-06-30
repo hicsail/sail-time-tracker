@@ -17,6 +17,7 @@ import { Report } from '@pages/Report/Report';
 import { Invoice } from '@pages/Invoice/Invoice';
 import enLocale from 'date-fns/locale/en-US';
 import { InvoiceDetails } from '@pages/Invoice/InvoiceDetails';
+import { DateRangeProvider } from '@context/dateRange.context';
 
 function App() {
   if (enLocale && enLocale.options) {
@@ -28,30 +29,34 @@ function App() {
       <SettingsProvider>
         <GraphqlProvider>
           <ThemeProvider>
-            <DateProvider>
-              <Router>
+            <Router>
+              <DateProvider>
                 <EmployeeProvider>
                   <Routes>
                     <Route path={Paths.TRACK} element={<TrackLayout />}>
                       <Route path={Paths.TRACK} element={<Track />} />
                     </Route>
-                    <Route path={Paths.ADMIN} element={<Admin />}>
-                      <Route path={Paths.PROJECT_lIST} element={<Project />}>
-                        <Route path={Paths.EDIT_PROJECT} />
-                        <Route path={Paths.ADD_PROJECT} />
-                      </Route>
-                      <Route path={Paths.EMPLOYEE_lIST} element={<Employee />}>
-                        <Route path={Paths.EDIT_EMPLOYEE} />
-                        <Route path={Paths.ADD_EMPLOYEE} />
-                      </Route>
-                      <Route path={Paths.REPORT} element={<Report />} />
-                      <Route path={Paths.INVOICE} element={<Invoice />} />
-                      <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
-                    </Route>
                   </Routes>
                 </EmployeeProvider>
-              </Router>
-            </DateProvider>
+              </DateProvider>
+              <DateRangeProvider>
+                <Routes>
+                  <Route path={Paths.ADMIN} element={<Admin />}>
+                    <Route path={Paths.PROJECT_lIST} element={<Project />}>
+                      <Route path={Paths.EDIT_PROJECT} />
+                      <Route path={Paths.ADD_PROJECT} />
+                    </Route>
+                    <Route path={Paths.EMPLOYEE_lIST} element={<Employee />}>
+                      <Route path={Paths.EDIT_EMPLOYEE} />
+                      <Route path={Paths.ADD_EMPLOYEE} />
+                    </Route>
+                    <Route path={Paths.REPORT} element={<Report />} />
+                    <Route path={Paths.INVOICE} element={<Invoice />} />
+                    <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
+                  </Route>
+                </Routes>
+              </DateRangeProvider>
+            </Router>
           </ThemeProvider>
         </GraphqlProvider>
       </SettingsProvider>
