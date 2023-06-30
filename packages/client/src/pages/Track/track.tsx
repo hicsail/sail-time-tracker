@@ -11,8 +11,8 @@ import { useEffect } from 'react';
 import { WorkOff, WorkOutlined } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers';
 
-import { Day } from './components/Day';
-import { CustomDatePickerLayout } from '@pages/Track/components/CustomDatePickerLayout';
+import { Day } from './components/DatePicker/Day';
+import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 
 export const Track = () => {
