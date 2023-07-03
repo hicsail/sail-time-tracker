@@ -20,7 +20,7 @@ export const formatDateToForwardSlashFormat = (date: Date | undefined): string =
   return 'No date provided';
 };
 
-export const formatDateToDashFormat = (date: Date | undefined) => {
+export const formatDateToDashFormat = (date: Date | undefined | null) => {
   if (date) {
     return format(date, 'MM-dd-yyyy');
   }
