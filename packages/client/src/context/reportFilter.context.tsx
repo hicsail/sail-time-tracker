@@ -7,9 +7,11 @@ interface DateRangeContextProps {
     endDate: Date | null;
   };
   setDateRange: (date: any) => void;
+  groupBy: string;
+  setGroupBy: (groupBy: string) => void;
 }
 
-const DateRangeContext = createContext<DateRangeContextProps>({} as DateRangeContextProps);
+const ReportFilterContext = createContext<DateRangeContextProps>({} as DateRangeContextProps);
 
 interface DateProviderProps {
   children: ReactNode;
@@ -20,9 +22,11 @@ export const DateRangeProvider: FC<DateProviderProps> = ({ children }) => {
   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
   const [dateRange, setDateRange] = useState({ startDate: firstDayOfMonth, endDate: lastDayOfMonth(today) });
-  return <DateRangeContext.Provider value={{ dateRange, setDateRange }}>{children}</DateRangeContext.Provider>;
+  const [groupBy, setGroupBy] = useState<string>('1');
+
+  return <ReportFilterContext.Provider value={{ dateRange, setDateRange, groupBy, setGroupBy }}>{children}</ReportFilterContext.Provider>;
 };
 
 export const useDateRange = () => {
-  return useContext(DateRangeContext);
+  return useContext(ReportFilterContext);
 };

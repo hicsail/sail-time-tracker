@@ -17,7 +17,7 @@ import { Report } from '@pages/Report/Report';
 import { Invoice } from '@pages/Invoice/Invoice';
 import enLocale from 'date-fns/locale/en-US';
 import { InvoiceDetails } from '@pages/Invoice/InvoiceDetails';
-import { DateRangeProvider } from '@context/dateRange.context';
+import { DateRangeProvider } from '@context/reportFilter.context';
 
 function App() {
   if (enLocale && enLocale.options) {
