@@ -7,14 +7,14 @@ export const DefaultTextInput = styled(TextField)(({ theme }) => ({
   borderRadius: '8px',
   '& fieldset': { border: 'none' },
   '& input[type=number]': {
-    '-moz-appearance': 'textfield'
+    MozAppearance: 'textfield'
   },
   '& input[type=number]::-webkit-outer-spin-button': {
-    '-webkit-appearance': 'none',
+    WebkitAppearance: 'none',
     margin: 0
   },
   '& input[type=number]::-webkit-inner-spin-button': {
-    '-webkit-appearance': 'none',
+    WebkitAppearance: 'none',
     margin: 0
   }
 }));
