@@ -16,7 +16,8 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
     variables: {
       startDate: formatDateToDashFormat(startDate),
       endDate: formatDateToDashFormat(endDate)
-    }
+    },
+    fetchPolicy: 'cache-and-network'
   });
   const rows = data ? [...data.getEmployeesWithRecord.filter((row) => row.workHours !== 0), ...data.getEmployeesWithRecord.filter((row) => row.workHours === 0)] : [];
   const [filteredRows, setFilteredRows] = useState<any[]>(rows);
@@ -26,60 +27,69 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   }, [searchText, data]);
 
   // outer table column name and render config
-  const outerTableConfig = [
-    {
-      name: 'Employees',
-      render: (row: any) => row.name
-    },
-    {
-      name: 'Work Hours',
-      render: (row: any) => row.workHours
-    },
-    {
-      name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours
-    },
-    {
-      name: 'Billable Hours (Work + Indirect)',
-      render: (row: any) => row.billableHours
-    }
-  ];
-
-  // inner table column name and render config
-  const innerTableConfig = [
-    {
-      name: 'Name',
-      render: (row: any) => row.projectName
-    },
-    {
-      name: 'IsBillable',
-      render: (row: any) => {
-        return (
-          <Box
-            sx={row.isBillable ? { backgroundColor: 'success.light', color: 'success.main' } : { backgroundColor: 'error.light', color: 'error.main' }}
-            width={40}
-            height={20}
-            textAlign="center"
-            borderRadius="3px"
-          >
-            {row.isBillable.toString()}
-          </Box>
-        );
+  const tableConfig = {
+    outer: [
+      {
+        id: 'name',
+        name: 'Employees',
+        render: (row: any) => row.name
+      },
+      {
+        id: 'workHours',
+        name: 'Work Hours',
+        render: (row: any) => row.workHours
+      },
+      {
+        id: 'indirectHours',
+        name: 'Indirect Hours',
+        render: (row: any) => row.indirectHours
+      },
+      {
+        id: 'billableHours',
+        name: 'Billable Hours (Work + Indirect)',
+        render: (row: any) => row.billableHours
       }
-    },
-    {
-      name: 'Work Hours',
-      render: (row: any) => row.projectWorkHours
-    },
-    {
-      name: 'Indirect Hours',
-      render: (row: any) => row.projectIndirectHours
-    },
-    {
-      name: 'Percentage',
-      render: (row: any) => row.projectPercentage + '%'
-    }
-  ];
+    ],
+    inner: [
+      {
+        id: 'projectName',
+        name: 'Name',
+        render: (row: any) => row.projectName
+      },
+      {
+        id: 'projectIsBillable',
+        name: 'IsBillable',
+        render: (row: any) => {
+          return (
+            <Box
+              sx={row.isBillable ? { backgroundColor: 'success.light', color: 'success.main' } : { backgroundColor: 'error.light', color: 'error.main' }}
+              width={40}
+              height={20}
+              textAlign="center"
+              borderRadius="3px"
+            >
+              {row.isBillable.toString()}
+            </Box>
+          );
+        }
+      },
+      {
+        id: 'projectWorkHours',
+        name: 'Work Hours',
+        render: (row: any) => row.projectWorkHours
+      },
+      {
+        id: 'projectIndirectHours',
+        name: 'Indirect Hours',
+        render: (row: any) => row.projectIndirectHours
+      },
+      {
+        id: 'projectPercentage',
+        name: 'Percentage',
+        render: (row: any) => row.projectPercentage + '%'
+      }
+    ]
+  };
 
-  return <CollapsibleTable rows={filteredRows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Project" />;
+  return <CollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />;
 };

@@ -9,6 +9,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useNavigate } from 'react-router-dom';
 import { Paths } from '@constants/paths';
+import * as React from 'react';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -23,7 +24,8 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
     variables: {
       startDate: formatDateToDashFormat(startDate),
       endDate: formatDateToDashFormat(endDate)
-    }
+    },
+    fetchPolicy: 'cache-and-network'
   });
   const { data: searchInvoicesByDateRangeDate, refetch: refetchSearchInvoicesByDateRangeQuery } = useSearchInvoicesByDateRangeQuery({
     variables: {
@@ -93,80 +95,92 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
     refetchSearchInvoicesByDateRangeQuery();
   };
 
-  const outerTableConfig = [
-    {
-      name: 'Projects',
-      render: (row: any) => row.name
-    },
-    {
-      name: 'IsBillable',
-      render: (row: any) => {
-        return (
-          <Box
-            sx={row.isBillable ? { backgroundColor: 'success.light', color: 'success.main' } : { backgroundColor: 'error.light', color: 'error.main' }}
-            width={40}
-            height={20}
-            textAlign="center"
-            borderRadius="3px"
-          >
-            {row.isBillable.toString()}
-          </Box>
-        );
+  const tableConfig = {
+    outer: [
+      {
+        id: 'projectName',
+        name: 'Projects',
+        render: (row: any) => row.name
+      },
+      {
+        id: 'isBillable',
+        name: 'IsBillable',
+        render: (row: any) => {
+          return (
+            <Box
+              sx={row.isBillable ? { backgroundColor: 'success.light', color: 'success.main' } : { backgroundColor: 'error.light', color: 'error.main' }}
+              width={40}
+              height={20}
+              textAlign="center"
+              borderRadius="3px"
+            >
+              {row.isBillable ? 'true' : 'false'}
+            </Box>
+          );
+        }
+      },
+      {
+        id: 'workHours',
+        name: 'Work Hours',
+        render: (row: any) => row.workHours
+      },
+      {
+        id: 'indirectHours',
+        name: 'Indirect Hours',
+        render: (row: any) => row.indirectHours
+      },
+      {
+        id: 'billableHours',
+        name: 'Billable Hours',
+        render: (row: any) => row.billableHours
+      },
+      {
+        id: 'percentage',
+        name: 'Percentage',
+        render: (row: any) => row.percentage + '%'
+      },
+      {
+        id: 'actions',
+        name: 'Actions',
+        render: (row: any) => {
+          const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
+          return (
+            <Button
+              variant="outlined"
+              onClick={() => handleActionsOnClick(row, isFind)}
+              startIcon={isFind ? <VisibilityIcon /> : <AddBoxIcon />}
+              color="secondary"
+              sx={{ width: '12rem', display: 'flex', justifyContent: 'start' }}
+            >
+              {isFind ? 'View Invoice' : 'Generate Invoice'}
+            </Button>
+          );
+        }
       }
-    },
-    {
-      name: 'Work Hours',
-      render: (row: any) => row.workHours
-    },
-    {
-      name: 'Indirect Hours',
-      render: (row: any) => row.indirectHours
-    },
-    {
-      name: 'Billable Hours',
-      render: (row: any) => row.billableHours
-    },
-    {
-      name: 'Percentage',
-      render: (row: any) => row.percentage + '%'
-    },
-    {
-      name: 'Actions',
-      render: (row: any) => {
-        const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
-        return (
-          <Button
-            variant="outlined"
-            onClick={() => handleActionsOnClick(row, isFind)}
-            startIcon={isFind ? <VisibilityIcon /> : <AddBoxIcon />}
-            color="secondary"
-            sx={{ width: '12rem', display: 'flex', justifyContent: 'start' }}
-          >
-            {isFind ? 'View Invoice' : 'Generate Invoice'}
-          </Button>
-        );
+    ],
+    inner: [
+      {
+        id: 'employeeName',
+        name: 'Name',
+        render: (row: any) => row.employeeName
+      },
+      {
+        id: 'employeeWorkHours',
+        name: 'Work Hours',
+        render: (row: any) => row.employeeWorkHours
+      },
+      {
+        id: 'employeeIndirectHours',
+        name: 'Indirect Hours',
+        render: (row: any) => row.employeeIndirectHours
+      },
+      {
+        id: 'employeeBillableHours',
+        name: 'Percentage',
+        render: (row: any) => row.employeePercentage + '%'
       }
-    }
-  ];
-
-  const innerTableConfig = [
-    {
-      name: 'Name',
-      render: (row: any) => row.employeeName
-    },
-    {
-      name: 'Work Hours',
-      render: (row: any) => row.employeeWorkHours
-    },
-    {
-      name: 'Indirect Hours',
-      render: (row: any) => row.employeeIndirectHours
-    },
-    {
-      name: 'Percentage',
-      render: (row: any) => row.employeePercentage + '%'
-    }
-  ];
+    ]
+  };
 
   return (
     <>
@@ -176,7 +190,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
           {error && <Banner content={`${error.message}`} state="error" />}
         </Box>
       )}
-      <CollapsibleTable rows={filteredRows} outerTableConfig={outerTableConfig} innerTableConfig={innerTableConfig} innerTitle="Employee" />
+      <CollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Employee" startDate={startDate} endDate={endDate} />
     </>
   );
 };

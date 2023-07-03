@@ -7,17 +7,12 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
 import { TextInput } from '@components/TextInput';
-import { useDateRange } from '@context/dateRange.context';
+import { useDateRange } from '@context/reportFilter.context';
 
 export const Report = () => {
-  const [groupBy, setGroupBy] = useState<string>('1');
   const [searchText, setSearchText] = useState<string>('');
   const date = new Date();
-  const { dateRange, setDateRange } = useDateRange();
-  // const [dateRange, setDateRage] = useState<{ startDate: Date | null; endDate: Date | null }>({
-  //   startDate: startOfWeek(date, { weekStartsOn: 1 }),
-  //   endDate: endOfWeek(date, { weekStartsOn: 1 })
-  // });
+  const { dateRange, setDateRange, groupBy, setGroupBy } = useDateRange();
 
   const data = [
     { id: '1', name: 'Employee' },
