@@ -63,7 +63,7 @@ const columns: GridColDef[] = [
 ];
 
 export const Invoice = () => {
-  const { data, loading, error } = useGetAllInvoicesQuery();
+  const { data } = useGetAllInvoicesQuery();
   const rows = data
     ? data.invoices.map((invoice) => {
         const projectName = invoice.project.name;
