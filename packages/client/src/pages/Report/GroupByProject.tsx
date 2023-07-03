@@ -151,6 +151,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
               startIcon={isFind ? <VisibilityIcon /> : <AddBoxIcon />}
               color="secondary"
               sx={{ width: '12rem', display: 'flex', justifyContent: 'start' }}
+              disabled={row.billableHours === 0}
             >
               {isFind ? 'View Invoice' : 'Generate Invoice'}
             </Button>
