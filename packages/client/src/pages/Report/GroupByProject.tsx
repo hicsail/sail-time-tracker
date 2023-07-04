@@ -80,7 +80,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
   }, [displayContent]);
 
   useEffect(() => {
-    setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string)));
+    setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string) && row.name !== 'Indirect' && row.name !== 'Absence'));
   }, [searchText, data]);
 
   const handleActionsOnClick = (row: any, isFind: { projectId: string } | undefined) => {
