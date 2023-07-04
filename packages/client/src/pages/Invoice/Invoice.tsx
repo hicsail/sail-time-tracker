@@ -1,6 +1,5 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import LaunchIcon from '@mui/icons-material/Launch';
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
@@ -50,15 +49,9 @@ const columns: GridColDef[] = [
     width: 160
   },
   {
-    field: 'delete',
-    headerName: 'Delete',
+    field: 'actions',
+    headerName: 'Actions',
     renderCell: () => <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} />
-  },
-  {
-    field: 'export',
-    width: 160,
-    headerName: 'Export to Clickup',
-    renderCell: () => <LaunchIcon color="secondary" sx={{ cursor: 'pointer' }} />
   }
 ];
 
