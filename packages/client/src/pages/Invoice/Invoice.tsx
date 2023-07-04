@@ -1,11 +1,18 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Typography } from '@mui/material';
+import { Box, InputAdornment, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
 import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
+import { BasicTable } from './components/table/BasicTable';
+import { DropDownMenu } from '@components/form/DropDownMenu';
+import { TextInput } from '@components/TextInput';
+import SearchIcon from '@mui/icons-material/Search';
+import { useState } from 'react';
+import { DatePicker } from '@mui/x-date-pickers';
+import { useDateRange } from '@context/reportFilter.context';
+import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -14,38 +21,34 @@ const CustomIDCellRender = (props: { id: string; value: string; startDate: Date;
 
   return (
     <Link to={`${Paths.INVOICE}/${id}/${start_date}/${end_date}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center', gap: 2 }}>
-        <FolderIcon sx={{ color: 'rgb(115,126,137)', fontSize: 'large' }} />
-        <Box sx={{ margin: 'auto' }}>{value}</Box>
+      <Box sx={{ display: 'flex', justifyContent: 'start', alignItem: 'center', gap: 2 }}>
+        <FolderIcon sx={{ color: 'grey.600', fontSize: 'large' }} />
+        <Box>{value}</Box>
       </Box>
     </Link>
   );
 };
 
-const columns: GridColDef[] = [
+const columns: any[] = [
   {
     field: 'projectName',
     headerName: 'PROJECT NAME',
-    width: 180,
-    renderCell: (params) => <CustomIDCellRender id={params.row.projectId} startDate={params.row.startDate} endDate={params.row.endDate} value={params.row.projectName} />
+    width: 150,
+    renderCell: (row: any) => <CustomIDCellRender id={row.projectId} startDate={row.startDate} endDate={row.endDate} value={row.projectName} />
   },
   { field: 'startDate', headerName: 'START DATE', width: 130 },
   { field: 'endDate', headerName: 'END DATE', width: 130 },
   {
     field: 'hours',
     headerName: 'TOTAL HOURS',
-    headerAlign: 'left',
-    align: 'left',
     type: 'number',
     width: 150
   },
   {
     field: 'amount',
     headerName: 'INVOICE AMOUNT',
-    headerAlign: 'left',
-    align: 'left',
     type: 'number',
-    renderCell: (params) => `${USDollar.format(params.row.amount)}`,
+    renderCell: (row: any) => `${USDollar.format(row.amount)}`,
     width: 160
   },
   {
@@ -56,6 +59,8 @@ const columns: GridColDef[] = [
 ];
 
 export const Invoice = () => {
+  const [searchText, setSearchText] = useState('');
+  const { dateRange, setDateRange } = useDateRange();
   const { data } = useGetAllInvoicesQuery();
   const rows = data
     ? data.invoices.map((invoice) => {
@@ -76,8 +81,55 @@ export const Invoice = () => {
       })
     : [];
 
+  const keyFun = (row: any) => {
+    return row.id;
+  };
+
+  const ToolBar = (
+    <Stack direction="row" gap={2} mb={3}>
+      <Box sx={{ display: 'flex', gap: 5 }}>
+        <DatePicker
+          label="Start Date"
+          value={dateRange.startDate}
+          slots={{ layout: CustomDatePickerLayout }}
+          onChange={(newValue) => {
+            setDateRange((prevState: any) => ({
+              ...prevState,
+              startDate: newValue
+            }));
+          }}
+        />
+        <DatePicker
+          label="End Date"
+          value={dateRange.endDate}
+          slots={{ layout: CustomDatePickerLayout }}
+          onChange={(newValue) => {
+            setDateRange((prevState: any) => ({
+              ...prevState,
+              endDate: newValue
+            }));
+          }}
+        />
+      </Box>
+      <TextInput
+        value={searchText}
+        setValue={setSearchText}
+        id="search-employee"
+        variant="outlined"
+        placeholder="Search..."
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon sx={{ mr: 1, color: 'grey.500' }} />
+            </InputAdornment>
+          )
+        }}
+      />
+    </Stack>
+  );
+
   return (
-    <Box sx={{ height: 400 }}>
+    <Box sx={{ width: '100%', marginTop: 8 }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 8 }}>
         <Typography variant="h5" sx={{ marginTop: 8, fontWeight: 'bold', color: 'customColors.interstellarBlue' }}>
           Billing & Invoices
@@ -86,18 +138,17 @@ export const Invoice = () => {
           Managing and viewing all your invoices.
         </Typography>
       </Box>
-      <DataGrid
-        sx={{ color: 'customColors.interstellarBlue', border: 'none', backgroundColor: 'white' }}
+      <BasicTable
         rows={rows}
+        toolbar={ToolBar}
         columns={columns}
+        keyFun={keyFun}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 }
           }
         }}
-        pageSizeOptions={[10, 15]}
-        disableRowSelectionOnClick
-        autoHeight={true}
+        sx={{ color: 'customColors.interstellarBlue', border: 'none', backgroundColor: 'white' }}
       />
     </Box>
   );
