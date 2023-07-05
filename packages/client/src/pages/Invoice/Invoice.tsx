@@ -6,13 +6,12 @@ import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashForma
 import FolderIcon from '@mui/icons-material/Folder';
 import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 import { BasicTable } from './components/table/BasicTable';
-import { DropDownMenu } from '@components/form/DropDownMenu';
 import { TextInput } from '@components/TextInput';
 import SearchIcon from '@mui/icons-material/Search';
-import { useState } from 'react';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useDateRange } from '@context/reportFilter.context';
 import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
+import { useState } from 'react';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -81,9 +80,11 @@ export const Invoice = () => {
       })
     : [];
 
-  const keyFun = (row: any) => {
-    return row.id;
-  };
+  const filteredRows = rows.filter((row) => {
+    return row.projectName.toLowerCase().includes(searchText.toLowerCase());
+  });
+
+  const keyFun = (row: any) => row.id;
 
   const ToolBar = (
     <Stack direction="row" gap={2} mb={3}>
@@ -139,7 +140,7 @@ export const Invoice = () => {
         </Typography>
       </Box>
       <BasicTable
-        rows={rows}
+        rows={filteredRows}
         toolbar={ToolBar}
         columns={columns}
         keyFun={keyFun}
