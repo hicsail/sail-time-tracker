@@ -287,6 +287,8 @@ export type Query = {
   comments: Array<CommentModel>;
   employee: EmployeeModel;
   employees: Array<EmployeeModel>;
+  findNextInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
+  findPreviousInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   invoices: Array<InvoiceModelWithProject>;
@@ -302,6 +304,16 @@ export type QueryCommentArgs = {
 
 export type QueryEmployeeArgs = {
   id: Scalars['String'];
+};
+
+export type QueryFindNextInvoiceArgs = {
+  endDate: Scalars['DateTime'];
+  projectId: Scalars['String'];
+};
+
+export type QueryFindPreviousInvoiceArgs = {
+  projectId: Scalars['String'];
+  startDate: Scalars['DateTime'];
 };
 
 export type QueryGetEmployeesWithRecordArgs = {
