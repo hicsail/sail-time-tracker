@@ -59,4 +59,17 @@ export class InvoiceService {
       }
     });
   }
+
+  async deleteInvoice(projectId_startDate_endDate: InvoiceSearchInput): Promise<Invoice> {
+    const { projectId, startDate, endDate } = projectId_startDate_endDate;
+    return this.prisma.invoice.delete({
+      where: {
+        projectId_startDate_endDate: {
+          projectId,
+          startDate,
+          endDate
+        }
+      }
+    });
+  }
 }

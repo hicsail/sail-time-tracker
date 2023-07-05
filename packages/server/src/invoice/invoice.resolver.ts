@@ -27,4 +27,9 @@ export class InvoiceResolver {
   async createOrUpdateInvoice(@Args('invoice') invoice: InvoiceCreateInput): Promise<Invoice> {
     return this.invoiceService.createOrUpdateInvoice(invoice);
   }
+
+  @Mutation(() => InvoiceModel)
+  async deleteInvoice(@Args('projectId_startDate_endDate') projectId_startDate_endDate: InvoiceSearchInput): Promise<Invoice> {
+    return this.invoiceService.deleteInvoice(projectId_startDate_endDate);
+  }
 }

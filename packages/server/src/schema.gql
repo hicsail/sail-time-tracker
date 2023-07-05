@@ -170,6 +170,7 @@ type Mutation {
   deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
   createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
+  deleteInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModel!
   addComment(input: CommentCreateInput!): CommentModel!
   deleteComment(id: String!): CommentModel!
 }
