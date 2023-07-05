@@ -77,7 +77,7 @@ export class InvoiceService {
     return this.prisma.invoice.findFirst({
       where: {
         projectId,
-        startDate: {
+        endDate: {
           lt: startDate
         }
       },
