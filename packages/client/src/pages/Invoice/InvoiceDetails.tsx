@@ -1,15 +1,13 @@
-import { Box, Button, Divider, Stack, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 import { USDollar } from '../../utils/helperFun';
 import IconButton from '@mui/material/IconButton';
-import LaunchIcon from '@mui/icons-material/Launch';
 import { FormDialog } from '@components/form/FormDialog';
 import { useState } from 'react';
-import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoiceQuery } from '@graphql/invoice/invoice';
+import { GetAllInvoicesDocument, SearchInvoiceDocument, useCreateOrUpdateInvoiceMutation, useDeleteInvoiceMutation, useSearchInvoiceQuery } from '@graphql/invoice/invoice';
 import { DisplayCard } from '@components/DisplayCard.component';
 import { CommentInputBox } from '@pages/Invoice/components/comment/CommentInputBox';
 import { useAddCommentMutation, useDeleteCommentMutation } from '@graphql/comment/comment';
@@ -19,18 +17,24 @@ import { CommentList } from '@pages/Invoice/components/comment/CommentList';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
+import { BasicTable } from '@pages/Invoice/components/table/BasicTable';
+import EditIcon from '@mui/icons-material/Edit';
+import SendIcon from '@mui/icons-material/Send';
+import { Paths } from '@constants/paths';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-const columns: GridColDef[] = [
+const columns: any[] = [
   {
     field: 'employeeName',
     headerName: 'Employee Name',
     width: 200,
-    renderCell: (params) => params.row.projectName
+    renderCell: (row: any) => row.employeeName
   },
   { field: 'workHours', headerName: 'Work Hours', width: 200 },
   { field: 'indirectHours', headerName: 'Indirect Hours', width: 200 },
   { field: 'billableHours', headerName: 'Billable Hours', width: 200 },
-  { field: 'amount', headerName: 'Amount', width: 200, renderCell: (params) => USDollar.format(params.row.amount) }
+  { field: 'amount', headerName: 'Amount', width: 200, renderCell: (row: any) => USDollar.format(row.amount) }
 ];
 
 const FormValidation = Yup.object({
@@ -38,7 +42,9 @@ const FormValidation = Yup.object({
 });
 
 export const InvoiceDetails = () => {
-  const [open, setOpen] = useState(false);
+  const [isOpenedEditDialog, setIsOpenedEditDialog] = useState(false);
+  const [isOpenedDeleteDialog, setIsOpenedDeleteDialog] = useState(false);
+  const [deleteInvoice] = useDeleteInvoiceMutation();
   const { id, startDate, endDate } = useParams();
   const { data: projectWithEmployeeData } = useGetProjectWithEmployeeRecordsQuery({
     variables: {
@@ -63,6 +69,7 @@ export const InvoiceDetails = () => {
   });
   const [addCommentMutation] = useAddCommentMutation();
   const [deleteCommentMutation] = useDeleteCommentMutation();
+  const navigate = useNavigate();
 
   const rows =
     project?.inner
@@ -114,27 +121,127 @@ export const InvoiceDetails = () => {
     });
   };
 
+  const keyFun = (row: any) => row.id;
+
+  const handleDeleteInvoice = () => {
+    deleteInvoice({
+      variables: searchInvoiceVariable,
+      refetchQueries: [
+        {
+          query: GetAllInvoicesDocument,
+          variables: searchInvoiceVariable
+        }
+      ]
+    }).then((r) => r.data && navigate(Paths.INVOICE));
+  };
+
+  const handleCloseDeleteDialog = () => setIsOpenedDeleteDialog(false);
+  const handleOpenDeleteDialog = () => setIsOpenedDeleteDialog(true);
+  const handleCloseEditDialog = () => setIsOpenedEditDialog(false);
+  const handleOpenEditDialog = () => setIsOpenedEditDialog(true);
+
   return (
     <Box sx={{ height: 'auto', margin: 'auto' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box sx={{ marginTop: 8 }}>
-          <h3>{`Project Name: ${project?.name}`}</h3>
-          <Box sx={{ display: 'flex', alignItem: 'center', gap: 1 }}>
-            <CalendarTodayIcon />
-            <div>
-              {startDate && startDate.split('-').join('/')} - {endDate && endDate.split('-').join('/')}
-            </div>
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 3 }}>
-          <IconButton>
-            <LaunchIcon color="secondary" />
-          </IconButton>
-          <IconButton>
-            <DeleteIcon color="secondary" />
-          </IconButton>
+      <Stack direction="row" justifyContent="space-between" sx={{ marginTop: 8 }}>
+        <Button startIcon={<NavigateBeforeIcon />}>Previous Invoice</Button>
+        <Button endIcon={<NavigateNextIcon />}>Next Invoice</Button>
+      </Stack>
+      <Box sx={{ marginTop: 5 }}>
+        <h3>{`Project Name: ${project?.name}`}</h3>
+        <Box sx={{ display: 'flex', alignItem: 'center', gap: 1 }}>
+          <CalendarTodayIcon />
+          <div>
+            {startDate && startDate.split('-').join('/')} - {endDate && endDate.split('-').join('/')}
+          </div>
         </Box>
       </Box>
+      <Box sx={{ display: 'flex', gap: 1, marginTop: 5, '& .MuiButtonBase-root': { color: 'grey.600' } }}>
+        <Tooltip title="edit hours" onClick={handleOpenEditDialog}>
+          <IconButton>
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="export to clickup">
+          <IconButton>
+            <SendIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="delete" onClick={handleOpenDeleteDialog}>
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <FormDialog open={isOpenedEditDialog} onClose={() => handleCloseEditDialog}>
+        <Typography variant="h6">Update Total Billable Hours</Typography>
+        <Formik
+          initialValues={{ billableHours: searchInvoiceData?.searchInvoice.hours.toString() || '' }}
+          validationSchema={FormValidation}
+          enableReinitialize={true}
+          onSubmit={(values) => {
+            const { billableHours } = values;
+            const totalHours = parseFloat(billableHours);
+
+            if (project && startDate && endDate) {
+              const { id, rate } = project;
+              const amount = rate * totalHours;
+              const invoice = {
+                projectId: id,
+                startDate: startDate,
+                endDate: endDate,
+                hours: totalHours,
+                rate: rate,
+                amount: amount
+              };
+
+              createOrUpdateInvoiceMutation({
+                variables: {
+                  invoice: invoice
+                },
+                refetchQueries: [
+                  { query: GetAllInvoicesDocument },
+                  {
+                    query: SearchInvoiceDocument,
+                    variables: searchInvoiceVariable
+                  }
+                ]
+              });
+              handleCloseEditDialog();
+            }
+          }}
+        >
+          <Form>
+            <ObserverTextInput
+              id="billableHours"
+              name="billableHours"
+              type="number"
+              label="Billable Hours"
+              placeholder="Billable Hours"
+              sx={{ width: '100%', marginTop: 2 }}
+              fullWidth
+            />
+            <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Formik>
+      </FormDialog>
+      <FormDialog open={isOpenedDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <Typography variant="h6" sx={{ mb: 4 }}>
+          Delete Invoice
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 4 }}>
+          Are you sure you want to delete this invoice?
+        </Typography>
+        <Stack direction="row" gap={2} justifyContent="end">
+          <Button color="error" variant="contained" onClick={handleDeleteInvoice}>
+            delete
+          </Button>
+          <Button color="secondary" variant="outlined" onClick={handleCloseDeleteDialog}>
+            cancel
+          </Button>
+        </Stack>
+      </FormDialog>
       <Stack direction="row" justifyContent="space-between" marginTop={5}>
         <DisplayCard id="Original billable hours" title="Original Billable Hour" data={project?.billableHours} />
         <DisplayCard id="Original billable hours" title="Original Invoice Amount" data={project && USDollar.format(project.billableHours * 65)} />
@@ -146,86 +253,21 @@ export const InvoiceDetails = () => {
         <DisplayCard id="Original billable hours" title="Revised total billable hours" data={searchInvoiceData?.searchInvoice?.hours} />
         <DisplayCard id="Original billable hours" title="Revised Invoice Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
       </Stack>
-      <Box>
-        <DataGrid
-          sx={{ marginTop: 6, color: '#021352', backgroundColor: 'white', border: 'none' }}
-          rows={rows}
-          columns={columns}
-          disableRowSelectionOnClick
-          hideFooterPagination={true}
-          hideFooter={true}
-          autoHeight={true}
-        />
-      </Box>
-      <Box>
-        <Button variant="contained" sx={{ marginTop: 5 }} onClick={() => setOpen(true)}>
-          Change Total Billable Hours
-        </Button>
-        <FormDialog open={open} onClose={() => setOpen(false)}>
-          <Typography variant="h6">Update Total Billable Hours</Typography>
-          <Formik
-            initialValues={{ billableHours: searchInvoiceData?.searchInvoice.hours.toString() || '' }}
-            validationSchema={FormValidation}
-            enableReinitialize={true}
-            onSubmit={(values) => {
-              const { billableHours } = values;
-              const totalHours = parseFloat(billableHours);
-
-              if (project && startDate && endDate) {
-                const { id, rate } = project;
-                const amount = rate * totalHours;
-                const invoice = {
-                  projectId: id,
-                  startDate: startDate,
-                  endDate: endDate,
-                  hours: totalHours,
-                  rate: rate,
-                  amount: amount
-                };
-
-                createOrUpdateInvoiceMutation({
-                  variables: {
-                    invoice: invoice
-                  },
-                  refetchQueries: [
-                    { query: GetAllInvoicesDocument },
-                    {
-                      query: SearchInvoiceDocument,
-                      variables: searchInvoiceVariable
-                    }
-                  ]
-                });
-
-                setOpen(false);
-              }
-            }}
-          >
-            <Form>
-              <ObserverTextInput
-                id="billableHours"
-                name="billableHours"
-                type="number"
-                label="Billable Hours"
-                placeholder="Billable Hours"
-                sx={{ width: '100%', marginTop: 2 }}
-                fullWidth
-              />
-              <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} type="submit">
-                Submit
-              </Button>
-            </Form>
-          </Formik>
-        </FormDialog>
+      <Box sx={{ marginTop: '2rem' }}>
+        <BasicTable rows={rows} columns={columns} keyFun={keyFun} hidePagination />
       </Box>
       <Box sx={{ marginTop: 5 }}>
         <CommentInputBox onSubmit={handleOnSubmitComment} />
         <Divider sx={{ color: 'grey.400', fontSize: '0.8rem', marginTop: 5 }}>comments</Divider>
         <CommentDisplayComponent>
           <CommentList>
-            {searchInvoiceData &&
+            {searchInvoiceData && searchInvoiceData.searchInvoice.comments.length > 0 ? (
               searchInvoiceData.searchInvoice.comments.map((item: any) => {
                 return <CommentListItem date={new Date(item.createDate)} content={item.content} onDelete={() => handleOnDelete(item.commentId)} key={item.commentId} />;
-              })}
+              })
+            ) : (
+              <div>no comments</div>
+            )}
           </CommentList>
         </CommentDisplayComponent>
       </Box>
