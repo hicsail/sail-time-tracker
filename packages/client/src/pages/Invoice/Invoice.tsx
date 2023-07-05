@@ -1,17 +1,18 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, InputAdornment, Stack, Typography } from '@mui/material';
+import { Box, Chip, InputAdornment, Paper, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
+import FaceIcon from '@mui/icons-material/Face';
 import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 import { BasicTable } from './components/table/BasicTable';
 import { TextInput } from '@components/TextInput';
 import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useDateRange } from '@context/reportFilter.context';
 import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { format } from 'date-fns';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -59,7 +60,7 @@ const columns: any[] = [
 
 export const Invoice = () => {
   const [searchText, setSearchText] = useState('');
-  const { dateRange, setDateRange } = useDateRange();
+  const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
   const { data } = useGetAllInvoicesQuery();
   const rows = data
     ? data.invoices.map((invoice) => {
@@ -81,52 +82,87 @@ export const Invoice = () => {
     : [];
 
   const filteredRows = rows.filter((row) => {
+    const { startDate, endDate } = row;
+    const [startDateMonth, startDateDay, startDateYear] = startDate.split('/');
+    const [endDateMonth, endDateDay, endDateYear] = endDate.split('/');
+    const newStartDate = new Date(parseInt(startDateYear), parseInt(startDateMonth) - 1, parseInt(startDateDay));
+    const newEndDate = new Date(parseInt(endDateYear), parseInt(endDateMonth) - 1, parseInt(endDateDay));
+    if (dateRange.startDate && dateRange.endDate) {
+      return row.projectName.toLowerCase().includes(searchText.toLowerCase()) && newStartDate >= dateRange.startDate && newEndDate <= dateRange.endDate;
+    }
     return row.projectName.toLowerCase().includes(searchText.toLowerCase());
   });
 
   const keyFun = (row: any) => row.id;
 
   const ToolBar = (
-    <Stack direction="row" gap={2} mb={3}>
-      <Box sx={{ display: 'flex', gap: 5 }}>
-        <DatePicker
-          label="Start Date"
-          value={dateRange.startDate}
-          slots={{ layout: CustomDatePickerLayout }}
-          onChange={(newValue) => {
-            setDateRange((prevState: any) => ({
-              ...prevState,
-              startDate: newValue
-            }));
+    <>
+      <Stack direction="row" gap={2} mb={3}>
+        <Box sx={{ display: 'flex', gap: 5 }}>
+          <DatePicker
+            label="Start Date"
+            value={dateRange.startDate}
+            slots={{ layout: CustomDatePickerLayout }}
+            onChange={(newValue) => {
+              setDateRange((prevState: any) => ({
+                ...prevState,
+                startDate: newValue
+              }));
+            }}
+          />
+          <DatePicker
+            label="End Date"
+            value={dateRange.endDate}
+            slots={{ layout: CustomDatePickerLayout }}
+            onChange={(newValue) => {
+              setDateRange((prevState: any) => ({
+                ...prevState,
+                endDate: newValue
+              }));
+            }}
+          />
+        </Box>
+        <TextInput
+          value={searchText}
+          setValue={setSearchText}
+          id="search-employee"
+          variant="outlined"
+          placeholder="Search..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ mr: 1, color: 'grey.500' }} />
+              </InputAdornment>
+            )
           }}
         />
-        <DatePicker
-          label="End Date"
-          value={dateRange.endDate}
-          slots={{ layout: CustomDatePickerLayout }}
-          onChange={(newValue) => {
-            setDateRange((prevState: any) => ({
-              ...prevState,
-              endDate: newValue
-            }));
-          }}
-        />
-      </Box>
-      <TextInput
-        value={searchText}
-        setValue={setSearchText}
-        id="search-employee"
-        variant="outlined"
-        placeholder="Search..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon sx={{ mr: 1, color: 'grey.500' }} />
-            </InputAdornment>
-          )
-        }}
-      />
-    </Stack>
+      </Stack>
+      <Stack>
+        <Box>
+          <strong>{filteredRows.length}</strong>{' '}
+          <Box component="span" sx={{ color: 'grey.600' }}>
+            results found
+          </Box>
+          <Stack flexWrap="wrap" flexGrow="1">
+            <Paper
+              variant="outlined"
+              sx={{ border: '1px dashed', borderColor: 'grey.300', display: 'flex', gap: '8px', justifyContent: 'start', alignItems: 'center', flex: '0 0 50px' }}
+            >
+              <Box component="span" sx={{ fontWeight: 'medium' }}>
+                Date:
+              </Box>
+              <Stack direction="row" gap="8px" flexBasis="150px">
+                <Chip
+                  icon={<FaceIcon />}
+                  label={dateRange.startDate && dateRange.endDate && `${format(dateRange.startDate, 'dd MMM yy')} - ${format(dateRange.endDate, 'dd MMM yy')}`}
+                  sx={{ borderRadius: '8px', width: '100%', position: 'relative' }}
+                />
+              </Stack>
+            </Paper>
+          </Stack>
+        </Box>
+      </Stack>
+    </>
   );
 
   return (
