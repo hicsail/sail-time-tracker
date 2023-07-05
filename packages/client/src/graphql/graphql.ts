@@ -166,6 +166,7 @@ export type Mutation = {
   deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteFavoriteProjects: BatchPayload;
+  deleteInvoice: InvoiceModel;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
   updateEmployee: EmployeeModel;
@@ -203,6 +204,10 @@ export type MutationDeleteEmployeesArgs = {
 export type MutationDeleteFavoriteProjectsArgs = {
   employeeId: Scalars['String'];
   projectIds: Array<Scalars['String']>;
+};
+
+export type MutationDeleteInvoiceArgs = {
+  projectId_startDate_endDate: InvoiceSearchInput;
 };
 
 export type MutationDeleteProjectsArgs = {

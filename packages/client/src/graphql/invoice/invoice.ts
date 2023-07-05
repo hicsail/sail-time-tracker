@@ -11,6 +11,12 @@ export type CreateOrUpdateInvoiceMutationVariables = Types.Exact<{
 
 export type CreateOrUpdateInvoiceMutation = { __typename?: 'Mutation'; createOrUpdateInvoice: { __typename?: 'InvoiceModel'; projectId: string; startDate: any; endDate: any } };
 
+export type DeleteInvoiceMutationVariables = Types.Exact<{
+  projectId_startDate_endDate: Types.InvoiceSearchInput;
+}>;
+
+export type DeleteInvoiceMutation = { __typename?: 'Mutation'; deleteInvoice: { __typename?: 'InvoiceModel'; invoiceId: string } };
+
 export type GetAllInvoicesQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type GetAllInvoicesQuery = {
@@ -86,6 +92,39 @@ export function useCreateOrUpdateInvoiceMutation(baseOptions?: Apollo.MutationHo
 export type CreateOrUpdateInvoiceMutationHookResult = ReturnType<typeof useCreateOrUpdateInvoiceMutation>;
 export type CreateOrUpdateInvoiceMutationResult = Apollo.MutationResult<CreateOrUpdateInvoiceMutation>;
 export type CreateOrUpdateInvoiceMutationOptions = Apollo.BaseMutationOptions<CreateOrUpdateInvoiceMutation, CreateOrUpdateInvoiceMutationVariables>;
+export const DeleteInvoiceDocument = gql`
+  mutation deleteInvoice($projectId_startDate_endDate: InvoiceSearchInput!) {
+    deleteInvoice(projectId_startDate_endDate: $projectId_startDate_endDate) {
+      invoiceId
+    }
+  }
+`;
+export type DeleteInvoiceMutationFn = Apollo.MutationFunction<DeleteInvoiceMutation, DeleteInvoiceMutationVariables>;
+
+/**
+ * __useDeleteInvoiceMutation__
+ *
+ * To run a mutation, you first call `useDeleteInvoiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteInvoiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteInvoiceMutation, { data, loading, error }] = useDeleteInvoiceMutation({
+ *   variables: {
+ *      projectId_startDate_endDate: // value for 'projectId_startDate_endDate'
+ *   },
+ * });
+ */
+export function useDeleteInvoiceMutation(baseOptions?: Apollo.MutationHookOptions<DeleteInvoiceMutation, DeleteInvoiceMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteInvoiceMutation, DeleteInvoiceMutationVariables>(DeleteInvoiceDocument, options);
+}
+export type DeleteInvoiceMutationHookResult = ReturnType<typeof useDeleteInvoiceMutation>;
+export type DeleteInvoiceMutationResult = Apollo.MutationResult<DeleteInvoiceMutation>;
+export type DeleteInvoiceMutationOptions = Apollo.BaseMutationOptions<DeleteInvoiceMutation, DeleteInvoiceMutationVariables>;
 export const GetAllInvoicesDocument = gql`
   query getAllInvoices {
     invoices {

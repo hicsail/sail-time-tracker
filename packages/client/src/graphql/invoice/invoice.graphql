@@ -6,6 +6,12 @@ mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
     }
 }
 
+mutation deleteInvoice($projectId_startDate_endDate: InvoiceSearchInput!) {
+    deleteInvoice(projectId_startDate_endDate: $projectId_startDate_endDate) {
+        invoiceId
+    }
+}
+
 query getAllInvoices {
     invoices {
         invoiceId

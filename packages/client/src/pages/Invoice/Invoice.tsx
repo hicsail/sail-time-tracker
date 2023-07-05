@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
-import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
+import { GetAllInvoicesDocument, useDeleteInvoiceMutation, useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 import { BasicTable } from './components/table/BasicTable';
 import { TextInput } from '@components/TextInput';
 import SearchIcon from '@mui/icons-material/Search';
@@ -12,6 +12,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
 import { useState } from 'react';
 import { format } from 'date-fns';
+import { FormDialog } from '@components/form/FormDialog';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -28,39 +29,13 @@ const CustomIDCellRender = (props: { id: string; value: string; startDate: Date;
   );
 };
 
-const columns: any[] = [
-  {
-    field: 'projectName',
-    headerName: 'PROJECT NAME',
-    width: 150,
-    renderCell: (row: any) => <CustomIDCellRender id={row.projectId} startDate={row.startDate} endDate={row.endDate} value={row.projectName} />
-  },
-  { field: 'startDate', headerName: 'START DATE', width: 130 },
-  { field: 'endDate', headerName: 'END DATE', width: 130 },
-  {
-    field: 'hours',
-    headerName: 'TOTAL HOURS',
-    type: 'number',
-    width: 150
-  },
-  {
-    field: 'amount',
-    headerName: 'INVOICE AMOUNT',
-    type: 'number',
-    renderCell: (row: any) => `${USDollar.format(row.amount)}`,
-    width: 160
-  },
-  {
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: () => <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} />
-  }
-];
-
 export const Invoice = () => {
   const [searchText, setSearchText] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+  const [currentInvoice, setCurrentInvoice] = useState<{ projectId: string; startDate: string; endDate: string } | null>(null);
   const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
   const { data } = useGetAllInvoicesQuery();
+  const [deleteInvoice] = useDeleteInvoiceMutation();
   const rows = data
     ? data.invoices.map((invoice) => {
         const projectName = invoice.project.name;
@@ -101,6 +76,54 @@ export const Invoice = () => {
     handleReset();
     setSearchText('');
   };
+
+  const handleDeleteInvoice = (projectId: string, startDate: string, endDate: string) => {
+    deleteInvoice({
+      variables: {
+        projectId_startDate_endDate: {
+          projectId,
+          startDate,
+          endDate
+        }
+      },
+      refetchQueries: [{ query: GetAllInvoicesDocument }]
+    }).then((r) => r.data && setOpenDialog(false));
+  };
+
+  const handleCloseFormDialog = () => setOpenDialog(false);
+  const handleOpenFormDialog = (projectId: string, startDate: string, endDate: string) => {
+    setCurrentInvoice({ projectId, startDate, endDate });
+    setOpenDialog(true);
+  };
+
+  const columns: any[] = [
+    {
+      field: 'projectName',
+      headerName: 'PROJECT NAME',
+      width: 150,
+      renderCell: (row: any) => <CustomIDCellRender id={row.projectId} startDate={row.startDate} endDate={row.endDate} value={row.projectName} />
+    },
+    { field: 'startDate', headerName: 'START DATE', width: 130 },
+    { field: 'endDate', headerName: 'END DATE', width: 130 },
+    {
+      field: 'hours',
+      headerName: 'TOTAL HOURS',
+      type: 'number',
+      width: 150
+    },
+    {
+      field: 'amount',
+      headerName: 'INVOICE AMOUNT',
+      type: 'number',
+      renderCell: (row: any) => `${USDollar.format(row.amount)}`,
+      width: 160
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: (row: any) => <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} onClick={() => handleOpenFormDialog(row.projectId, row.startDate, row.endDate)} />
+    }
+  ];
 
   const ToolBar = (
     <>
@@ -214,6 +237,26 @@ export const Invoice = () => {
         }}
         sx={{ color: 'customColors.interstellarBlue', border: 'none', backgroundColor: 'white' }}
       />
+      <FormDialog open={openDialog} onClose={handleCloseFormDialog}>
+        <Typography variant="h6" sx={{ mb: 4 }}>
+          Delete Invoice
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 4 }}>
+          Are you sure you want to delete this invoice?
+        </Typography>
+        <Stack direction="row" gap={2} justifyContent="end">
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => currentInvoice && handleDeleteInvoice(currentInvoice.projectId, currentInvoice.startDate, currentInvoice.endDate)}
+          >
+            delete
+          </Button>
+          <Button color="secondary" variant="outlined" onClick={handleCloseFormDialog}>
+            cancel
+          </Button>
+        </Stack>
+      </FormDialog>
     </Box>
   );
 };
