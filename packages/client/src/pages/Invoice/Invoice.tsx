@@ -193,7 +193,7 @@ export const Invoice = () => {
   );
 
   return (
-    <Box sx={{ width: '100%', marginTop: 8 }}>
+    <Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 8 }}>
         <Typography variant="h5" sx={{ marginTop: 8, fontWeight: 'bold', color: 'customColors.interstellarBlue' }}>
           Billing & Invoices
