@@ -1,17 +1,16 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Chip, InputAdornment, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, InputAdornment, Paper, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
-import FaceIcon from '@mui/icons-material/Face';
 import { useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 import { BasicTable } from './components/table/BasicTable';
 import { TextInput } from '@components/TextInput';
 import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker } from '@mui/x-date-pickers';
 import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
@@ -94,6 +93,14 @@ export const Invoice = () => {
   });
 
   const keyFun = (row: any) => row.id;
+  const handleReset = () => {
+    setDateRange({ startDate: null, endDate: null });
+  };
+
+  const handleClearButtonClick = () => {
+    handleReset();
+    setSearchText('');
+  };
 
   const ToolBar = (
     <>
@@ -137,30 +144,50 @@ export const Invoice = () => {
           }}
         />
       </Stack>
-      <Stack>
-        <Box>
-          <strong>{filteredRows.length}</strong>{' '}
-          <Box component="span" sx={{ color: 'grey.600' }}>
-            results found
+      <Stack marginBottom="1.5rem">
+        {(searchText !== '' || (dateRange.startDate && dateRange.endDate)) && (
+          <Box sx={{ marginBottom: 2 }}>
+            <strong>{filteredRows.length}</strong>{' '}
+            <Box component="span" sx={{ color: 'grey.600' }}>
+              results found
+            </Box>
           </Box>
-          <Stack flexWrap="wrap" flexGrow="1">
+        )}
+        <Stack direction="row" alignItems="center">
+          {dateRange.startDate && dateRange.endDate && (
             <Paper
               variant="outlined"
-              sx={{ border: '1px dashed', borderColor: 'grey.300', display: 'flex', gap: '8px', justifyContent: 'start', alignItems: 'center', flex: '0 0 50px' }}
+              sx={{
+                border: '1px dashed',
+                borderColor: 'grey.300',
+                borderRadius: '8px',
+                display: 'flex',
+                gap: '8px',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '50px',
+                width: '250px',
+                padding: '0 8px'
+              }}
             >
               <Box component="span" sx={{ fontWeight: 'medium' }}>
                 Date:
               </Box>
-              <Stack direction="row" gap="8px" flexBasis="150px">
+              <Stack direction="row" gap="8px">
                 <Chip
-                  icon={<FaceIcon />}
                   label={dateRange.startDate && dateRange.endDate && `${format(dateRange.startDate, 'dd MMM yy')} - ${format(dateRange.endDate, 'dd MMM yy')}`}
-                  sx={{ borderRadius: '8px', width: '100%', position: 'relative' }}
+                  sx={{ borderRadius: '8px', width: '100%', backgroundColor: 'grey.900', color: 'white', '& .MuiSvgIcon-root': { color: 'grey.500' } }}
+                  onDelete={handleReset}
                 />
               </Stack>
             </Paper>
-          </Stack>
-        </Box>
+          )}
+          {(searchText !== '' || (dateRange.startDate && dateRange.endDate)) && (
+            <Button onClick={handleClearButtonClick} sx={{ color: 'error.main', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <DeleteIcon /> Clear
+            </Button>
+          )}
+        </Stack>
       </Stack>
     </>
   );
