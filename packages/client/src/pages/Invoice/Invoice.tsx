@@ -124,7 +124,6 @@ export const Invoice = () => {
       renderCell: (row: any) => <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} onClick={() => handleOpenFormDialog(row.projectId, row.startDate, row.endDate)} />
     }
   ];
-
   const ToolBar = (
     <>
       <Stack direction="row" gap={2} mb={3}>
@@ -235,7 +234,6 @@ export const Invoice = () => {
             paginationModel: { page: 0, pageSize: 10 }
           }
         }}
-        sx={{ color: 'customColors.interstellarBlue', border: 'none', backgroundColor: 'white' }}
       />
       <FormDialog open={openDialog} onClose={handleCloseFormDialog}>
         <Typography variant="h6" sx={{ mb: 4 }}>

@@ -5,7 +5,7 @@ services:
     container_name: time-tracker-frontend
     restart: always
     ports:
-      - 4004:80
+      - 4000:80
     env_file:
       - ../stack.env
   time-tracker-backend:
@@ -13,17 +13,25 @@ services:
     container_name: time-tracker-backend
     restart: always
     ports:
-      - 4003:3000
+      - 4001:3000
     env_file:
       - ../stack.env
   time-tracker-postgres:
     image: postgres:13
     restart: always
     ports:
-      - 5433:5432
+      - 5432:5432
     volumes:
-      - time-tracker-staging:/var/lib/postgresql/data
+      - time-tracker-prod:/var/lib/postgresql/data
     env_file:
       - ../stack.env
+  backup:
+    image: offen/docker-volume-backup:v2.27.0
+    restart: always
+    env_file:
+      - ../backup.env
+      - ../stack.env
+    volumes:
+      - time-tracker-prod:/backup:ro
 volumes:
-  time-tracker-staging: ~
+  time-tracker-prod: ~
