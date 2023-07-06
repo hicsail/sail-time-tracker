@@ -212,7 +212,6 @@ export const Invoice = () => {
             paginationModel: { page: 0, pageSize: 10 }
           }
         }}
-        sx={{ color: 'customColors.interstellarBlue', border: 'none', backgroundColor: 'white' }}
       />
     </Box>
   );
