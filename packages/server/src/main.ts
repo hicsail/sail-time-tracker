@@ -6,9 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: ['http://localhost:5173', 'https:test-time.sail.codes', 'https://time.sail.codes'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    preflightContinue: true
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,OPTIONS,DELETE",
+    "preflightContinue": true,
+    "optionsSuccessStatus": 204
   });
   await app.listen(3000);
 }
