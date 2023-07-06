@@ -1,7 +1,8 @@
-import { Checkbox, Stack, Typography } from '@mui/material';
+import { Button, Checkbox, Stack, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { Delete } from '@mui/icons-material';
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
+import { FormDialog } from '@components/form/FormDialog';
 
 interface TableHeadCoverProps {
   rowCount: number;
@@ -11,8 +12,19 @@ interface TableHeadCoverProps {
   handleClickDelete: () => void;
 }
 
-export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, handleSelectAllClick, handleClickDelete }) => {
+export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, handleSelectAllClick, handleClickDelete, setSelected }) => {
   const numSelected = selected.length;
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleCloseFormDialog = () => {
+    setOpenDialog(false);
+    setSelected([]);
+  };
+
+  const handleUnFavoriteProject = async () => {
+    handleClickDelete();
+    handleCloseFormDialog();
+  };
 
   return (
     <Stack
@@ -24,19 +36,35 @@ export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, ha
         top: 0,
         left: 0,
         height: '58px',
-        backgroundColor: 'primary.light',
+        backgroundColor: `primary.light`,
         width: '100%',
-        zIndex: `${selected.length > 0 ? 10 : -10}`,
-        paddingLeft: 0.5
+        paddingLeft: 0.5,
+        zIndex: `${selected.length > 0 ? 10 : -10}`
       }}
     >
       <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={numSelected > 0 && numSelected === rowCount} onChange={handleSelectAllClick} />
       <Typography sx={{ flex: '1 1 100%' }} color="primary" variant="subtitle2">
         {numSelected} selected
       </Typography>
-      <IconButton onClick={handleClickDelete}>
+      <IconButton onClick={() => setOpenDialog(true)}>
         <Delete color="primary" />
       </IconButton>
+      <FormDialog open={openDialog} onClose={handleCloseFormDialog}>
+        <Typography variant="h6" sx={{ mb: 4 }}>
+          Unfavorite
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 4 }}>
+          Are you sure you want to unfavorite these projects?
+        </Typography>
+        <Stack direction="row" gap={2} justifyContent="end">
+          <Button color="error" variant="contained" onClick={handleUnFavoriteProject}>
+            unfavorite
+          </Button>
+          <Button color="secondary" variant="outlined" onClick={handleCloseFormDialog}>
+            cancel
+          </Button>
+        </Stack>
+      </FormDialog>
     </Stack>
   );
 };

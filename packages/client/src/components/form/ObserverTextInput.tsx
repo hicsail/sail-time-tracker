@@ -1,6 +1,7 @@
-import { FormControl, TextField, TextFieldProps } from '@mui/material';
+import { FormControl, TextFieldProps } from '@mui/material';
 import { FC } from 'react';
 import { useFormikContext } from 'formik';
+import { DefaultTextInput } from '@components/StyledComponent';
 
 export type TextInputProps = TextFieldProps & {
   name: string;
@@ -11,7 +12,7 @@ export const ObserverTextInput: FC<TextInputProps> = (props) => {
 
   return (
     <FormControl variant={props.variant} fullWidth={props.fullWidth}>
-      <TextField
+      <DefaultTextInput
         {...props}
         onChange={handleChange}
         onBlur={handleBlur}

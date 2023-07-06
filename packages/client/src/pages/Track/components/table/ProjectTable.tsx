@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack, TableFooter, styled } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { Save } from '@mui/icons-material';
-import React, { ChangeEvent, useState, MouseEvent, FC } from 'react';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { ChangeEvent, useState, MouseEvent, FC } from 'react';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
 
 import { Form, Formik } from 'formik';
@@ -21,16 +21,7 @@ import { CheckboxesSearch } from '@pages/Track/components/form/CheckboxesSearch'
 import { useNavigate } from 'react-router-dom';
 import { TableHeadCover } from '@pages/Employee/components/table/TableHeadCover';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
-
-export interface Data {
-  id: string;
-  name: string;
-  hours?: number;
-  description: string;
-  status: string;
-  isFavorite: boolean;
-  previousWeek?: number;
-}
+import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
 
 interface ProjectTableProps {
   data: any | undefined;
@@ -126,20 +117,15 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <StyledTableBox>
       <StyledPaper elevation={0}>
         <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
           <Typography variant="h6">Favorite Projects</Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
-            onClick={() => handleClickOpen('add')}
-          >
+          <DefaultContainedButton variant="contained" startIcon={<AddIcon />} onClick={() => handleClickOpen('add')}>
             Add Favorite Project
-          </Button>
+          </DefaultContainedButton>
           <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-            <CheckboxesSearch />
+            <CheckboxesSearch data={data} onClose={() => handleOnClose('add')} />
           </FormDialog>
         </Stack>
         <TableContainer>
@@ -153,7 +139,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
             />
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length - 2} dates={dates} />
             <TableBody>
-              {rows.map((row: any, index: number) => {
+              {rows.map((row: any) => {
                 const isItemSelected = isSelected(row.projectId);
                 const labelId = `enhanced-table-checkbox-${row.projectId}`;
 
@@ -198,14 +184,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                           >
                             <Form>
                               <FormObserver employeeId={employeeId as string} projectId={row.projectId} date={date} setLoading={setLoading} id={dateValue.date} />
-                              <ObserverTextInput
-                                name={dateValue.date}
-                                type="number"
-                                variant="outlined"
-                                InputProps={{ inputProps: { min: 0 } }}
-                                required
-                                sx={{ '& fieldset': { border: 'none' }, backgroundColor: 'grey.100', borderRadius: '5%' }}
-                              />
+                              <ObserverTextInput name={dateValue.date} type="number" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
                             </Form>
                           </Formik>
                         </TableCell>
@@ -219,14 +198,22 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                 );
               })}
             </TableBody>
+            <TableFooter>
+              <LoadingButton
+                color="primary"
+                loading={loading}
+                loadingPosition="start"
+                startIcon={<FiberManualRecordIcon />}
+                variant="text"
+                sx={{ marginTop: 2, pointerEvents: 'none' }}
+              >
+                <span>{loading ? 'Saving' : 'Saved'}</span>
+              </LoadingButton>
+            </TableFooter>
           </Table>
         </TableContainer>
         {rows.length == 0 && <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }}>Add Your First Favorite Project</Button>}
       </StyledPaper>
-
-      <LoadingButton color="primary" loading={loading} loadingPosition="start" startIcon={<Save />} variant="contained">
-        <span>Save</span>
-      </LoadingButton>
-    </Box>
+    </StyledTableBox>
   );
 };
