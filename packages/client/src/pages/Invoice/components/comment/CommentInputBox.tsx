@@ -1,6 +1,6 @@
 import TextareaAutosize from '@mui/base/TextareaAutosize';
-import { Button, Stack, styled, Typography, Divider } from '@mui/material';
-import { ChangeEvent, ChangeEventHandler, FC, useRef, useState } from 'react';
+import { Button, Stack, styled, Typography } from '@mui/material';
+import { FC, useRef } from 'react';
 
 interface CommentsProps {
   onSubmit: (value: string | undefined) => void;
