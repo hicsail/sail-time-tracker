@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { Box, MenuItem, Typography } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import {
   GetEmployeeByIdDocument,
@@ -13,6 +12,7 @@ import {
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { useParams } from 'react-router-dom';
 import { FC, useEffect, useState } from 'react';
+import { DefaultContainedButton } from '@components/StyledComponent';
 
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
@@ -99,9 +99,9 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
               <MenuItem value="Inactive">Inactive</MenuItem>
               <MenuItem value="Active">Active</MenuItem>
             </ObserverTextInput>
-            <LoadingButton color="primary" variant="contained" loadingPosition="start" startIcon={<SendIcon />} fullWidth type="submit">
-              Submit
-            </LoadingButton>
+            <DefaultContainedButton variant="contained" startIcon={<SendIcon />} fullWidth type="submit">
+              {id ? 'Update' : 'Create'}
+            </DefaultContainedButton>
           </Box>
         </Form>
       </Formik>

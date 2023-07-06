@@ -7,15 +7,17 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
 import { TextInput } from '@components/TextInput';
+import { useDateRange } from '@context/dateRange.context';
 
 export const Report = () => {
   const [groupBy, setGroupBy] = useState<string>('1');
   const [searchText, setSearchText] = useState<string>('');
   const date = new Date();
-  const [dateRange, setDateRage] = useState<{ startDate: Date | null; endDate: Date | null }>({
-    startDate: startOfWeek(date, { weekStartsOn: 1 }),
-    endDate: endOfWeek(date, { weekStartsOn: 1 })
-  });
+  const { dateRange, setDateRange } = useDateRange();
+  // const [dateRange, setDateRage] = useState<{ startDate: Date | null; endDate: Date | null }>({
+  //   startDate: startOfWeek(date, { weekStartsOn: 1 }),
+  //   endDate: endOfWeek(date, { weekStartsOn: 1 })
+  // });
 
   const data = [
     { id: '1', name: 'Employee' },
@@ -37,7 +39,7 @@ export const Report = () => {
             label="Start Date"
             value={dateRange.startDate}
             onChange={(newValue) => {
-              setDateRage((prevState) => ({
+              setDateRange((prevState: any) => ({
                 ...prevState,
                 startDate: newValue
               }));
@@ -47,7 +49,7 @@ export const Report = () => {
             label="End Date"
             value={dateRange.endDate}
             onChange={(newValue) => {
-              setDateRage((prevState) => ({
+              setDateRange((prevState: any) => ({
                 ...prevState,
                 endDate: newValue
               }));

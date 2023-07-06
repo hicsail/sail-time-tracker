@@ -1,22 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Checkbox,
-  Button,
-  Chip,
-  TablePagination,
-  Typography,
-  Stack,
-  InputAdornment,
-  SelectChangeEvent
-} from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Button, Chip, TablePagination, Typography, Stack, InputAdornment, SelectChangeEvent } from '@mui/material';
 import { EnhancedTableHead } from '@pages/Project/components/table/EnhencedTableHead';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
@@ -26,15 +11,12 @@ import AddIcon from '@mui/icons-material/Add';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import { TextInput } from '@components/TextInput';
 import SearchIcon from '@mui/icons-material/Search';
-import { TableHeadCover } from '@pages/Employee/components/table/TableHeadCover';
-import { GetProjectListDocument, useDeleteProjectsMutation } from '@graphql/project/project';
 
 interface ProjectTableProps {
   data: any[];
 }
 
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = useState({
     add: false,
     edit: false
@@ -45,7 +27,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [rows, setRows] = useState(data ? data : []);
   const [filter, setFilter] = useState<string>('Active');
-  const [deleteProjects] = useDeleteProjectsMutation();
 
   const handleClickOpen = (type: string) => {
     setOpen((prevState) => ({ ...prevState, [type]: true }));
@@ -54,45 +35,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const handleOnClose = (type: string) => {
     setOpen((prevState) => ({ ...prevState, [type]: false }));
     navigate(Paths.PROJECT_lIST);
-  };
-
-  /**
-   * this method is used to handle select all employees' event.
-   * @param event
-   */
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  /**
-   * this method is used to handle select single employee event.
-   * @param event
-   * @param id
-   */
-  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-
-    setSelected(newSelected);
-  };
-
-  const isSelected = (id: string) => {
-    return selected.indexOf(id) !== -1;
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -155,16 +97,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     setFilter(e.target.value);
   };
 
-  const handleClickDelete = async () => {
-    await deleteProjects({
-      variables: {
-        ids: selected as string[]
-      },
-      refetchQueries: [{ query: GetProjectListDocument }]
-    });
-    setSelected([]);
-  };
-
   return (
     <Box sx={{ width: '100%', marginTop: 8 }}>
       <StyledPaper elevation={0}>
@@ -201,79 +133,52 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         </Stack>
         <TableContainer>
           <Table sx={{ minWidth: 750, position: 'relative' }}>
-            <TableHeadCover
-              rowCount={rows.length}
-              selected={selected}
-              setSelected={setSelected}
-              handleSelectAllClick={handleSelectAllClick}
-              handleClickDelete={handleClickDelete}
-            />
-            <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length} />
+            <EnhancedTableHead />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
                     key={row.name}
-                    selected={isItemSelected}
-                    sx={{ '& .MuiTableCell-root': { fontWeight: 'medium' } }}
+                    sx={{ '& .MuiTableCell-root': { fontWeight: 'medium', borderBottom: '1px dashed', borderColor: 'grey.200', width: '100px', align: 'left' } }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        onClick={(event) => handleClick(event, row.id)}
-                        inputProps={{
-                          'aria-labelledby': labelId
-                        }}
-                      />
-                    </TableCell>
                     <TableCell
                       component="th"
                       id={labelId}
                       scope="row"
-                      padding="none"
                       sx={{
-                        width: '100px',
-                        paddingRight: '3rem',
-                        paddingLeft: '0'
+                        width: '100px'
                       }}
                     >
                       {row.name}
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
-                      {row.description}
-                    </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem', paddingLeft: '0' }}>
-                      {row.rate}
-                    </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
+                    <TableCell>{row.description}</TableCell>
+                    <TableCell>{row.rate}</TableCell>
+                    <TableCell>
                       <Chip
                         label={row.status}
                         sx={{
                           backgroundColor: row.status === 'Active' ? 'success.light' : 'error.light',
                           color: row.status === 'Active' ? 'success.main' : 'error.main',
-                          padding: '0 10px'
+                          padding: '0 10px',
+                          borderRadius: '8px'
                         }}
                       />
                     </TableCell>
-                    <TableCell align="left" sx={{ width: '100px', paddingRight: '3rem' }}>
+                    <TableCell>
                       <Chip
                         label={row.isBillable.toString()}
                         sx={{
                           backgroundColor: row.isBillable ? 'success.light' : 'error.light',
                           color: row.isBillable ? 'success.main' : 'error.main',
-                          padding: '0 10px'
+                          padding: '0 10px',
+                          borderRadius: '8px'
                         }}
                       />
                     </TableCell>
-                    <TableCell align="left" sx={{ border: 'none', width: '100px', underline: 'none' }}>
+                    <TableCell>
                       <Button
                         variant="outlined"
                         onClick={() => {
