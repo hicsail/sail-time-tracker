@@ -10,12 +10,13 @@ interface BasicTableProps {
   keyFun: (row: any) => string;
   initialState?: any;
   sx?: any;
+  hidePagination?: boolean;
 }
 
-export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun, initialState, ...otherProps }) => {
+export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun, initialState, hidePagination, ...otherProps }) => {
   const {
     pagination: { paginationModel }
-  } = initialState;
+  } = initialState || { pagination: { paginationModel: { page: 0, pageSize: 10 } } };
 
   const [page, setPage] = useState(paginationModel.page);
   const [rowsPerPage, setRowsPerPage] = useState(paginationModel.pageSize);
@@ -70,7 +71,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
         </TableHead>
         <TableBody>{renderRows}</TableBody>
       </Table>
-      {paginationModel && (
+      {!hidePagination && (
         <TablePagination
           rowsPerPageOptions={[10, 25, 50]}
           component="div"

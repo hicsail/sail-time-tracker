@@ -166,6 +166,7 @@ export type Mutation = {
   deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
   deleteFavoriteProjects: BatchPayload;
+  deleteInvoice: InvoiceModel;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
   updateEmployee: EmployeeModel;
@@ -203,6 +204,10 @@ export type MutationDeleteEmployeesArgs = {
 export type MutationDeleteFavoriteProjectsArgs = {
   employeeId: Scalars['String'];
   projectIds: Array<Scalars['String']>;
+};
+
+export type MutationDeleteInvoiceArgs = {
+  projectId_startDate_endDate: InvoiceSearchInput;
 };
 
 export type MutationDeleteProjectsArgs = {
@@ -282,6 +287,8 @@ export type Query = {
   comments: Array<CommentModel>;
   employee: EmployeeModel;
   employees: Array<EmployeeModel>;
+  findNextInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
+  findPreviousInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   invoices: Array<InvoiceModelWithProject>;
@@ -297,6 +304,16 @@ export type QueryCommentArgs = {
 
 export type QueryEmployeeArgs = {
   id: Scalars['String'];
+};
+
+export type QueryFindNextInvoiceArgs = {
+  endDate: Scalars['DateTime'];
+  projectId: Scalars['String'];
+};
+
+export type QueryFindPreviousInvoiceArgs = {
+  projectId: Scalars['String'];
+  startDate: Scalars['DateTime'];
 };
 
 export type QueryGetEmployeesWithRecordArgs = {

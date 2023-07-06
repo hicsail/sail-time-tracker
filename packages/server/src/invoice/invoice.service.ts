@@ -59,4 +59,53 @@ export class InvoiceService {
       }
     });
   }
+
+  async deleteInvoice(projectId_startDate_endDate: InvoiceSearchInput): Promise<Invoice> {
+    const { projectId, startDate, endDate } = projectId_startDate_endDate;
+    return this.prisma.invoice.delete({
+      where: {
+        projectId_startDate_endDate: {
+          projectId,
+          startDate,
+          endDate
+        }
+      }
+    });
+  }
+
+  async findPreviousInvoice(projectId: string, startDate: Date): Promise<InvoiceModelWithProjectAndComments | null> {
+    return this.prisma.invoice.findFirst({
+      where: {
+        projectId,
+        endDate: {
+          lt: startDate
+        }
+      },
+      orderBy: {
+        endDate: 'desc'
+      },
+      include: {
+        project: true,
+        comments: true
+      }
+    });
+  }
+
+  async findNextInvoice(projectId: string, endDate: Date): Promise<InvoiceModelWithProjectAndComments | null> {
+    return this.prisma.invoice.findFirst({
+      where: {
+        projectId,
+        startDate: {
+          gt: endDate
+        }
+      },
+      orderBy: {
+        startDate: 'asc'
+      },
+      include: {
+        project: true,
+        comments: true
+      }
+    });
+  }
 }

@@ -23,8 +23,23 @@ export class InvoiceResolver {
     return this.invoiceService.searchInvoicesByDateRange(startDate, endDate);
   }
 
+  @Query(() => InvoiceModelWithProjectAndComments, { nullable: true })
+  async findPreviousInvoice(@Args('projectId') projectId: string, @Args('startDate') startDate: Date): Promise<InvoiceModelWithProjectAndComments | null> {
+    return this.invoiceService.findPreviousInvoice(projectId, startDate);
+  }
+
+  @Query(() => InvoiceModelWithProjectAndComments, { nullable: true })
+  async findNextInvoice(@Args('projectId') projectId: string, @Args('endDate') endDate: Date): Promise<InvoiceModelWithProjectAndComments | null> {
+    return this.invoiceService.findNextInvoice(projectId, endDate);
+  }
+
   @Mutation(() => InvoiceModel)
   async createOrUpdateInvoice(@Args('invoice') invoice: InvoiceCreateInput): Promise<Invoice> {
     return this.invoiceService.createOrUpdateInvoice(invoice);
+  }
+
+  @Mutation(() => InvoiceModel)
+  async deleteInvoice(@Args('projectId_startDate_endDate') projectId_startDate_endDate: InvoiceSearchInput): Promise<Invoice> {
+    return this.invoiceService.deleteInvoice(projectId_startDate_endDate);
   }
 }
