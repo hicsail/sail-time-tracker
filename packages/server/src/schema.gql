@@ -149,6 +149,8 @@ type Query {
   invoices: [InvoiceModelWithProject!]!
   searchInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModelWithProjectAndComments!
   searchInvoicesByDateRange(startDate: DateTime!, endDate: DateTime!): [InvoiceModel!]!
+  findPreviousInvoice(projectId: String!, startDate: DateTime!): InvoiceModelWithProjectAndComments
+  findNextInvoice(projectId: String!, endDate: DateTime!): InvoiceModelWithProjectAndComments
   comment(id: String!): CommentModel!
   comments: [CommentModel!]!
 }

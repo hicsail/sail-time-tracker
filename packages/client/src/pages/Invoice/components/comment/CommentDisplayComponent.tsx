@@ -6,5 +6,5 @@ interface CommentDisplayComponentProps {
 }
 
 export const CommentDisplayComponent: FC<CommentDisplayComponentProps> = ({ children }) => {
-  return <Box>{children}</Box>;
+  return <Box sx={{ minHeight: '200px' }}>{children}</Box>;
 };

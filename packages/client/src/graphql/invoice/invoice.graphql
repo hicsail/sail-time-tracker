@@ -46,9 +46,48 @@ query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
     }
 }
 
-
 query searchInvoicesByDateRange($startDate: DateTime!, $endDate: DateTime!) {
     searchInvoicesByDateRange(startDate: $startDate, endDate: $endDate) {
         projectId
+    }
+}
+
+query findPreviousInvoice($projectId: String!, $startDate: DateTime!) {
+    findPreviousInvoice(projectId: $projectId, startDate: $startDate) {
+        invoiceId
+        startDate
+        endDate
+        hours
+        amount
+        project {
+            id
+            name
+        }
+        comments {
+            createDate
+            commentId
+            invoiceId
+            content
+        }
+    }
+}
+
+query findNextInvoice($projectId: String!, $endDate: DateTime!) {
+    findNextInvoice(projectId: $projectId, endDate: $endDate) {
+        invoiceId
+        startDate
+        endDate
+        hours
+        amount
+        project {
+            id
+            name
+        }
+        comments {
+            createDate
+            commentId
+            invoiceId
+            content
+        }
     }
 }
