@@ -50,4 +50,13 @@ export class InvoiceService {
       }
     });
   }
+
+  async searchInvoicesByDateRange(startDate: Date, endDate: Date): Promise<Invoice[]> {
+    return this.prisma.invoice.findMany({
+      where: {
+        startDate,
+        endDate
+      }
+    });
+  }
 }

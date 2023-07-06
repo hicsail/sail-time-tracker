@@ -276,28 +276,6 @@ export type ProjectWithEmployeeRecordsInner = {
   employeeWorkHours: Scalars['Float'];
 };
 
-export type ProjectWithRecord = {
-  __typename?: 'ProjectWithRecord';
-  billableHours: Scalars['Float'];
-  id: Scalars['String'];
-  indirectHours: Scalars['Float'];
-  inner: Array<ProjectWithRecordInner>;
-  isBillable: Scalars['Boolean'];
-  name: Scalars['String'];
-  percentage: Scalars['String'];
-  rate: Scalars['Float'];
-  workHours: Scalars['Float'];
-};
-
-export type ProjectWithRecordInner = {
-  __typename?: 'ProjectWithRecordInner';
-  employeeId: Scalars['String'];
-  employeeIndirectHours: Scalars['Float'];
-  employeeName: Scalars['String'];
-  employeePercentage: Scalars['String'];
-  employeeWorkHours: Scalars['Float'];
-};
-
 export type Query = {
   __typename?: 'Query';
   comment: CommentModel;
@@ -306,11 +284,11 @@ export type Query = {
   employees: Array<EmployeeModel>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
-  getProjectsWithRecord: Array<ProjectWithRecord>;
   invoices: Array<InvoiceModelWithProject>;
   project: ProjectModel;
   projects: Array<ProjectModel>;
   searchInvoice: InvoiceModelWithProjectAndComments;
+  searchInvoicesByDateRange: Array<InvoiceModel>;
 };
 
 export type QueryCommentArgs = {
@@ -331,17 +309,17 @@ export type QueryGetProjectWithEmployeeRecordsArgs = {
   startDate: Scalars['DateTime'];
 };
 
-export type QueryGetProjectsWithRecordArgs = {
-  endDate: Scalars['DateTime'];
-  startDate: Scalars['DateTime'];
-};
-
 export type QueryProjectArgs = {
   id: Scalars['String'];
 };
 
 export type QuerySearchInvoiceArgs = {
   projectId_startDate_endDate: InvoiceSearchInput;
+};
+
+export type QuerySearchInvoicesByDateRangeArgs = {
+  endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
 };
 
 export type RecordCreateInput = {

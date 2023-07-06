@@ -44,6 +44,13 @@ export type SearchInvoiceQuery = {
   };
 };
 
+export type SearchInvoicesByDateRangeQueryVariables = Types.Exact<{
+  startDate: Types.Scalars['DateTime'];
+  endDate: Types.Scalars['DateTime'];
+}>;
+
+export type SearchInvoicesByDateRangeQuery = { __typename?: 'Query'; searchInvoicesByDateRange: Array<{ __typename?: 'InvoiceModel'; projectId: string }> };
+
 export const CreateOrUpdateInvoiceDocument = gql`
   mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
     createOrUpdateInvoice(invoice: $invoice) {
@@ -170,3 +177,39 @@ export function useSearchInvoiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type SearchInvoiceQueryHookResult = ReturnType<typeof useSearchInvoiceQuery>;
 export type SearchInvoiceLazyQueryHookResult = ReturnType<typeof useSearchInvoiceLazyQuery>;
 export type SearchInvoiceQueryResult = Apollo.QueryResult<SearchInvoiceQuery, SearchInvoiceQueryVariables>;
+export const SearchInvoicesByDateRangeDocument = gql`
+  query searchInvoicesByDateRange($startDate: DateTime!, $endDate: DateTime!) {
+    searchInvoicesByDateRange(startDate: $startDate, endDate: $endDate) {
+      projectId
+    }
+  }
+`;
+
+/**
+ * __useSearchInvoicesByDateRangeQuery__
+ *
+ * To run a query within a React component, call `useSearchInvoicesByDateRangeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchInvoicesByDateRangeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchInvoicesByDateRangeQuery({
+ *   variables: {
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *   },
+ * });
+ */
+export function useSearchInvoicesByDateRangeQuery(baseOptions: Apollo.QueryHookOptions<SearchInvoicesByDateRangeQuery, SearchInvoicesByDateRangeQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SearchInvoicesByDateRangeQuery, SearchInvoicesByDateRangeQueryVariables>(SearchInvoicesByDateRangeDocument, options);
+}
+export function useSearchInvoicesByDateRangeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchInvoicesByDateRangeQuery, SearchInvoicesByDateRangeQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SearchInvoicesByDateRangeQuery, SearchInvoicesByDateRangeQueryVariables>(SearchInvoicesByDateRangeDocument, options);
+}
+export type SearchInvoicesByDateRangeQueryHookResult = ReturnType<typeof useSearchInvoicesByDateRangeQuery>;
+export type SearchInvoicesByDateRangeLazyQueryHookResult = ReturnType<typeof useSearchInvoicesByDateRangeLazyQuery>;
+export type SearchInvoicesByDateRangeQueryResult = Apollo.QueryResult<SearchInvoicesByDateRangeQuery, SearchInvoicesByDateRangeQueryVariables>;
