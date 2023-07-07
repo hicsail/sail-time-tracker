@@ -16,7 +16,13 @@ import { CommentsModule } from './comments/comments.module';
     EmployeesModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql')
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      cors: {
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,OPTIONS,DELETE',
+        preflightContinue: true,
+        optionsSuccessStatus: 204
+      }
     }),
     ProjectModule,
     FavoriteProjectModule,
