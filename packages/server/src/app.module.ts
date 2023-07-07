@@ -17,7 +17,14 @@ import { CommentsModule } from './comments/comments.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      cors: false
+      cors: {
+        origin: ['http://localhost:5173', 'https://*.sail.codes'],
+        preflightContinue: true,
+        credentials: true,
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        optionsSuccessStatus: 204
+      }
     }),
     ProjectModule,
     FavoriteProjectModule,
