@@ -95,6 +95,23 @@ export type FindNextInvoiceQuery = {
   } | null;
 };
 
+export type GetClickUpCustomFieldsQueryVariables = Types.Exact<{ [key: string]: never }>;
+
+export type GetClickUpCustomFieldsQuery = {
+  __typename?: 'Query';
+  getClickUpCustomFields: Array<{
+    __typename?: 'ListCustomField';
+    id: string;
+    name: string;
+    type: string;
+    required?: boolean | null;
+    type_config: {
+      __typename?: 'ListCustomFieldTypeConfig';
+      options?: Array<{ __typename?: 'ListCustomFieldTypeConfigOptions'; id: string; name?: string | null; orderindex?: number | null; label?: string | null }> | null;
+    };
+  }>;
+};
+
 export const CreateOrUpdateInvoiceDocument = gql`
   mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
     createOrUpdateInvoice(invoice: $invoice) {
@@ -390,3 +407,48 @@ export function useFindNextInvoiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindNextInvoiceQueryHookResult = ReturnType<typeof useFindNextInvoiceQuery>;
 export type FindNextInvoiceLazyQueryHookResult = ReturnType<typeof useFindNextInvoiceLazyQuery>;
 export type FindNextInvoiceQueryResult = Apollo.QueryResult<FindNextInvoiceQuery, FindNextInvoiceQueryVariables>;
+export const GetClickUpCustomFieldsDocument = gql`
+  query getClickUpCustomFields {
+    getClickUpCustomFields {
+      id
+      name
+      type
+      required
+      type_config {
+        options {
+          id
+          name
+          orderindex
+          label
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetClickUpCustomFieldsQuery__
+ *
+ * To run a query within a React component, call `useGetClickUpCustomFieldsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetClickUpCustomFieldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetClickUpCustomFieldsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetClickUpCustomFieldsQuery(baseOptions?: Apollo.QueryHookOptions<GetClickUpCustomFieldsQuery, GetClickUpCustomFieldsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetClickUpCustomFieldsQuery, GetClickUpCustomFieldsQueryVariables>(GetClickUpCustomFieldsDocument, options);
+}
+export function useGetClickUpCustomFieldsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetClickUpCustomFieldsQuery, GetClickUpCustomFieldsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetClickUpCustomFieldsQuery, GetClickUpCustomFieldsQueryVariables>(GetClickUpCustomFieldsDocument, options);
+}
+export type GetClickUpCustomFieldsQueryHookResult = ReturnType<typeof useGetClickUpCustomFieldsQuery>;
+export type GetClickUpCustomFieldsLazyQueryHookResult = ReturnType<typeof useGetClickUpCustomFieldsLazyQuery>;
+export type GetClickUpCustomFieldsQueryResult = Apollo.QueryResult<GetClickUpCustomFieldsQuery, GetClickUpCustomFieldsQueryVariables>;

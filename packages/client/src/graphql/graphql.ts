@@ -156,6 +156,28 @@ export type InvoiceSearchInput = {
   startDate: Scalars['DateTime'];
 };
 
+export type ListCustomField = {
+  __typename?: 'ListCustomField';
+  id: Scalars['String'];
+  name: Scalars['String'];
+  required?: Maybe<Scalars['Boolean']>;
+  type: Scalars['String'];
+  type_config: ListCustomFieldTypeConfig;
+};
+
+export type ListCustomFieldTypeConfig = {
+  __typename?: 'ListCustomFieldTypeConfig';
+  options?: Maybe<Array<ListCustomFieldTypeConfigOptions>>;
+};
+
+export type ListCustomFieldTypeConfigOptions = {
+  __typename?: 'ListCustomFieldTypeConfigOptions';
+  id: Scalars['String'];
+  label?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  orderindex?: Maybe<Scalars['Float']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addComment: CommentModel;
@@ -289,6 +311,7 @@ export type Query = {
   employees: Array<EmployeeModel>;
   findNextInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
   findPreviousInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
+  getClickUpCustomFields: Array<ListCustomField>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   invoices: Array<InvoiceModelWithProject>;

@@ -53,6 +53,7 @@ const FormValidation = Yup.object({
 export const InvoiceDetails = () => {
   const [isOpenedEditDialog, setIsOpenedEditDialog] = useState(false);
   const [isOpenedDeleteDialog, setIsOpenedDeleteDialog] = useState(false);
+  const [isOpenedExportDialog, setIsOpenedExportDialog] = useState(false);
   const [isDisplayBanner, setDisplayBanner] = useState(false);
   const [deleteInvoice] = useDeleteInvoiceMutation();
   const { id, startDate, endDate } = useParams();
@@ -151,6 +152,8 @@ export const InvoiceDetails = () => {
   const handleOpenDeleteDialog = () => setIsOpenedDeleteDialog(true);
   const handleCloseEditDialog = () => setIsOpenedEditDialog(false);
   const handleOpenEditDialog = () => setIsOpenedEditDialog(true);
+  const handleCloseExportDialog = () => setIsOpenedExportDialog(false);
+  const handleOpenExportDialog = () => setIsOpenedExportDialog(true);
 
   const handlePreviousInvoiceOnClick = () => {
     findPreviousInvoice({
@@ -203,8 +206,8 @@ export const InvoiceDetails = () => {
   return (
     <>
       {isDisplayBanner && <Banner content={`No more invoice`} state="info" />}
-      <Box sx={{ height: 'auto', margin: 'auto' }}>
-        <Stack direction="row" justifyContent="space-between" sx={{ marginTop: 8 }}>
+      <Box sx={{ height: 'auto', margin: 'auto', paddingTop: 8 }}>
+        <Stack direction="row" justifyContent="space-between">
           <Button startIcon={<NavigateBeforeIcon />} onClick={handlePreviousInvoiceOnClick}>
             Previous Invoice
           </Button>
@@ -227,7 +230,7 @@ export const InvoiceDetails = () => {
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="export to clickup">
+          <Tooltip title="export to clickup" onClick={() => navigate(Paths.EXPORT_INVOICE)}>
             <IconButton>
               <SendIcon />
             </IconButton>

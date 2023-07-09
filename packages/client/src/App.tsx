@@ -18,6 +18,7 @@ import { Invoice } from '@pages/Invoice/Invoice';
 import enLocale from 'date-fns/locale/en-US';
 import { InvoiceDetails } from '@pages/Invoice/InvoiceDetails';
 import { DateRangeProvider } from '@context/reportFilter.context';
+import { Export } from '@pages/Invoice/Export';
 
 function App() {
   if (enLocale && enLocale.options) {
@@ -49,6 +50,7 @@ function App() {
                         <Route path={Paths.REPORT} element={<Report />} />
                         <Route path={Paths.INVOICE} element={<Invoice />} />
                         <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
+                        <Route path={Paths.EXPORT_INVOICE} element={<Export />} />
                       </Route>
                     </Routes>
                   </DateRangeProvider>

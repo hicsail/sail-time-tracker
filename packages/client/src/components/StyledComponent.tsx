@@ -1,5 +1,6 @@
 import { Box, Button, styled, TextField } from '@mui/material';
 import DialogContent from '@mui/material/DialogContent';
+import TextareaAutosize from '@mui/base/TextareaAutosize';
 
 export const DefaultTextInput = styled(TextField)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey['100'] : theme.palette.grey['700'],
@@ -83,3 +84,28 @@ export const DefaultOutlinedButton = styled(Button)(({ theme }) => ({
     }
   })
 }));
+
+export const StyledTextarea = styled(TextareaAutosize)(
+  ({ theme }) => `
+    width: 100%;
+    height: 200px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 12px;
+    border-radius: 10px;
+    color: ${theme.palette.mode === 'dark' ? theme.palette.grey['300'] : theme.palette.grey['900']};
+    background: ${theme.palette.mode === 'dark' ? theme.palette.grey['900'] : '#fff'};
+    border: 1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey['700'] : theme.palette.grey['100']};
+    resize: none;
+    
+    &:hover {
+      border-color: black;
+    }
+    
+    &:focus {
+      border-color: black;
+      outline: 1.5px solid black;
+    }
+  `
+);
