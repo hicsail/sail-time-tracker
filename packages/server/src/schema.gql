@@ -139,6 +139,25 @@ type InvoiceModelWithProjectAndComments {
   comments: [CommentModel!]!
 }
 
+type ListCustomFieldTypeConfig {
+  options: [ListCustomFieldTypeConfigOptions!]
+}
+
+type ListCustomFieldTypeConfigOptions {
+  id: String!
+  name: String
+  orderindex: Float
+  label: String
+}
+
+type ListCustomField {
+  id: String!
+  name: String!
+  type: String!
+  type_config: ListCustomFieldTypeConfig!
+  required: Boolean
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -151,6 +170,7 @@ type Query {
   searchInvoicesByDateRange(startDate: DateTime!, endDate: DateTime!): [InvoiceModel!]!
   findPreviousInvoice(projectId: String!, startDate: DateTime!): InvoiceModelWithProjectAndComments
   findNextInvoice(projectId: String!, endDate: DateTime!): InvoiceModelWithProjectAndComments
+  getClickUpCustomFields: [ListCustomField!]!
   comment(id: String!): CommentModel!
   comments: [CommentModel!]!
 }

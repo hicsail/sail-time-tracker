@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Invoice } from '@prisma/client';
 import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
-import { InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
+import { InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
+import { HttpService } from '@nestjs/axios';
+import { AxiosResponse } from 'axios';
+import { firstValueFrom, Observable } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class InvoiceService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService) {}
   async getAllInvoices(): Promise<InvoiceModelWithProject[]> {
     return this.prisma.invoice.findMany({
       include: {
@@ -107,5 +111,17 @@ export class InvoiceService {
         comments: true
       }
     });
+  }
+
+  async getClickUpCustomFields(): Promise<ListCustomField[]> {
+    const { data } = await firstValueFrom(
+      this.httpService.get(`${this.configService.get<string>('CLICKUP_URL')}/${this.configService.get<string>('CLICKUP_LIST_ID')}/field`, {
+        headers: {
+          Authorization: this.configService.get<string>('CLICKUP_TOKEN')
+        }
+      })
+    );
+
+    return data.fields.filter((field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel');
   }
 }
