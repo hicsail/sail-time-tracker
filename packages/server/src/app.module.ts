@@ -10,6 +10,7 @@ import { FavoriteProjectModule } from './favorite-project/favorite-project.modul
 import { RecordModule } from './record/record.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { CommentsModule } from './comments/comments.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CommentsModule } from './comments/comments.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql')
     }),
+    ConfigModule.forRoot(),
     ProjectModule,
     FavoriteProjectModule,
     RecordModule,
