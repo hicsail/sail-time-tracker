@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
-import { GetAllInvoicesDocument, SearchInvoiceDocument, useGetClickUpCustomFieldsQuery } from '@graphql/invoice/invoice';
+import { useGetClickUpCustomFieldsQuery } from '@graphql/invoice/invoice';
 import { DatePicker } from '@mui/x-date-pickers';
 import { StyledTextarea } from '@components/StyledComponent';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
@@ -32,56 +31,57 @@ export const Export = () => {
 
   const combinedData = [...(shortTextData ?? []), ...(numberData ?? []), ...(dropDownData ?? []), ...(dateData ?? []), ...(textData ?? [])];
 
-  const renderCustomField = combinedData?.map((field) => {
-    if (field.type === 'date') {
-      return (
-        <DatePicker
-          label={field.name}
-          value={null}
-          onChange={() => {}}
-          key={field.id}
-          slotProps={{
-            textField: {
-              id: field.id,
-              name: field.name
-            }
-          }}
-        />
-      );
-    } else if (field.type === 'short_text') {
-      return <ObserverTextInput label={field.name} required={field.required || false} key={field.id} type={field.type} name={field.name} />;
-    } else if (field.type === 'drop_down') {
-      return (
-        <FormControl fullWidth key={field.id}>
-          <InputLabel id="demo-simple-select-label">{field.name}</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={field.type_config.options?.find((option) => option.orderindex === 0)?.id || ''}
+  const renderCustomField =
+    combinedData?.map((field) => {
+      if (field.type === 'date') {
+        return (
+          <DatePicker
             label={field.name}
-            name={field.name}
-          >
-            {field.type_config.options?.map((option) => {
-              return (
-                <MenuItem value={option.id} key={option.id}>
-                  {option.name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-      );
-    } else if (field.type === 'text') {
-      return (
-        <Box key={field.id}>
-          <Typography>Notes</Typography>
-          <StyledTextarea minRows={5} />
-        </Box>
-      );
-    } else if (field.type === 'currency' || field.type === 'number') {
-      return <ObserverTextInput label={field.name} required={field.required || false} key={field.id} type="number" name={field.name} />;
-    }
-  });
+            value={null}
+            onChange={() => {}}
+            key={field.id}
+            slotProps={{
+              textField: {
+                id: field.id,
+                name: field.name
+              }
+            }}
+          />
+        );
+      } else if (field.type === 'short_text') {
+        return <ObserverTextInput label={field.name} required={field.required || false} key={field.id} type={field.type} name={field.name} />;
+      } else if (field.type === 'drop_down') {
+        return (
+          <FormControl fullWidth key={field.id}>
+            <InputLabel id="demo-simple-select-label">{field.name}</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={field.type_config.options?.find((option) => option.orderindex === 0)?.id || ''}
+              label={field.name}
+              name={field.name}
+            >
+              {field.type_config.options?.map((option) => {
+                return (
+                  <MenuItem value={option.id} key={option.id}>
+                    {option.name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        );
+      } else if (field.type === 'text') {
+        return (
+          <Box key={field.id}>
+            <Typography>Notes</Typography>
+            <StyledTextarea minRows={5} />
+          </Box>
+        );
+      } else if (field.type === 'currency' || field.type === 'number') {
+        return <ObserverTextInput label={field.name} required={field.required || false} key={field.id} type="number" name={field.name} />;
+      }
+    }) ?? [];
 
   return (
     <Box sx={{ height: 'auto', margin: 'auto', paddingTop: 8 }}>

@@ -4,8 +4,7 @@ import { Invoice } from '@prisma/client';
 import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()

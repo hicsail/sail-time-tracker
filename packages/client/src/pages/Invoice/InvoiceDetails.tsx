@@ -53,7 +53,6 @@ const FormValidation = Yup.object({
 export const InvoiceDetails = () => {
   const [isOpenedEditDialog, setIsOpenedEditDialog] = useState(false);
   const [isOpenedDeleteDialog, setIsOpenedDeleteDialog] = useState(false);
-  const [isOpenedExportDialog, setIsOpenedExportDialog] = useState(false);
   const [isDisplayBanner, setDisplayBanner] = useState(false);
   const [deleteInvoice] = useDeleteInvoiceMutation();
   const { id, startDate, endDate } = useParams();
@@ -152,8 +151,6 @@ export const InvoiceDetails = () => {
   const handleOpenDeleteDialog = () => setIsOpenedDeleteDialog(true);
   const handleCloseEditDialog = () => setIsOpenedEditDialog(false);
   const handleOpenEditDialog = () => setIsOpenedEditDialog(true);
-  const handleCloseExportDialog = () => setIsOpenedExportDialog(false);
-  const handleOpenExportDialog = () => setIsOpenedExportDialog(true);
 
   const handlePreviousInvoiceOnClick = () => {
     findPreviousInvoice({

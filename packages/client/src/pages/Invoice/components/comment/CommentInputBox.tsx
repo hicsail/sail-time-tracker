@@ -1,6 +1,5 @@
 import { StyledTextarea } from '@components/StyledComponent';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
-import { Button, Stack, styled, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { FC, useRef } from 'react';
 
 interface CommentsProps {
