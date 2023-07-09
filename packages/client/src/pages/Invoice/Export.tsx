@@ -32,54 +32,56 @@ export const Export = () => {
   const combinedData = [...(shortTextData ?? []), ...(numberData ?? []), ...(dropDownData ?? []), ...(dateData ?? []), ...(textData ?? [])];
 
   const renderCustomField =
-    combinedData?.map((field) => {
-      if (field.type === 'date') {
-        return (
-          <DatePicker
-            label={field.name}
-            value={null}
-            onChange={() => {}}
-            key={field.id}
-            slotProps={{
-              textField: {
-                id: field.id,
-                name: field.name
-              }
-            }}
-          />
-        );
-      } else if (field.type === 'short_text') {
-        return <ObserverTextInput label={field.name} required={field.required || false} key={field.id} type={field.type} name={field.name} />;
-      } else if (field.type === 'drop_down') {
-        return (
-          <FormControl fullWidth key={field.id}>
-            <InputLabel id="demo-simple-select-label">{field.name}</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={field.type_config.options?.find((option) => option.orderindex === 0)?.id || ''}
-              label={field.name}
-              name={field.name}
-            >
-              {field.type_config.options?.map((option) => {
-                return (
+    combinedData.map((field) => {
+      const commonProps = {
+        label: field.name,
+        key: field.id,
+        name: field.name
+      };
+
+      switch (field.type) {
+        case 'date':
+          return (
+            <DatePicker
+              {...commonProps}
+              value={null}
+              onChange={() => {}}
+              slotProps={{
+                textField: {
+                  id: field.id,
+                  name: field.name
+                }
+              }}
+            />
+          );
+        case 'short_text':
+          return <ObserverTextInput {...commonProps} required={field.required || false} type={field.type} />;
+        case 'drop_down':
+          const defaultValue = field.type_config.options?.find((option) => option.orderindex === 0)?.id ?? '';
+          return (
+            <FormControl fullWidth key={field.id}>
+              <InputLabel id="demo-simple-select-label">{field.name}</InputLabel>
+              <Select labelId="demo-simple-select-label" value={defaultValue} label={field.name}>
+                {field.type_config.options?.map((option) => (
                   <MenuItem value={option.id} key={option.id}>
                     {option.name}
                   </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        );
-      } else if (field.type === 'text') {
-        return (
-          <Box key={field.id}>
-            <Typography>Notes</Typography>
-            <StyledTextarea minRows={5} />
-          </Box>
-        );
-      } else if (field.type === 'currency' || field.type === 'number') {
-        return <ObserverTextInput label={field.name} required={field.required || false} key={field.id} type="number" name={field.name} />;
+                ))}
+              </Select>
+            </FormControl>
+          );
+        case 'text':
+          return (
+            <Box {...commonProps}>
+              <Typography>Notes</Typography>
+              <StyledTextarea minRows={5} />
+            </Box>
+          );
+        case 'currency':
+        case 'number':
+          return <ObserverTextInput {...commonProps} required={field.required || false} type="number" />;
+        default:
+          return null;
       }
     }) ?? [];
 
@@ -106,7 +108,11 @@ export const Export = () => {
         }}
       >
         <Form>
-          <Stack gap="1rem">{renderCustomField}</Stack>
+          <Stack gap="1rem">
+            {renderCustomField.map((item) => (
+              <Box key={item?.key}>{item}</Box>
+            ))}
+          </Stack>
           <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} type="submit">
             Export
           </Button>
