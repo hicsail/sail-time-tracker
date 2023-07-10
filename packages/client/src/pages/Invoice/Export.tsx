@@ -1,9 +1,9 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, styled, TextareaAutosizeProps, Typography } from '@mui/material';
+import { Box, Button, FormControl, MenuItem, Stack, TextareaAutosizeProps, Typography } from '@mui/material';
 import { useGetClickUpCustomFieldsQuery, useGetClickUpStatusesQuery } from '@graphql/invoice/invoice';
 import { DatePicker, DatePickerProps } from '@mui/x-date-pickers';
 import { StyledTextarea } from '@components/StyledComponent';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { Field, Form, Formik, useFormikContext } from 'formik';
+import { Form, Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { StyledPaper } from '@components/StyledPaper';
 import { FC } from 'react';
@@ -26,7 +26,7 @@ export type FormTextAreaProps = TextareaAutosizeProps & {
 };
 
 const FormTextArea: FC<FormTextAreaProps> = (props) => {
-  const { handleChange, handleBlur, values, touched, errors, isSubmitting } = useFormikContext<any>();
+  const { handleChange, handleBlur, values, isSubmitting } = useFormikContext<any>();
   return (
     <FormControl fullWidth>
       <StyledTextarea
@@ -48,7 +48,7 @@ export type FormDatePickerProps = DatePickerProps<any> & {
 };
 
 const FormDatePicker: FC<FormDatePickerProps> = (props) => {
-  const { handleChange, handleBlur, values, touched, errors, isSubmitting, setFieldValue } = useFormikContext<any>();
+  const { values, isSubmitting, setFieldValue } = useFormikContext<any>();
   return (
     <FormControl fullWidth>
       <DatePicker
