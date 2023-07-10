@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Invoice } from '@prisma/client';
 import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
-import { InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
+import { ClickUpStatuses, InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
@@ -122,5 +122,17 @@ export class InvoiceService {
     );
 
     return data.fields.filter((field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel');
+  }
+
+  async getClickUpStatuses(): Promise<ClickUpStatuses[]> {
+    const { data } = await firstValueFrom(
+      this.httpService.get(`${this.configService.get<string>('CLICKUP_URL')}/${this.configService.get<string>('CLICKUP_LIST_ID')}`, {
+        headers: {
+          Authorization: this.configService.get<string>('CLICKUP_TOKEN')
+        }
+      })
+    );
+
+    return data.statuses;
   }
 }

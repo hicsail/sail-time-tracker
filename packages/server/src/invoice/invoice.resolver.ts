@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InvoiceService } from './invoice.service';
-import { InvoiceModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
+import { ClickUpStatuses, InvoiceModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
 import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { Invoice } from '@prisma/client';
 
@@ -46,5 +46,10 @@ export class InvoiceResolver {
   @Query(() => [ListCustomField])
   async getClickUpCustomFields(): Promise<ListCustomField[]> {
     return this.invoiceService.getClickUpCustomFields();
+  }
+
+  @Query(() => [ClickUpStatuses])
+  async getClickUpStatuses(): Promise<ClickUpStatuses[]> {
+    return this.invoiceService.getClickUpStatuses();
   }
 }

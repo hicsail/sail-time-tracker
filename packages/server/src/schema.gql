@@ -158,6 +158,14 @@ type ListCustomField {
   required: Boolean
 }
 
+type ClickUpStatuses {
+  id: String!
+  status: String!
+  orderindex: Float!
+  color: String!
+  type: String!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -171,6 +179,7 @@ type Query {
   findPreviousInvoice(projectId: String!, startDate: DateTime!): InvoiceModelWithProjectAndComments
   findNextInvoice(projectId: String!, endDate: DateTime!): InvoiceModelWithProjectAndComments
   getClickUpCustomFields: [ListCustomField!]!
+  getClickUpStatuses: [ClickUpStatuses!]!
   comment(id: String!): CommentModel!
   comments: [CommentModel!]!
 }

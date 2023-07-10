@@ -80,3 +80,21 @@ export class ListCustomField {
   @Field(() => Boolean, { nullable: true })
   required: boolean | null;
 }
+
+@ObjectType()
+export class ClickUpStatuses {
+  @Field()
+  id: string;
+
+  @Field()
+  status: string;
+
+  @Field()
+  orderindex: number;
+
+  @Field()
+  color: string;
+
+  @Field()
+  type: string;
+}
