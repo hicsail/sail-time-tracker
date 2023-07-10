@@ -21,8 +21,6 @@ const FormValidation = Yup.object({
 
 export const Export = () => {
   const { data } = useGetClickUpCustomFieldsQuery();
-
-  console.log(data?.getClickUpCustomFields);
   const shortTextData = data?.getClickUpCustomFields.filter((field) => field.type === 'short_text');
   const dateData = data?.getClickUpCustomFields.filter((field) => field.type === 'date');
   const numberData = data?.getClickUpCustomFields.filter((field) => field.type === 'currency' || field.type === 'number');
@@ -42,44 +40,56 @@ export const Export = () => {
       switch (field.type) {
         case 'date':
           return (
-            <DatePicker
-              {...commonProps}
-              value={null}
-              onChange={() => {}}
-              slotProps={{
-                textField: {
-                  id: field.id,
-                  name: field.name
-                }
-              }}
-            />
+            <Box gridColumn="span 2">
+              <DatePicker
+                {...commonProps}
+                value={null}
+                onChange={() => {}}
+                slotProps={{
+                  textField: {
+                    id: field.id,
+                    name: field.name
+                  }
+                }}
+              />
+            </Box>
           );
         case 'short_text':
-          return <ObserverTextInput {...commonProps} required={field.required || false} type={field.type} />;
+          return (
+            <Box gridColumn="span 4">
+              <ObserverTextInput {...commonProps} required={field.required || false} type={field.type} />
+            </Box>
+          );
         case 'drop_down':
           const defaultValue = field.type_config.options?.find((option) => option.orderindex === 0)?.id ?? '';
           return (
-            <FormControl fullWidth key={field.id}>
-              <InputLabel id="demo-simple-select-label">{field.name}</InputLabel>
-              <Select labelId="demo-simple-select-label" value={defaultValue} label={field.name}>
-                {field.type_config.options?.map((option) => (
-                  <MenuItem value={option.id} key={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Box gridColumn="span 4">
+              <FormControl fullWidth key={field.id}>
+                <InputLabel id="demo-simple-select-label">{field.name}</InputLabel>
+                <Select labelId="demo-simple-select-label" value={defaultValue} label={field.name}>
+                  {field.type_config.options?.map((option) => (
+                    <MenuItem value={option.id} key={option.id}>
+                      {option.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
           );
         case 'text':
           return (
-            <Box {...commonProps}>
+            <Box {...commonProps} gridColumn="span 10">
               <Typography>Notes</Typography>
               <StyledTextarea minRows={5} />
             </Box>
           );
         case 'currency':
         case 'number':
-          return <ObserverTextInput {...commonProps} required={field.required || false} type="number" />;
+          return (
+            <Box gridColumn="span 4">
+              <ObserverTextInput {...commonProps} required={field.required || false} type="number" />
+            </Box>
+          );
         default:
           return null;
       }
@@ -108,14 +118,17 @@ export const Export = () => {
         }}
       >
         <Form>
-          <Stack gap="1rem">
-            {renderCustomField.map((item) => (
-              <Box key={item?.key}>{item}</Box>
-            ))}
+          <Box display="grid" gridTemplateColumns="repeat(10, 1fr)" gap={4}>
+            {renderCustomField.map((item) => item)}
+          </Box>
+          <Stack direction="row" gap={2} justifyContent="end" marginTop={5}>
+            <Button variant="contained" type="submit">
+              Export
+            </Button>
+            <Button color="secondary" variant="outlined">
+              cancel
+            </Button>
           </Stack>
-          <Button variant="contained" sx={{ width: '100%', marginTop: 3 }} type="submit">
-            Export
-          </Button>
         </Form>
       </Formik>
 
