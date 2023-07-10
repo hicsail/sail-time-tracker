@@ -20,6 +20,15 @@ export type BatchPayload = {
   count: Scalars['Float'];
 };
 
+export type ClickUpStatuses = {
+  __typename?: 'ClickUpStatuses';
+  color: Scalars['String'];
+  id: Scalars['String'];
+  orderindex: Scalars['Float'];
+  status: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type CommentCreateInput = {
   content: Scalars['String'];
   invoiceId: Scalars['String'];
@@ -312,6 +321,7 @@ export type Query = {
   findNextInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
   findPreviousInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
   getClickUpCustomFields: Array<ListCustomField>;
+  getClickUpStatuses: Array<ClickUpStatuses>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   invoices: Array<InvoiceModelWithProject>;

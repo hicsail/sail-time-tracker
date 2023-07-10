@@ -238,7 +238,7 @@ export const InvoiceDetails = () => {
             </IconButton>
           </Tooltip>
         </Box>
-        <FormDialog open={isOpenedEditDialog} onClose={() => handleCloseEditDialog}>
+        <FormDialog open={isOpenedEditDialog} onClose={handleCloseEditDialog}>
           <Typography variant="h6">Update Total Billable Hours</Typography>
           <Formik
             initialValues={{ billableHours: searchInvoiceData?.searchInvoice.hours.toString() || '' }}

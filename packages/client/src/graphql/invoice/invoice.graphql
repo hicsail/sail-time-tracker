@@ -108,3 +108,11 @@ query getClickUpCustomFields {
         }
     }
 }
+
+query getClickUpStatuses {
+    getClickUpStatuses {
+        id
+        status
+        orderindex
+    }
+}

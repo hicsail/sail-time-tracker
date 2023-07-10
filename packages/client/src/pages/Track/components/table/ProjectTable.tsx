@@ -184,7 +184,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                           >
                             <Form>
                               <FormObserver employeeId={employeeId as string} projectId={row.projectId} date={date} setLoading={setLoading} id={dateValue.date} />
-                              <ObserverTextInput name={dateValue.date} type="number" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
+                              <ObserverTextInput name={dateValue.date} type="number" InputProps={{ inputProps: { min: 0 } }} required />
                             </Form>
                           </Formik>
                         </TableCell>

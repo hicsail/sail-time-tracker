@@ -1,11 +1,12 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
-import { useGetClickUpCustomFieldsQuery } from '@graphql/invoice/invoice';
-import { DatePicker } from '@mui/x-date-pickers';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, styled, TextareaAutosizeProps, Typography } from '@mui/material';
+import { useGetClickUpCustomFieldsQuery, useGetClickUpStatusesQuery } from '@graphql/invoice/invoice';
+import { DatePicker, DatePickerProps } from '@mui/x-date-pickers';
 import { StyledTextarea } from '@components/StyledComponent';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { Form, Formik } from 'formik';
+import { Field, Form, Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { StyledPaper } from '@components/StyledPaper';
+import { FC } from 'react';
 
 const FormValidation = Yup.object({
   Notes: Yup.string(),
@@ -20,18 +21,71 @@ const FormValidation = Yup.object({
   Hours: Yup.number()
 });
 
-export const Export = () => {
-  const { data } = useGetClickUpCustomFieldsQuery();
-  const shortTextData = data?.getClickUpCustomFields.filter((field) => field.type === 'short_text');
-  const dateData = data?.getClickUpCustomFields.filter((field) => field.type === 'date');
-  const numberData = data?.getClickUpCustomFields.filter((field) => field.type === 'currency' || field.type === 'number');
-  const dropDownData = data?.getClickUpCustomFields.filter((field) => field.type === 'drop_down');
-  const textData = data?.getClickUpCustomFields.filter((field) => field.type === 'text');
+export type FormTextAreaProps = TextareaAutosizeProps & {
+  name: string;
+};
 
-  const combinedData = [...(shortTextData ?? []), ...(numberData ?? []), ...(dateData ?? []), ...(dropDownData ?? []), ...(textData ?? [])];
+const FormTextArea: FC<FormTextAreaProps> = (props) => {
+  const { handleChange, handleBlur, values, touched, errors, isSubmitting } = useFormikContext<any>();
+  return (
+    <FormControl fullWidth>
+      <StyledTextarea
+        {...props}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        value={values[props.name]}
+        disabled={props.disabled || isSubmitting}
+        sx={{ backgroundColor: 'grey.100' }}
+      />
+    </FormControl>
+  );
+};
+
+export type FormDatePickerProps = DatePickerProps<any> & {
+  name: string;
+  label: string;
+  disabled?: boolean;
+};
+
+const FormDatePicker: FC<FormDatePickerProps> = (props) => {
+  const { handleChange, handleBlur, values, touched, errors, isSubmitting, setFieldValue } = useFormikContext<any>();
+  return (
+    <FormControl fullWidth>
+      <DatePicker
+        onChange={(date) => setFieldValue(props.name, date)}
+        value={values[props.name]}
+        disabled={props.disabled || isSubmitting}
+        slotProps={{
+          textField: {
+            label: props.label,
+            name: props.name,
+            fullWidth: true,
+            sx: {
+              backgroundColor: 'grey.100',
+              '& fieldset': {
+                borderColor: 'grey.300'
+              }
+            }
+          }
+        }}
+      />
+    </FormControl>
+  );
+};
+
+export const Export = () => {
+  const { data: clickUpCustomFields } = useGetClickUpCustomFieldsQuery();
+  const { data: clickUpStatuses } = useGetClickUpStatusesQuery();
+  const shortTextData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'short_text');
+  const dateData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'date');
+  const numberData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'currency' || field.type === 'number');
+  const dropDownData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'drop_down');
+  const textData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'text');
+
+  const combinedClickUpCustomFields = [...(shortTextData ?? []), ...(numberData ?? []), ...(dateData ?? []), ...(dropDownData ?? []), ...(textData ?? [])];
 
   const renderCustomField =
-    combinedData.map((field) => {
+    combinedClickUpCustomFields.map((field) => {
       const commonProps = {
         label: field.name,
         key: field.id,
@@ -41,55 +95,40 @@ export const Export = () => {
       switch (field.type) {
         case 'date':
           return (
-            <Box gridColumn="span 3">
-              <DatePicker
-                {...commonProps}
-                value={null}
-                onChange={() => {}}
-                slotProps={{
-                  textField: {
-                    id: field.id,
-                    name: field.name,
-                    fullWidth: true
-                  }
-                }}
-              />
+            <Box gridColumn="span 3" key={field.id}>
+              <FormDatePicker name={field.name} label={field.name} />
             </Box>
           );
         case 'short_text':
           return (
-            <Box gridColumn="span 3">
-              <ObserverTextInput {...commonProps} required={field.required || false} type={field.type} fullWidth />
+            <Box gridColumn="span 3" key={field.id}>
+              <ObserverTextInput {...commonProps} required={field.required || false} type={field.type} fullWidth variant="outlined" />
             </Box>
           );
         case 'drop_down':
-          const defaultValue = field.type_config.options?.find((option) => option.orderindex === 0)?.id ?? '';
           return (
-            <Box gridColumn="span 3">
-              <FormControl fullWidth key={field.id}>
-                <InputLabel id="demo-simple-select-label">{field.name}</InputLabel>
-                <Select labelId="demo-simple-select-label" value={defaultValue} label={field.name}>
-                  {field.type_config.options?.map((option) => (
-                    <MenuItem value={option.id} key={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <Box gridColumn="span 3" key={field.id}>
+              <ObserverTextInput {...commonProps} select placeholder={field.name} fullWidth variant="outlined">
+                {field.type_config.options?.map((option) => (
+                  <MenuItem value={option.orderindex as number} key={option.id}>
+                    {option.name}
+                  </MenuItem>
+                )) ?? []}
+              </ObserverTextInput>
             </Box>
           );
         case 'text':
           return (
-            <Box {...commonProps} gridColumn="span 12">
+            <Box gridColumn="span 12" key={field.id}>
               <Typography>Notes</Typography>
-              <StyledTextarea minRows={5} />
+              <FormTextArea name={field.name} minRows={5} />
             </Box>
           );
         case 'currency':
         case 'number':
           return (
-            <Box gridColumn="span 3">
-              <ObserverTextInput {...commonProps} required={field.required || false} type="number" fullWidth />
+            <Box gridColumn="span 3" key={field.id}>
+              <ObserverTextInput {...commonProps} required={field.required || false} type="number" variant="outlined" fullWidth />
             </Box>
           );
         default:
@@ -108,6 +147,9 @@ export const Export = () => {
           enableReinitialize={true}
           onSubmit={(values) => console.log(values)}
           initialValues={{
+            title: '',
+            description: '',
+            status: '',
             Notes: '',
             'Date Sent': null,
             'Invoice Payment Status': 0,
@@ -123,19 +165,22 @@ export const Export = () => {
           <Form>
             <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={4} mb={5}>
               <Box gridColumn="span 6">
-                <ObserverTextInput label="Title" name="title" type="text" fullWidth />
+                <ObserverTextInput label="Title" name="title" type="text" fullWidth variant="outlined" />
               </Box>
               <Box gridColumn="span 6">
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                  <Select labelId="demo-simple-select-label" value={0} label="status">
-                    <MenuItem value={0}>0</MenuItem>
-                  </Select>
-                </FormControl>
+                <ObserverTextInput name="status" select label="Status" placeholder="Status" variant="outlined" fullWidth>
+                  {clickUpStatuses?.getClickUpStatuses?.map((status) => {
+                    return (
+                      <MenuItem value={status.orderindex} key={status.id}>
+                        {status.status}
+                      </MenuItem>
+                    );
+                  }) ?? []}
+                </ObserverTextInput>
               </Box>
               <Box gridColumn="span 12">
                 <Typography>Description</Typography>
-                <StyledTextarea minRows={5} />
+                <FormTextArea name="description" minRows={5} />
               </Box>
             </Box>
             <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={4}>

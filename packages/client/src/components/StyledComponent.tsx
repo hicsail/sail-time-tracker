@@ -2,11 +2,11 @@ import { Box, Button, styled, TextField } from '@mui/material';
 import DialogContent from '@mui/material/DialogContent';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 
-export const DefaultTextInput = styled(TextField)(({ theme }) => ({
+export const DefaultTextInput = styled(TextField)(({ theme, variant }) => ({
   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey['100'] : theme.palette.grey['700'],
   color: theme.palette.mode === 'light' ? theme.palette.grey['800'] : 'white',
   borderRadius: '8px',
-  '& fieldset': { border: 'none' },
+  '& fieldset': { border: variant === 'outlined' ? `1px solid ${theme.palette.grey[300]}` : 'none' },
   '& input[type=number]': {
     MozAppearance: 'textfield'
   },

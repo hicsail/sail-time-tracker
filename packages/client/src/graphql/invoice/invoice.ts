@@ -112,6 +112,10 @@ export type GetClickUpCustomFieldsQuery = {
   }>;
 };
 
+export type GetClickUpStatusesQueryVariables = Types.Exact<{ [key: string]: never }>;
+
+export type GetClickUpStatusesQuery = { __typename?: 'Query'; getClickUpStatuses: Array<{ __typename?: 'ClickUpStatuses'; id: string; status: string; orderindex: number }> };
+
 export const CreateOrUpdateInvoiceDocument = gql`
   mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
     createOrUpdateInvoice(invoice: $invoice) {
@@ -452,3 +456,39 @@ export function useGetClickUpCustomFieldsLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetClickUpCustomFieldsQueryHookResult = ReturnType<typeof useGetClickUpCustomFieldsQuery>;
 export type GetClickUpCustomFieldsLazyQueryHookResult = ReturnType<typeof useGetClickUpCustomFieldsLazyQuery>;
 export type GetClickUpCustomFieldsQueryResult = Apollo.QueryResult<GetClickUpCustomFieldsQuery, GetClickUpCustomFieldsQueryVariables>;
+export const GetClickUpStatusesDocument = gql`
+  query getClickUpStatuses {
+    getClickUpStatuses {
+      id
+      status
+      orderindex
+    }
+  }
+`;
+
+/**
+ * __useGetClickUpStatusesQuery__
+ *
+ * To run a query within a React component, call `useGetClickUpStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetClickUpStatusesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetClickUpStatusesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetClickUpStatusesQuery(baseOptions?: Apollo.QueryHookOptions<GetClickUpStatusesQuery, GetClickUpStatusesQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetClickUpStatusesQuery, GetClickUpStatusesQueryVariables>(GetClickUpStatusesDocument, options);
+}
+export function useGetClickUpStatusesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetClickUpStatusesQuery, GetClickUpStatusesQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetClickUpStatusesQuery, GetClickUpStatusesQueryVariables>(GetClickUpStatusesDocument, options);
+}
+export type GetClickUpStatusesQueryHookResult = ReturnType<typeof useGetClickUpStatusesQuery>;
+export type GetClickUpStatusesLazyQueryHookResult = ReturnType<typeof useGetClickUpStatusesLazyQuery>;
+export type GetClickUpStatusesQueryResult = Apollo.QueryResult<GetClickUpStatusesQuery, GetClickUpStatusesQueryVariables>;
