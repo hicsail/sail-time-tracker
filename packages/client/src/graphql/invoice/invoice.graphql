@@ -116,3 +116,7 @@ query getClickUpStatuses {
         orderindex
     }
 }
+
+mutation createClickUpTask($task: ClickUpTaskCreateInput!) {
+    createClickUpTask(task: $task)
+}

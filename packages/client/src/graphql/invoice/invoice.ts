@@ -116,6 +116,12 @@ export type GetClickUpStatusesQueryVariables = Types.Exact<{ [key: string]: neve
 
 export type GetClickUpStatusesQuery = { __typename?: 'Query'; getClickUpStatuses: Array<{ __typename?: 'ClickUpStatuses'; id: string; status: string; orderindex: number }> };
 
+export type CreateClickUpTaskMutationVariables = Types.Exact<{
+  task: Types.ClickUpTaskCreateInput;
+}>;
+
+export type CreateClickUpTaskMutation = { __typename?: 'Mutation'; createClickUpTask: boolean };
+
 export const CreateOrUpdateInvoiceDocument = gql`
   mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
     createOrUpdateInvoice(invoice: $invoice) {
@@ -492,3 +498,34 @@ export function useGetClickUpStatusesLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetClickUpStatusesQueryHookResult = ReturnType<typeof useGetClickUpStatusesQuery>;
 export type GetClickUpStatusesLazyQueryHookResult = ReturnType<typeof useGetClickUpStatusesLazyQuery>;
 export type GetClickUpStatusesQueryResult = Apollo.QueryResult<GetClickUpStatusesQuery, GetClickUpStatusesQueryVariables>;
+export const CreateClickUpTaskDocument = gql`
+  mutation createClickUpTask($task: ClickUpTaskCreateInput!) {
+    createClickUpTask(task: $task)
+  }
+`;
+export type CreateClickUpTaskMutationFn = Apollo.MutationFunction<CreateClickUpTaskMutation, CreateClickUpTaskMutationVariables>;
+
+/**
+ * __useCreateClickUpTaskMutation__
+ *
+ * To run a mutation, you first call `useCreateClickUpTaskMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateClickUpTaskMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createClickUpTaskMutation, { data, loading, error }] = useCreateClickUpTaskMutation({
+ *   variables: {
+ *      task: // value for 'task'
+ *   },
+ * });
+ */
+export function useCreateClickUpTaskMutation(baseOptions?: Apollo.MutationHookOptions<CreateClickUpTaskMutation, CreateClickUpTaskMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateClickUpTaskMutation, CreateClickUpTaskMutationVariables>(CreateClickUpTaskDocument, options);
+}
+export type CreateClickUpTaskMutationHookResult = ReturnType<typeof useCreateClickUpTaskMutation>;
+export type CreateClickUpTaskMutationResult = Apollo.MutationResult<CreateClickUpTaskMutation>;
+export type CreateClickUpTaskMutationOptions = Apollo.BaseMutationOptions<CreateClickUpTaskMutation, CreateClickUpTaskMutationVariables>;

@@ -1,5 +1,5 @@
 import { Box, Button, FormControl, MenuItem, Stack, TextareaAutosizeProps, Typography } from '@mui/material';
-import { useGetClickUpCustomFieldsQuery, useGetClickUpStatusesQuery } from '@graphql/invoice/invoice';
+import { useCreateClickUpTaskMutation, useGetClickUpCustomFieldsQuery, useGetClickUpStatusesQuery } from '@graphql/invoice/invoice';
 import { DatePicker, DatePickerProps } from '@mui/x-date-pickers';
 import { StyledTextarea } from '@components/StyledComponent';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
@@ -7,6 +7,9 @@ import { Form, Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { StyledPaper } from '@components/StyledPaper';
 import { FC } from 'react';
+import { useLocation } from 'react-router-dom';
+import { format } from 'date-fns';
+import { formatDateToDashFormat } from '../../utils/helperFun';
 
 const FormValidation = Yup.object({
   Notes: Yup.string(),
@@ -76,13 +79,15 @@ const FormDatePicker: FC<FormDatePickerProps> = (props) => {
 export const Export = () => {
   const { data: clickUpCustomFields } = useGetClickUpCustomFieldsQuery();
   const { data: clickUpStatuses } = useGetClickUpStatusesQuery();
-  const shortTextData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'short_text');
-  const dateData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'date');
+  const [createClickUpTask] = useCreateClickUpTaskMutation();
+  const location = useLocation();
+  const state = location.state as any;
+
   const numberData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'currency' || field.type === 'number');
   const dropDownData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'drop_down');
   const textData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'text');
 
-  const combinedClickUpCustomFields = [...(shortTextData ?? []), ...(numberData ?? []), ...(dateData ?? []), ...(dropDownData ?? []), ...(textData ?? [])];
+  const combinedClickUpCustomFields = [...(numberData ?? []), ...(dropDownData ?? []), ...(textData ?? [])];
 
   const renderCustomField =
     combinedClickUpCustomFields.map((field) => {
@@ -93,18 +98,6 @@ export const Export = () => {
       };
 
       switch (field.type) {
-        case 'date':
-          return (
-            <Box gridColumn="span 3" key={field.id}>
-              <FormDatePicker name={field.name} label={field.name} />
-            </Box>
-          );
-        case 'short_text':
-          return (
-            <Box gridColumn="span 3" key={field.id}>
-              <ObserverTextInput {...commonProps} required={field.required || false} type={field.type} fullWidth variant="outlined" />
-            </Box>
-          );
         case 'drop_down':
           return (
             <Box gridColumn="span 3" key={field.id}>
@@ -121,7 +114,7 @@ export const Export = () => {
           return (
             <Box gridColumn="span 12" key={field.id}>
               <Typography>Notes</Typography>
-              <FormTextArea name={field.name} minRows={5} />
+              <FormTextArea name={field.name} minRows={8} />
             </Box>
           );
         case 'currency':
@@ -136,6 +129,30 @@ export const Export = () => {
       }
     }) ?? [];
 
+  const initialValues = () => {
+    const currentMonth = format(new Date(), 'MMM');
+    const notes = state.notes.map((note: any) => `${format(new Date(note.createDate), 'dd MMM yyyy')} - ${note.content}`).join('\n');
+    const description = state.rows.map((row: any) => `${row.employeeName} - ${row.billableHours} hours - $${row.amount}`).join('\n');
+    console.log(state.rows);
+
+    return {
+      title: `${currentMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours`,
+      description: description,
+      status: 0,
+      Notes: notes,
+      'Invoice Payment Status': 0,
+      'Copy Total Here': state.revisedAmount,
+      Rate: state.rate,
+      'Fiscal Year': 0,
+      'Contract Type': 0,
+      Hours: state.revisedBillableHour
+    };
+  };
+
+  // const handleExport = () => {
+  //
+  // };
+
   return (
     <Box sx={{ height: 'auto', margin: 'auto', paddingTop: 8 }}>
       <Typography variant="h6" sx={{ mb: 4 }}>
@@ -145,22 +162,37 @@ export const Export = () => {
         <Formik
           validationSchema={FormValidation}
           enableReinitialize={true}
-          onSubmit={(values) => console.log(values)}
-          initialValues={{
-            title: '',
-            description: '',
-            status: '',
-            Notes: '',
-            'Date Sent': null,
-            'Invoice Payment Status': 0,
-            'ISR#': '',
-            'Date Paid': null,
-            'Copy Total Here': '',
-            Rate: '',
-            'Fiscal Year': 0,
-            'Contract Type': 0,
-            Hours: ''
+          onSubmit={(values) => {
+            //console.log(values);
+            const { title, description, status, ...customFields } = values;
+
+            const newTask = {
+              name: title,
+              description: description as string,
+              status: status,
+              custom_fields: [] as { id: string; value: string }[]
+            };
+
+            Object.keys(customFields).forEach((key) => {
+              const customField = combinedClickUpCustomFields.find((field) => field.name === key);
+              if (customField) {
+                newTask.custom_fields.push({
+                  id: customField.id,
+                  value: customFields[key as keyof typeof customFields].toString()
+                });
+              }
+            });
+
+            console.log(newTask);
+
+            newTask.custom_fields.length > 0 &&
+              createClickUpTask({
+                variables: {
+                  task: newTask
+                }
+              });
           }}
+          initialValues={initialValues()}
         >
           <Form>
             <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={4} mb={5}>

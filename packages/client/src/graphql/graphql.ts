@@ -29,6 +29,18 @@ export type ClickUpStatuses = {
   type: Scalars['String'];
 };
 
+export type ClickUpTaskCreateInput = {
+  custom_fields: Array<ClickUpTaskCustomFieldsInput>;
+  description: Scalars['String'];
+  name: Scalars['String'];
+  status: Scalars['Float'];
+};
+
+export type ClickUpTaskCustomFieldsInput = {
+  id: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type CommentCreateInput = {
   content: Scalars['String'];
   invoiceId: Scalars['String'];
@@ -193,6 +205,7 @@ export type Mutation = {
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
+  createClickUpTask: Scalars['Boolean'];
   createOrUpdateInvoice: InvoiceModel;
   deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
@@ -218,6 +231,10 @@ export type MutationAddFavoriteProjectArgs = {
 
 export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
+};
+
+export type MutationCreateClickUpTaskArgs = {
+  task: ClickUpTaskCreateInput;
 };
 
 export type MutationCreateOrUpdateInvoiceArgs = {
