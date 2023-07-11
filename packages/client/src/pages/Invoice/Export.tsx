@@ -1,6 +1,5 @@
 import { Box, Button, FormControl, MenuItem, Stack, TextareaAutosizeProps, Typography } from '@mui/material';
 import { useCreateClickUpTaskMutation, useGetClickUpCustomFieldsQuery, useGetClickUpStatusesQuery } from '@graphql/invoice/invoice';
-import { DatePicker, DatePickerProps } from '@mui/x-date-pickers';
 import { StyledTextarea } from '@components/StyledComponent';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { Form, Formik, useFormikContext } from 'formik';
@@ -9,7 +8,6 @@ import { StyledPaper } from '@components/StyledPaper';
 import { FC } from 'react';
 import { useLocation } from 'react-router-dom';
 import { format } from 'date-fns';
-import { formatDateToDashFormat } from '../../utils/helperFun';
 
 const FormValidation = Yup.object({
   Notes: Yup.string(),
@@ -39,38 +37,6 @@ const FormTextArea: FC<FormTextAreaProps> = (props) => {
         value={values[props.name]}
         disabled={props.disabled || isSubmitting}
         sx={{ backgroundColor: 'grey.100' }}
-      />
-    </FormControl>
-  );
-};
-
-export type FormDatePickerProps = DatePickerProps<any> & {
-  name: string;
-  label: string;
-  disabled?: boolean;
-};
-
-const FormDatePicker: FC<FormDatePickerProps> = (props) => {
-  const { values, isSubmitting, setFieldValue } = useFormikContext<any>();
-  return (
-    <FormControl fullWidth>
-      <DatePicker
-        onChange={(date) => setFieldValue(props.name, date)}
-        value={values[props.name]}
-        disabled={props.disabled || isSubmitting}
-        slotProps={{
-          textField: {
-            label: props.label,
-            name: props.name,
-            fullWidth: true,
-            sx: {
-              backgroundColor: 'grey.100',
-              '& fieldset': {
-                borderColor: 'grey.300'
-              }
-            }
-          }
-        }}
       />
     </FormControl>
   );
