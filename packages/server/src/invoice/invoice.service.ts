@@ -121,7 +121,9 @@ export class InvoiceService {
       })
     );
 
-    return data.fields.filter((field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel');
+    return data.fields.filter(
+      (field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel' && field.name !== 'Invoice Payment Status'
+    );
   }
 
   async getClickUpStatuses(): Promise<ClickUpStatuses[]> {
