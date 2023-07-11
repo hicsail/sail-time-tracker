@@ -1,5 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsNotEmpty, IsString, IsNumber, IsDate } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsDate, IsOptional } from 'class-validator';
+import JSON from 'graphql-type-json';
 
 /**
  * input type for creating new invoice
@@ -80,6 +81,7 @@ export class ClickUpTaskCustomFieldsInput {
   @IsString()
   id: string;
 
-  @Field()
-  value: string;
+  @Field(() => JSON, { nullable: true })
+  @IsOptional()
+  value: any;
 }

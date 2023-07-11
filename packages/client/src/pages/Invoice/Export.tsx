@@ -99,7 +99,6 @@ export const Export = () => {
     const currentMonth = format(new Date(), 'MMM');
     const notes = state.notes.map((note: any) => `${format(new Date(note.createDate), 'dd MMM yyyy')} - ${note.content}`).join('\n');
     const description = state.rows.map((row: any) => `${row.employeeName} - ${row.billableHours} hours - $${row.amount}`).join('\n');
-    console.log(state.rows);
 
     return {
       title: `${currentMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours`,
@@ -129,14 +128,13 @@ export const Export = () => {
           validationSchema={FormValidation}
           enableReinitialize={true}
           onSubmit={(values) => {
-            //console.log(values);
             const { title, description, status, ...customFields } = values;
 
             const newTask = {
               name: title,
               description: description as string,
               status: status,
-              custom_fields: [] as { id: string; value: string }[]
+              custom_fields: [] as { id: string; value: any }[]
             };
 
             Object.keys(customFields).forEach((key) => {
@@ -144,7 +142,7 @@ export const Export = () => {
               if (customField) {
                 newTask.custom_fields.push({
                   id: customField.id,
-                  value: customFields[key as keyof typeof customFields].toString()
+                  value: customFields[key as keyof typeof customFields]
                 });
               }
             });

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Invoice } from '@prisma/client';
 import { ClickUpTaskCreateInput, InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
@@ -139,16 +139,20 @@ export class InvoiceService {
   }
 
   async createClickUpTask(task: ClickUpTaskCreateInput): Promise<boolean> {
-    //task.custom_fields = task.custom_fields.map((field) => );
-    const { data } = await firstValueFrom(
-      this.httpService.post(`${this.configService.get<string>('CLICKUP_URL')}/${this.configService.get<string>('CLICKUP_LIST_ID')}/task`, {
-        headers: {
-          Authorization: this.configService.get<string>('CLICKUP_TOKEN')
-        },
-        body: task
-      })
-    );
-    console.log(data);
+    console.log(typeof task);
+    console.log(JSON.stringify(task));
+
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.post(`${this.configService.get<string>('CLICKUP_URL')}/${this.configService.get<string>('CLICKUP_LIST_ID')}/task`, task, {
+          headers: {
+            Authorization: this.configService.get<string>('CLICKUP_TOKEN')
+          }
+        })
+      );
+    } catch (error) {
+      throw new BadRequestException();
+    }
     return true;
   }
 }

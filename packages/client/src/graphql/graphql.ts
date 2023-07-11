@@ -13,6 +13,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: any;
+  JSON: any;
 };
 
 export type BatchPayload = {
@@ -38,7 +39,7 @@ export type ClickUpTaskCreateInput = {
 
 export type ClickUpTaskCustomFieldsInput = {
   id: Scalars['String'];
-  value: Scalars['String'];
+  value: Scalars['JSON'];
 };
 
 export type CommentCreateInput = {
