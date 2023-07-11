@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Invoice } from '@prisma/client';
-import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
+import { ClickUpTaskCreateInput, InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { ClickUpStatuses, InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
@@ -136,5 +136,19 @@ export class InvoiceService {
     );
 
     return data.statuses;
+  }
+
+  async createClickUpTask(task: ClickUpTaskCreateInput): Promise<boolean> {
+    //task.custom_fields = task.custom_fields.map((field) => );
+    const { data } = await firstValueFrom(
+      this.httpService.post(`${this.configService.get<string>('CLICKUP_URL')}/${this.configService.get<string>('CLICKUP_LIST_ID')}/task`, {
+        headers: {
+          Authorization: this.configService.get<string>('CLICKUP_TOKEN')
+        },
+        body: task
+      })
+    );
+    console.log(data);
+    return true;
   }
 }

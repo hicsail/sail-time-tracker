@@ -55,3 +55,31 @@ export class InvoiceSearchInput {
   @IsDate()
   endDate: Date;
 }
+
+@InputType()
+export class ClickUpTaskCreateInput {
+  @Field()
+  @IsString()
+  name: string;
+
+  @Field()
+  @IsString()
+  description: string;
+
+  @Field()
+  @IsNumber()
+  status: number;
+
+  @Field(() => [ClickUpTaskCustomFieldsInput])
+  custom_fields: ClickUpTaskCustomFieldsInput[];
+}
+
+@InputType()
+export class ClickUpTaskCustomFieldsInput {
+  @Field()
+  @IsString()
+  id: string;
+
+  @Field()
+  value: string;
+}

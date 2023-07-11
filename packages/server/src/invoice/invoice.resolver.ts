@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InvoiceService } from './invoice.service';
 import { ClickUpStatuses, InvoiceModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
-import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
+import { ClickUpTaskCreateInput, InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { Invoice } from '@prisma/client';
 
 @Resolver(() => InvoiceModel)
@@ -51,5 +51,10 @@ export class InvoiceResolver {
   @Query(() => [ClickUpStatuses])
   async getClickUpStatuses(): Promise<ClickUpStatuses[]> {
     return this.invoiceService.getClickUpStatuses();
+  }
+
+  @Mutation(() => Boolean)
+  async createClickUpTask(@Args('task') task: ClickUpTaskCreateInput): Promise<boolean> {
+    return this.invoiceService.createClickUpTask(task);
   }
 }

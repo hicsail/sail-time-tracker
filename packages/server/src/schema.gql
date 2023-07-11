@@ -202,6 +202,7 @@ type Mutation {
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
   createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
   deleteInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModel!
+  createClickUpTask(task: ClickUpTaskCreateInput!): Boolean!
   addComment(input: CommentCreateInput!): CommentModel!
   deleteComment(id: String!): CommentModel!
 }
@@ -257,6 +258,18 @@ input InvoiceCreateInput {
   rate: Float!
   hours: Float!
   amount: Float!
+}
+
+input ClickUpTaskCreateInput {
+  name: String!
+  description: String!
+  status: Float!
+  custom_fields: [ClickUpTaskCustomFieldsInput!]!
+}
+
+input ClickUpTaskCustomFieldsInput {
+  id: String!
+  value: String!
 }
 
 input CommentCreateInput {
