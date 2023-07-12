@@ -207,7 +207,9 @@ export const InvoiceDetails = () => {
       revisedAmount: searchInvoiceData?.searchInvoice?.amount,
       rate: project?.rate,
       projectName: project?.name,
-      notes: searchInvoiceData?.searchInvoice.comments
+      notes: searchInvoiceData?.searchInvoice.comments,
+      invoiceId: searchInvoiceData?.searchInvoice?.invoiceId,
+      taskId: searchInvoiceData?.searchInvoice?.clickUpTask?.id
     };
     navigate(Paths.EXPORT_INVOICE, { state: data });
   };

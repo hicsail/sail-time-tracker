@@ -1,13 +1,19 @@
 import { Box, Button, FormControl, MenuItem, Stack, TextareaAutosizeProps, Typography } from '@mui/material';
-import { useCreateClickUpTaskMutation, useGetClickUpCustomFieldsQuery, useGetClickUpStatusesQuery } from '@graphql/invoice/invoice';
 import { StyledTextarea } from '@components/StyledComponent';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { Form, Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { StyledPaper } from '@components/StyledPaper';
 import { FC } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useAddCommentMutation } from '@graphql/comment/comment';
+import {
+  useCreateAndAddClickUpTaskToInvoiceMutation,
+  useCreateClickUpTaskMutation,
+  useGetClickUpCustomFieldsQuery,
+  useGetClickUpStatusesQuery
+} from '@graphql/clickup_task/clickup';
 
 const FormValidation = Yup.object({
   Notes: Yup.string(),
@@ -46,8 +52,11 @@ export const Export = () => {
   const { data: clickUpCustomFields } = useGetClickUpCustomFieldsQuery();
   const { data: clickUpStatuses } = useGetClickUpStatusesQuery();
   const [createClickUpTask] = useCreateClickUpTaskMutation();
+  const [addCommentMutation] = useAddCommentMutation();
+  const [createAndAddClickUpTaskToInvoice] = useCreateAndAddClickUpTaskToInvoiceMutation();
   const location = useLocation();
   const state = location.state as any;
+  const navigate = useNavigate();
 
   const numberData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'currency' || field.type === 'number');
   const dropDownData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'drop_down');
@@ -114,9 +123,42 @@ export const Export = () => {
     };
   };
 
-  // const handleExport = () => {
-  //
-  // };
+  const createExportComment = () => {
+    const content = `Exported to ClickUp on ${format(new Date(), 'dd MMM yyyy')}.`;
+    addCommentMutation({
+      variables: {
+        input: {
+          content: content,
+          invoiceId: state.invoiceId
+        }
+      }
+    });
+  };
+
+  const createNewTaskToClickUp = (newTask: any) => {
+    newTask.custom_fields.length > 0 &&
+      createClickUpTask({
+        variables: {
+          task: newTask
+        }
+      }).then((res) => {
+        if (res.data) {
+          const task = { id: res.data.createClickUpTask?.id, url: res.data.createClickUpTask?.url };
+          createExportComment();
+          createTaskAndAddClickUpTaskToInvoice(task, state.invoiceId);
+          navigate(-1);
+        }
+      });
+  };
+
+  const createTaskAndAddClickUpTaskToInvoice = (newTask: any, invoiceId: string) => {
+    createAndAddClickUpTaskToInvoice({
+      variables: {
+        invoiceId: invoiceId,
+        task: newTask
+      }
+    });
+  };
 
   return (
     <Box sx={{ height: 'auto', margin: 'auto', paddingTop: 8 }}>
@@ -127,6 +169,7 @@ export const Export = () => {
         <Formik
           validationSchema={FormValidation}
           enableReinitialize={true}
+          initialValues={initialValues()}
           onSubmit={(values) => {
             const { title, description, status, ...customFields } = values;
 
@@ -147,16 +190,10 @@ export const Export = () => {
               }
             });
 
-            console.log(newTask);
-
-            newTask.custom_fields.length > 0 &&
-              createClickUpTask({
-                variables: {
-                  task: newTask
-                }
-              });
+            if (!state.taskId) {
+              createNewTaskToClickUp(newTask);
+            }
           }}
-          initialValues={initialValues()}
         >
           <Form>
             <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={4} mb={5}>
@@ -186,7 +223,7 @@ export const Export = () => {
               <Button variant="contained" type="submit">
                 Export
               </Button>
-              <Button color="secondary" variant="outlined">
+              <Button color="secondary" variant="outlined" onClick={() => navigate(-1)}>
                 cancel
               </Button>
             </Stack>
