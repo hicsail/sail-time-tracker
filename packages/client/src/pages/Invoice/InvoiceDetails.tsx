@@ -236,7 +236,7 @@ export const InvoiceDetails = () => {
             </div>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1, marginTop: 5, '& .MuiButtonBase-root': { color: 'grey.600' } }}>
+        <Box sx={{ display: 'flex', gap: 1, marginTop: 5, '& .MuiButtonBase-root': { color: 'grey.600' }, alignItems: 'center' }}>
           <Tooltip title="edit hours" onClick={handleOpenEditDialog}>
             <IconButton>
               <EditIcon />
