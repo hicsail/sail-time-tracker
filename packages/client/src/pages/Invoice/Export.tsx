@@ -245,7 +245,7 @@ export const Export = () => {
             </Box>
             <Stack direction="row" gap={2} justifyContent="end" marginTop={5}>
               <Button variant="contained" type="submit">
-                Export
+                {state.taskId ? 'Update' : 'Export'}
               </Button>
               <Button color="secondary" variant="outlined" onClick={() => navigate(-1)}>
                 cancel
