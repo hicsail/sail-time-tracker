@@ -34,7 +34,7 @@ export type ClickUpTaskCreateInput = {
   custom_fields: Array<ClickUpTaskCustomFieldsInput>;
   description: Scalars['String'];
   name: Scalars['String'];
-  status: Scalars['Float'];
+  status: Scalars['String'];
 };
 
 export type ClickUpTaskCustomFieldsInput = {
@@ -51,6 +51,13 @@ export type ClickUpTaskModel = {
   __typename?: 'ClickUpTaskModel';
   id: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type ClickUpTaskUpdateInput = {
+  description: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  status: Scalars['String'];
 };
 
 export type CommentCreateInput = {
@@ -229,6 +236,7 @@ export type Mutation = {
   deleteInvoice: InvoiceModel;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
+  updateClickUpTask: ClickUpTaskModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
 };
@@ -285,6 +293,10 @@ export type MutationDeleteProjectsArgs = {
 
 export type MutationInsertOrUpdateRecordArgs = {
   record: RecordCreateInput;
+};
+
+export type MutationUpdateClickUpTaskArgs = {
+  task: ClickUpTaskUpdateInput;
 };
 
 export type MutationUpdateEmployeeArgs = {
@@ -360,7 +372,7 @@ export type Query = {
   findPreviousInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
   getClickUpCustomFields: Array<ListCustomField>;
   getClickUpStatuses: Array<ClickUpStatuses>;
-  getClickUpTask: Scalars['Boolean'];
+  getClickUpTask?: Maybe<Scalars['Boolean']>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   invoices: Array<InvoiceModelWithProject>;

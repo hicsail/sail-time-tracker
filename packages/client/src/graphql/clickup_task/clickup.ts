@@ -39,6 +39,12 @@ export type CreateAndAddClickUpTaskToInvoiceMutationVariables = Types.Exact<{
 
 export type CreateAndAddClickUpTaskToInvoiceMutation = { __typename?: 'Mutation'; createAndAddClickUpTaskToInvoice: { __typename?: 'ClickUpTaskModel'; id: string; url: string } };
 
+export type UpdateClickUpTaskMutationVariables = Types.Exact<{
+  task: Types.ClickUpTaskUpdateInput;
+}>;
+
+export type UpdateClickUpTaskMutation = { __typename?: 'Mutation'; updateClickUpTask: { __typename?: 'ClickUpTaskModel'; id: string; url: string } };
+
 export const GetClickUpCustomFieldsDocument = gql`
   query getClickUpCustomFields {
     getClickUpCustomFields {
@@ -194,3 +200,37 @@ export type CreateAndAddClickUpTaskToInvoiceMutationOptions = Apollo.BaseMutatio
   CreateAndAddClickUpTaskToInvoiceMutation,
   CreateAndAddClickUpTaskToInvoiceMutationVariables
 >;
+export const UpdateClickUpTaskDocument = gql`
+  mutation updateClickUpTask($task: ClickUpTaskUpdateInput!) {
+    updateClickUpTask(task: $task) {
+      id
+      url
+    }
+  }
+`;
+export type UpdateClickUpTaskMutationFn = Apollo.MutationFunction<UpdateClickUpTaskMutation, UpdateClickUpTaskMutationVariables>;
+
+/**
+ * __useUpdateClickUpTaskMutation__
+ *
+ * To run a mutation, you first call `useUpdateClickUpTaskMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateClickUpTaskMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateClickUpTaskMutation, { data, loading, error }] = useUpdateClickUpTaskMutation({
+ *   variables: {
+ *      task: // value for 'task'
+ *   },
+ * });
+ */
+export function useUpdateClickUpTaskMutation(baseOptions?: Apollo.MutationHookOptions<UpdateClickUpTaskMutation, UpdateClickUpTaskMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateClickUpTaskMutation, UpdateClickUpTaskMutationVariables>(UpdateClickUpTaskDocument, options);
+}
+export type UpdateClickUpTaskMutationHookResult = ReturnType<typeof useUpdateClickUpTaskMutation>;
+export type UpdateClickUpTaskMutationResult = Apollo.MutationResult<UpdateClickUpTaskMutation>;
+export type UpdateClickUpTaskMutationOptions = Apollo.BaseMutationOptions<UpdateClickUpTaskMutation, UpdateClickUpTaskMutationVariables>;

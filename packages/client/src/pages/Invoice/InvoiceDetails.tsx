@@ -214,6 +214,8 @@ export const InvoiceDetails = () => {
     navigate(Paths.EXPORT_INVOICE, { state: data });
   };
 
+  console.log(searchInvoiceData?.searchInvoice);
+
   return (
     <>
       {isDisplayBanner && <Banner content={`No more invoice`} state="info" />}

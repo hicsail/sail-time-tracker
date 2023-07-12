@@ -37,3 +37,10 @@ mutation createAndAddClickUpTaskToInvoice($invoiceId: String!, $task: ClickUpTas
         url
     }
 }
+
+mutation updateClickUpTask($task: ClickUpTaskUpdateInput!) {
+    updateClickUpTask(task: $task) {
+        id
+        url
+    }
+}

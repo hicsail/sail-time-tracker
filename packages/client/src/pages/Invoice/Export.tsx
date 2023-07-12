@@ -12,7 +12,8 @@ import {
   useCreateAndAddClickUpTaskToInvoiceMutation,
   useCreateClickUpTaskMutation,
   useGetClickUpCustomFieldsQuery,
-  useGetClickUpStatusesQuery
+  useGetClickUpStatusesQuery,
+  useUpdateClickUpTaskMutation
 } from '@graphql/clickup_task/clickup';
 
 const FormValidation = Yup.object({
@@ -54,6 +55,7 @@ export const Export = () => {
   const [createClickUpTask] = useCreateClickUpTaskMutation();
   const [addCommentMutation] = useAddCommentMutation();
   const [createAndAddClickUpTaskToInvoice] = useCreateAndAddClickUpTaskToInvoiceMutation();
+  const [updateClickUpTask] = useUpdateClickUpTaskMutation();
   const location = useLocation();
   const state = location.state as any;
   const navigate = useNavigate();
@@ -112,7 +114,7 @@ export const Export = () => {
     return {
       title: `${currentMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours`,
       description: description,
-      status: 0,
+      status: 'july (m1, q1)',
       Notes: notes,
       'Invoice Payment Status': 0,
       'Copy Total Here': state.revisedAmount,
@@ -123,8 +125,15 @@ export const Export = () => {
     };
   };
 
-  const createExportComment = () => {
-    const content = `Exported to ClickUp on ${format(new Date(), 'dd MMM yyyy')}.`;
+  const createComment = (type: string) => {
+    let content: string;
+
+    if (type === 'export') {
+      content = `Exported to ClickUp on ${format(new Date(), 'dd MMM yyyy')}.`;
+    } else {
+      content = `Updated ClickUp Task on ${format(new Date(), 'dd MMM yyyy')}.`;
+    }
+
     addCommentMutation({
       variables: {
         input: {
@@ -145,7 +154,7 @@ export const Export = () => {
       }).then((res) => {
         if (res.data) {
           const task = { id: res.data.createClickUpTask?.id, url: res.data.createClickUpTask?.url };
-          createExportComment();
+          createComment('export');
           createTaskAndAddClickUpTaskToInvoice(task, state.invoiceId);
           navigate(-1);
         }
@@ -193,6 +202,19 @@ export const Export = () => {
 
             if (!state.taskId) {
               createNewTaskToClickUp(newTask);
+            } else {
+              updateClickUpTask({
+                variables: {
+                  task: {
+                    ...newTask,
+                    id: state.taskId
+                  }
+                }
+              }).then((res) => {
+                if (res?.data?.updateClickUpTask) {
+                  createComment('update');
+                }
+              });
             }
           }}
         >
@@ -205,7 +227,7 @@ export const Export = () => {
                 <ObserverTextInput name="status" select label="Status" placeholder="Status" variant="outlined" fullWidth>
                   {clickUpStatuses?.getClickUpStatuses?.map((status) => {
                     return (
-                      <MenuItem value={status.orderindex} key={status.id}>
+                      <MenuItem value={status.status} key={status.id}>
                         {status.status}
                       </MenuItem>
                     );
