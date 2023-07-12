@@ -17,7 +17,6 @@ import { DefaultContainedButton } from '@components/StyledComponent';
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
   email: Yup.string().email('Invalid email address').required('Required'),
-  rate: Yup.number().required('Required').min(0, 'Rate should be greater than 0'),
   status: Yup.string().required('Required')
 });
 
@@ -94,7 +93,6 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
             <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
             <ObserverTextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />
-            <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
             <ObserverTextInput name="status" select label="Status" placeholder="Status">
               <MenuItem value="Inactive">Inactive</MenuItem>
               <MenuItem value="Active">Active</MenuItem>
