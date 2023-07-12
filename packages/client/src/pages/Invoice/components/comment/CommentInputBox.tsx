@@ -15,7 +15,14 @@ export const CommentInputBox: FC<CommentsProps> = ({ onSubmit }) => {
         Comments
       </Typography>
       <StyledTextarea minRows={5} ref={inputRef} />
-      <Button variant="contained" sx={{ backgroundColor: 'black', marginTop: 5 }} onClick={() => onSubmit(inputRef.current?.value)}>
+      <Button
+        variant="contained"
+        sx={{ backgroundColor: 'black', marginTop: 5 }}
+        onClick={() => {
+          onSubmit(inputRef.current?.value);
+          inputRef.current!.value = '';
+        }}
+      >
         Post Comment
       </Button>
     </Stack>
