@@ -80,9 +80,7 @@ export class ClickUpTaskService {
     const { id, name, description, status, custom_fields } = task;
     try {
       const isFind = await this.getClickUpTask(id);
-      if (!isFind) {
-        throw new Error('Task not found');
-      } else {
+      if (isFind) {
         // update task
         const { data } = await firstValueFrom(
           this.httpService.put(
@@ -112,7 +110,12 @@ export class ClickUpTaskService {
             )
           );
         }
-        return { url: data.url, id: data.id };
+
+        if (data && custom_fields) {
+          return { url: data.url, id: data.id };
+        }
+      } else {
+        throw new Error('Task not found');
       }
     } catch (error) {
       throw new BadRequestException();
