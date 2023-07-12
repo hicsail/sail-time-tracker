@@ -119,7 +119,7 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) =
           Add
         </DefaultContainedButton>
         <DefaultOutlinedButton variant="outlined" onClick={onClose}>
-          cancel
+          close
         </DefaultOutlinedButton>
       </Stack>
     </Box>
