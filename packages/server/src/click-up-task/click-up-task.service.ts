@@ -97,7 +97,7 @@ export class ClickUpTaskService {
 
         // update custom fields
         for (const custom_field of custom_fields) {
-          const { data: custom_field_data } = await firstValueFrom(
+          await firstValueFrom(
             this.httpService.post(
               `https://api.clickup.com/api/v2/task/${id}/field/${custom_field.id}`,
               { value: custom_field.value },
@@ -110,10 +110,7 @@ export class ClickUpTaskService {
             )
           );
         }
-
-        if (data && custom_fields) {
-          return { url: data.url, id: data.id };
-        }
+        return { url: data.url, id: data.id };
       } else {
         throw new Error('Task not found');
       }
