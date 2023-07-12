@@ -43,6 +43,10 @@ query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
             invoiceId
             content
         }
+        clickUpTask {
+            id
+            url
+        }
     }
 }
 
@@ -90,33 +94,4 @@ query findNextInvoice($projectId: String!, $endDate: DateTime!) {
             content
         }
     }
-}
-
-query getClickUpCustomFields {
-    getClickUpCustomFields {
-        id
-        name
-        type
-        required
-        type_config {
-            options {
-                id
-                name
-                orderindex
-                label
-            }
-        }
-    }
-}
-
-query getClickUpStatuses {
-    getClickUpStatuses {
-        id
-        status
-        orderindex
-    }
-}
-
-mutation createClickUpTask($task: ClickUpTaskCreateInput!) {
-    createClickUpTask(task: $task)
 }

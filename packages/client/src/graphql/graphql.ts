@@ -39,7 +39,18 @@ export type ClickUpTaskCreateInput = {
 
 export type ClickUpTaskCustomFieldsInput = {
   id: Scalars['String'];
-  value: Scalars['JSON'];
+  value?: InputMaybe<Scalars['JSON']>;
+};
+
+export type ClickUpTaskInput = {
+  id: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type ClickUpTaskModel = {
+  __typename?: 'ClickUpTaskModel';
+  id: Scalars['String'];
+  url: Scalars['String'];
 };
 
 export type CommentCreateInput = {
@@ -162,6 +173,7 @@ export type InvoiceModelWithProject = {
 export type InvoiceModelWithProjectAndComments = {
   __typename?: 'InvoiceModelWithProjectAndComments';
   amount: Scalars['Float'];
+  clickUpTask?: Maybe<ClickUpTaskModel>;
   comments: Array<CommentModel>;
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
@@ -206,7 +218,8 @@ export type Mutation = {
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
-  createClickUpTask: Scalars['Boolean'];
+  createAndAddClickUpTaskToInvoice: ClickUpTaskModel;
+  createClickUpTask: ClickUpTaskModel;
   createOrUpdateInvoice: InvoiceModel;
   deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
@@ -232,6 +245,11 @@ export type MutationAddFavoriteProjectArgs = {
 
 export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
+};
+
+export type MutationCreateAndAddClickUpTaskToInvoiceArgs = {
+  invoiceId: Scalars['String'];
+  task: ClickUpTaskInput;
 };
 
 export type MutationCreateClickUpTaskArgs = {
@@ -340,6 +358,7 @@ export type Query = {
   findPreviousInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
   getClickUpCustomFields: Array<ListCustomField>;
   getClickUpStatuses: Array<ClickUpStatuses>;
+  getClickUpTask: Scalars['Boolean'];
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   invoices: Array<InvoiceModelWithProject>;
@@ -365,6 +384,10 @@ export type QueryFindNextInvoiceArgs = {
 export type QueryFindPreviousInvoiceArgs = {
   projectId: Scalars['String'];
   startDate: Scalars['DateTime'];
+};
+
+export type QueryGetClickUpTaskArgs = {
+  taskId: Scalars['String'];
 };
 
 export type QueryGetEmployeesWithRecordArgs = {
