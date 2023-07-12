@@ -15,7 +15,6 @@ export class InvoiceResolver {
 
   @Query(() => InvoiceModelWithProjectAndComments)
   async searchInvoice(@Args('projectId_startDate_endDate') projectId_startDate_endDate: InvoiceSearchInput): Promise<InvoiceModelWithProjectAndComments> {
-    console.log(await this.invoiceService.searchInvoice(projectId_startDate_endDate));
     return this.invoiceService.searchInvoice(projectId_startDate_endDate);
   }
 

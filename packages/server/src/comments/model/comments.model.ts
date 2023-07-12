@@ -13,4 +13,7 @@ export class CommentModel {
 
   @Field()
   invoiceId: string;
+
+  @Field()
+  deletable: boolean;
 }

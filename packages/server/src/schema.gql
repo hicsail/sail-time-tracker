@@ -104,6 +104,7 @@ type CommentModel {
   createDate: DateTime!
   content: String!
   invoiceId: String!
+  deletable: Boolean!
 }
 
 type ClickUpTaskModel {
@@ -271,6 +272,7 @@ input InvoiceCreateInput {
 input CommentCreateInput {
   content: String!
   invoiceId: String!
+  deletable: Boolean
 }
 
 input ClickUpTaskCreateInput {

@@ -80,4 +80,5 @@ model Comment {
   content    String
   invoiceId  String
   invoice    Invoice  @relation(fields: [invoiceId], references: [invoiceId])
+  deletable  Boolean  @default(true)
 }
