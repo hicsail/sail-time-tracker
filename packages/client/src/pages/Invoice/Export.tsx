@@ -98,7 +98,7 @@ export const Export = () => {
         case 'number':
           return (
             <Box gridColumn="span 3" key={field.id}>
-              <ObserverTextInput {...commonProps} required={field.required || false} type="number" variant="outlined" fullWidth />
+              <ObserverTextInput {...commonProps} required={field.required || false} type="number" variant="outlined" fullWidth disabled />
             </Box>
           );
         default:
@@ -213,6 +213,7 @@ export const Export = () => {
               }).then((res) => {
                 if (res?.data?.updateClickUpTask) {
                   createComment('update');
+                  navigate(-1);
                 }
               });
             }
