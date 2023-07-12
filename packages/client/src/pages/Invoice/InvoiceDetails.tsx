@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
@@ -32,6 +32,7 @@ import { Paths } from '@constants/paths';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Banner } from '@components/Banner';
+import { ClickUpIcon } from '@components/icons/ClickupIcon';
 
 const columns: any[] = [
   {
@@ -214,8 +215,6 @@ export const InvoiceDetails = () => {
     navigate(Paths.EXPORT_INVOICE, { state: data });
   };
 
-  console.log(searchInvoiceData?.searchInvoice);
-
   return (
     <>
       {isDisplayBanner && <Banner content={`No more invoice`} state="info" />}
@@ -243,16 +242,25 @@ export const InvoiceDetails = () => {
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="export to clickup" onClick={exportToClickUp}>
-            <IconButton>
-              <SendIcon />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="delete" onClick={handleOpenDeleteDialog}>
             <IconButton>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
+          <Tooltip title="export to clickup" onClick={exportToClickUp}>
+            <IconButton>
+              <SendIcon />
+            </IconButton>
+          </Tooltip>
+          {searchInvoiceData?.searchInvoice?.clickUpTask?.url && (
+            <Tooltip title="clickup task">
+              <Link to={searchInvoiceData?.searchInvoice?.clickUpTask?.url ?? ''} target="_blank">
+                <IconButton>
+                  <ClickUpIcon />
+                </IconButton>
+              </Link>
+            </Tooltip>
+          )}
         </Box>
         <FormDialog open={isOpenedEditDialog} onClose={handleCloseEditDialog}>
           <Typography variant="h6">Update Total Billable Hours</Typography>
