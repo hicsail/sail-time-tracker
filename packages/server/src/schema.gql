@@ -189,7 +189,7 @@ type Query {
   comments: [CommentModel!]!
   getClickUpCustomFields: [ListCustomField!]!
   getClickUpStatuses: [ClickUpStatuses!]!
-  getClickUpTask(taskId: String!): Boolean!
+  getClickUpTask(taskId: String!): Boolean
 }
 
 input InvoiceSearchInput {
@@ -214,6 +214,7 @@ type Mutation {
   deleteComment(id: String!): CommentModel!
   createClickUpTask(task: ClickUpTaskCreateInput!): ClickUpTaskModel!
   createAndAddClickUpTaskToInvoice(invoiceId: String!, task: ClickUpTaskInput!): ClickUpTaskModel!
+  updateClickUpTask(task: ClickUpTaskUpdateInput!): ClickUpTaskModel!
 }
 
 input EmployeeCreateInput {
@@ -278,7 +279,7 @@ input CommentCreateInput {
 input ClickUpTaskCreateInput {
   name: String!
   description: String!
-  status: Float!
+  status: String!
   custom_fields: [ClickUpTaskCustomFieldsInput!]!
 }
 
@@ -295,4 +296,12 @@ scalar JSON
 input ClickUpTaskInput {
   id: String!
   url: String!
+}
+
+input ClickUpTaskUpdateInput {
+  name: String!
+  description: String!
+  status: String!
+  custom_fields: [ClickUpTaskCustomFieldsInput!]!
+  id: String!
 }

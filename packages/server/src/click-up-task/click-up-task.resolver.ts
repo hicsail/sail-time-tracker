@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ClickUpTaskService } from './click-up-task.service';
 import { ClickUpStatuses, ClickUpTaskModel, ListCustomField } from './model/task.model';
-import { ClickUpTaskCreateInput, ClickUpTaskInput } from './dto/task.dto';
+import { ClickUpTaskCreateInput, ClickUpTaskInput, ClickUpTaskUpdateInput } from './dto/task.dto';
 
 @Resolver()
 export class ClickUpTaskResolver {
@@ -22,13 +22,18 @@ export class ClickUpTaskResolver {
     return this.clickUpTaskService.createClickUpTask(task);
   }
 
-  @Query(() => Boolean)
-  async getClickUpTask(@Args('taskId') taskId: string): Promise<boolean> {
+  @Query(() => Boolean, { nullable: true })
+  async getClickUpTask(@Args('taskId') taskId: string): Promise<boolean | null> {
     return this.clickUpTaskService.getClickUpTask(taskId);
   }
 
   @Mutation(() => ClickUpTaskModel)
   async createAndAddClickUpTaskToInvoice(@Args('invoiceId') invoiceId: string, @Args('task') task: ClickUpTaskInput): Promise<ClickUpTaskModel> {
     return this.clickUpTaskService.createAndAddClickUpTaskToInvoice(invoiceId, task);
+  }
+
+  @Mutation(() => ClickUpTaskModel)
+  async updateClickUpTask(@Args('task') task: ClickUpTaskUpdateInput): Promise<ClickUpTaskModel> {
+    return this.clickUpTaskService.updateClickUpTask(task);
   }
 }

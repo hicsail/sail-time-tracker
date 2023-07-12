@@ -4,7 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { ClickUpStatuses, ClickUpTaskModel, ListCustomField } from './model/task.model';
-import { ClickUpTaskCreateInput, ClickUpTaskInput } from './dto/task.dto';
+import { ClickUpTaskCreateInput, ClickUpTaskInput, ClickUpTaskUpdateInput } from './dto/task.dto';
 
 @Injectable()
 export class ClickUpTaskService {
@@ -51,7 +51,7 @@ export class ClickUpTaskService {
     }
   }
 
-  async getClickUpTask(taskId: string): Promise<boolean> {
+  async getClickUpTask(taskId: string): Promise<boolean | null> {
     try {
       const { data } = await firstValueFrom(
         this.httpService.get(`${this.configService.get<string>('CLICKUP_URL')}/task/${taskId}`, {
@@ -74,5 +74,48 @@ export class ClickUpTaskService {
         invoiceId: invoiceId
       }
     });
+  }
+
+  async updateClickUpTask(task: ClickUpTaskUpdateInput): Promise<ClickUpTaskModel> {
+    const { id, name, description, status, custom_fields } = task;
+    try {
+      const isFind = await this.getClickUpTask(id);
+      if (!isFind) {
+        throw new Error('Task not found');
+      } else {
+        // update task
+        const { data } = await firstValueFrom(
+          this.httpService.put(
+            `${this.configService.get<string>('CLICKUP_URL')}/task/${id}`,
+            { name, description, status },
+            {
+              headers: {
+                method: 'PUT',
+                Authorization: this.configService.get<string>('CLICKUP_TOKEN')
+              }
+            }
+          )
+        );
+
+        // update custom fields
+        for (const custom_field of custom_fields) {
+          const { data: custom_field_data } = await firstValueFrom(
+            this.httpService.post(
+              `https://api.clickup.com/api/v2/task/${id}/field/${custom_field.id}`,
+              { value: custom_field.value },
+              {
+                headers: {
+                  method: 'POST',
+                  Authorization: this.configService.get<string>('CLICKUP_TOKEN')
+                }
+              }
+            )
+          );
+        }
+        return { url: data.url, id: data.id };
+      }
+    } catch (error) {
+      throw new BadRequestException();
+    }
   }
 }

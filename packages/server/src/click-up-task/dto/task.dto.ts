@@ -24,11 +24,18 @@ export class ClickUpTaskCreateInput {
   description: string;
 
   @Field()
-  @IsNumber()
-  status: number;
+  @IsString()
+  status: string;
 
   @Field(() => [ClickUpTaskCustomFieldsInput])
   custom_fields: ClickUpTaskCustomFieldsInput[];
+}
+
+@InputType()
+export class ClickUpTaskUpdateInput extends ClickUpTaskCreateInput {
+  @Field()
+  @IsString()
+  id: string;
 }
 
 @InputType()
