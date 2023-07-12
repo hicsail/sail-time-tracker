@@ -53,23 +53,31 @@ model FavoriteProject {
 }
 
 model Invoice {
-  invoiceId String   @default(uuid()) @unique
-  projectId String
-  project   Project  @relation(fields: [projectId], references: [id])
-  startDate DateTime @db.Date
-  endDate   DateTime @db.Date
-  rate      Float
-  hours     Float
-  amount    Float
-  comments  Comment[]
+  invoiceId   String       @unique @default(uuid())
+  projectId   String
+  project     Project      @relation(fields: [projectId], references: [id])
+  startDate   DateTime     @db.Date
+  endDate     DateTime     @db.Date
+  rate        Float
+  hours       Float
+  amount      Float
+  comments    Comment[]
+  clickUpTask ClickUpTask?
 
   @@id([projectId, startDate, endDate])
 }
 
+model ClickUpTask {
+  id        String  @id
+  url       String
+  invoiceId String  @unique
+  invoice   Invoice @relation(fields: [invoiceId], references: [invoiceId])
+}
+
 model Comment {
-  commentId  String @id @default(uuid())
+  commentId  String   @id @default(uuid())
   createDate DateTime @default(now()) @db.Date
   content    String
   invoiceId  String
-  invoice    Invoice @relation(fields: [invoiceId], references: [invoiceId])
+  invoice    Invoice  @relation(fields: [invoiceId], references: [invoiceId])
 }
