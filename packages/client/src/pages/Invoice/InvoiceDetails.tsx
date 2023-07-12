@@ -343,7 +343,15 @@ export const InvoiceDetails = () => {
             <CommentList>
               {searchInvoiceData && searchInvoiceData.searchInvoice.comments.length > 0 ? (
                 searchInvoiceData.searchInvoice.comments.map((item: any) => {
-                  return <CommentListItem date={new Date(item.createDate)} content={item.content} onDelete={() => handleOnDelete(item.commentId)} key={item.commentId} />;
+                  return (
+                    <CommentListItem
+                      date={new Date(item.createDate)}
+                      content={item.content}
+                      onDelete={() => handleOnDelete(item.commentId)}
+                      key={item.commentId}
+                      deletable={item.deletable}
+                    />
+                  );
                 })
               ) : (
                 <div>no comments</div>

@@ -42,6 +42,7 @@ query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
             commentId
             invoiceId
             content
+            deletable
         }
         clickUpTask {
             id
@@ -72,6 +73,7 @@ query findPreviousInvoice($projectId: String!, $startDate: DateTime!) {
             commentId
             invoiceId
             content
+            deletable
         }
     }
 }
@@ -92,6 +94,7 @@ query findNextInvoice($projectId: String!, $endDate: DateTime!) {
             commentId
             invoiceId
             content
+            deletable
         }
     }
 }

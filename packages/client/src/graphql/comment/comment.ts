@@ -5,16 +5,6 @@ import * as Types from '../graphql';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type CommentQueryVariables = Types.Exact<{
-  id: Types.Scalars['String'];
-}>;
-
-export type CommentQuery = { __typename?: 'Query'; comment: { __typename?: 'CommentModel'; commentId: string; createDate: any; content: string; invoiceId: string } };
-
-export type CommentsQueryVariables = Types.Exact<{ [key: string]: never }>;
-
-export type CommentsQuery = { __typename?: 'Query'; comments: Array<{ __typename?: 'CommentModel'; commentId: string; createDate: any; content: string; invoiceId: string }> };
-
 export type AddCommentMutationVariables = Types.Exact<{
   input: Types.CommentCreateInput;
 }>;
@@ -27,81 +17,6 @@ export type DeleteCommentMutationVariables = Types.Exact<{
 
 export type DeleteCommentMutation = { __typename?: 'Mutation'; deleteComment: { __typename?: 'CommentModel'; commentId: string } };
 
-export const CommentDocument = gql`
-  query comment($id: String!) {
-    comment(id: $id) {
-      commentId
-      createDate
-      content
-      invoiceId
-    }
-  }
-`;
-
-/**
- * __useCommentQuery__
- *
- * To run a query within a React component, call `useCommentQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommentQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommentQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useCommentQuery(baseOptions: Apollo.QueryHookOptions<CommentQuery, CommentQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<CommentQuery, CommentQueryVariables>(CommentDocument, options);
-}
-export function useCommentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommentQuery, CommentQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<CommentQuery, CommentQueryVariables>(CommentDocument, options);
-}
-export type CommentQueryHookResult = ReturnType<typeof useCommentQuery>;
-export type CommentLazyQueryHookResult = ReturnType<typeof useCommentLazyQuery>;
-export type CommentQueryResult = Apollo.QueryResult<CommentQuery, CommentQueryVariables>;
-export const CommentsDocument = gql`
-  query comments {
-    comments {
-      commentId
-      createDate
-      content
-      invoiceId
-    }
-  }
-`;
-
-/**
- * __useCommentsQuery__
- *
- * To run a query within a React component, call `useCommentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommentsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCommentsQuery(baseOptions?: Apollo.QueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, options);
-}
-export function useCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, options);
-}
-export type CommentsQueryHookResult = ReturnType<typeof useCommentsQuery>;
-export type CommentsLazyQueryHookResult = ReturnType<typeof useCommentsLazyQuery>;
-export type CommentsQueryResult = Apollo.QueryResult<CommentsQuery, CommentsQueryVariables>;
 export const AddCommentDocument = gql`
   mutation addComment($input: CommentCreateInput!) {
     addComment(input: $input) {

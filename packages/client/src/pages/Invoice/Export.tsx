@@ -129,7 +129,8 @@ export const Export = () => {
       variables: {
         input: {
           content: content,
-          invoiceId: state.invoiceId
+          invoiceId: state.invoiceId,
+          deletable: false
         }
       }
     });

@@ -55,6 +55,7 @@ export type ClickUpTaskModel = {
 
 export type CommentCreateInput = {
   content: Scalars['String'];
+  deletable?: InputMaybe<Scalars['Boolean']>;
   invoiceId: Scalars['String'];
 };
 
@@ -63,6 +64,7 @@ export type CommentModel = {
   commentId: Scalars['String'];
   content: Scalars['String'];
   createDate: Scalars['DateTime'];
+  deletable: Scalars['Boolean'];
   invoiceId: Scalars['String'];
 };
 
