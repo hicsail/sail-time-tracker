@@ -1,20 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Invoice } from '@prisma/client';
-import { ClickUpTaskCreateInput, InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
-import { ClickUpStatuses, InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-import { ConfigService } from '@nestjs/config';
+import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
+import { InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
 
 @Injectable()
 export class InvoiceService {
-  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService) {}
+  constructor(private prisma: PrismaService) {}
   async getAllInvoices(): Promise<InvoiceModelWithProject[]> {
     return this.prisma.invoice.findMany({
       include: {
-        project: true,
-        comments: true
+        project: true
       }
     });
   }
@@ -49,7 +45,8 @@ export class InvoiceService {
       },
       include: {
         project: true,
-        comments: true
+        comments: true,
+        clickUpTask: true
       }
     });
   }
@@ -110,49 +107,5 @@ export class InvoiceService {
         comments: true
       }
     });
-  }
-
-  async getClickUpCustomFields(): Promise<ListCustomField[]> {
-    const { data } = await firstValueFrom(
-      this.httpService.get(`${this.configService.get<string>('CLICKUP_URL')}/${this.configService.get<string>('CLICKUP_LIST_ID')}/field`, {
-        headers: {
-          Authorization: this.configService.get<string>('CLICKUP_TOKEN')
-        }
-      })
-    );
-
-    return data.fields.filter(
-      (field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel' && field.name !== 'Invoice Payment Status'
-    );
-  }
-
-  async getClickUpStatuses(): Promise<ClickUpStatuses[]> {
-    const { data } = await firstValueFrom(
-      this.httpService.get(`${this.configService.get<string>('CLICKUP_URL')}/${this.configService.get<string>('CLICKUP_LIST_ID')}`, {
-        headers: {
-          Authorization: this.configService.get<string>('CLICKUP_TOKEN')
-        }
-      })
-    );
-
-    return data.statuses;
-  }
-
-  async createClickUpTask(task: ClickUpTaskCreateInput): Promise<boolean> {
-    console.log(typeof task);
-    console.log(JSON.stringify(task));
-
-    try {
-      const { data } = await firstValueFrom(
-        this.httpService.post(`${this.configService.get<string>('CLICKUP_URL')}/${this.configService.get<string>('CLICKUP_LIST_ID')}/task`, task, {
-          headers: {
-            Authorization: this.configService.get<string>('CLICKUP_TOKEN')
-          }
-        })
-      );
-    } catch (error) {
-      throw new BadRequestException();
-    }
-    return true;
   }
 }

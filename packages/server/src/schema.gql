@@ -106,6 +106,38 @@ type CommentModel {
   invoiceId: String!
 }
 
+type ClickUpTaskModel {
+  id: String!
+  url: String!
+}
+
+type ListCustomFieldTypeConfig {
+  options: [ListCustomFieldTypeConfigOptions!]
+}
+
+type ListCustomFieldTypeConfigOptions {
+  id: String!
+  name: String
+  orderindex: Float
+  label: String
+}
+
+type ListCustomField {
+  id: String!
+  name: String!
+  type: String!
+  type_config: ListCustomFieldTypeConfig!
+  required: Boolean
+}
+
+type ClickUpStatuses {
+  id: String!
+  status: String!
+  orderindex: Float!
+  color: String!
+  type: String!
+}
+
 type InvoiceModel {
   projectId: String!
   startDate: DateTime!
@@ -137,33 +169,7 @@ type InvoiceModelWithProjectAndComments {
   invoiceId: String!
   project: ProjectModel!
   comments: [CommentModel!]!
-}
-
-type ListCustomFieldTypeConfig {
-  options: [ListCustomFieldTypeConfigOptions!]
-}
-
-type ListCustomFieldTypeConfigOptions {
-  id: String!
-  name: String
-  orderindex: Float
-  label: String
-}
-
-type ListCustomField {
-  id: String!
-  name: String!
-  type: String!
-  type_config: ListCustomFieldTypeConfig!
-  required: Boolean
-}
-
-type ClickUpStatuses {
-  id: String!
-  status: String!
-  orderindex: Float!
-  color: String!
-  type: String!
+  clickUpTask: ClickUpTaskModel
 }
 
 type Query {
@@ -178,10 +184,11 @@ type Query {
   searchInvoicesByDateRange(startDate: DateTime!, endDate: DateTime!): [InvoiceModel!]!
   findPreviousInvoice(projectId: String!, startDate: DateTime!): InvoiceModelWithProjectAndComments
   findNextInvoice(projectId: String!, endDate: DateTime!): InvoiceModelWithProjectAndComments
-  getClickUpCustomFields: [ListCustomField!]!
-  getClickUpStatuses: [ClickUpStatuses!]!
   comment(id: String!): CommentModel!
   comments: [CommentModel!]!
+  getClickUpCustomFields: [ListCustomField!]!
+  getClickUpStatuses: [ClickUpStatuses!]!
+  getClickUpTask(taskId: String!): Boolean!
 }
 
 input InvoiceSearchInput {
@@ -202,9 +209,10 @@ type Mutation {
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
   createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
   deleteInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModel!
-  createClickUpTask(task: ClickUpTaskCreateInput!): Boolean!
   addComment(input: CommentCreateInput!): CommentModel!
   deleteComment(id: String!): CommentModel!
+  createClickUpTask(task: ClickUpTaskCreateInput!): ClickUpTaskModel!
+  createAndAddClickUpTaskToInvoice(invoiceId: String!, task: ClickUpTaskInput!): ClickUpTaskModel!
 }
 
 input EmployeeCreateInput {
@@ -260,6 +268,11 @@ input InvoiceCreateInput {
   amount: Float!
 }
 
+input CommentCreateInput {
+  content: String!
+  invoiceId: String!
+}
+
 input ClickUpTaskCreateInput {
   name: String!
   description: String!
@@ -277,7 +290,7 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
-input CommentCreateInput {
-  content: String!
-  invoiceId: String!
+input ClickUpTaskInput {
+  id: String!
+  url: String!
 }

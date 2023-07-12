@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InvoiceService } from './invoice.service';
-import { ClickUpStatuses, InvoiceModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments, ListCustomField } from './model/invoice.model';
-import { ClickUpTaskCreateInput, InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
+import { InvoiceModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
+import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { Invoice } from '@prisma/client';
 
 @Resolver(() => InvoiceModel)
@@ -15,6 +15,7 @@ export class InvoiceResolver {
 
   @Query(() => InvoiceModelWithProjectAndComments)
   async searchInvoice(@Args('projectId_startDate_endDate') projectId_startDate_endDate: InvoiceSearchInput): Promise<InvoiceModelWithProjectAndComments> {
+    console.log(await this.invoiceService.searchInvoice(projectId_startDate_endDate));
     return this.invoiceService.searchInvoice(projectId_startDate_endDate);
   }
 
@@ -41,20 +42,5 @@ export class InvoiceResolver {
   @Mutation(() => InvoiceModel)
   async deleteInvoice(@Args('projectId_startDate_endDate') projectId_startDate_endDate: InvoiceSearchInput): Promise<Invoice> {
     return this.invoiceService.deleteInvoice(projectId_startDate_endDate);
-  }
-
-  @Query(() => [ListCustomField])
-  async getClickUpCustomFields(): Promise<ListCustomField[]> {
-    return this.invoiceService.getClickUpCustomFields();
-  }
-
-  @Query(() => [ClickUpStatuses])
-  async getClickUpStatuses(): Promise<ClickUpStatuses[]> {
-    return this.invoiceService.getClickUpStatuses();
-  }
-
-  @Mutation(() => Boolean)
-  async createClickUpTask(@Args('task') task: ClickUpTaskCreateInput): Promise<boolean> {
-    return this.invoiceService.createClickUpTask(task);
   }
 }
