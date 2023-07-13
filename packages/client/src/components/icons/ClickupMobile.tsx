@@ -1,30 +1,26 @@
-import { SvgIcon, SvgIconProps } from '@mui/material';
+import { SvgIcon } from '@mui/material';
 import { FC } from 'react';
+import { ClickUpIconProps } from '@components/icons/ClickupIcon';
 
-export interface ClickUpIconProps extends SvgIconProps<any> {
-  sx?: any;
-}
-
-export const ClickUpIcon: FC<ClickUpIconProps> = ({ sx, fontSize }) => {
+export const ClickUpMobile: FC<ClickUpIconProps> = ({ sx, fontSize }) => {
   return (
     <SvgIcon fontSize={fontSize} sx={sx}>
       <svg viewBox="0 0 185 185" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_d)">
-          <rect x="30" y="20" width="125" height="125" rx="62.5" fill="white" />
-          <rect x="30" y="20" width="125" height="125" rx="62.5" fill="white" />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M55.8789 105.714L69.3974 95.3593C76.5762 104.732 84.1998 109.051 92.6948 109.051C101.143 109.051 108.557 104.781 115.414 95.4832L129.119 105.59C119.232 118.996 106.932 126.079 92.6948 126.079C78.5049 126.079 66.0907 119.046 55.8789 105.714Z"
-            fill="url(#paint0_linear)"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M92.6491 60.7078L68.5883 81.4406L57.4727 68.5407L92.6969 38.1885L127.647 68.5644L116.477 81.417L92.6491 60.7078Z"
-            fill="url(#paint1_linear)"
-          />
+          <rect x="30" y="20" width="125" height="125" rx="30" fill="white" />
         </g>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M55.8789 105.714L69.3974 95.3593C76.5762 104.732 84.1998 109.051 92.6948 109.051C101.143 109.051 108.557 104.781 115.414 95.4832L129.119 105.59C119.232 118.996 106.932 126.079 92.6948 126.079C78.5049 126.079 66.0907 119.046 55.8789 105.714Z"
+          fill="url(#paint0_linear)"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M92.6491 60.7078L68.5883 81.4406L57.4727 68.5407L92.6969 38.1885L127.647 68.5644L116.477 81.417L92.6491 60.7078Z"
+          fill="url(#paint1_linear)"
+        />
         <defs>
           <filter id="filter0_d" x="0" y="0" width="185" height="185" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix" />

@@ -33,6 +33,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Banner } from '@components/Banner';
 import { ClickUpIcon } from '@components/icons/ClickupIcon';
+import { ClickUpMobile } from '@components/icons/ClickupMobile';
 
 const columns: any[] = [
   {
@@ -228,7 +229,18 @@ export const InvoiceDetails = () => {
           </Button>
         </Stack>
         <Box sx={{ marginTop: 5 }}>
-          <h3>{`Project Name: ${project?.name}`}</h3>
+          <h3>
+            {`Project Name: ${project?.name}`}
+            {searchInvoiceData?.searchInvoice?.clickUpTask?.url && (
+              <Tooltip title="clickup task">
+                <Link to={searchInvoiceData?.searchInvoice?.clickUpTask?.url ?? ''} target="_blank">
+                  <IconButton>
+                    <ClickUpIcon fontSize="large" />
+                  </IconButton>
+                </Link>
+              </Tooltip>
+            )}
+          </h3>
           <Box sx={{ display: 'flex', alignItem: 'center', gap: 1 }}>
             <CalendarTodayIcon />
             <div>
@@ -248,19 +260,22 @@ export const InvoiceDetails = () => {
             </IconButton>
           </Tooltip>
           <Tooltip title="export to clickup" onClick={exportToClickUp}>
-            <IconButton>
-              <SendIcon />
+            <IconButton sx={{ position: 'relative' }}>
+              <ClickUpMobile fontSize="large" />
+              <SendIcon
+                sx={{
+                  position: 'absolute',
+                  bottom: '12px',
+                  right: '5px',
+                  fontSize: '15px',
+                  backgroundColor: 'primary.light',
+                  borderRadius: '50%',
+                  color: 'white',
+                  padding: '2px'
+                }}
+              />
             </IconButton>
           </Tooltip>
-          {searchInvoiceData?.searchInvoice?.clickUpTask?.url && (
-            <Tooltip title="clickup task">
-              <Link to={searchInvoiceData?.searchInvoice?.clickUpTask?.url ?? ''} target="_blank">
-                <IconButton>
-                  <ClickUpIcon />
-                </IconButton>
-              </Link>
-            </Tooltip>
-          )}
         </Box>
         <FormDialog open={isOpenedEditDialog} onClose={handleCloseEditDialog}>
           <Typography variant="h6">Update Total Billable Hours</Typography>
