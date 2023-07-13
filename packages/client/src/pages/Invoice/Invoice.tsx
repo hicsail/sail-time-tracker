@@ -1,18 +1,17 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Chip, InputAdornment, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
 import { GetAllInvoicesDocument, useDeleteInvoiceMutation, useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 import { BasicTable } from './components/table/BasicTable';
-import { TextInput } from '@components/TextInput';
-import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker } from '@mui/x-date-pickers';
 import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { FormDialog } from '@components/form/FormDialog';
+import { SearchBar } from '@components/SearchBar';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -151,20 +150,7 @@ export const Invoice = () => {
             }}
           />
         </Box>
-        <TextInput
-          value={searchText}
-          setValue={setSearchText}
-          id="search-employee"
-          variant="outlined"
-          placeholder="Search..."
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ mr: 1, color: 'grey.500' }} />
-              </InputAdornment>
-            )
-          }}
-        />
+        <SearchBar id="search invoices" value={searchText} setValue={setSearchText} />
       </Stack>
       <Stack marginBottom="1.5rem">
         {(searchText !== '' || (dateRange.startDate && dateRange.endDate)) && (
