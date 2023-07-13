@@ -23,9 +23,8 @@ const FormValidation = Yup.object({
 interface EmployeeFormProps {
   handleClose: () => void;
 }
-
 export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
-  const [initialValue, setInitialValue] = useState({ name: '', email: '', rate: '', status: '' });
+  const [initialValue, setInitialValue] = useState({ name: '', email: '', status: '' });
   let { id } = useParams();
   const [updateEmployee] = useEmployeeUpdateInputMutation();
   const [addEmployee] = useEmployeeCreateInputMutation();
@@ -41,12 +40,11 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
         nextFetchPolicy: 'cache-and-network'
       }).then((res) => {
         if (res && res.data) {
-          const { name, email, status, rate } = res.data.employee;
+          const { name, email, status } = res.data.employee;
           setInitialValue({
             name,
             email,
-            status: status as string,
-            rate: rate.toString()
+            status: status as string
           });
         }
       });
@@ -66,7 +64,7 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
             // after submitting the new employee re-fetch the employees via graphql
             await addEmployee({
               variables: {
-                newEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString() }
+                newEmployee: { ...values, status: values.status.toString() }
               },
               refetchQueries: [{ query: GetEmployeeListDocument }]
             });
@@ -74,7 +72,7 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
             // after updating the employee, re-fetch the employees via graphql
             await updateEmployee({
               variables: {
-                updateEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString(), id: id }
+                updateEmployee: { ...values, status: values.status.toString(), id: id }
               },
               refetchQueries: [
                 {
