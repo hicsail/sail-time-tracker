@@ -38,7 +38,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
       align={column.headerAlign ? column.headerAlign : 'left'}
       sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}
     >
-      {column.headerName}
+      {column.headerName.toUpperCase()}
     </TableCell>
   ));
 
