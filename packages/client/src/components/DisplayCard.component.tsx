@@ -4,7 +4,7 @@ import { Box, Typography, CardContent, Card, styled } from '@mui/material';
 interface DisplayCardProps {
   id: string;
   title: string;
-  data: number | undefined | string;
+  data: number | undefined | string | ReactNode;
   icon?: ReactNode;
 }
 
@@ -25,7 +25,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 export const DisplayCard: FC<DisplayCardProps> = ({ id, title, data, icon }) => {
   return (
     <StyledCard key={id}>
-      <Box paddingLeft="1rem">{icon}</Box>
+      {icon && <Box paddingLeft="1rem">{icon}</Box>}
       <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
         <Typography gutterBottom variant="subtitle2" component="div" color="customColors.cardTextTopColor">
           {title}

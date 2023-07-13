@@ -347,16 +347,45 @@ export const InvoiceDetails = () => {
             </Button>
           </Stack>
         </FormDialog>
-        <Stack direction="row" justifyContent="space-between" marginTop={5}>
-          <DisplayCard id="Original billable hours" title="Original Billable Hour" data={project?.billableHours} />
-          <DisplayCard id="Original Invoice Amount" title="Original Invoice Amount" data={project && USDollar.format(project.billableHours * 65)} />
+        <Stack direction="row" justifyContent="space-between" marginTop={5} gap={4}>
+          <DisplayCard
+            id="Original Billable Hours"
+            title="Original Billable Hour"
+            data={
+              <Stack gap={1} direction="row" alignItems="center">
+                {project?.billableHours}
+                <Typography component="span" variant="caption" color="grey.500">
+                  hrs
+                </Typography>
+              </Stack>
+            }
+          />
+          <DisplayCard id="Original Invoice Amount" title="Original Amount" data={project && USDollar.format(project.billableHours * 65)} />
           <DisplayCard
             id="Original billable hours"
             title="Adjustment Hours"
-            data={searchInvoiceData && project && (searchInvoiceData.searchInvoice.hours - project.billableHours).toFixed(2)}
+            data={
+              <Stack gap={1} direction="row" alignItems="center">
+                {searchInvoiceData && project && (searchInvoiceData.searchInvoice.hours - project.billableHours).toFixed(2)}
+                <Typography component="span" variant="caption" color="grey.500">
+                  hrs
+                </Typography>
+              </Stack>
+            }
           />
-          <DisplayCard id="Revised total billable hours" title="Revised total billable hours" data={searchInvoiceData?.searchInvoice?.hours} />
-          <DisplayCard id="Revised Invoice Amount" title="Revised Invoice Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
+          <DisplayCard
+            id="Revised total billable hours"
+            title="Revised Billable Hours"
+            data={
+              <Stack gap={1} direction="row" alignItems="center">
+                {searchInvoiceData?.searchInvoice?.hours}
+                <Typography component="span" variant="caption" color="grey.500">
+                  hrs
+                </Typography>
+              </Stack>
+            }
+          />
+          <DisplayCard id="Revised Invoice Amount" title="Revised Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
         </Stack>
         <Box sx={{ marginTop: '2rem' }}>
           <BasicTable rows={rows} columns={columns} keyFun={keyFun} hidePagination />
