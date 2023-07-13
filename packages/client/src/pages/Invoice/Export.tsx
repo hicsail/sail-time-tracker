@@ -108,11 +108,12 @@ export const Export = () => {
 
   const initialValues = () => {
     const currentMonth = format(new Date(), 'MMM');
+    const currentYear = format(new Date(), 'yyyy');
     const notes = state.notes.map((note: any) => `${format(new Date(note.createDate), 'dd MMM yyyy')} - ${note.content}`).join('\n');
     const description = state.rows.map((row: any) => `${row.employeeName} - ${row.billableHours} hours - $${row.amount}`).join('\n');
 
     return {
-      title: `${currentMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours`,
+      title: `${currentMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours - SAIL${currentYear}${format(new Date(), 'MM')}`,
       description: description,
       status: 'july (m1, q1)',
       Notes: notes,
