@@ -1,6 +1,6 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 import { useGetEmployeesWithRecordQuery } from '@graphql/employee/employee';
 import { formatDateToDashFormat } from '../../utils/helperFun';
@@ -19,12 +19,11 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
     },
     fetchPolicy: 'cache-and-network'
   });
-  const rows = data ? [...data.getEmployeesWithRecord.filter((row) => row.workHours !== 0), ...data.getEmployeesWithRecord.filter((row) => row.workHours === 0)] : [];
-  const [filteredRows, setFilteredRows] = useState<any[]>(rows);
+  const rows = data ? data.getEmployeesWithRecord : [];
 
-  useEffect(() => {
-    setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string)));
-  }, [searchText, data]);
+  const filteredRows = rows.filter((row) => {
+    return row.name.toLowerCase().includes(searchText?.toLowerCase() as string);
+  });
 
   // outer table column name and render config
   const tableConfig = {
