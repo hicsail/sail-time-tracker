@@ -1,10 +1,10 @@
-import { Box, Button, FormControl, MenuItem, Stack, TextareaAutosizeProps, Typography } from '@mui/material';
+import { Backdrop, Box, Button, CircularProgress, FormControl, MenuItem, Stack, TextareaAutosizeProps, Typography } from '@mui/material';
 import { StyledTextarea } from '@components/StyledComponent';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { Form, Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { StyledPaper } from '@components/StyledPaper';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useAddCommentMutation } from '@graphql/comment/comment';
@@ -59,6 +59,7 @@ export const Export = () => {
   const location = useLocation();
   const state = location.state as any;
   const navigate = useNavigate();
+  const [openBackDrop, setOpenBackDrop] = useState(false);
 
   const numberData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'currency' || field.type === 'number');
   const dropDownData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'drop_down');
@@ -202,8 +203,11 @@ export const Export = () => {
             });
 
             if (!state.taskId) {
+              setOpenBackDrop(true);
               createNewTaskToClickUp(newTask);
+              setOpenBackDrop(false);
             } else {
+              setOpenBackDrop(true);
               updateClickUpTask({
                 variables: {
                   task: {
@@ -214,6 +218,7 @@ export const Export = () => {
               }).then((res) => {
                 if (res?.data?.updateClickUpTask) {
                   createComment('update');
+                  setOpenBackDrop(false);
                   navigate(-1);
                 }
               });
@@ -221,6 +226,9 @@ export const Export = () => {
           }}
         >
           <Form>
+            <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={openBackDrop}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
             <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={4} mb={5}>
               <Box gridColumn="span 6">
                 <ObserverTextInput label="Title" name="title" type="text" fullWidth variant="outlined" />
