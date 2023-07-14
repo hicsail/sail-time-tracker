@@ -10,20 +10,20 @@ export const ClickUpMobile: FC<ClickUpIconProps> = ({ sx, fontSize }) => {
           <rect x="30" y="20" width="125" height="125" rx="30" fill="white" />
         </g>
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M55.8789 105.714L69.3974 95.3593C76.5762 104.732 84.1998 109.051 92.6948 109.051C101.143 109.051 108.557 104.781 115.414 95.4832L129.119 105.59C119.232 118.996 106.932 126.079 92.6948 126.079C78.5049 126.079 66.0907 119.046 55.8789 105.714Z"
           fill="url(#paint0_linear)"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M92.6491 60.7078L68.5883 81.4406L57.4727 68.5407L92.6969 38.1885L127.647 68.5644L116.477 81.417L92.6491 60.7078Z"
           fill="url(#paint1_linear)"
         />
         <defs>
-          <filter id="filter0_d" x="0" y="0" width="185" height="185" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <filter id="filter0_d" x="0" y="0" width="185" height="185" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
             <feOffset dy="10" />
             <feGaussianBlur stdDeviation="15" />
@@ -32,12 +32,12 @@ export const ClickUpMobile: FC<ClickUpIconProps> = ({ sx, fontSize }) => {
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
           </filter>
           <linearGradient id="paint0_linear" x1="55.8789" y1="116.251" x2="129.119" y2="116.251" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#8930FD" />
-            <stop offset="1" stop-color="#49CCF9" />
+            <stop stopColor="#8930FD" />
+            <stop offset="1" stopColor="#49CCF9" />
           </linearGradient>
           <linearGradient id="paint1_linear" x1="57.4727" y1="67.6025" x2="127.647" y2="67.6025" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#FF02F0" />
-            <stop offset="1" stop-color="#FFC800" />
+            <stop stopColor="#FF02F0" />
+            <stop offset="1" stopColor="#FFC800" />
           </linearGradient>
         </defs>
       </svg>
