@@ -226,6 +226,7 @@ export type Mutation = {
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
+  addSlackUser: BatchPayload;
   createAndAddClickUpTaskToInvoice: ClickUpTaskModel;
   createClickUpTask: ClickUpTaskModel;
   createOrUpdateInvoice: InvoiceModel;
@@ -235,6 +236,7 @@ export type Mutation = {
   deleteInvoice: InvoiceModel;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
+  sendSlackMessage: Scalars['Boolean'];
   updateClickUpTask: ClickUpTaskModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
@@ -254,6 +256,10 @@ export type MutationAddFavoriteProjectArgs = {
 
 export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
+};
+
+export type MutationAddSlackUserArgs = {
+  slackUsers: Array<SlackEmployeeInput>;
 };
 
 export type MutationCreateAndAddClickUpTaskToInvoiceArgs = {
@@ -292,6 +298,10 @@ export type MutationDeleteProjectsArgs = {
 
 export type MutationInsertOrUpdateRecordArgs = {
   record: RecordCreateInput;
+};
+
+export type MutationSendSlackMessageArgs = {
+  slackSendMessageInput: SendSlackMessageInput;
 };
 
 export type MutationUpdateClickUpTaskArgs = {
@@ -445,4 +455,14 @@ export type RecordWithFavoriteProjectModel = {
   __typename?: 'RecordWithFavoriteProjectModel';
   date?: Maybe<Scalars['String']>;
   hours: Scalars['Float'];
+};
+
+export type SendSlackMessageInput = {
+  employeeId: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type SlackEmployeeInput = {
+  employeeId: Scalars['String'];
+  slackId: Scalars['String'];
 };

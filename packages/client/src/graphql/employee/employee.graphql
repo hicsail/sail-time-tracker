@@ -102,3 +102,7 @@ mutation DeleteEmployees($ids: [String!]!) {
     count
   }
 }
+
+mutation SendSlackMessage($inputs: SendSlackMessageInput!) {
+  sendSlackMessage(slackSendMessageInput: $inputs)
+}
