@@ -11,6 +11,7 @@ query getEmployeesWithRecord($startDate: DateTime!, $endDate: DateTime!) {
   getEmployeesWithRecord(startDate: $startDate, endDate: $endDate) {
     id
     name
+    status
     workHours
     indirectHours
     billableHours

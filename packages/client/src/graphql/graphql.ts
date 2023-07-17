@@ -116,6 +116,7 @@ export type EmployeeWithRecord = {
   indirectHours: Scalars['Float'];
   inner: Array<EmployeeWithRecordInner>;
   name: Scalars['String'];
+  status: Scalars['String'];
   workHours: Scalars['Float'];
 };
 

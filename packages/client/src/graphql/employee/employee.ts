@@ -20,6 +20,7 @@ export type GetEmployeesWithRecordQuery = {
     __typename?: 'EmployeeWithRecord';
     id: string;
     name: string;
+    status: string;
     workHours: number;
     indirectHours: number;
     billableHours: number;
@@ -164,6 +165,7 @@ export const GetEmployeesWithRecordDocument = gql`
     getEmployeesWithRecord(startDate: $startDate, endDate: $endDate) {
       id
       name
+      status
       workHours
       indirectHours
       billableHours
