@@ -17,6 +17,7 @@ model Employee {
   status   String?
   records  Record[]
   projects FavoriteProject[]
+  slack    Slack?
 }
 
 model Project {
@@ -80,4 +81,10 @@ model Comment {
   invoiceId  String
   invoice    Invoice  @relation(fields: [invoiceId], references: [invoiceId])
   deletable  Boolean  @default(true)
+}
+
+model Slack {
+  slackId    String   @id
+  employeeId String   @unique
+  employee   Employee @relation(fields: [employeeId], references: [id])
 }
