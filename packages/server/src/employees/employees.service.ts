@@ -366,17 +366,17 @@ export class EmployeesService {
 
   async sendSlackMessage(sendSlackMessageInput: SendSlackMessageInput): Promise<boolean> {
     const { employeeId, message } = sendSlackMessageInput;
-    const { slackId } = await this.prisma.slack.findUnique({
-      where: {
-        employeeId
-      }
-    });
-
-    if (!slackId) {
-      return false;
-    }
 
     try {
+      const { slackId } = await this.prisma.slack.findUnique({
+        where: {
+          employeeId
+        }
+      });
+
+      if (!slackId) {
+        return false;
+      }
       const { data } = await firstValueFrom(this.httpService.post(`${this.configService.get<string>('SLACK_URL')}`, { user: slackId, message: message }));
       return data.ok;
     } catch (e) {
