@@ -376,8 +376,11 @@ export class EmployeesService {
       return false;
     }
 
-    const { data } = await firstValueFrom(this.httpService.post(`${this.configService.get<string>('SLACK_URL')}`, { user: slackId, message: message }));
-
-    return data.ok;
+    try {
+      const { data } = await firstValueFrom(this.httpService.post(`${this.configService.get<string>('SLACK_URL')}`, { user: slackId, message: message }));
+      return data.ok;
+    } catch (e) {
+      return false;
+    }
   }
 }
