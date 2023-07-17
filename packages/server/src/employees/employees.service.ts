@@ -121,54 +121,53 @@ export class EmployeesService {
     });
 
     // hide project that not contains any record, is not Indirect, Absence and the status is Active
-    return employees
-      .map((employee) => {
-        const totalWorkHours = employee.records
-          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
-          .reduce((sum, currentValue) => sum + currentValue.hours, 0);
+    return employees.map((employee) => {
+      const totalWorkHours = employee.records
+        .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+        .reduce((sum, currentValue) => sum + currentValue.hours, 0);
 
-        const totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
-        const projectHoursMap = new Map();
-        const uniqueProjectList: any[] = [];
+      const totalIndirectHours = employee.records.filter((record) => record.project.name === 'Indirect').reduce((sum, currentValue) => sum + currentValue.hours, 0);
+      const projectHoursMap = new Map();
+      const uniqueProjectList: any[] = [];
 
-        // store unique projects and total hours to uniqueProjectList
-        // from startDate to endDate
-        employee.records
-          .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
-          .forEach((record) => {
-            if (!projectHoursMap.get(record.project.id)) {
-              projectHoursMap.set(record.project.id, record.hours);
-              uniqueProjectList.push(record);
-            } else {
-              projectHoursMap.set(record.project.id, projectHoursMap.get(record.project.id) + record.hours);
-            }
-          });
-
-        // get inner table data
-        const inner = uniqueProjectList.map((record) => {
-          const indirectHour = (projectHoursMap.get(record.project.id) / totalWorkHours) * totalIndirectHours;
-          return {
-            projectId: record.project.id,
-            projectName: record.project.name,
-            rate: record.project.rate,
-            status: record.project.status,
-            isBillable: record.project.isBillable,
-            projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
-            projectIndirectHours: formatHours(indirectHour),
-            projectPercentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
-          };
+      // store unique projects and total hours to uniqueProjectList
+      // from startDate to endDate
+      employee.records
+        .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
+        .forEach((record) => {
+          if (!projectHoursMap.get(record.project.id)) {
+            projectHoursMap.set(record.project.id, record.hours);
+            uniqueProjectList.push(record);
+          } else {
+            projectHoursMap.set(record.project.id, projectHoursMap.get(record.project.id) + record.hours);
+          }
         });
 
+      // get inner table data
+      const inner = uniqueProjectList.map((record) => {
+        const indirectHour = (projectHoursMap.get(record.project.id) / totalWorkHours) * totalIndirectHours;
         return {
-          id: employee.id,
-          name: employee.name,
-          workHours: formatHours(totalWorkHours),
-          indirectHours: formatHours(totalIndirectHours),
-          billableHours: formatHours(totalWorkHours + totalIndirectHours),
-          inner: inner
+          projectId: record.project.id,
+          projectName: record.project.name,
+          rate: record.project.rate,
+          status: record.project.status,
+          isBillable: record.project.isBillable,
+          projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
+          projectIndirectHours: formatHours(indirectHour),
+          projectPercentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
         };
-      })
-      .filter((employee) => employee.workHours !== 0);
+      });
+
+      return {
+        id: employee.id,
+        name: employee.name,
+        status: employee.status,
+        workHours: formatHours(totalWorkHours),
+        indirectHours: formatHours(totalIndirectHours),
+        billableHours: formatHours(totalWorkHours + totalIndirectHours),
+        inner: inner
+      };
+    });
   }
 
   async getProjectWithRecord(startDate: Date, endDate: Date): Promise<ProjectWithEmployeeRecords[]> {

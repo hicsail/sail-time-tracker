@@ -34,6 +34,9 @@ export class EmployeeWithRecord {
   name: string;
 
   @Field()
+  status: string;
+
+  @Field()
   workHours: number;
 
   @Field()

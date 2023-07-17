@@ -23,6 +23,7 @@ type EmployeeDeleteReturnModel {
 type EmployeeWithRecord {
   id: String!
   name: String!
+  status: String!
   workHours: Float!
   indirectHours: Float!
   billableHours: Float!
