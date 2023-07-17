@@ -2,7 +2,7 @@ import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTabl
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { FC } from 'react';
 
-import { useGetEmployeesWithRecordQuery } from '@graphql/employee/employee';
+import { useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { CustomizedAccordions } from '@pages/Report/components/CustomizedAccordions';
 import { SlackIcon } from '@components/icons/SlackIcon';
@@ -11,6 +11,8 @@ import { format } from 'date-fns';
 import { FormTextArea } from '@pages/Invoice/Export';
 import { Form, Formik, FormikValues } from 'formik';
 import * as Yup from 'yup';
+import { Banner } from '@components/Banner';
+import { useTimeout } from '../../utils/useTimeOutHook';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -24,7 +26,13 @@ const FormValidation = Yup.object({
 
 export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, searchText }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [targetReceiver, setTargetReceiver] = React.useState<{ userId: string; name: string; slackId: string }>({ userId: '', name: '', slackId: '' });
+  const [sendSlackMessage] = useSendSlackMessageMutation();
+  const [showBanner, setShowBanner] = React.useState({
+    show: false,
+    content: '',
+    state: '' as 'success' | 'error' | 'info'
+  });
+  const [targetReceiver, setTargetReceiver] = React.useState<{ employeeId: string; name: string }>({ employeeId: '', name: '' });
 
   const { data } = useGetEmployeesWithRecordQuery({
     variables: {
@@ -114,18 +122,36 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   };
 
   const handleSendSlack = (values: FormikValues) => {
-    console.log(values);
-    handleCloseFormDialog();
+    sendSlackMessage({
+      variables: {
+        inputs: {
+          employeeId: targetReceiver.employeeId,
+          message: values.message
+        }
+      }
+    }).then((r) => {
+      if (r?.data?.sendSlackMessage) {
+        handleCloseFormDialog();
+        setShowBanner({ show: true, content: `Successfully sent the slack message to ${targetReceiver.name}`, state: 'success' });
+        return;
+      }
+
+      setShowBanner({ show: true, content: 'Error to send the slack message', state: 'error' });
+    });
   };
 
   const handleCloseFormDialog = () => setOpenDialog(false);
+
   const handleOpenFormDialog = (user: any) => {
     setOpenDialog(true);
-    setTargetReceiver({ userId: user.userId, name: user.name, slackId: 'slackId' });
+    setTargetReceiver({ employeeId: user.id, name: user.name });
   };
+
+  useTimeout(() => setShowBanner((prevState) => ({ ...prevState, show: false })), 1000, showBanner.show);
 
   return (
     <Stack gap={5}>
+      {showBanner.show && showBanner.state === 'success' && <Banner content={showBanner.content} state={showBanner.state} />}
       <CollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
       {rows.length === 0 && <Box sx={{ textAlign: 'start' }}>No data</Box>}
       <CustomizedAccordions summary="See employees who has not submit their work hours">
@@ -137,6 +163,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
           )}
         </Stack>
         <FormDialog open={openDialog} onClose={handleCloseFormDialog}>
+          {showBanner.show && showBanner.state === 'error' && <Banner content={showBanner.content} state={showBanner.state} />}
           <Typography variant="h6" sx={{ mb: 4 }}>
             Send Slack Notification
           </Typography>
