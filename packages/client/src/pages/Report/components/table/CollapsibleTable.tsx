@@ -67,7 +67,7 @@ export const RenderRow: FC<RenderRowProps> = ({ project, tableConfig, innerTitle
         }}
       >
         <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}>
+          <IconButton size="small" onClick={() => setOpen(!open)} disabled={project.inner.length === 0}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
         </TableCell>
