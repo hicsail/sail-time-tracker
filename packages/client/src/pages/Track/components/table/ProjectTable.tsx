@@ -93,7 +93,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     return selected.indexOf(id) !== -1;
   };
 
-  const handleOnClickDelete = async () => {
+  const handleOnClickDelete = () => {
     if (employeeId && selected.length > 0) {
       deleteFavoriteProject({
         variables: {
