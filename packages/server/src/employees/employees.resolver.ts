@@ -1,9 +1,10 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { EmployeesService } from './employees.service';
 import { EmployeeDeleteReturnModel, EmployeeModel, EmployeeWithRecord, ProjectWithEmployeeRecords } from './model/employee.model';
-import { EmployeeCreateInput, EmployeeUpdateInput } from './dto/employee.dto';
+import { EmployeeCreateInput, EmployeeUpdateInput, SendSlackMessageInput, SlackEmployeeInput } from './dto/employee.dto';
 import { ProjectModel } from '../project/model/project.model';
 import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
+import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 
 @Resolver(() => EmployeeModel)
 export class EmployeesResolver {
@@ -56,5 +57,15 @@ export class EmployeesResolver {
   @Mutation(() => EmployeeDeleteReturnModel)
   async deleteEmployees(@Args({ name: 'ids', type: () => [String] }) ids: string[]): Promise<EmployeeDeleteReturnModel> {
     return this.employeesService.deleteEmployees(ids);
+  }
+
+  @Mutation(() => BatchPayload)
+  async addSlackUser(@Args({ name: 'slackUsers', type: () => [SlackEmployeeInput] }) slackUsers: [SlackEmployeeInput]): Promise<BatchPayload> {
+    return this.employeesService.addSlackUser(slackUsers);
+  }
+
+  @Mutation(() => Boolean)
+  async sendSlackMessage(@Args('slackSendMessageInput') slackSendMessageInput: SendSlackMessageInput): Promise<boolean> {
+    return this.employeesService.sendSlackMessage(slackSendMessageInput);
   }
 }

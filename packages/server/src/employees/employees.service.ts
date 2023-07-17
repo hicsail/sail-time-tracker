@@ -5,11 +5,15 @@ import { EmployeeDeleteReturnModel, EmployeeWithRecord, ProjectWithEmployeeRecor
 import { ProjectModel } from '../project/model/project.model';
 import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
 import { convertToUTCDate, formatDateToDashFormat, formatHours, formatPercentage } from '../utils/helperFun';
-import { EmployeeCreateInput, EmployeeUpdateInput } from './dto/employee.dto';
+import { EmployeeCreateInput, EmployeeUpdateInput, SendSlackMessageInput, SlackEmployeeInput } from './dto/employee.dto';
+import { BatchPayload } from '../favorite-project/model/favorite-project.model';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService) {}
 
   /**
    * Get all employees
@@ -116,7 +120,8 @@ export class EmployeesService {
           include: {
             project: true
           }
-        }
+        },
+        slack: true
       }
     });
 
@@ -351,5 +356,28 @@ export class EmployeesService {
     }
 
     return groupedData;
+  }
+
+  async addSlackUser(slackUsers: [SlackEmployeeInput]): Promise<BatchPayload> {
+    return this.prisma.slack.createMany({
+      data: slackUsers
+    });
+  }
+
+  async sendSlackMessage(sendSlackMessageInput: SendSlackMessageInput): Promise<boolean> {
+    const { employeeId, message } = sendSlackMessageInput;
+    const slackId = await this.prisma.slack.findUnique({
+      where: {
+        employeeId
+      }
+    });
+
+    if (!slackId) {
+      return false;
+    }
+
+    const { data } = await firstValueFrom(this.httpService.post(`${this.configService.get<string>('SLACK_URL')}`, { user: slackId, message: message }));
+
+    return data.ok;
   }
 }
