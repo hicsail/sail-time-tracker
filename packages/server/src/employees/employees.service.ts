@@ -366,7 +366,7 @@ export class EmployeesService {
 
   async sendSlackMessage(sendSlackMessageInput: SendSlackMessageInput): Promise<boolean> {
     const { employeeId, message } = sendSlackMessageInput;
-    const slackId = await this.prisma.slack.findUnique({
+    const { slackId } = await this.prisma.slack.findUnique({
       where: {
         employeeId
       }
