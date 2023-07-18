@@ -1,5 +1,5 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoicesByDateRangeQuery } from '@graphql/invoice/invoice';
 import { Banner } from '@components/Banner';
@@ -66,7 +66,12 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         invoice: invoice
       },
       refetchQueries: [{ query: GetAllInvoicesDocument }]
-    }).then((r) => r.data && setDisplayContent(true));
+    }).then((r) => {
+      if (r.data) {
+        refetchSearchInvoicesByDateRangeQuery();
+        setDisplayContent(true);
+      }
+    });
   };
 
   useEffect(() => {
@@ -94,7 +99,6 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       return;
     }
     handleClick(row);
-    refetchSearchInvoicesByDateRangeQuery();
   };
 
   const tableConfig = {
@@ -146,6 +150,8 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         name: 'Actions',
         render: (row: any) => {
           const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
+          console.log(row.name);
+          console.log(isFind);
           return (
             <IconButton
               onClick={() => handleActionsOnClick(row, isFind)}
