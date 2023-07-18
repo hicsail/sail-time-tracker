@@ -14,6 +14,8 @@ import { InvoiceIcon } from '@components/icons/InvoiceIcon';
 import IconButton from '@mui/material/IconButton';
 import { useTimeout } from '../../utils/useTimeOutHook';
 import { Flag } from '@mui/icons-material';
+import { differenceInBusinessDays } from 'date-fns';
+import { CircularWithValueLabel } from '@pages/Report/components/CircularWithValueLabel';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -136,12 +138,16 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         id: 'limitRange',
         name: 'Limit Range',
         render: (row: any) => {
-          console.log(row);
-          const maximumRateLimit = 100;
+          //console.log(row);
+          /*console.log(startDate);
+          console.log(endDate);*/
+          const differences = differenceInBusinessDays(endDate, startDate);
+          const maximumRateLimit = row.fte * (differences * 8);
+          const percentage = (row.billableHours / maximumRateLimit) * 100;
           return (
             <Tooltip title="50%">
               <IconButton>
-                <Flag />
+                <CircularWithValueLabel progress={percentage} />
               </IconButton>
             </Tooltip>
           );
