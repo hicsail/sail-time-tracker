@@ -111,11 +111,11 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
             <ObserverTextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
             <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" required />
             <ObserverTextInput id="fte" type="number" name="fte" label="FTE" placeholder="FTE" required />
-            <ObserverTextInput name="status" select label="Status" placeholder="Status">
+            <ObserverTextInput name="status" select label="Status" placeholder="Status" required>
               <MenuItem value="Inactive">Inactive</MenuItem>
               <MenuItem value="Active">Active</MenuItem>
             </ObserverTextInput>
-            <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable">
+            <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable" required>
               <MenuItem value="true">True</MenuItem>
               <MenuItem value="false">False</MenuItem>
             </ObserverTextInput>
