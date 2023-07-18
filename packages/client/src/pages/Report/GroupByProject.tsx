@@ -6,10 +6,12 @@ import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useNavigate } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import * as React from 'react';
+import { InvoiceIcon } from '@components/icons/InvoiceIcon';
+import IconButton from '@mui/material/IconButton';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -145,16 +147,21 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         render: (row: any) => {
           const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
           return (
-            <Button
-              variant="outlined"
+            <IconButton
               onClick={() => handleActionsOnClick(row, isFind)}
-              startIcon={isFind ? <VisibilityIcon /> : <AddBoxIcon />}
               color="secondary"
-              sx={{ width: '12rem', display: 'flex', justifyContent: 'start' }}
-              disabled={row.billableHours === 0}
+              sx={{ width: '50px', height: '50px' }}
+              title={isFind ? 'View Invoice' : 'Generate Invoice'}
             >
-              {isFind ? 'View Invoice' : 'Generate Invoice'}
-            </Button>
+              <Box sx={{ position: 'relative' }}>
+                <InvoiceIcon />
+                {isFind ? (
+                  <VisibilityIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
+                ) : (
+                  <AddCircleOutlineIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
+                )}
+              </Box>
+            </IconButton>
           );
         }
       }
