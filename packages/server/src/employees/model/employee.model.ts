@@ -135,3 +135,15 @@ export class SlackModel {
   @Field(() => ID)
   slackId: string;
 }
+
+@ObjectType()
+export class BatchResponseModel {
+  @Field()
+  success: boolean;
+
+  @Field()
+  message: string;
+
+  @Field()
+  count: number;
+}

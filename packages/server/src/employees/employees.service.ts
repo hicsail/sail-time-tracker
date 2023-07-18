@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Employee } from '@prisma/client';
-import { EmployeeDeleteReturnModel, EmployeeWithRecord, ProjectWithEmployeeRecords, ProjectWithEmployeeRecordsInner } from './model/employee.model';
+import { BatchResponseModel, EmployeeDeleteReturnModel, EmployeeWithRecord, ProjectWithEmployeeRecords, ProjectWithEmployeeRecordsInner } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
 import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
 import { convertToUTCDate, formatDateToDashFormat, formatHours, formatPercentage } from '../utils/helperFun';
-import { EmployeeCreateInput, EmployeeUpdateInput, SendSlackMessageInput, SlackEmployeeInput } from './dto/employee.dto';
+import { BatchSendSlackMessageInput, EmployeeCreateInput, EmployeeUpdateInput, SendSlackMessageInput, SlackEmployeeInput } from './dto/employee.dto';
 import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
@@ -381,6 +381,18 @@ export class EmployeesService {
       return data.ok;
     } catch (e) {
       return false;
+    }
+  }
+
+  async batchSendingMessages(input: BatchSendSlackMessageInput): Promise<BatchResponseModel> {
+    console.log(input);
+    try {
+      input.employeeIds.forEach((employeeId) => {
+        this.sendSlackMessage({ employeeId, message: input.message });
+      });
+      return { success: true, message: 'Success', count: input.employeeIds.length };
+    } catch (e) {
+      return { success: false, message: e.message, count: 0 };
     }
   }
 }
