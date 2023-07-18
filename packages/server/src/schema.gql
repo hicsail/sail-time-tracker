@@ -34,6 +34,7 @@ type EmployeeWithRecordInner {
   projectId: String!
   projectName: String!
   rate: Float!
+  fte: Float!
   status: String!
   isBillable: Boolean!
   projectWorkHours: Float!
@@ -47,6 +48,7 @@ type ProjectWithEmployeeRecords {
   isBillable: Boolean!
   rate: Float!
   status: String!
+  fte: Float!
   workHours: Float!
   indirectHours: Float!
   billableHours: Float!
