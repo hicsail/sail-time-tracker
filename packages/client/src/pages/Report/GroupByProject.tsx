@@ -1,5 +1,5 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { FC, useState } from 'react';
 import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoicesByDateRangeQuery } from '@graphql/invoice/invoice';
 import { Banner } from '@components/Banner';
@@ -136,24 +136,19 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         name: 'Actions',
         render: (row: any) => {
           const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
-          console.log(row.name);
-          console.log(isFind);
           return (
-            <IconButton
-              onClick={() => handleActionsOnClick(row, isFind)}
-              color="secondary"
-              sx={{ width: '50px', height: '50px' }}
-              title={isFind ? 'View Invoice' : 'Generate Invoice'}
-            >
-              <Box sx={{ position: 'relative' }}>
-                <InvoiceIcon />
-                {isFind ? (
-                  <VisibilityIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
-                ) : (
-                  <AddCircleOutlineIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
-                )}
-              </Box>
-            </IconButton>
+            <Tooltip title={isFind ? 'View Invoice' : 'Generate Invoice'}>
+              <IconButton onClick={() => handleActionsOnClick(row, isFind)} color="secondary" sx={{ width: '50px', height: '50px' }}>
+                <Box sx={{ position: 'relative' }}>
+                  <InvoiceIcon />
+                  {isFind ? (
+                    <VisibilityIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
+                  ) : (
+                    <AddCircleOutlineIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
+                  )}
+                </Box>
+              </IconButton>
+            </Tooltip>
           );
         }
       }
