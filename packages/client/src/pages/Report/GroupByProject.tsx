@@ -12,6 +12,7 @@ import { Paths } from '@constants/paths';
 import * as React from 'react';
 import { InvoiceIcon } from '@components/icons/InvoiceIcon';
 import IconButton from '@mui/material/IconButton';
+import { useTimeout } from '../../utils/useTimeOutHook';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -42,8 +43,9 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours === 0)
       ].filter((project: any) => project.status === 'Active')
     : [];
-  const [filteredRows, setFilteredRows] = useState<any[]>(rows);
   const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
+  const filteredRows = rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string) && row.name !== 'Indirect' && row.name !== 'Absence');
+  useTimeout(() => setDisplayContent(false), 1000, displayContent);
 
   /**
    * generate invoice
@@ -73,22 +75,6 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       }
     });
   };
-
-  useEffect(() => {
-    // Set the displayContent state to true after a delay of 700 milliseconds (0.7 seconds)
-    const timeoutId = setTimeout(() => {
-      setDisplayContent(false);
-    }, 700);
-
-    // Clean up the timeout when the component unmounts or the state changes
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [displayContent]);
-
-  useEffect(() => {
-    setFilteredRows(rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string) && row.name !== 'Indirect' && row.name !== 'Absence'));
-  }, [searchText, data]);
 
   const handleActionsOnClick = (row: any, isFind: { projectId: string } | undefined) => {
     if (isFind) {
