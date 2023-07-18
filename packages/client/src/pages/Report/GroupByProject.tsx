@@ -13,6 +13,7 @@ import * as React from 'react';
 import { InvoiceIcon } from '@components/icons/InvoiceIcon';
 import IconButton from '@mui/material/IconButton';
 import { useTimeout } from '../../utils/useTimeOutHook';
+import { Flag } from '@mui/icons-material';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -130,6 +131,21 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         id: 'percentage',
         name: 'Percentage',
         render: (row: any) => row.percentage + '%'
+      },
+      {
+        id: 'limitRange',
+        name: 'Limit Range',
+        render: (row: any) => {
+          console.log(row);
+          const maximumRateLimit = 100;
+          return (
+            <Tooltip title="50%">
+              <IconButton>
+                <Flag />
+              </IconButton>
+            </Tooltip>
+          );
+        }
       },
       {
         id: 'actions',

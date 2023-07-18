@@ -134,6 +134,7 @@ export type EmployeeWithRecord = {
 
 export type EmployeeWithRecordInner = {
   __typename?: 'EmployeeWithRecordInner';
+  fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];
   projectId: Scalars['String'];
   projectIndirectHours: Scalars['Float'];
@@ -371,6 +372,7 @@ export type ProjectUpdateInput = {
 export type ProjectWithEmployeeRecords = {
   __typename?: 'ProjectWithEmployeeRecords';
   billableHours: Scalars['Float'];
+  fte: Scalars['Float'];
   id: Scalars['String'];
   indirectHours: Scalars['Float'];
   inner: Array<ProjectWithEmployeeRecordsInner>;

@@ -33,6 +33,7 @@ query getProjectWithEmployeeRecords($startDate: DateTime!, $endDate: DateTime!) 
     isBillable
     rate
     status
+    fte
     workHours
     indirectHours
     billableHours

@@ -50,6 +50,7 @@ export type GetProjectWithEmployeeRecordsQuery = {
     isBillable: boolean;
     rate: number;
     status: string;
+    fte: number;
     workHours: number;
     indirectHours: number;
     billableHours: number;
@@ -232,6 +233,7 @@ export const GetProjectWithEmployeeRecordsDocument = gql`
       isBillable
       rate
       status
+      fte
       workHours
       indirectHours
       billableHours
