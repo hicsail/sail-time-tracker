@@ -27,7 +27,7 @@ export class ProjectCreateInput {
 
   @Field()
   @IsNotEmpty()
-  @IsBoolean()
+  @IsNumber()
   fte: number;
 
   @Field()
