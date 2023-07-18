@@ -1,6 +1,6 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box } from '@mui/material';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoicesByDateRangeQuery } from '@graphql/invoice/invoice';
 import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../utils/helperFun';
@@ -51,7 +51,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
    * generate invoice
    * @param row
    */
-  const handleClick = (row: any) => {
+  const handleGenerateInvoice = (row: any) => {
     const { id, billableHours, rate } = row;
     const amount = rate * billableHours;
     const invoice = {
@@ -84,7 +84,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       navigate(`${Paths.INVOICE}/${row.id}/${start_date}/${end_date}`);
       return;
     }
-    handleClick(row);
+    handleGenerateInvoice(row);
   };
 
   const tableConfig = {
