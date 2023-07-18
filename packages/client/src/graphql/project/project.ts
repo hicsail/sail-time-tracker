@@ -9,7 +9,7 @@ export type GetProjectListQueryVariables = Types.Exact<{ [key: string]: never }>
 
 export type GetProjectListQuery = {
   __typename?: 'Query';
-  projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; rate: number; description: string; status: string; isBillable: boolean }>;
+  projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; rate: number; fte: number; description: string; status: string; isBillable: boolean }>;
 };
 
 export type GetProjectByIdQueryVariables = Types.Exact<{
@@ -18,7 +18,7 @@ export type GetProjectByIdQueryVariables = Types.Exact<{
 
 export type GetProjectByIdQuery = {
   __typename?: 'Query';
-  project: { __typename?: 'ProjectModel'; name: string; description: string; rate: number; status: string; isBillable: boolean };
+  project: { __typename?: 'ProjectModel'; name: string; description: string; rate: number; fte: number; status: string; isBillable: boolean };
 };
 
 export type ProjectCreateInputMutationVariables = Types.Exact<{
@@ -27,7 +27,7 @@ export type ProjectCreateInputMutationVariables = Types.Exact<{
 
 export type ProjectCreateInputMutation = {
   __typename?: 'Mutation';
-  addProject: { __typename?: 'ProjectModel'; id: string; name: string; rate: number; description: string; status: string };
+  addProject: { __typename?: 'ProjectModel'; id: string; name: string; rate: number; fte: number; description: string; status: string };
 };
 
 export type ProjectUpdateInputMutationVariables = Types.Exact<{
@@ -36,7 +36,7 @@ export type ProjectUpdateInputMutationVariables = Types.Exact<{
 
 export type ProjectUpdateInputMutation = {
   __typename?: 'Mutation';
-  updateProject: { __typename?: 'ProjectModel'; id: string; name: string; rate: number; description: string; status: string };
+  updateProject: { __typename?: 'ProjectModel'; id: string; name: string; rate: number; fte: number; description: string; status: string };
 };
 
 export type DeleteProjectsMutationVariables = Types.Exact<{
@@ -51,6 +51,7 @@ export const GetProjectListDocument = gql`
       id
       name
       rate
+      fte
       description
       status
       isBillable
@@ -90,6 +91,7 @@ export const GetProjectByIdDocument = gql`
       name
       description
       rate
+      fte
       status
       isBillable
     }
@@ -129,6 +131,7 @@ export const ProjectCreateInputDocument = gql`
       id
       name
       rate
+      fte
       description
       status
     }
@@ -166,6 +169,7 @@ export const ProjectUpdateInputDocument = gql`
       id
       name
       rate
+      fte
       description
       status
     }

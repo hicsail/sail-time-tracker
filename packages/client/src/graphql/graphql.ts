@@ -335,6 +335,7 @@ export type MutationUpdateProjectArgs = {
 
 export type ProjectCreateInput = {
   description: Scalars['String'];
+  fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   rate: Scalars['Float'];
@@ -349,6 +350,7 @@ export type ProjectDeleteReturnModel = {
 export type ProjectModel = {
   __typename?: 'ProjectModel';
   description: Scalars['String'];
+  fte: Scalars['Float'];
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
@@ -358,6 +360,7 @@ export type ProjectModel = {
 
 export type ProjectUpdateInput = {
   description: Scalars['String'];
+  fte: Scalars['Float'];
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];

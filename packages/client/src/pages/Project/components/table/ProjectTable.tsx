@@ -65,6 +65,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     },
     { field: 'description', headerName: 'Description', width: 130 },
     { field: 'rate', headerName: 'Rate', width: 130 },
+    { field: 'fte', headerName: 'FTE', width: 130 },
     {
       field: 'status',
       headerName: 'Status',
