@@ -385,12 +385,20 @@ export class EmployeesService {
   }
 
   async batchSendingMessages(input: BatchSendSlackMessageInput): Promise<BatchResponseModel> {
-    console.log(input);
     try {
-      input.employeeIds.forEach((employeeId) => {
-        this.sendSlackMessage({ employeeId, message: input.message });
-      });
-      return { success: true, message: 'Success', count: input.employeeIds.length };
+      let successCount = 0;
+
+      // Use Promise.all to wait for all sendSlackMessage promises to resolve
+      await Promise.all(
+        input.employeeIds.map(async (employeeId) => {
+          const success = await this.sendSlackMessage({ employeeId, message: input.message });
+          if (success) {
+            successCount++;
+          }
+        })
+      );
+
+      return { success: true, message: 'Success', count: successCount };
     } catch (e) {
       return { success: false, message: e.message, count: 0 };
     }
