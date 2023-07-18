@@ -21,6 +21,18 @@ export type BatchPayload = {
   count: Scalars['Float'];
 };
 
+export type BatchResponseModel = {
+  __typename?: 'BatchResponseModel';
+  count: Scalars['Float'];
+  message: Scalars['String'];
+  success: Scalars['Boolean'];
+};
+
+export type BatchSendSlackMessageInput = {
+  employeeIds: Array<Scalars['String']>;
+  message: Scalars['String'];
+};
+
 export type ClickUpStatuses = {
   __typename?: 'ClickUpStatuses';
   color: Scalars['String'];
@@ -227,6 +239,7 @@ export type Mutation = {
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
   addSlackUser: BatchPayload;
+  batchSendingMessages: BatchResponseModel;
   createAndAddClickUpTaskToInvoice: ClickUpTaskModel;
   createClickUpTask: ClickUpTaskModel;
   createOrUpdateInvoice: InvoiceModel;
@@ -260,6 +273,10 @@ export type MutationAddProjectArgs = {
 
 export type MutationAddSlackUserArgs = {
   slackUsers: Array<SlackEmployeeInput>;
+};
+
+export type MutationBatchSendingMessagesArgs = {
+  input: BatchSendSlackMessageInput;
 };
 
 export type MutationCreateAndAddClickUpTaskToInvoiceArgs = {
