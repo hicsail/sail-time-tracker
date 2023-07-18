@@ -27,7 +27,7 @@ model Project {
   status      String
   isBillable  Boolean           @default(true)
   rate        Float             @default(65)
-  fte         Float?
+  fte         Float             @default(0)
   records     Record[]
   employees   FavoriteProject[]
   invoices    Invoice[]
