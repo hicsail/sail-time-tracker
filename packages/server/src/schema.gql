@@ -75,6 +75,7 @@ type ProjectModel {
   description: String!
   isBillable: Boolean!
   rate: Float!
+  fte: Float!
 }
 
 type ProjectDeleteReturnModel {
@@ -259,6 +260,7 @@ input ProjectCreateInput {
   status: String!
   description: String!
   isBillable: Boolean!
+  fte: Float!
   rate: Float!
 }
 
@@ -267,6 +269,7 @@ input ProjectUpdateInput {
   status: String!
   description: String!
   isBillable: Boolean!
+  fte: Float!
   rate: Float!
   id: ID!
 }

@@ -27,6 +27,11 @@ export class ProjectCreateInput {
 
   @Field()
   @IsNotEmpty()
+  @IsBoolean()
+  fte: number;
+
+  @Field()
+  @IsNotEmpty()
   @IsNumber()
   rate: number;
 }
