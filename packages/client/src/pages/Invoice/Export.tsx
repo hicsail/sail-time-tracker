@@ -122,7 +122,7 @@ export const Export = () => {
       'Copy Total Here': state.revisedAmount,
       Rate: state.rate,
       'Fiscal Year': 0,
-      'Contract Type': 0,
+      'Contract Type': state.contractTypeId,
       Hours: state.revisedBillableHour
     };
   };

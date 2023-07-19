@@ -32,7 +32,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
     status: '',
     fte: '',
     isBillable: '',
-    contractTypeId: 1
+    contractTypeId: 0
   });
 
   const { id } = useParams();
@@ -134,9 +134,9 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
               <MenuItem value="false">False</MenuItem>
             </ObserverTextInput>
             <ObserverTextInput name="contractTypeId" select label="Contract Type" placeholder="Contract Type" required>
-              <MenuItem value={1}>Internal</MenuItem>
-              <MenuItem value={2}>External</MenuItem>
-              <MenuItem value={3}>Grant Fund</MenuItem>
+              <MenuItem value={0}>Internal</MenuItem>
+              <MenuItem value={1}>External</MenuItem>
+              <MenuItem value={2}>Grant Fund</MenuItem>
             </ObserverTextInput>
             <DefaultContainedButton color="primary" variant="contained" startIcon={<SendIcon />} fullWidth type="submit">
               {id ? 'Update' : 'Create'}

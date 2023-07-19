@@ -59,11 +59,11 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   const contractTypeColor = (id: number, type?: string) => {
     switch (id) {
-      case 1:
+      case 0:
         return type === 'bg' ? 'grey.300' : 'grey.700';
-      case 2:
+      case 1:
         return type === 'bg' ? 'warning.light' : 'warning.dark';
-      case 3:
+      case 2:
         return type === 'bg' ? 'info.light' : 'info.dark';
     }
   };
