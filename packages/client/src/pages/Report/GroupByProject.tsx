@@ -13,7 +13,6 @@ import * as React from 'react';
 import { InvoiceIcon } from '@components/icons/InvoiceIcon';
 import IconButton from '@mui/material/IconButton';
 import { useTimeout } from '../../utils/useTimeOutHook';
-import { Flag } from '@mui/icons-material';
 import { differenceInBusinessDays } from 'date-fns';
 import { CircularWithValueLabel } from '@pages/Report/components/CircularWithValueLabel';
 
@@ -90,6 +89,16 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
     handleGenerateInvoice(row);
   };
 
+  const getCircularColor = (data: number) => {
+    if (data >= 100) {
+      return 'error';
+    } else if (data >= 90) {
+      return 'warning';
+    } else {
+      return 'primary';
+    }
+  };
+
   const tableConfig = {
     outer: [
       {
@@ -135,19 +144,17 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         render: (row: any) => row.percentage + '%'
       },
       {
-        id: 'limitRange',
-        name: 'Limit Range',
+        id: 'usage',
+        name: 'Usage',
         render: (row: any) => {
-          //console.log(row);
-          /*console.log(startDate);
-          console.log(endDate);*/
           const differences = differenceInBusinessDays(endDate, startDate);
-          const maximumRateLimit = row.fte * (differences * 8);
-          const percentage = (row.billableHours / maximumRateLimit) * 100;
+          const maximumWorkHours = row.fte * (differences * 8);
+          const percentage = (row.billableHours / maximumWorkHours) * 100;
+
           return (
             <Tooltip title="50%">
               <IconButton>
-                <CircularWithValueLabel progress={percentage} />
+                <CircularWithValueLabel progress={percentage} color={getCircularColor(percentage)} />
               </IconButton>
             </Tooltip>
           );

@@ -26,9 +26,9 @@ const CircularProgressWithLabel = (props: CircularProgressProps & { value: numbe
   );
 };
 
-interface CircularWithValueLabelProps {
+interface CircularWithValueLabelProps extends CircularProgressProps {
   progress: number;
 }
-export const CircularWithValueLabel: FC<CircularWithValueLabelProps> = ({ progress }) => {
-  return <CircularProgressWithLabel value={progress} />;
+export const CircularWithValueLabel: FC<CircularWithValueLabelProps> = ({ progress, ...otherProps }) => {
+  return <CircularProgressWithLabel value={progress} {...otherProps} />;
 };
