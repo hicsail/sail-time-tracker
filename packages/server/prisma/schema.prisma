@@ -31,7 +31,7 @@ model Project {
   records        Record[]
   employees      FavoriteProject[]
   invoices       Invoice[]
-  contractTypeId Int               @default(1)
+  contractTypeId Int               @default(0)
   contractType   ContractType      @relation(fields: [contractTypeId], references: [id])
 }
 

@@ -140,9 +140,9 @@ const insertProjects = (projects) => {
 
 const insertContractType = () => {
   const contractTypes = [
-    { id: 1, name: 'Internal' },
-    { id: 2, name: 'External' },
-    { id: 3, name: 'Grant Funded' }
+    { id: 0, name: 'Internal' },
+    { id: 1, name: 'External' },
+    { id: 2, name: 'Grant Funded'}
   ];
 
   contractTypes.map(async (contractType) => {

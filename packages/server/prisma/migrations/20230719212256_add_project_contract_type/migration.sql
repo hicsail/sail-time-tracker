@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE "Project" ADD COLUMN     "contractTypeId" INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE "Project" ADD COLUMN     "contractTypeId" INTEGER NOT NULL DEFAULT 0;
 
 -- CreateTable
 CREATE TABLE "ContractType" (
