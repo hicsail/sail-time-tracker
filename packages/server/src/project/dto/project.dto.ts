@@ -34,6 +34,11 @@ export class ProjectCreateInput {
   @IsNotEmpty()
   @IsNumber()
   rate: number;
+
+  @Field()
+  @IsNotEmpty()
+  @IsNumber()
+  contractTypeId: number;
 }
 
 /**
