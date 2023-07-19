@@ -57,6 +57,17 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   const handleDropdownOnChange = (e: SelectChangeEvent<string>) => setFilter(e.target.value);
 
+  const contractTypeColor = (id: number, type?: string) => {
+    switch (id) {
+      case 1:
+        return type === 'bg' ? 'grey.300' : 'grey.700';
+      case 2:
+        return type === 'bg' ? 'warning.light' : 'warning.dark';
+      case 3:
+        return type === 'bg' ? 'info.light' : 'info.dark';
+    }
+  };
+
   const columns: any[] = [
     {
       field: 'name',
@@ -92,6 +103,23 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           sx={{
             backgroundColor: row.isBillable ? 'success.light' : 'error.light',
             color: row.isBillable ? 'success.main' : 'error.main',
+            padding: '0 10px',
+            borderRadius: '8px',
+            fontWeight: 'medium'
+          }}
+        />
+      ),
+      width: 160
+    },
+    {
+      field: 'contractType',
+      headerName: 'Contract Type',
+      renderCell: (row: any) => (
+        <Chip
+          label={row.contractType.name}
+          sx={{
+            backgroundColor: contractTypeColor(row.contractType.id, 'bg'),
+            color: contractTypeColor(row.contractType.id),
             padding: '0 10px',
             borderRadius: '8px',
             fontWeight: 'medium'

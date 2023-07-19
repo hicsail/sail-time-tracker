@@ -9,7 +9,17 @@ export type GetProjectListQueryVariables = Types.Exact<{ [key: string]: never }>
 
 export type GetProjectListQuery = {
   __typename?: 'Query';
-  projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; rate: number; fte: number; description: string; status: string; isBillable: boolean }>;
+  projects: Array<{
+    __typename?: 'ProjectWithContractType';
+    id: string;
+    name: string;
+    rate: number;
+    fte: number;
+    description: string;
+    status: string;
+    isBillable: boolean;
+    contractType: { __typename?: 'ContractTypeModel'; id: number; name: string };
+  }>;
 };
 
 export type GetProjectByIdQueryVariables = Types.Exact<{
@@ -18,7 +28,16 @@ export type GetProjectByIdQueryVariables = Types.Exact<{
 
 export type GetProjectByIdQuery = {
   __typename?: 'Query';
-  project: { __typename?: 'ProjectModel'; name: string; description: string; rate: number; fte: number; status: string; isBillable: boolean };
+  project: {
+    __typename?: 'ProjectWithContractType';
+    name: string;
+    description: string;
+    rate: number;
+    fte: number;
+    status: string;
+    isBillable: boolean;
+    contractType: { __typename?: 'ContractTypeModel'; id: number; name: string };
+  };
 };
 
 export type ProjectCreateInputMutationVariables = Types.Exact<{
@@ -55,6 +74,10 @@ export const GetProjectListDocument = gql`
       description
       status
       isBillable
+      contractType {
+        id
+        name
+      }
     }
   }
 `;
@@ -94,6 +117,10 @@ export const GetProjectByIdDocument = gql`
       fte
       status
       isBillable
+      contractType {
+        id
+        name
+      }
     }
   }
 `;

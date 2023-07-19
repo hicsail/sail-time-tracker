@@ -88,6 +88,12 @@ export type CommentModel = {
   invoiceId: Scalars['String'];
 };
 
+export type ContractTypeModel = {
+  __typename?: 'ContractTypeModel';
+  id: Scalars['Float'];
+  name: Scalars['String'];
+};
+
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
@@ -335,6 +341,7 @@ export type MutationUpdateProjectArgs = {
 };
 
 export type ProjectCreateInput = {
+  contractTypeId: Scalars['Float'];
   description: Scalars['String'];
   fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];
@@ -360,6 +367,19 @@ export type ProjectModel = {
 };
 
 export type ProjectUpdateInput = {
+  contractTypeId: Scalars['Float'];
+  description: Scalars['String'];
+  fte: Scalars['Float'];
+  id: Scalars['ID'];
+  isBillable: Scalars['Boolean'];
+  name: Scalars['String'];
+  rate: Scalars['Float'];
+  status: Scalars['String'];
+};
+
+export type ProjectWithContractType = {
+  __typename?: 'ProjectWithContractType';
+  contractType: ContractTypeModel;
   description: Scalars['String'];
   fte: Scalars['Float'];
   id: Scalars['ID'];
@@ -407,8 +427,8 @@ export type Query = {
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   invoices: Array<InvoiceModelWithProject>;
-  project: ProjectModel;
-  projects: Array<ProjectModel>;
+  project: ProjectWithContractType;
+  projects: Array<ProjectWithContractType>;
   searchInvoice: InvoiceModelWithProjectAndComments;
   searchInvoicesByDateRange: Array<InvoiceModel>;
 };

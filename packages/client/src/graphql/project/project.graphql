@@ -7,6 +7,10 @@ query getProjectList {
     description
     status
     isBillable
+    contractType {
+      id
+      name
+    }
   }
 }
 
@@ -18,6 +22,10 @@ query getProjectById($id: String!) {
     fte
     status
     isBillable
+    contractType {
+      id
+      name
+    }
   }
 }
 
