@@ -21,16 +21,18 @@ model Employee {
 }
 
 model Project {
-  id          String            @id @default(uuid())
-  name        String            @unique
-  description String
-  status      String
-  isBillable  Boolean           @default(true)
-  rate        Float             @default(65)
-  fte         Float             @default(0)
-  records     Record[]
-  employees   FavoriteProject[]
-  invoices    Invoice[]
+  id             String            @id @default(uuid())
+  name           String            @unique
+  description    String
+  status         String
+  isBillable     Boolean           @default(true)
+  rate           Float             @default(65)
+  fte            Float             @default(0)
+  records        Record[]
+  employees      FavoriteProject[]
+  invoices       Invoice[]
+  contractTypeId Int               @default(1)
+  contractType   ContractType      @relation(fields: [contractTypeId], references: [id])
 }
 
 model Record {
@@ -88,4 +90,10 @@ model Slack {
   slackId    String   @id
   employeeId String   @unique
   employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+model ContractType {
+  id       Int       @id @default(autoincrement())
+  name     String
+  projects Project[]
 }
