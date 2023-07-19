@@ -89,6 +89,25 @@ const insertEmployees = (employees) => {
       ON CONFLICT DO NOTHING
     `;
   });
+  insertSlackIds(employees);
+};
+
+const insertSlackIds = (employees) => {
+  const results = employees.map((employee) => {
+    return { employeeId: employeeMap.get(employee.id), slackId: employee.slackId };
+  });
+
+  results.forEach(async (result) => {
+    try {
+      await sql`
+      INSERT INTO "Slack" ("slackId", "employeeId")
+      VALUES (${result.slackId}, ${result.employeeId})
+      ON CONFLICT DO NOTHING
+    `;
+    } catch (e) {
+      console.log('ERROR: ' + e.message);
+    }
+  });
 };
 
 const insertProjects = (projects) => {
@@ -210,14 +229,14 @@ db.serialize(() => {
   // write employee id map to a file
   fs.writeFile('./employee.json', JSON.stringify(employeeMapList), (err) => {
     if (!err) {
-      console.log('done');
+      console.log('done: write to employee.json file');
     }
   });
 
   // write project id map to a file
   fs.writeFile('./project.json', JSON.stringify(projectMapList), (err) => {
     if (!err) {
-      console.log('done');
+      console.log('done: write to project.json file');
     }
   });
 });
