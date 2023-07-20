@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 import { convertToUTCDate, formatDateToDashFormat, USDollar } from '../../utils/helperFun';
 import IconButton from '@mui/material/IconButton';
@@ -291,7 +292,7 @@ export const InvoiceDetails = () => {
           </Tooltip>
           <Tooltip title="delete" onClick={() => handleOpenDialog('delete')}>
             <IconButton>
-              <SendIcon />
+              <DeleteIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="export to clickup" onClick={exportToClickUp}>
