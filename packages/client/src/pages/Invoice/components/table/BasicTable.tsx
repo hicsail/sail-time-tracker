@@ -1,12 +1,12 @@
 import { StyledPaper } from '@components/StyledPaper';
 import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
 
 interface BasicTableProps {
   rows: any[];
   columns: any[];
-  toolbar?: JSX.Element;
+  toolbar?: ReactNode;
   keyFun: (row: any) => string;
   initialState?: any;
   sx?: any;
@@ -32,7 +32,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
 
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const renderedHeaders = columns.map((column) => (
+  const renderedHeaders: ReactNode = columns.map((column) => (
     <TableCell
       key={column.field}
       align={column.headerAlign ? column.headerAlign : 'left'}
@@ -42,13 +42,12 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
     </TableCell>
   ));
 
-  const renderRows = visibleRows.map((row) => {
-    const renderCells = columns.map((column) => (
+  const renderRows: ReactNode = visibleRows.map((row) => {
+    const renderedCells: ReactNode = columns.map((column) => (
       <TableCell align={column.align ? column.align : 'left'} key={column.field}>
         {column.renderCell ? column.renderCell(row) : row[column.field]}
       </TableCell>
     ));
-
     return (
       <TableRow
         key={keyFun(row)}
@@ -57,7 +56,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
           '&:hover': { backgroundColor: 'grey.100' }
         }}
       >
-        {renderCells}
+        {renderedCells}
       </TableRow>
     );
   });

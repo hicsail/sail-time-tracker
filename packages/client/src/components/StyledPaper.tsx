@@ -11,8 +11,9 @@ const NewPaper = styled(Paper)(({ theme }) => ({
 }));
 
 interface StyledPaperProps extends PaperProps {
-  children: ReactNode[] | ReactNode;
+  children: ReactNode;
 }
+
 export const StyledPaper: FC<StyledPaperProps> = ({ children, ...otherOptions }) => {
   return <NewPaper {...otherOptions}>{children}</NewPaper>;
 };
