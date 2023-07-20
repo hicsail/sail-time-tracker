@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { Button, Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack, TableFooter, styled } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack, TableFooter } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { ChangeEvent, useState, MouseEvent, FC } from 'react';
@@ -39,7 +39,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const { date } = useDate();
   const dates = getMondayToSundayDates(date);
   const rows = data || [];
-  const [deleteFavoriteProject, { error }] = useDeleteFavoriteProjectMutation();
+  const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
 
   const FormValidation = Yup.object({
     hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
@@ -184,7 +184,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                           >
                             <Form>
                               <FormObserver employeeId={employeeId as string} projectId={row.projectId} date={date} setLoading={setLoading} id={dateValue.date} />
-                              <ObserverTextInput name={dateValue.date} type="number" variant="outlined" InputProps={{ inputProps: { min: 0 } }} required />
+                              <ObserverTextInput name={dateValue.date} type="number" InputProps={{ inputProps: { min: 0 } }} required />
                             </Form>
                           </Formik>
                         </TableCell>
@@ -198,20 +198,20 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                 );
               })}
             </TableBody>
-            <TableFooter>
-              <LoadingButton
-                color="primary"
-                loading={loading}
-                loadingPosition="start"
-                startIcon={<FiberManualRecordIcon />}
-                variant="text"
-                sx={{ marginTop: 2, pointerEvents: 'none' }}
-              >
-                <span>{loading ? 'Saving' : 'Saved'}</span>
-              </LoadingButton>
-            </TableFooter>
           </Table>
         </TableContainer>
+        <TableFooter>
+          <LoadingButton
+            color="primary"
+            loading={loading}
+            loadingPosition="start"
+            startIcon={<FiberManualRecordIcon />}
+            variant="text"
+            sx={{ marginTop: 2, pointerEvents: 'none' }}
+          >
+            <span>{loading ? 'Saving' : 'Saved'}</span>
+          </LoadingButton>
+        </TableFooter>
         {rows.length == 0 && <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }}>Add Your First Favorite Project</Button>}
       </StyledPaper>
     </StyledTableBox>

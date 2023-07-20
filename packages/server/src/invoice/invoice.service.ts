@@ -10,8 +10,7 @@ export class InvoiceService {
   async getAllInvoices(): Promise<InvoiceModelWithProject[]> {
     return this.prisma.invoice.findMany({
       include: {
-        project: true,
-        comments: true
+        project: true
       }
     });
   }
@@ -46,7 +45,8 @@ export class InvoiceService {
       },
       include: {
         project: true,
-        comments: true
+        comments: true,
+        clickUpTask: true
       }
     });
   }

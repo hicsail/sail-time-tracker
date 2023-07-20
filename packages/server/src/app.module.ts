@@ -10,6 +10,8 @@ import { FavoriteProjectModule } from './favorite-project/favorite-project.modul
 import { RecordModule } from './record/record.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { CommentsModule } from './comments/comments.module';
+import { ConfigModule } from '@nestjs/config';
+import { ClickUpTaskModule } from './click-up-task/click-up-task.module';
 
 @Module({
   imports: [
@@ -26,11 +28,13 @@ import { CommentsModule } from './comments/comments.module';
         optionsSuccessStatus: 204
       }
     }),
+    ConfigModule.forRoot(),
     ProjectModule,
     FavoriteProjectModule,
     RecordModule,
     InvoiceModule,
-    CommentsModule
+    CommentsModule,
+    ClickUpTaskModule
   ],
   controllers: [AppController],
   providers: [AppService]

@@ -46,7 +46,8 @@ export type SearchInvoiceQuery = {
     hours: number;
     amount: number;
     project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string }>;
+    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
+    clickUpTask?: { __typename?: 'ClickUpTaskModel'; id: string; url: string } | null;
   };
 };
 
@@ -72,7 +73,7 @@ export type FindPreviousInvoiceQuery = {
     hours: number;
     amount: number;
     project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string }>;
+    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
   } | null;
 };
 
@@ -91,7 +92,7 @@ export type FindNextInvoiceQuery = {
     hours: number;
     amount: number;
     project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string }>;
+    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
   } | null;
 };
 
@@ -222,6 +223,11 @@ export const SearchInvoiceDocument = gql`
         commentId
         invoiceId
         content
+        deletable
+      }
+      clickUpTask {
+        id
+        url
       }
     }
   }
@@ -307,6 +313,7 @@ export const FindPreviousInvoiceDocument = gql`
         commentId
         invoiceId
         content
+        deletable
       }
     }
   }
@@ -357,6 +364,7 @@ export const FindNextInvoiceDocument = gql`
         commentId
         invoiceId
         content
+        deletable
       }
     }
   }

@@ -1,6 +1,7 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import { ProjectModel } from '../../project/model/project.model';
 import { CommentModel } from '../../comments/model/comments.model';
+import { ClickUpTaskModel } from '../../click-up-task/model/task.model';
 
 /**
  * return types for querying employee
@@ -40,4 +41,7 @@ export class InvoiceModelWithProject extends InvoiceModel {
 export class InvoiceModelWithProjectAndComments extends InvoiceModelWithProject {
   @Field(() => [CommentModel])
   comments: CommentModel[];
+
+  @Field(() => ClickUpTaskModel, { nullable: true })
+  clickUpTask?: ClickUpTaskModel;
 }

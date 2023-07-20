@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
@@ -32,6 +32,7 @@ import { Paths } from '@constants/paths';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Banner } from '@components/Banner';
+import { ClickUpIcon } from '@components/icons/ClickupIcon';
 
 const columns: any[] = [
   {
@@ -200,11 +201,25 @@ export const InvoiceDetails = () => {
     return () => clearTimeout(timerId);
   }, [isDisplayBanner]);
 
+  const exportToClickUp = () => {
+    const data = {
+      rows: rows,
+      revisedBillableHour: searchInvoiceData?.searchInvoice?.hours,
+      revisedAmount: searchInvoiceData?.searchInvoice?.amount,
+      rate: project?.rate,
+      projectName: project?.name,
+      notes: searchInvoiceData?.searchInvoice.comments,
+      invoiceId: searchInvoiceData?.searchInvoice?.invoiceId,
+      taskId: searchInvoiceData?.searchInvoice?.clickUpTask?.id
+    };
+    navigate(Paths.EXPORT_INVOICE, { state: data });
+  };
+
   return (
     <>
       {isDisplayBanner && <Banner content={`No more invoice`} state="info" />}
-      <Box sx={{ height: 'auto', margin: 'auto' }}>
-        <Stack direction="row" justifyContent="space-between" sx={{ marginTop: 8 }}>
+      <Box sx={{ height: 'auto', margin: 'auto', paddingTop: 8 }}>
+        <Stack direction="row" justifyContent="space-between">
           <Button startIcon={<NavigateBeforeIcon />} onClick={handlePreviousInvoiceOnClick}>
             Previous Invoice
           </Button>
@@ -221,15 +236,10 @@ export const InvoiceDetails = () => {
             </div>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1, marginTop: 5, '& .MuiButtonBase-root': { color: 'grey.600' } }}>
+        <Box sx={{ display: 'flex', gap: 1, marginTop: 5, '& .MuiButtonBase-root': { color: 'grey.600' }, alignItems: 'center' }}>
           <Tooltip title="edit hours" onClick={handleOpenEditDialog}>
             <IconButton>
               <EditIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="export to clickup">
-            <IconButton>
-              <SendIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="delete" onClick={handleOpenDeleteDialog}>
@@ -237,8 +247,22 @@ export const InvoiceDetails = () => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
+          <Tooltip title="export to clickup" onClick={exportToClickUp}>
+            <IconButton>
+              <SendIcon />
+            </IconButton>
+          </Tooltip>
+          {searchInvoiceData?.searchInvoice?.clickUpTask?.url && (
+            <Tooltip title="clickup task">
+              <Link to={searchInvoiceData?.searchInvoice?.clickUpTask?.url ?? ''} target="_blank">
+                <IconButton>
+                  <ClickUpIcon />
+                </IconButton>
+              </Link>
+            </Tooltip>
+          )}
         </Box>
-        <FormDialog open={isOpenedEditDialog} onClose={() => handleCloseEditDialog}>
+        <FormDialog open={isOpenedEditDialog} onClose={handleCloseEditDialog}>
           <Typography variant="h6">Update Total Billable Hours</Typography>
           <Formik
             initialValues={{ billableHours: searchInvoiceData?.searchInvoice.hours.toString() || '' }}
@@ -310,14 +334,14 @@ export const InvoiceDetails = () => {
         </FormDialog>
         <Stack direction="row" justifyContent="space-between" marginTop={5}>
           <DisplayCard id="Original billable hours" title="Original Billable Hour" data={project?.billableHours} />
-          <DisplayCard id="Original billable hours" title="Original Invoice Amount" data={project && USDollar.format(project.billableHours * 65)} />
+          <DisplayCard id="Original Invoice Amount" title="Original Invoice Amount" data={project && USDollar.format(project.billableHours * 65)} />
           <DisplayCard
             id="Original billable hours"
             title="Adjustment Hours"
             data={searchInvoiceData && project && (searchInvoiceData.searchInvoice.hours - project.billableHours).toFixed(2)}
           />
-          <DisplayCard id="Original billable hours" title="Revised total billable hours" data={searchInvoiceData?.searchInvoice?.hours} />
-          <DisplayCard id="Original billable hours" title="Revised Invoice Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
+          <DisplayCard id="Revised total billable hours" title="Revised total billable hours" data={searchInvoiceData?.searchInvoice?.hours} />
+          <DisplayCard id="Revised Invoice Amount" title="Revised Invoice Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
         </Stack>
         <Box sx={{ marginTop: '2rem' }}>
           <BasicTable rows={rows} columns={columns} keyFun={keyFun} hidePagination />
@@ -329,7 +353,15 @@ export const InvoiceDetails = () => {
             <CommentList>
               {searchInvoiceData && searchInvoiceData.searchInvoice.comments.length > 0 ? (
                 searchInvoiceData.searchInvoice.comments.map((item: any) => {
-                  return <CommentListItem date={new Date(item.createDate)} content={item.content} onDelete={() => handleOnDelete(item.commentId)} key={item.commentId} />;
+                  return (
+                    <CommentListItem
+                      date={new Date(item.createDate)}
+                      content={item.content}
+                      onDelete={() => handleOnDelete(item.commentId)}
+                      key={item.commentId}
+                      deletable={item.deletable}
+                    />
+                  );
                 })
               ) : (
                 <div>no comments</div>

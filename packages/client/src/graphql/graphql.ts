@@ -13,6 +13,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: any;
+  JSON: any;
 };
 
 export type BatchPayload = {
@@ -20,8 +21,48 @@ export type BatchPayload = {
   count: Scalars['Float'];
 };
 
+export type ClickUpStatuses = {
+  __typename?: 'ClickUpStatuses';
+  color: Scalars['String'];
+  id: Scalars['String'];
+  orderindex: Scalars['Float'];
+  status: Scalars['String'];
+  type: Scalars['String'];
+};
+
+export type ClickUpTaskCreateInput = {
+  custom_fields: Array<ClickUpTaskCustomFieldsInput>;
+  description: Scalars['String'];
+  name: Scalars['String'];
+  status: Scalars['String'];
+};
+
+export type ClickUpTaskCustomFieldsInput = {
+  id: Scalars['String'];
+  value?: InputMaybe<Scalars['JSON']>;
+};
+
+export type ClickUpTaskInput = {
+  id: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type ClickUpTaskModel = {
+  __typename?: 'ClickUpTaskModel';
+  id: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type ClickUpTaskUpdateInput = {
+  description: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  status: Scalars['String'];
+};
+
 export type CommentCreateInput = {
   content: Scalars['String'];
+  deletable?: InputMaybe<Scalars['Boolean']>;
   invoiceId: Scalars['String'];
 };
 
@@ -30,6 +71,7 @@ export type CommentModel = {
   commentId: Scalars['String'];
   content: Scalars['String'];
   createDate: Scalars['DateTime'];
+  deletable: Scalars['Boolean'];
   invoiceId: Scalars['String'];
 };
 
@@ -140,6 +182,7 @@ export type InvoiceModelWithProject = {
 export type InvoiceModelWithProjectAndComments = {
   __typename?: 'InvoiceModelWithProjectAndComments';
   amount: Scalars['Float'];
+  clickUpTask?: Maybe<ClickUpTaskModel>;
   comments: Array<CommentModel>;
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
@@ -156,12 +199,36 @@ export type InvoiceSearchInput = {
   startDate: Scalars['DateTime'];
 };
 
+export type ListCustomField = {
+  __typename?: 'ListCustomField';
+  id: Scalars['String'];
+  name: Scalars['String'];
+  required?: Maybe<Scalars['Boolean']>;
+  type: Scalars['String'];
+  type_config: ListCustomFieldTypeConfig;
+};
+
+export type ListCustomFieldTypeConfig = {
+  __typename?: 'ListCustomFieldTypeConfig';
+  options?: Maybe<Array<ListCustomFieldTypeConfigOptions>>;
+};
+
+export type ListCustomFieldTypeConfigOptions = {
+  __typename?: 'ListCustomFieldTypeConfigOptions';
+  id: Scalars['String'];
+  label?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  orderindex?: Maybe<Scalars['Float']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addComment: CommentModel;
   addEmployee: EmployeeModel;
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
+  createAndAddClickUpTaskToInvoice: ClickUpTaskModel;
+  createClickUpTask: ClickUpTaskModel;
   createOrUpdateInvoice: InvoiceModel;
   deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
@@ -169,6 +236,7 @@ export type Mutation = {
   deleteInvoice: InvoiceModel;
   deleteProjects: ProjectDeleteReturnModel;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
+  updateClickUpTask: ClickUpTaskModel;
   updateEmployee: EmployeeModel;
   updateProject: ProjectModel;
 };
@@ -187,6 +255,15 @@ export type MutationAddFavoriteProjectArgs = {
 
 export type MutationAddProjectArgs = {
   project: ProjectCreateInput;
+};
+
+export type MutationCreateAndAddClickUpTaskToInvoiceArgs = {
+  invoiceId: Scalars['String'];
+  task: ClickUpTaskInput;
+};
+
+export type MutationCreateClickUpTaskArgs = {
+  task: ClickUpTaskCreateInput;
 };
 
 export type MutationCreateOrUpdateInvoiceArgs = {
@@ -216,6 +293,10 @@ export type MutationDeleteProjectsArgs = {
 
 export type MutationInsertOrUpdateRecordArgs = {
   record: RecordCreateInput;
+};
+
+export type MutationUpdateClickUpTaskArgs = {
+  task: ClickUpTaskUpdateInput;
 };
 
 export type MutationUpdateEmployeeArgs = {
@@ -289,6 +370,9 @@ export type Query = {
   employees: Array<EmployeeModel>;
   findNextInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
   findPreviousInvoice?: Maybe<InvoiceModelWithProjectAndComments>;
+  getClickUpCustomFields: Array<ListCustomField>;
+  getClickUpStatuses: Array<ClickUpStatuses>;
+  getClickUpTask?: Maybe<Scalars['Boolean']>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   invoices: Array<InvoiceModelWithProject>;
@@ -314,6 +398,10 @@ export type QueryFindNextInvoiceArgs = {
 export type QueryFindPreviousInvoiceArgs = {
   projectId: Scalars['String'];
   startDate: Scalars['DateTime'];
+};
+
+export type QueryGetClickUpTaskArgs = {
+  taskId: Scalars['String'];
 };
 
 export type QueryGetEmployeesWithRecordArgs = {

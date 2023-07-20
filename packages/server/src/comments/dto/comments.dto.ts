@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class CommentCreateInput {
@@ -12,4 +12,9 @@ export class CommentCreateInput {
   @IsNotEmpty()
   @IsString()
   invoiceId: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  deletable?: boolean;
 }

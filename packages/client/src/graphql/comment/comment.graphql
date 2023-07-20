@@ -1,21 +1,3 @@
-query comment($id: String!) {
-    comment(id: $id) {
-        commentId
-        createDate
-        content
-        invoiceId
-    }
-}
-
-query comments {
-    comments {
-        commentId
-        createDate
-        content
-        invoiceId
-    }
-}
-
 mutation addComment($input: CommentCreateInput!) {
     addComment(input: $input) {
         content
