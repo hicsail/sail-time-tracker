@@ -246,7 +246,7 @@ export const InvoiceDetails = () => {
       }).then((r) => r.data && handleCloseDialog('update'));
     }
   };
-
+      
   return (
     <>
       {isDisplayBanner && <Banner content={`No more invoice`} state="info" />}
@@ -292,7 +292,7 @@ export const InvoiceDetails = () => {
           </Tooltip>
           <Tooltip title="delete" onClick={() => handleOpenDialog('delete')}>
             <IconButton>
-              <DeleteIcon />
+              <SendIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="export to clickup" onClick={exportToClickUp}>
