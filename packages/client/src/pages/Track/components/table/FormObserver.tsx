@@ -1,5 +1,5 @@
 import { useFormikContext } from 'formik';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { useAddRecordMutation } from '@graphql/record/record';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { endOfWeek, startOfWeek } from 'date-fns';
@@ -20,21 +20,23 @@ interface FormValues {
 export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, date, setLoading, id }) => {
   const { values } = useFormikContext<FormValues>();
   const [addRecordMutation, { loading }] = useAddRecordMutation();
+  const valueRef = useRef(values);
 
-  // set loading button state
   useEffect(() => {
     if (loading) {
       setLoading(loading);
     } else {
       setTimeout(() => {
         setLoading(loading);
-      }, 300);
+      }, 200);
     }
   }, [loading]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (typeof values[id] === 'number' && values[id] >= 0) {
+    if (typeof values[id] === 'number' && values[id] >= 0) {
+      if (values[id] === valueRef.current[id]) return;
+
+      const timeId = setTimeout(() => {
         addRecordMutation({
           variables: {
             record: {
@@ -55,10 +57,12 @@ export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, dat
             }
           ]
         });
-      }
-    }, 1000);
+      }, 1000);
 
-    return () => clearTimeout(timeout);
+      valueRef.current = values;
+
+      return () => clearTimeout(timeId);
+    }
   }, [values]);
 
   return null;

@@ -192,6 +192,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         </Box>
       )}
       <CollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Employee" startDate={startDate} endDate={endDate} />
+      {rows.length === 0 && <Box sx={{ textAlign: 'start', marginTop: 5 }}>No data</Box>}
     </>
   );
 };
