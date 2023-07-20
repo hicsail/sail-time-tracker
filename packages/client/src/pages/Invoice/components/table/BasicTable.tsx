@@ -62,25 +62,27 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
   });
 
   return (
-    <TableContainer component={StyledPaper} elevation={0}>
-      {toolbar}
-      <Table sx={{ minWidth: 650 }}>
-        <TableHead>
-          <TableRow>{renderedHeaders}</TableRow>
-        </TableHead>
-        <TableBody>{renderRows}</TableBody>
-      </Table>
-      {!hidePagination && (
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      )}
+    <TableContainer>
+      <StyledPaper elevation={0}>
+        {toolbar}
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead>
+            <TableRow>{renderedHeaders}</TableRow>
+          </TableHead>
+          <TableBody>{renderRows}</TableBody>
+        </Table>
+        {!hidePagination && (
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        )}
+      </StyledPaper>
     </TableContainer>
   );
 };
