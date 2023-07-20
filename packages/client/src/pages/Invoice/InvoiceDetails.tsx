@@ -246,7 +246,7 @@ export const InvoiceDetails = () => {
       }).then((r) => r.data && handleCloseDialog('update'));
     }
   };
-      
+
   return (
     <>
       {isDisplayBanner && <Banner content={`No more invoice`} state="info" />}
