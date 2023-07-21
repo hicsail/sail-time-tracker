@@ -31,7 +31,7 @@ export class ClickUpTaskService {
       })
     );
 
-    return data.statuses;
+    return data.statuses.reverse();
   }
 
   async createClickUpTask(task: ClickUpTaskCreateInput): Promise<ClickUpTaskModel> {

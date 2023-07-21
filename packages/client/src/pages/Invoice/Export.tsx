@@ -123,7 +123,7 @@ export const Export = () => {
     return {
       title: `${currentMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours - SAIL${currentYear}${format(new Date(), 'MM')}`,
       description: description,
-      status: 'july (m1, q1)',
+      status: 'previous bufy',
       Notes: notes,
       'Invoice Payment Status': 0,
       'Copy Total Here': state.revisedAmount,
