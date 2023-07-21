@@ -19,9 +19,7 @@ export class ClickUpTaskService {
       })
     );
 
-    return data.fields.filter(
-      (field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel' && field.name !== 'Invoice Payment Status'
-    );
+    return data.fields.filter((field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel');
   }
 
   async getClickUpStatuses(): Promise<ClickUpStatuses[]> {
