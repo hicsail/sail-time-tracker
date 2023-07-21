@@ -110,7 +110,7 @@ export class ClickUpTaskService {
         }
         return { url: data.url, id: data.id };
       } else {
-        throw new Error('Task not found');
+        new Error('Task not found');
       }
     } catch (error) {
       throw new BadRequestException();
