@@ -23,7 +23,7 @@ interface CheckboxesSearchProps {
 }
 
 export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) => {
-  const [selectedProjects, setSelectedProjects] = useState<ProjectModel[]>([]);
+  const [selectedProjects, setSelectedProjects] = useState<any[]>([]);
   const [isShowBanner, setIsShowBanner] = useState(false);
   const { data: projectListDate } = useGetProjectListQuery();
   const [addFavoriteProjectMutation, { data: addFavoriteProjectData, loading, error }] = useAddFavoriteProjectMutation();

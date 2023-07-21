@@ -1,5 +1,5 @@
 import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Checkbox, ListItem, Stack, Typography } from '@mui/material';
 import React, { FC } from 'react';
 
 import { useBatchSendSlackMessageMutation, useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
@@ -13,6 +13,10 @@ import { Form, Formik, FormikValues } from 'formik';
 import * as Yup from 'yup';
 import { Banner } from '@components/Banner';
 import { useTimeout } from '../../utils/useTimeOutHook';
+import { CheckboxesSearch } from '@pages/Track/components/form/CheckboxesSearch';
+import { CustomOutlinedTextInput } from '@components/StyledComponent';
+import { CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
+import { CheckboxList } from '@pages/Report/components/CheckboxList';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -47,6 +51,9 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
     return row.name.toLowerCase().includes(searchText?.toLowerCase() as string);
   });
   const zeroWorkHoursWithActiveEmployeesRows = data?.getEmployeesWithRecord?.filter((row) => row.workHours === 0 && row.status === 'Active') ?? [];
+  const zeroWorkHoursWithActiveEmployees = zeroWorkHoursWithActiveEmployeesRows.map((employee) => {
+    return { id: employee.id, name: employee.name };
+  });
 
   // outer table column name and render config
   const tableConfig = {
@@ -143,9 +150,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   };
 
   const handleSendBatchSlack = (values: FormikValues) => {
-    const ids = zeroWorkHoursWithActiveEmployeesRows.map((employee) => employee.id);
-    console.log(ids);
-    sendBatchSlackMessage({
+    /*sendBatchSlackMessage({
       variables: {
         input: {
           employeeIds: ids,
@@ -159,7 +164,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
         return;
       }
       setShowBanner({ show: true, content: `Error to send ${r?.data?.batchSendingMessages.count} slack message.`, state: 'error' });
-    });
+    });*/
   };
 
   const handleCloseFormDialog = () => setOpenDialog(false);
@@ -197,9 +202,29 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
               Are you sure you want to send notification to <strong>{targetReceiver.name}</strong>?
             </Typography>
           ) : (
-            <Typography variant="body1" sx={{ mb: 4 }}>
-              Are you sure you want to send notification to {zeroWorkHoursWithActiveEmployeesRows.length} employees?
-            </Typography>
+            <Stack>
+              <CheckboxList data={zeroWorkHoursWithActiveEmployees} />
+              <Autocomplete
+                sx={{ width: 500, backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']) }}
+                multiple
+                options={zeroWorkHoursWithActiveEmployees ?? []}
+                defaultValue={zeroWorkHoursWithActiveEmployees}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.name}
+                renderOption={(props, option, { selected }) => {
+                  return (
+                    <ListItem {...props} sx={{ backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']) }}>
+                      <Checkbox icon={<CheckBoxOutlineBlank fontSize="small" />} checkedIcon={<CheckBox fontSize="small" />} style={{ marginRight: 8 }} checked={selected} />
+                      {option.name}
+                    </ListItem>
+                  );
+                }}
+                renderInput={(params) => <CustomOutlinedTextInput {...params} placeholder="Employees" />}
+              />
+              <Typography variant="body1" sx={{ mb: 4, mt: 4 }}>
+                Are you sure you want to send notification to {zeroWorkHoursWithActiveEmployeesRows.length} employees?
+              </Typography>
+            </Stack>
           )}
           <Formik
             validationSchema={FormValidation}
