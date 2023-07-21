@@ -128,7 +128,7 @@ export const Export = () => {
       'Invoice Payment Status': 0,
       'Copy Total Here': state.revisedAmount,
       Rate: state.rate,
-      'Fiscal Year': 0,
+      'Fiscal Year': 2,
       'Contract Type': state.contractTypeId,
       Hours: state.revisedBillableHour
     };
