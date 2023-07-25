@@ -66,7 +66,6 @@ export const Export = () => {
   const textData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'text');
 
   const combinedClickUpCustomFields = [...(numberData ?? []), ...(dropDownData ?? []), ...(textData ?? [])];
-  console.log(combinedClickUpCustomFields);
 
   const renderCustomField =
     combinedClickUpCustomFields.map((field) => {
