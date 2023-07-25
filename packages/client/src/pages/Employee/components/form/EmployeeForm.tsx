@@ -17,16 +17,14 @@ import { DefaultContainedButton } from '@components/StyledComponent';
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
   email: Yup.string().email('Invalid email address').required('Required'),
-  rate: Yup.number().required('Required').min(0, 'Rate should be greater than 0'),
   status: Yup.string().required('Required')
 });
 
 interface EmployeeFormProps {
   handleClose: () => void;
 }
-
 export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
-  const [initialValue, setInitialValue] = useState({ name: '', email: '', rate: '', status: '' });
+  const [initialValue, setInitialValue] = useState({ name: '', email: '', status: '' });
   let { id } = useParams();
   const [updateEmployee] = useEmployeeUpdateInputMutation();
   const [addEmployee] = useEmployeeCreateInputMutation();
@@ -42,12 +40,11 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
         nextFetchPolicy: 'cache-and-network'
       }).then((res) => {
         if (res && res.data) {
-          const { name, email, status, rate } = res.data.employee;
+          const { name, email, status } = res.data.employee;
           setInitialValue({
             name,
             email,
-            status: status as string,
-            rate: rate.toString()
+            status: status as string
           });
         }
       });
@@ -67,7 +64,7 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
             // after submitting the new employee re-fetch the employees via graphql
             await addEmployee({
               variables: {
-                newEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString() }
+                newEmployee: { ...values, status: values.status.toString() }
               },
               refetchQueries: [{ query: GetEmployeeListDocument }]
             });
@@ -75,7 +72,7 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
             // after updating the employee, re-fetch the employees via graphql
             await updateEmployee({
               variables: {
-                updateEmployee: { ...values, rate: parseFloat(values.rate), status: values.status.toString(), id: id }
+                updateEmployee: { ...values, status: values.status.toString(), id: id }
               },
               refetchQueries: [
                 {
@@ -94,7 +91,6 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
             <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
             <ObserverTextInput id="email" type="email" name="email" label="Email" placeholder="Email" required />
-            <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" InputProps={{ inputProps: { min: 0 } }} required />
             <ObserverTextInput name="status" select label="Status" placeholder="Status">
               <MenuItem value="Inactive">Inactive</MenuItem>
               <MenuItem value="Active">Active</MenuItem>

@@ -7,10 +7,7 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetEmployeeListQueryVariables = Types.Exact<{ [key: string]: never }>;
 
-export type GetEmployeeListQuery = {
-  __typename?: 'Query';
-  employees: Array<{ __typename?: 'EmployeeModel'; id: string; email: string; name: string; rate: number; status?: string | null }>;
-};
+export type GetEmployeeListQuery = { __typename?: 'Query'; employees: Array<{ __typename?: 'EmployeeModel'; id: string; email: string; name: string; status?: string | null }> };
 
 export type GetEmployeesWithRecordQueryVariables = Types.Exact<{
   startDate: Types.Scalars['DateTime'];
@@ -78,7 +75,6 @@ export type GetEmployeeByIdQuery = {
     id: string;
     name: string;
     email: string;
-    rate: number;
     status?: string | null;
     projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
   };
@@ -109,7 +105,7 @@ export type EmployeeCreateInputMutationVariables = Types.Exact<{
   newEmployee: Types.EmployeeCreateInput;
 }>;
 
-export type EmployeeCreateInputMutation = { __typename?: 'Mutation'; addEmployee: { __typename?: 'EmployeeModel'; id: string; email: string; name: string; rate: number } };
+export type EmployeeCreateInputMutation = { __typename?: 'Mutation'; addEmployee: { __typename?: 'EmployeeModel'; id: string; email: string; name: string } };
 
 export type EmployeeUpdateInputMutationVariables = Types.Exact<{
   updateEmployee: Types.EmployeeUpdateInput;
@@ -117,7 +113,7 @@ export type EmployeeUpdateInputMutationVariables = Types.Exact<{
 
 export type EmployeeUpdateInputMutation = {
   __typename?: 'Mutation';
-  updateEmployee: { __typename?: 'EmployeeModel'; id: string; name: string; email: string; rate: number; status?: string | null };
+  updateEmployee: { __typename?: 'EmployeeModel'; id: string; name: string; email: string; status?: string | null };
 };
 
 export type DeleteEmployeesMutationVariables = Types.Exact<{
@@ -132,7 +128,6 @@ export const GetEmployeeListDocument = gql`
       id
       email
       name
-      rate
       status
     }
   }
@@ -271,7 +266,6 @@ export const GetEmployeeByIdDocument = gql`
       id
       name
       email
-      rate
       status
       projects {
         id
@@ -364,7 +358,6 @@ export const EmployeeCreateInputDocument = gql`
       id
       email
       name
-      rate
     }
   }
 `;
@@ -400,7 +393,6 @@ export const EmployeeUpdateInputDocument = gql`
       id
       name
       email
-      rate
       status
     }
   }

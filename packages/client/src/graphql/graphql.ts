@@ -54,6 +54,7 @@ export type ClickUpTaskModel = {
 };
 
 export type ClickUpTaskUpdateInput = {
+  custom_fields: Array<ClickUpTaskCustomFieldsInput>;
   description: Scalars['String'];
   id: Scalars['String'];
   name: Scalars['String'];
@@ -78,7 +79,6 @@ export type CommentModel = {
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
-  rate: Scalars['Float'];
   status?: InputMaybe<Scalars['String']>;
 };
 
@@ -93,7 +93,6 @@ export type EmployeeModel = {
   id: Scalars['ID'];
   name: Scalars['String'];
   projects: Array<ProjectModel>;
-  rate: Scalars['Float'];
   recordsWithFavoriteProjects: Array<GroupedRecordWithFavoriteProjectModel>;
   status?: Maybe<Scalars['String']>;
 };
@@ -107,7 +106,6 @@ export type EmployeeUpdateInput = {
   email: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
-  rate: Scalars['Float'];
   status?: InputMaybe<Scalars['String']>;
 };
 

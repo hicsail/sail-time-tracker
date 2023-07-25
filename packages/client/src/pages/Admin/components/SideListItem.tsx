@@ -1,6 +1,6 @@
 import { ListItem, ListItemButton, ListItemText, ListItemIcon } from '@mui/material';
 import { FC, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 interface SideListItemProps {
   path: string;
@@ -9,7 +9,6 @@ interface SideListItemProps {
 }
 
 export const SideListItem: FC<SideListItemProps> = ({ path, icon, info }) => {
-  const navigate = useNavigate();
   return (
     <ListItem
       disablePadding
@@ -20,7 +19,17 @@ export const SideListItem: FC<SideListItemProps> = ({ path, icon, info }) => {
         }
       }}
     >
-      <ListItemButton onClick={() => navigate(path)} sx={{ borderRadius: '8px' }}>
+      <ListItemButton
+        component={NavLink}
+        to={path}
+        sx={{
+          borderRadius: '8px',
+          '&.active': {
+            color: 'grey.800',
+            '& .MuiSvgIcon-root': { color: 'grey.800' }
+          }
+        }}
+      >
         <ListItemIcon>{icon}</ListItemIcon>
         <ListItemText primary={info} />
       </ListItemButton>

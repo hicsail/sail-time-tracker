@@ -3,7 +3,6 @@ query getEmployeeList {
     id
     email
     name
-    rate
     status
   }
 }
@@ -53,7 +52,6 @@ query getEmployeeById($id: String!) {
     id
     name
     email
-    rate
     status
     projects {
       id
@@ -86,7 +84,6 @@ mutation EmployeeCreateInput($newEmployee: EmployeeCreateInput!) {
     id
     email
     name
-    rate
   }
 }
 
@@ -95,7 +92,6 @@ mutation EmployeeUpdateInput($updateEmployee: EmployeeUpdateInput!) {
     id
     name
     email
-    rate
     status
   }
 }

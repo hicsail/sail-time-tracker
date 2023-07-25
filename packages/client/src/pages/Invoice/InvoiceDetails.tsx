@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 import { convertToUTCDate, formatDateToDashFormat, USDollar } from '../../utils/helperFun';
 import IconButton from '@mui/material/IconButton';
+import UpdateIcon from '@mui/icons-material/Update';
 import { FormDialog } from '@components/form/FormDialog';
 import { useEffect, useState } from 'react';
 import {
@@ -33,6 +34,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Banner } from '@components/Banner';
 import { ClickUpIcon } from '@components/icons/ClickupIcon';
+import { ClickUpMobile } from '@components/icons/ClickupMobile';
 
 const columns: any[] = [
   {
@@ -51,9 +53,14 @@ const FormValidation = Yup.object({
   billableHours: Yup.number().required('Required').min(0, 'Must be greater than 0')
 });
 
+const isOpenDialogInitialValue = {
+  edit: false,
+  delete: false,
+  update: false
+};
+
 export const InvoiceDetails = () => {
-  const [isOpenedEditDialog, setIsOpenedEditDialog] = useState(false);
-  const [isOpenedDeleteDialog, setIsOpenedDeleteDialog] = useState(false);
+  const [isOpenDialog, setIsOpenDialog] = useState(isOpenDialogInitialValue);
   const [isDisplayBanner, setDisplayBanner] = useState(false);
   const [deleteInvoice] = useDeleteInvoiceMutation();
   const { id, startDate, endDate } = useParams();
@@ -64,7 +71,6 @@ export const InvoiceDetails = () => {
     },
     fetchPolicy: 'cache-and-network'
   });
-
   const project = projectWithEmployeeData?.getProjectWithEmployeeRecords.find((project) => project.id === id);
   const [createOrUpdateInvoiceMutation] = useCreateOrUpdateInvoiceMutation();
   const searchInvoiceVariable = {
@@ -148,10 +154,8 @@ export const InvoiceDetails = () => {
     }).then((r) => r.data && navigate(Paths.INVOICE));
   };
 
-  const handleCloseDeleteDialog = () => setIsOpenedDeleteDialog(false);
-  const handleOpenDeleteDialog = () => setIsOpenedDeleteDialog(true);
-  const handleCloseEditDialog = () => setIsOpenedEditDialog(false);
-  const handleOpenEditDialog = () => setIsOpenedEditDialog(true);
+  const handleCloseDialog = (type: string) => setIsOpenDialog((prevState) => ({ ...prevState, [type]: false }));
+  const handleOpenDialog = (type: string) => setIsOpenDialog((prevState) => ({ ...prevState, [type]: true }));
 
   const handlePreviousInvoiceOnClick = () => {
     findPreviousInvoice({
@@ -215,6 +219,34 @@ export const InvoiceDetails = () => {
     navigate(Paths.EXPORT_INVOICE, { state: data });
   };
 
+  const handleInvoiceUpdate = () => {
+    if (project) {
+      const { id, billableHours, rate } = project;
+
+      const invoice = {
+        projectId: id,
+        startDate: startDate,
+        endDate: endDate,
+        hours: billableHours,
+        rate: rate,
+        amount: billableHours * rate
+      };
+
+      createOrUpdateInvoiceMutation({
+        variables: {
+          invoice: invoice
+        },
+        refetchQueries: [
+          { query: GetAllInvoicesDocument },
+          {
+            query: SearchInvoiceDocument,
+            variables: searchInvoiceVariable
+          }
+        ]
+      }).then((r) => r.data && handleCloseDialog('update'));
+    }
+  };
+
   return (
     <>
       {isDisplayBanner && <Banner content={`No more invoice`} state="info" />}
@@ -228,7 +260,18 @@ export const InvoiceDetails = () => {
           </Button>
         </Stack>
         <Box sx={{ marginTop: 5 }}>
-          <h3>{`Project Name: ${project?.name}`}</h3>
+          <h3>
+            {`Project Name: ${project?.name}`}
+            {searchInvoiceData?.searchInvoice?.clickUpTask?.url && (
+              <Tooltip title="clickup task">
+                <Link to={searchInvoiceData?.searchInvoice?.clickUpTask?.url ?? ''} target="_blank">
+                  <IconButton>
+                    <ClickUpIcon fontSize="large" />
+                  </IconButton>
+                </Link>
+              </Tooltip>
+            )}
+          </h3>
           <Box sx={{ display: 'flex', alignItem: 'center', gap: 1 }}>
             <CalendarTodayIcon />
             <div>
@@ -237,32 +280,67 @@ export const InvoiceDetails = () => {
           </Box>
         </Box>
         <Box sx={{ display: 'flex', gap: 1, marginTop: 5, '& .MuiButtonBase-root': { color: 'grey.600' }, alignItems: 'center' }}>
-          <Tooltip title="edit hours" onClick={handleOpenEditDialog}>
+          <Tooltip title="update invoice" onClick={() => handleOpenDialog('update')}>
+            <IconButton>
+              <UpdateIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="edit hours" onClick={() => handleOpenDialog('edit')}>
             <IconButton>
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="delete" onClick={handleOpenDeleteDialog}>
+          <Tooltip title="delete" onClick={() => handleOpenDialog('delete')}>
             <IconButton>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="export to clickup" onClick={exportToClickUp}>
-            <IconButton>
-              <SendIcon />
+            <IconButton sx={{ position: 'relative' }}>
+              <ClickUpMobile fontSize="large" />
+              <SendIcon
+                sx={{
+                  position: 'absolute',
+                  bottom: '12px',
+                  right: '5px',
+                  fontSize: '15px',
+                  backgroundColor: 'primary.light',
+                  borderRadius: '50%',
+                  color: 'white',
+                  padding: '2px'
+                }}
+              />
             </IconButton>
           </Tooltip>
-          {searchInvoiceData?.searchInvoice?.clickUpTask?.url && (
-            <Tooltip title="clickup task">
-              <Link to={searchInvoiceData?.searchInvoice?.clickUpTask?.url ?? ''} target="_blank">
-                <IconButton>
-                  <ClickUpIcon />
-                </IconButton>
-              </Link>
-            </Tooltip>
-          )}
         </Box>
-        <FormDialog open={isOpenedEditDialog} onClose={handleCloseEditDialog}>
+        <FormDialog open={isOpenDialog.update} onClose={() => handleCloseDialog('update')}>
+          <Typography variant="h6" sx={{ mb: 4 }}>
+            Update Invoice
+          </Typography>
+          <Stack sx={{ mb: 4 }} gap={2}>
+            <Typography variant="subtitle2" color="warning.main">
+              This will override current invoice.
+            </Typography>
+            <Stack>
+              <Typography variant="subtitle2">From:</Typography>
+              <Typography variant="body1">{`${searchInvoiceData?.searchInvoice.hours} hours - $${searchInvoiceData?.searchInvoice.amount}`}</Typography>
+            </Stack>
+            <Stack>
+              <Typography variant="subtitle2">To:</Typography>
+              <Typography variant="body1">{`${project?.billableHours} hours - $${project && project?.billableHours * project?.rate}`}</Typography>
+            </Stack>
+            <Typography variant="body1">Are you certain about proceeding with this update?</Typography>
+          </Stack>
+          <Stack direction="row" gap={2} justifyContent="end">
+            <Button color="error" variant="contained" onClick={handleInvoiceUpdate}>
+              update
+            </Button>
+            <Button color="secondary" variant="outlined" onClick={() => handleCloseDialog('update')}>
+              cancel
+            </Button>
+          </Stack>
+        </FormDialog>
+        <FormDialog open={isOpenDialog.edit} onClose={() => handleCloseDialog('edit')}>
           <Typography variant="h6">Update Total Billable Hours</Typography>
           <Formik
             initialValues={{ billableHours: searchInvoiceData?.searchInvoice.hours.toString() || '' }}
@@ -296,7 +374,7 @@ export const InvoiceDetails = () => {
                     }
                   ]
                 });
-                handleCloseEditDialog();
+                handleCloseDialog('edit');
               }
             }}
           >
@@ -316,7 +394,7 @@ export const InvoiceDetails = () => {
             </Form>
           </Formik>
         </FormDialog>
-        <FormDialog open={isOpenedDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <FormDialog open={isOpenDialog.delete} onClose={() => handleCloseDialog('delete')}>
           <Typography variant="h6" sx={{ mb: 4 }}>
             Delete Invoice
           </Typography>
@@ -327,21 +405,50 @@ export const InvoiceDetails = () => {
             <Button color="error" variant="contained" onClick={handleDeleteInvoice}>
               delete
             </Button>
-            <Button color="secondary" variant="outlined" onClick={handleCloseDeleteDialog}>
+            <Button color="secondary" variant="outlined" onClick={() => handleCloseDialog('delete')}>
               cancel
             </Button>
           </Stack>
         </FormDialog>
-        <Stack direction="row" justifyContent="space-between" marginTop={5}>
-          <DisplayCard id="Original billable hours" title="Original Billable Hour" data={project?.billableHours} />
-          <DisplayCard id="Original Invoice Amount" title="Original Invoice Amount" data={project && USDollar.format(project.billableHours * 65)} />
+        <Stack direction="row" justifyContent="space-between" marginTop={5} gap={4}>
           <DisplayCard
-            id="Original billable hours"
-            title="Adjustment Hours"
-            data={searchInvoiceData && project && (searchInvoiceData.searchInvoice.hours - project.billableHours).toFixed(2)}
+            id="Invoice billable hours"
+            title="Current Invoice Billable Hours"
+            data={
+              <Stack gap={1} direction="row" alignItems="center">
+                {searchInvoiceData?.searchInvoice?.hours}
+                <Typography component="span" variant="caption" color="grey.500">
+                  hrs
+                </Typography>
+              </Stack>
+            }
           />
-          <DisplayCard id="Revised total billable hours" title="Revised total billable hours" data={searchInvoiceData?.searchInvoice?.hours} />
-          <DisplayCard id="Revised Invoice Amount" title="Revised Invoice Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
+          <DisplayCard id="Invoice Amount" title="Current Invoice Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
+          <DisplayCard
+            id="Adjustment Hours"
+            title="Adjustment Hours"
+            data={
+              <Stack gap={1} direction="row" alignItems="center">
+                {searchInvoiceData && project && (searchInvoiceData.searchInvoice.hours - project.billableHours).toFixed(2)}
+                <Typography component="span" variant="caption" color="grey.500">
+                  hrs
+                </Typography>
+              </Stack>
+            }
+          />
+          <DisplayCard
+            id="Original Billable Hours"
+            title="Report Billable Hours"
+            data={
+              <Stack gap={1} direction="row" alignItems="center">
+                {project?.billableHours}
+                <Typography component="span" variant="caption" color="grey.500">
+                  hrs
+                </Typography>
+              </Stack>
+            }
+          />
+          <DisplayCard id="Report invoice Amount" title="Report Amount" data={project && USDollar.format(project.billableHours * 65)} />
         </Stack>
         <Box sx={{ marginTop: '2rem' }}>
           <BasicTable rows={rows} columns={columns} keyFun={keyFun} hidePagination />

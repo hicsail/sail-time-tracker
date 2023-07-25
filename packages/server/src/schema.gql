@@ -6,7 +6,6 @@ type EmployeeModel {
   id: ID!
   email: String!
   name: String!
-  rate: Float!
   status: String
   projects: [ProjectModel!]!
   recordsWithFavoriteProjects(startDate: DateTime!, endDate: DateTime!): [GroupedRecordWithFavoriteProjectModel!]!
@@ -220,14 +219,12 @@ type Mutation {
 input EmployeeCreateInput {
   name: String!
   email: String!
-  rate: Float!
   status: String
 }
 
 input EmployeeUpdateInput {
   name: String!
   email: String!
-  rate: Float!
   status: String
   id: ID!
 }

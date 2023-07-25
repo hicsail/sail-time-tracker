@@ -15,9 +15,6 @@ export class EmployeeModel {
   @Field()
   name: string;
 
-  @Field()
-  rate: number;
-
   @Field({ nullable: true })
   status?: string;
 }

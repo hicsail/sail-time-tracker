@@ -122,7 +122,6 @@ export class EmployeesService {
 
     // hide project that not contains any record, is not Indirect, Absence and the status is Active
     return employees
-      .filter((employee) => employee.status !== 'Inactive')
       .map((employee) => {
         const totalWorkHours = employee.records
           .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
@@ -168,7 +167,8 @@ export class EmployeesService {
           billableHours: formatHours(totalWorkHours + totalIndirectHours),
           inner: inner
         };
-      });
+      })
+      .filter((employee) => employee.workHours !== 0);
   }
 
   async getProjectWithRecord(startDate: Date, endDate: Date): Promise<ProjectWithEmployeeRecords[]> {
@@ -218,7 +218,7 @@ export class EmployeesService {
       }
     });
 
-    return transformedDate;
+    return transformedDate.filter((project) => project.workHours !== 0);
   }
 
   transformData(inputData: EmployeeWithRecord[]): ProjectWithEmployeeRecords[] {
