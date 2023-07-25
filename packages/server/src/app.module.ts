@@ -18,7 +18,15 @@ import { ClickUpTaskModule } from './click-up-task/click-up-task.module';
     EmployeesModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql')
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      cors: {
+        origin: ['http://localhost:5173', 'https://*.sail.codes'],
+        preflightContinue: true,
+        credentials: true,
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        optionsSuccessStatus: 204
+      }
     }),
     ConfigModule.forRoot(),
     ProjectModule,

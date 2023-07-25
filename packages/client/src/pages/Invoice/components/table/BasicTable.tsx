@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell';
 interface BasicTableProps {
   rows: any[];
   columns: any[];
-  toolbar?: JSX.Element;
+  toolbar?: ReactNode;
   keyFun: (row: any) => string;
   initialState?: any;
   sx?: any;
@@ -48,7 +48,6 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
         {column.renderCell ? column.renderCell(row) : row[column.field]}
       </TableCell>
     ));
-
     return (
       <TableRow
         key={keyFun(row)}
@@ -63,25 +62,27 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
   });
 
   return (
-    <TableContainer component={StyledPaper} elevation={0}>
-      {toolbar}
-      <Table sx={{ minWidth: 650 }}>
-        <TableHead>
-          <TableRow>{renderedHeaders}</TableRow>
-        </TableHead>
-        <TableBody>{renderRows}</TableBody>
-      </Table>
-      {!hidePagination && (
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      )}
+    <TableContainer>
+      <StyledPaper elevation={0}>
+        {toolbar}
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead>
+            <TableRow>{renderedHeaders}</TableRow>
+          </TableHead>
+          <TableBody>{renderRows}</TableBody>
+        </Table>
+        {!hidePagination && (
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        )}
+      </StyledPaper>
     </TableContainer>
   );
 };
