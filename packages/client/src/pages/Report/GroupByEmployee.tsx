@@ -226,7 +226,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
                 }}
               />
               <Typography variant="body1" sx={{ mb: 4, mt: 4 }}>
-                Are you sure you want to send notification to {zeroWorkHoursWithActiveEmployeesRows.length} employees?
+                Are you sure you want to send notification to {selectedEmployees.length} employees?
               </Typography>
             </Stack>
           )}
