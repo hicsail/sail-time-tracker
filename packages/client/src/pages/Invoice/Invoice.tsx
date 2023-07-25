@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { FormDialog } from '@components/form/FormDialog';
 import { SearchBar } from '@components/SearchBar';
 import { SortedBasicTable } from '@components/table/SortedBasicTable';
+import { StyledDatePicker } from '@components/StyledDatePicker';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -134,22 +135,20 @@ export const Invoice = () => {
     <>
       <Stack direction="row" gap={2} mb={3}>
         <Box sx={{ display: 'flex', gap: 5 }}>
-          <DatePicker
+          <StyledDatePicker
             label="Start Date"
             value={dateRange.startDate}
-            slots={{ layout: CustomDatePickerLayout }}
-            onChange={(newValue) => {
+            onChange={(newValue: Date | null) => {
               setDateRange((prevState: any) => ({
                 ...prevState,
                 startDate: newValue
               }));
             }}
           />
-          <DatePicker
+          <StyledDatePicker
             label="End Date"
             value={dateRange.endDate}
-            slots={{ layout: CustomDatePickerLayout }}
-            onChange={(newValue) => {
+            onChange={(newValue: Date | null) => {
               setDateRange((prevState: any) => ({
                 ...prevState,
                 endDate: newValue

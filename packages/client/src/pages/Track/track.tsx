@@ -9,17 +9,16 @@ import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { useEffect } from 'react';
 import { WorkOff, WorkOutlined } from '@mui/icons-material';
-import { DatePicker } from '@mui/x-date-pickers';
 
 import { Day } from './components/DatePicker/Day';
 import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
 import { formatDateToDashFormat } from '../../utils/helperFun';
+import { StyledDatePicker } from '@components/StyledDatePicker';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
   const { date, setDate } = useDate();
   const { data: employeeListData } = useGetEmployeeListQuery();
-  const [getEmployeeById, { data: employeeDate }] = useGetEmployeeByIdLazyQuery();
   const [getRecordWithFavoriteProject, { data: recordWithFavoriteProjectData }] = useGetRecordWithFavoriteProjectLazyQuery();
 
   useEffect(() => {
@@ -31,14 +30,6 @@ export const Track = () => {
       }
     });
   }, [employeeId, date]);
-
-  useEffect(() => {
-    getEmployeeById({
-      variables: {
-        id: employeeId as string
-      }
-    });
-  }, [employeeId]);
 
   const totalAbsenceHours =
     recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects
@@ -61,29 +52,32 @@ export const Track = () => {
         );
       }, 0) ?? 0;
 
-  /**
-   * employee dropdown change handler
-   * @param e
-   */
-  const employeeChangeHandler = (e: SelectChangeEvent) => {
-    setEmployeeId(e.target.value);
-  };
+  const handleSelectEmployeeOnChange = (e: SelectChangeEvent) => setEmployeeId(e.target.value);
 
-  const employees = employeeListData?.employees
-    .filter((employee) => employee.status === 'Active')
-    .map((employee) => {
-      return { id: employee.id, name: employee.name };
-    });
+  // get all employees and filter out the inactive employees
+  const employees = employeeListData?.employees.filter((employee) => employee.status === 'Active').map((employee) => ({ id: employee.id, name: employee.name }));
 
-  const welcomeString = () => {
+  const welcomeMessage = () => {
+    const name = employeeListData?.employees?.find((employee) => employee.id === employeeId)?.name || '';
     const hours = new Date().getHours();
+
+    let message = '';
+
     if (hours >= 18) {
-      return 'Good Evening,';
+      message += 'Good Evening, ';
     } else if (hours >= 12) {
-      return 'Good Afternoon,';
+      message += 'Good Afternoon, ';
     } else {
-      return 'Good Morning,';
+      message += 'Good Morning, ';
     }
+
+    message += `${name}! Please Log Your Weekly Hours Here.`;
+
+    return (
+      <Typography variant="body1" color="grey.500" fontSize="0.8rem">
+        {message}
+      </Typography>
+    );
   };
 
   return (
@@ -98,25 +92,22 @@ export const Track = () => {
       }}
     >
       <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
-        <DropDownMenu data={employees} onChange={employeeChangeHandler} label="Select Employee" value={employeeId ? employeeId : ''} id="select_employee" name="select_employee" />
-        <DatePicker
+        <DropDownMenu
+          data={employees}
+          onChange={handleSelectEmployeeOnChange}
+          label="Select Employee"
+          value={employeeId ? employeeId : ''}
+          id="select_employee"
+          name="select_employee"
+        />
+        <StyledDatePicker
           value={date}
-          onChange={(newValue) => {
-            setDate(newValue as Date);
-          }}
+          onChange={(newValue: Date | null) => setDate(newValue as Date)}
           slots={{ day: Day, layout: CustomDatePickerLayout }}
           slotProps={{
             day: {
               selectedDay: date
             } as any
-          }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: 'grey.300',
-                color: 'grey.500'
-              }
-            }
           }}
         />
         <DisplayCard key="work" id="work" title="Total Work Hours" data={workProjectsHours} icon={<WorkOutlined fontSize="large" />} />
@@ -124,7 +115,7 @@ export const Track = () => {
       </Stack>
       {employeeId ? (
         <Stack gap={2}>
-          <Typography variant="body1" color="grey.500" fontSize="0.8rem">{`${welcomeString()} ${employeeDate?.employee.name}! Please Log Your Weekly Hours Here.`}</Typography>
+          {welcomeMessage()}
           <ProjectTable data={recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects} />
         </Stack>
       ) : (
