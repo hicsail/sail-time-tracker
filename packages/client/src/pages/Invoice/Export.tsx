@@ -66,6 +66,7 @@ export const Export = () => {
   const textData = clickUpCustomFields?.getClickUpCustomFields.filter((field) => field.type === 'text');
 
   const combinedClickUpCustomFields = [...(numberData ?? []), ...(dropDownData ?? []), ...(textData ?? [])];
+  console.log(combinedClickUpCustomFields);
 
   const renderCustomField =
     combinedClickUpCustomFields.map((field) => {
@@ -128,7 +129,7 @@ export const Export = () => {
       'Invoice Payment Status': 0,
       'Copy Total Here': state.revisedAmount,
       Rate: state.rate,
-      'Fiscal Year': 2,
+      'FY: Work Completed': 2,
       'Contract Type': state.contractTypeId,
       Hours: state.revisedBillableHour
     };
