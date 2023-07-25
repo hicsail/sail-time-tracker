@@ -13,7 +13,7 @@ interface BasicTableProps {
   hidePagination?: boolean;
 }
 
-export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun, initialState, hidePagination, ...otherProps }) => {
+export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun, initialState, hidePagination }) => {
   const {
     pagination: { paginationModel }
   } = initialState || { pagination: { paginationModel: { page: 0, pageSize: 10 } } };
