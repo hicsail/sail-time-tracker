@@ -6,7 +6,7 @@ require('dotenv').config({ path: '../.env' });
 
 // Specify the path to your SQLite database file
 const dbPath = `${process.env.OLDDB_PATH}`;
-const sql= postgres(`${process.env.NEWDB_PATH}`);
+const sql = postgres(`${process.env.NEWDB_PATH}`);
 
 // Create a new SQLite database instance
 const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
@@ -64,7 +64,7 @@ const readEmployeeIdMapData = (employees) => {
 };
 
 const readProjectIdMapData = (projects) => {
-  if(projects && projects.length > 0) {
+  if (projects && projects.length > 0) {
     projects.forEach((project) => {
       if (!projectMap.get(project.oldProjectId)) {
         projectMap.set(project.oldProjectId, project.newProjectId);
@@ -72,7 +72,7 @@ const readProjectIdMapData = (projects) => {
       }
     });
   }
-}
+};
 
 const insertEmployees = (employees) => {
   employees.forEach(async (employee, index) => {
@@ -80,22 +80,40 @@ const insertEmployees = (employees) => {
       id: employeeMap.get(employee.id),
       email: `employee${index}@bu.edu`,
       name: employee.name,
-      rate: 65,
       status: `${employee.archive ? 'Inactive' : 'Active'}`
     };
 
     await sql`
-      INSERT INTO "Employee" ("id", "email", "name", "rate", "status")
-      VALUES (${newEmployee.id}, ${newEmployee.email}, ${newEmployee.name}, ${newEmployee.rate}, ${newEmployee.status})
+      INSERT INTO "Employee" ("id", "email", "name", "status")
+      VALUES (${newEmployee.id}, ${newEmployee.email}, ${newEmployee.name}, ${newEmployee.status})
       ON CONFLICT DO NOTHING
     `;
   });
-}
+  insertSlackIds(employees);
+};
+
+const insertSlackIds = (employees) => {
+  const results = employees.map((employee) => {
+    return { employeeId: employeeMap.get(employee.id), slackId: employee.slackId };
+  });
+
+  results.forEach(async (result) => {
+    try {
+      await sql`
+      INSERT INTO "Slack" ("slackId", "employeeId")
+      VALUES (${result.slackId}, ${result.employeeId})
+      ON CONFLICT DO NOTHING
+    `;
+    } catch (e) {
+      console.log('ERROR: ' + e.message);
+    }
+  });
+};
 
 const insertProjects = (projects) => {
   projects.forEach(async (project) => {
     // inserting projects excludes sick, vacation, development project
-    if (project.id !== 'sick' && project.id !== 'vacation' && project.name !== "Development") {
+    if (project.id !== 'sick' && project.id !== 'vacation' && project.name !== 'Development') {
       let newProject = {
         id: projectMap.get(project.id),
         name: project.name,
@@ -112,17 +130,16 @@ const insertProjects = (projects) => {
       } catch (e) {
         await sql`
           INSERT INTO "Project" ("id", "name", "description", "status", "isBillable")
-          VALUES (${newProject.id}, ${newProject.name + "2"}, ${newProject.description}, ${newProject.status}, ${newProject.isBillable})
+          VALUES (${newProject.id}, ${newProject.name + '2'}, ${newProject.description}, ${newProject.status}, ${newProject.isBillable})
           ON CONFLICT DO NOTHING
         `;
       }
     }
   });
-}
+};
 
 // Perform database operations
 db.serialize(() => {
-
   /**
    * retrieve employee id map
    * {oldEmployeeId: string, newEmployeeId: string}
@@ -149,7 +166,7 @@ db.serialize(() => {
 
   /**
    * retrieve old employee data
-   * id, name, rate, archive
+   * id, name, archive
    * from emloyees.json
    */
   try {
@@ -182,7 +199,7 @@ db.serialize(() => {
     rows.forEach(async (row) => {
       if (row.project_id !== 'sick' && row.project_id !== 'vacation') {
         // if record is belong to Development, add its hours to Indirect
-        if(row.project_id === 1000) {
+        if (row.project_id === 1000) {
           try {
             await sql`
               UPDATE "Record"
@@ -212,18 +229,17 @@ db.serialize(() => {
   // write employee id map to a file
   fs.writeFile('./employee.json', JSON.stringify(employeeMapList), (err) => {
     if (!err) {
-      console.log('done');
+      console.log('done: write to employee.json file');
     }
   });
 
   // write project id map to a file
   fs.writeFile('./project.json', JSON.stringify(projectMapList), (err) => {
     if (!err) {
-      console.log('done');
+      console.log('done: write to project.json file');
     }
   });
 });
-
 
 // Close the database connection
 db.close((err) => {

@@ -21,6 +21,18 @@ export type BatchPayload = {
   count: Scalars['Float'];
 };
 
+export type BatchResponseModel = {
+  __typename?: 'BatchResponseModel';
+  count: Scalars['Float'];
+  message: Scalars['String'];
+  success: Scalars['Boolean'];
+};
+
+export type BatchSendSlackMessageInput = {
+  employeeIds: Array<Scalars['String']>;
+  message: Scalars['String'];
+};
+
 export type ClickUpStatuses = {
   __typename?: 'ClickUpStatuses';
   color: Scalars['String'];
@@ -122,6 +134,7 @@ export type EmployeeWithRecord = {
 
 export type EmployeeWithRecordInner = {
   __typename?: 'EmployeeWithRecordInner';
+  fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];
   projectId: Scalars['String'];
   projectIndirectHours: Scalars['Float'];
@@ -227,6 +240,7 @@ export type Mutation = {
   addFavoriteProject: BatchPayload;
   addProject: ProjectModel;
   addSlackUser: BatchPayload;
+  batchSendingMessages: BatchResponseModel;
   createAndAddClickUpTaskToInvoice: ClickUpTaskModel;
   createClickUpTask: ClickUpTaskModel;
   createOrUpdateInvoice: InvoiceModel;
@@ -260,6 +274,10 @@ export type MutationAddProjectArgs = {
 
 export type MutationAddSlackUserArgs = {
   slackUsers: Array<SlackEmployeeInput>;
+};
+
+export type MutationBatchSendingMessagesArgs = {
+  input: BatchSendSlackMessageInput;
 };
 
 export type MutationCreateAndAddClickUpTaskToInvoiceArgs = {
@@ -318,6 +336,7 @@ export type MutationUpdateProjectArgs = {
 
 export type ProjectCreateInput = {
   description: Scalars['String'];
+  fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
   rate: Scalars['Float'];
@@ -332,6 +351,7 @@ export type ProjectDeleteReturnModel = {
 export type ProjectModel = {
   __typename?: 'ProjectModel';
   description: Scalars['String'];
+  fte: Scalars['Float'];
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
@@ -341,6 +361,7 @@ export type ProjectModel = {
 
 export type ProjectUpdateInput = {
   description: Scalars['String'];
+  fte: Scalars['Float'];
   id: Scalars['ID'];
   isBillable: Scalars['Boolean'];
   name: Scalars['String'];
@@ -351,6 +372,7 @@ export type ProjectUpdateInput = {
 export type ProjectWithEmployeeRecords = {
   __typename?: 'ProjectWithEmployeeRecords';
   billableHours: Scalars['Float'];
+  fte: Scalars['Float'];
   id: Scalars['String'];
   indirectHours: Scalars['Float'];
   inner: Array<ProjectWithEmployeeRecordsInner>;

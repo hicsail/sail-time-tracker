@@ -34,6 +34,7 @@ type EmployeeWithRecordInner {
   projectId: String!
   projectName: String!
   rate: Float!
+  fte: Float!
   status: String!
   isBillable: Boolean!
   projectWorkHours: Float!
@@ -47,6 +48,7 @@ type ProjectWithEmployeeRecords {
   isBillable: Boolean!
   rate: Float!
   status: String!
+  fte: Float!
   workHours: Float!
   indirectHours: Float!
   billableHours: Float!
@@ -62,6 +64,12 @@ type ProjectWithEmployeeRecordsInner {
   employeePercentage: String!
 }
 
+type BatchResponseModel {
+  success: Boolean!
+  message: String!
+  count: Float!
+}
+
 type ProjectModel {
   id: ID!
   name: String!
@@ -69,6 +77,7 @@ type ProjectModel {
   description: String!
   isBillable: Boolean!
   rate: Float!
+  fte: Float!
 }
 
 type ProjectDeleteReturnModel {
@@ -204,6 +213,7 @@ type Mutation {
   deleteEmployees(ids: [String!]!): EmployeeDeleteReturnModel!
   addSlackUser(slackUsers: [SlackEmployeeInput!]!): BatchPayload!
   sendSlackMessage(slackSendMessageInput: SendSlackMessageInput!): Boolean!
+  batchSendingMessages(input: BatchSendSlackMessageInput!): BatchResponseModel!
   addProject(project: ProjectCreateInput!): ProjectModel!
   updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
   deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
@@ -242,11 +252,17 @@ input SendSlackMessageInput {
   message: String!
 }
 
+input BatchSendSlackMessageInput {
+  employeeIds: [String!]!
+  message: String!
+}
+
 input ProjectCreateInput {
   name: String!
   status: String!
   description: String!
   isBillable: Boolean!
+  fte: Float!
   rate: Float!
 }
 
@@ -255,6 +271,7 @@ input ProjectUpdateInput {
   status: String!
   description: String!
   isBillable: Boolean!
+  fte: Float!
   rate: Float!
   id: ID!
 }

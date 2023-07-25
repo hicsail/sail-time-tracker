@@ -33,6 +33,7 @@ query getProjectWithEmployeeRecords($startDate: DateTime!, $endDate: DateTime!) 
     isBillable
     rate
     status
+    fte
     workHours
     indirectHours
     billableHours
@@ -105,4 +106,12 @@ mutation DeleteEmployees($ids: [String!]!) {
 
 mutation SendSlackMessage($inputs: SendSlackMessageInput!) {
   sendSlackMessage(slackSendMessageInput: $inputs)
+}
+
+mutation BatchSendSlackMessage($input: BatchSendSlackMessageInput!) {
+  batchSendingMessages(input: $input) {
+    count
+    message
+    success
+  }
 }

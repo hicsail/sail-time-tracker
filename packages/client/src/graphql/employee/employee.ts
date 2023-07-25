@@ -50,6 +50,7 @@ export type GetProjectWithEmployeeRecordsQuery = {
     isBillable: boolean;
     rate: number;
     status: string;
+    fte: number;
     workHours: number;
     indirectHours: number;
     billableHours: number;
@@ -128,6 +129,15 @@ export type SendSlackMessageMutationVariables = Types.Exact<{
 }>;
 
 export type SendSlackMessageMutation = { __typename?: 'Mutation'; sendSlackMessage: boolean };
+
+export type BatchSendSlackMessageMutationVariables = Types.Exact<{
+  input: Types.BatchSendSlackMessageInput;
+}>;
+
+export type BatchSendSlackMessageMutation = {
+  __typename?: 'Mutation';
+  batchSendingMessages: { __typename?: 'BatchResponseModel'; count: number; message: string; success: boolean };
+};
 
 export const GetEmployeeListDocument = gql`
   query getEmployeeList {
@@ -223,6 +233,7 @@ export const GetProjectWithEmployeeRecordsDocument = gql`
       isBillable
       rate
       status
+      fte
       workHours
       indirectHours
       billableHours
@@ -495,3 +506,38 @@ export function useSendSlackMessageMutation(baseOptions?: Apollo.MutationHookOpt
 export type SendSlackMessageMutationHookResult = ReturnType<typeof useSendSlackMessageMutation>;
 export type SendSlackMessageMutationResult = Apollo.MutationResult<SendSlackMessageMutation>;
 export type SendSlackMessageMutationOptions = Apollo.BaseMutationOptions<SendSlackMessageMutation, SendSlackMessageMutationVariables>;
+export const BatchSendSlackMessageDocument = gql`
+  mutation BatchSendSlackMessage($input: BatchSendSlackMessageInput!) {
+    batchSendingMessages(input: $input) {
+      count
+      message
+      success
+    }
+  }
+`;
+export type BatchSendSlackMessageMutationFn = Apollo.MutationFunction<BatchSendSlackMessageMutation, BatchSendSlackMessageMutationVariables>;
+
+/**
+ * __useBatchSendSlackMessageMutation__
+ *
+ * To run a mutation, you first call `useBatchSendSlackMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBatchSendSlackMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [batchSendSlackMessageMutation, { data, loading, error }] = useBatchSendSlackMessageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useBatchSendSlackMessageMutation(baseOptions?: Apollo.MutationHookOptions<BatchSendSlackMessageMutation, BatchSendSlackMessageMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<BatchSendSlackMessageMutation, BatchSendSlackMessageMutationVariables>(BatchSendSlackMessageDocument, options);
+}
+export type BatchSendSlackMessageMutationHookResult = ReturnType<typeof useBatchSendSlackMessageMutation>;
+export type BatchSendSlackMessageMutationResult = Apollo.MutationResult<BatchSendSlackMessageMutation>;
+export type BatchSendSlackMessageMutationOptions = Apollo.BaseMutationOptions<BatchSendSlackMessageMutation, BatchSendSlackMessageMutationVariables>;

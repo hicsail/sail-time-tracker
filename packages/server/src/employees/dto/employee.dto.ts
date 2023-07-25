@@ -1,5 +1,5 @@
 import { InputType, Field, ID } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsOptional, ArrayNotEmpty } from 'class-validator';
 
 /**
  * input type for adding new employee
@@ -55,6 +55,19 @@ export class SendSlackMessageInput {
   @IsString()
   @IsNotEmpty()
   employeeId: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  message: string;
+}
+
+@InputType()
+export class BatchSendSlackMessageInput {
+  @Field(() => [String])
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  employeeIds: string[];
 
   @Field()
   @IsString()

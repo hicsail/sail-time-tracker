@@ -19,6 +19,7 @@ import enLocale from 'date-fns/locale/en-US';
 import { InvoiceDetails } from '@pages/Invoice/InvoiceDetails';
 import { DateRangeProvider } from '@context/reportFilter.context';
 import { Export } from '@pages/Invoice/Export';
+import { NotFoundAdmin } from '@pages/Not_Find/NotFindAdmin';
 
 function App() {
   if (enLocale && enLocale.options) {
@@ -51,7 +52,9 @@ function App() {
                         <Route path={Paths.INVOICE} element={<Invoice />} />
                         <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
                         <Route path={Paths.EXPORT_INVOICE} element={<Export />} />
+                        <Route path={`${Paths.ADMIN}/*`} element={<NotFoundAdmin page="admin" />} />
                       </Route>
+                      <Route path="*" element={<NotFoundAdmin />} />
                     </Routes>
                   </DateRangeProvider>
                 </EmployeeProvider>

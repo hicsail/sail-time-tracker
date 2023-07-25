@@ -23,6 +23,9 @@ export class ProjectModel {
 
   @Field()
   rate: number;
+
+  @Field()
+  fte: number;
 }
 
 @ObjectType()

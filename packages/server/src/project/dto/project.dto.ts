@@ -28,6 +28,11 @@ export class ProjectCreateInput {
   @Field()
   @IsNotEmpty()
   @IsNumber()
+  fte: number;
+
+  @Field()
+  @IsNotEmpty()
+  @IsNumber()
   rate: number;
 }
 

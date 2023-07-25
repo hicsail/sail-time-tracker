@@ -2,7 +2,7 @@ import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTabl
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { FC } from 'react';
 
-import { useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
+import { useBatchSendSlackMessageMutation, useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { CustomizedAccordions } from '@pages/Report/components/CustomizedAccordions';
 import { SlackIcon } from '@components/icons/SlackIcon';
@@ -27,12 +27,13 @@ const FormValidation = Yup.object({
 export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, searchText }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [sendSlackMessage] = useSendSlackMessageMutation();
+  const [sendBatchSlackMessage] = useBatchSendSlackMessageMutation();
   const [showBanner, setShowBanner] = React.useState({
     show: false,
     content: '',
     state: '' as 'success' | 'error' | 'info'
   });
-  const [targetReceiver, setTargetReceiver] = React.useState<{ employeeId: string; name: string }>({ employeeId: '', name: '' });
+  const [targetReceiver, setTargetReceiver] = React.useState<{ employeeId: string; name: string } | null>({ employeeId: '', name: '' });
 
   const { data } = useGetEmployeesWithRecordQuery({
     variables: {
@@ -122,21 +123,42 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   };
 
   const handleSendSlack = (values: FormikValues) => {
-    sendSlackMessage({
+    targetReceiver &&
+      sendSlackMessage({
+        variables: {
+          inputs: {
+            employeeId: targetReceiver.employeeId,
+            message: values.message
+          }
+        }
+      }).then((r) => {
+        if (r?.data?.sendSlackMessage) {
+          handleCloseFormDialog();
+          setShowBanner({ show: true, content: `Successfully sent the slack message to ${targetReceiver.name}`, state: 'success' });
+          return;
+        }
+
+        setShowBanner({ show: true, content: 'Error to send the slack message', state: 'error' });
+      });
+  };
+
+  const handleSendBatchSlack = (values: FormikValues) => {
+    const ids = zeroWorkHoursWithActiveEmployeesRows.map((employee) => employee.id);
+    console.log(ids);
+    sendBatchSlackMessage({
       variables: {
-        inputs: {
-          employeeId: targetReceiver.employeeId,
+        input: {
+          employeeIds: ids,
           message: values.message
         }
       }
     }).then((r) => {
-      if (r?.data?.sendSlackMessage) {
+      if (r?.data?.batchSendingMessages.success) {
         handleCloseFormDialog();
-        setShowBanner({ show: true, content: `Successfully sent the slack message to ${targetReceiver.name}`, state: 'success' });
+        setShowBanner({ show: true, content: `Successfully sent ${r.data.batchSendingMessages.count} slack message.`, state: 'success' });
         return;
       }
-
-      setShowBanner({ show: true, content: 'Error to send the slack message', state: 'error' });
+      setShowBanner({ show: true, content: `Error to send ${r?.data?.batchSendingMessages.count} slack message.`, state: 'error' });
     });
   };
 
@@ -144,7 +166,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
 
   const handleOpenFormDialog = (user: any) => {
     setOpenDialog(true);
-    setTargetReceiver({ employeeId: user.id, name: user.name });
+    user ? setTargetReceiver({ employeeId: user.id, name: user.name }) : setTargetReceiver(null);
   };
 
   useTimeout(() => setShowBanner((prevState) => ({ ...prevState, show: false })), 1000, showBanner.show);
@@ -156,6 +178,9 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
       {rows.length === 0 && <Box sx={{ textAlign: 'start' }}>No data</Box>}
       <CustomizedAccordions summary="See employees who has not submit their work hours">
         <Stack gap={2}>
+          <Button sx={{ flexBasis: '50px' }} variant="outlined" endIcon={<SlackIcon />} onClick={() => handleOpenFormDialog(null)}>
+            Send All
+          </Button>
           {zeroWorkHoursWithActiveEmployeesRows.length === 0 ? (
             <Typography>No data</Typography>
           ) : (
@@ -167,14 +192,26 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
           <Typography variant="h6" sx={{ mb: 4 }}>
             Send Slack Notification
           </Typography>
-          <Typography variant="body1" sx={{ mb: 4 }}>
-            Are you sure you want to send notification to <strong>{targetReceiver.name}</strong>?
-          </Typography>
+          {targetReceiver ? (
+            <Typography variant="body1" sx={{ mb: 4 }}>
+              Are you sure you want to send notification to <strong>{targetReceiver.name}</strong>?
+            </Typography>
+          ) : (
+            <Typography variant="body1" sx={{ mb: 4 }}>
+              Are you sure you want to send notification to {zeroWorkHoursWithActiveEmployeesRows.length} employees?
+            </Typography>
+          )}
           <Formik
             validationSchema={FormValidation}
             enableReinitialize={true}
-            initialValues={{ message: `Hi ${targetReceiver.name}, please log your time between ${format(startDate, 'MMM dd yyyy')} to ${format(endDate, 'MMM dd yyyy')}.` }}
-            onSubmit={(values) => handleSendSlack(values)}
+            initialValues={{
+              message: targetReceiver
+                ? `Hi ${targetReceiver.name}, please log your time between ${format(startDate, 'MMM dd yyyy')} to ${format(endDate, 'MMM dd yyyy')}.`
+                : `Hi folks, please log your time between ${format(startDate, 'MMM dd yyyy')} to ${format(endDate, 'MMM dd yyyy')}.`
+            }}
+            onSubmit={(values) => {
+              targetReceiver ? handleSendSlack(values) : handleSendBatchSlack(values);
+            }}
           >
             <Form>
               <FormTextArea name="message" minRows={4} />

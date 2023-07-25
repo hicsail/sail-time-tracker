@@ -61,6 +61,9 @@ class EmployeeWithRecordInner {
   rate: number;
 
   @Field()
+  fte: number;
+
+  @Field()
   status: string;
 
   @Field()
@@ -92,6 +95,9 @@ export class ProjectWithEmployeeRecords {
 
   @Field()
   status: string;
+
+  @Field()
+  fte: number;
 
   @Field()
   workHours: number;
@@ -134,4 +140,16 @@ export class SlackModel {
 
   @Field(() => ID)
   slackId: string;
+}
+
+@ObjectType()
+export class BatchResponseModel {
+  @Field()
+  success: boolean;
+
+  @Field()
+  message: string;
+
+  @Field()
+  count: number;
 }

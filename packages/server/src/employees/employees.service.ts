@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Employee } from '@prisma/client';
-import { EmployeeDeleteReturnModel, EmployeeWithRecord, ProjectWithEmployeeRecords, ProjectWithEmployeeRecordsInner } from './model/employee.model';
+import { BatchResponseModel, EmployeeDeleteReturnModel, EmployeeWithRecord, ProjectWithEmployeeRecords, ProjectWithEmployeeRecordsInner } from './model/employee.model';
 import { ProjectModel } from '../project/model/project.model';
 import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
 import { convertToUTCDate, formatDateToDashFormat, formatHours, formatPercentage } from '../utils/helperFun';
-import { EmployeeCreateInput, EmployeeUpdateInput, SendSlackMessageInput, SlackEmployeeInput } from './dto/employee.dto';
+import { BatchSendSlackMessageInput, EmployeeCreateInput, EmployeeUpdateInput, SendSlackMessageInput, SlackEmployeeInput } from './dto/employee.dto';
 import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
@@ -100,7 +100,7 @@ export class EmployeesService {
   }
 
   /**
-   * Get employees with records
+   * Get employees with records, used for group by employee
    *
    * @return a list of employees with records
    * @param startDate
@@ -156,6 +156,7 @@ export class EmployeesService {
           projectName: record.project.name,
           rate: record.project.rate,
           status: record.project.status,
+          fte: record.project.fte,
           isBillable: record.project.isBillable,
           projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
           projectIndirectHours: formatHours(indirectHour),
@@ -175,6 +176,13 @@ export class EmployeesService {
     });
   }
 
+  /**
+   * Get Projects with records, used for group by project
+   *
+   * @return a list of projects with records
+   * @param startDate
+   * @param endDate
+   */
   async getProjectWithRecord(startDate: Date, endDate: Date): Promise<ProjectWithEmployeeRecords[]> {
     const projectWithEmployeeRecordData = await this.getEmployeesWithRecord(startDate, endDate);
     const projects = await this.prisma.project.findMany();
@@ -205,13 +213,14 @@ export class EmployeesService {
 
     projects.map((project) => {
       if (!uniqueProjectMap.has(project.id)) {
-        const { id, name, isBillable, rate, status } = project;
+        const { id, name, isBillable, rate, status, fte } = project;
         const newProjectRecord: ProjectWithEmployeeRecords = {
           id,
           name,
           isBillable,
           status,
           rate,
+          fte,
           workHours: 0,
           indirectHours: 0,
           billableHours: 0,
@@ -234,7 +243,7 @@ export class EmployeesService {
 
       // Iterate through each inner project record
       for (const innerRecord of inner) {
-        const { projectId, projectName, status, rate, isBillable, projectWorkHours, projectIndirectHours, projectPercentage } = innerRecord;
+        const { projectId, projectName, status, rate, fte, isBillable, projectWorkHours, projectIndirectHours, projectPercentage } = innerRecord;
 
         // Check if the project already exists in the transformed data
         let projectRecord = transformedData.find((record) => record.id === projectId);
@@ -247,6 +256,7 @@ export class EmployeesService {
             isBillable: isBillable,
             rate: rate,
             status: status,
+            fte: fte,
             workHours: 0,
             indirectHours: 0,
             billableHours: 0,
@@ -358,16 +368,29 @@ export class EmployeesService {
     return groupedData;
   }
 
+  /**
+   * Add Slack User
+   *
+   * @return count of slack user added
+   * @param slackUsers
+   */
   async addSlackUser(slackUsers: [SlackEmployeeInput]): Promise<BatchPayload> {
     return this.prisma.slack.createMany({
       data: slackUsers
     });
   }
 
+  /**
+   * Send Slack Messages
+   *
+   * @return true if message sent successfully, false otherwise
+   * @param sendSlackMessageInput
+   */
   async sendSlackMessage(sendSlackMessageInput: SendSlackMessageInput): Promise<boolean> {
     const { employeeId, message } = sendSlackMessageInput;
 
     try {
+      // find the slack id
       const { slackId } = await this.prisma.slack.findUnique({
         where: {
           employeeId
@@ -377,10 +400,38 @@ export class EmployeesService {
       if (!slackId) {
         return false;
       }
+
+      // send Slack message
       const { data } = await firstValueFrom(this.httpService.post(`${this.configService.get<string>('SLACK_URL')}`, { user: slackId, message: message }));
       return data.ok;
     } catch (e) {
       return false;
+    }
+  }
+
+  /**
+   * Send Batch Slack Messages
+   *
+   * @return BatchResponseModel
+   * @param input
+   */
+  async batchSendingMessages(input: BatchSendSlackMessageInput): Promise<BatchResponseModel> {
+    try {
+      let successCount = 0;
+
+      // Use Promise.all to wait for all sendSlackMessage promises to resolve
+      await Promise.all(
+        input.employeeIds.map(async (employeeId) => {
+          const success = await this.sendSlackMessage({ employeeId, message: input.message });
+          if (success) {
+            successCount++;
+          }
+        })
+      );
+
+      return { success: true, message: 'Success', count: successCount };
+    } catch (e) {
+      return { success: false, message: e.message, count: 0 };
     }
   }
 }

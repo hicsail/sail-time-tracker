@@ -12,6 +12,7 @@ const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
   description: Yup.string(),
   rate: Yup.string().required('Required'),
+  fte: Yup.string().required('Required'),
   status: Yup.string().required('Required'),
   isBillable: Yup.string().required('Required')
 });
@@ -23,11 +24,12 @@ interface ProjectFormProps {
 export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
   const [addProject] = useProjectCreateInputMutation();
   const [updateProject] = useProjectUpdateInputMutation();
-  const [initialValue, setInitialValue] = useState<{ name: string; description: string; rate: string; status: string; isBillable: string }>({
+  const [initialValue, setInitialValue] = useState<{ name: string; description: string; rate: string; status: string; isBillable: string; fte: string }>({
     name: '',
     description: '',
     rate: '',
     status: '',
+    fte: '',
     isBillable: ''
   });
 
@@ -44,13 +46,14 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
         nextFetchPolicy: 'cache-and-network'
       }).then((res) => {
         if (res && res.data) {
-          const { name, description, status, isBillable, rate } = res.data.project;
+          const { name, description, status, isBillable, rate, fte } = res.data.project;
           setInitialValue({
             name,
             description,
             status,
             isBillable: isBillable.toString(),
-            rate: rate.toString()
+            rate: rate.toString(),
+            fte: fte.toString()
           });
         }
       });
@@ -70,7 +73,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
             // after submitting the new project re-fetch the project via graphql
             await addProject({
               variables: {
-                newProject: { ...values, status: values.status.toString(), isBillable: values.isBillable == 'true', rate: parseFloat(values.rate) }
+                newProject: { ...values, status: values.status.toString(), isBillable: values.isBillable == 'true', rate: parseFloat(values.rate), fte: parseFloat(values.fte) }
               },
               refetchQueries: [{ query: GetProjectListDocument }]
             });
@@ -79,7 +82,14 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
             // after updating the project, re-fetch the projects via graphql
             await updateProject({
               variables: {
-                updateProject: { ...values, status: values.status.toString(), id: id, isBillable: values.isBillable == 'true', rate: parseFloat(values.rate) }
+                updateProject: {
+                  ...values,
+                  status: values.status.toString(),
+                  id: id,
+                  isBillable: values.isBillable == 'true',
+                  rate: parseFloat(values.rate),
+                  fte: parseFloat(values.fte)
+                }
               },
               refetchQueries: [
                 {
@@ -100,11 +110,12 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
             <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" required />
             <ObserverTextInput id="description" type="text" name="description" label="Description" placeholder="Description" required />
             <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" required />
-            <ObserverTextInput name="status" select label="Status" placeholder="Status">
+            <ObserverTextInput id="fte" type="number" name="fte" label="FTE" placeholder="FTE" required />
+            <ObserverTextInput name="status" select label="Status" placeholder="Status" required>
               <MenuItem value="Inactive">Inactive</MenuItem>
               <MenuItem value="Active">Active</MenuItem>
             </ObserverTextInput>
-            <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable">
+            <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable" required>
               <MenuItem value="true">True</MenuItem>
               <MenuItem value="false">False</MenuItem>
             </ObserverTextInput>
