@@ -34,6 +34,9 @@ export class EmployeeWithRecord {
   name: string;
 
   @Field()
+  status: string;
+
+  @Field()
   workHours: number;
 
   @Field()
@@ -122,4 +125,13 @@ export class ProjectWithEmployeeRecordsInner {
 
   @Field()
   employeePercentage: string;
+}
+
+@ObjectType()
+export class SlackModel {
+  @Field()
+  employeeId: string;
+
+  @Field(() => ID)
+  slackId: string;
 }

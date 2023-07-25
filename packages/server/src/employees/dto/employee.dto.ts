@@ -35,3 +35,29 @@ export class EmployeeUpdateInput extends EmployeeCreateInput {
   @IsNotEmpty()
   id: string;
 }
+
+@InputType()
+export class SlackEmployeeInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  employeeId: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  slackId: string;
+}
+
+@InputType()
+export class SendSlackMessageInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  employeeId: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  message: string;
+}

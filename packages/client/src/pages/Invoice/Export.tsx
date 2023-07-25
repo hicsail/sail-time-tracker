@@ -33,7 +33,7 @@ export type FormTextAreaProps = TextareaAutosizeProps & {
   name: string;
 };
 
-const FormTextArea: FC<FormTextAreaProps> = (props) => {
+export const FormTextArea: FC<FormTextAreaProps> = (props) => {
   const { handleChange, handleBlur, values, isSubmitting } = useFormikContext<any>();
   return (
     <FormControl fullWidth>

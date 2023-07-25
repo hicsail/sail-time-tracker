@@ -11,6 +11,7 @@ query getEmployeesWithRecord($startDate: DateTime!, $endDate: DateTime!) {
   getEmployeesWithRecord(startDate: $startDate, endDate: $endDate) {
     id
     name
+    status
     workHours
     indirectHours
     billableHours
@@ -100,4 +101,8 @@ mutation DeleteEmployees($ids: [String!]!) {
   deleteEmployees(ids: $ids) {
     count
   }
+}
+
+mutation SendSlackMessage($inputs: SendSlackMessageInput!) {
+  sendSlackMessage(slackSendMessageInput: $inputs)
 }

@@ -1,6 +1,6 @@
 import { Checkbox, Autocomplete, Box, Typography, Stack, ListItem } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
-import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { FC, SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
 import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
@@ -12,6 +12,7 @@ import { endOfWeek, startOfWeek } from 'date-fns';
 import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
 import { CustomOutlinedTextInput, DefaultContainedButton, DefaultOutlinedButton } from '@components/StyledComponent';
+import { useTimeout } from '../../../../utils/useTimeOutHook';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -30,17 +31,7 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) =
   const { employeeId } = useEmployee();
   const { date } = useDate();
 
-  useEffect(() => {
-    // Set the displayContent state to true after a delay of 700 milliseconds (0.7 seconds)
-    const timeoutId = setTimeout(() => {
-      setIsShowBanner(false);
-    }, 700);
-
-    // Clean up the timeout when the component unmounts or the state changes
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [isShowBanner]);
+  useTimeout(() => setIsShowBanner(false), 1000, isShowBanner);
 
   // handle user select projects from search checkbox
   const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any[]) => {

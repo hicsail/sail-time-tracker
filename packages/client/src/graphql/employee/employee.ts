@@ -20,6 +20,7 @@ export type GetEmployeesWithRecordQuery = {
     __typename?: 'EmployeeWithRecord';
     id: string;
     name: string;
+    status: string;
     workHours: number;
     indirectHours: number;
     billableHours: number;
@@ -122,6 +123,12 @@ export type DeleteEmployeesMutationVariables = Types.Exact<{
 
 export type DeleteEmployeesMutation = { __typename?: 'Mutation'; deleteEmployees: { __typename?: 'EmployeeDeleteReturnModel'; count: number } };
 
+export type SendSlackMessageMutationVariables = Types.Exact<{
+  inputs: Types.SendSlackMessageInput;
+}>;
+
+export type SendSlackMessageMutation = { __typename?: 'Mutation'; sendSlackMessage: boolean };
+
 export const GetEmployeeListDocument = gql`
   query getEmployeeList {
     employees {
@@ -164,6 +171,7 @@ export const GetEmployeesWithRecordDocument = gql`
     getEmployeesWithRecord(startDate: $startDate, endDate: $endDate) {
       id
       name
+      status
       workHours
       indirectHours
       billableHours
@@ -456,3 +464,34 @@ export function useDeleteEmployeesMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteEmployeesMutationHookResult = ReturnType<typeof useDeleteEmployeesMutation>;
 export type DeleteEmployeesMutationResult = Apollo.MutationResult<DeleteEmployeesMutation>;
 export type DeleteEmployeesMutationOptions = Apollo.BaseMutationOptions<DeleteEmployeesMutation, DeleteEmployeesMutationVariables>;
+export const SendSlackMessageDocument = gql`
+  mutation SendSlackMessage($inputs: SendSlackMessageInput!) {
+    sendSlackMessage(slackSendMessageInput: $inputs)
+  }
+`;
+export type SendSlackMessageMutationFn = Apollo.MutationFunction<SendSlackMessageMutation, SendSlackMessageMutationVariables>;
+
+/**
+ * __useSendSlackMessageMutation__
+ *
+ * To run a mutation, you first call `useSendSlackMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendSlackMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendSlackMessageMutation, { data, loading, error }] = useSendSlackMessageMutation({
+ *   variables: {
+ *      inputs: // value for 'inputs'
+ *   },
+ * });
+ */
+export function useSendSlackMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendSlackMessageMutation, SendSlackMessageMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SendSlackMessageMutation, SendSlackMessageMutationVariables>(SendSlackMessageDocument, options);
+}
+export type SendSlackMessageMutationHookResult = ReturnType<typeof useSendSlackMessageMutation>;
+export type SendSlackMessageMutationResult = Apollo.MutationResult<SendSlackMessageMutation>;
+export type SendSlackMessageMutationOptions = Apollo.BaseMutationOptions<SendSlackMessageMutation, SendSlackMessageMutationVariables>;

@@ -23,6 +23,7 @@ type EmployeeDeleteReturnModel {
 type EmployeeWithRecord {
   id: String!
   name: String!
+  status: String!
   workHours: Float!
   indirectHours: Float!
   billableHours: Float!
@@ -201,6 +202,8 @@ type Mutation {
   addEmployee(employee: EmployeeCreateInput!): EmployeeModel!
   updateEmployee(updateEmployee: EmployeeUpdateInput!): EmployeeModel!
   deleteEmployees(ids: [String!]!): EmployeeDeleteReturnModel!
+  addSlackUser(slackUsers: [SlackEmployeeInput!]!): BatchPayload!
+  sendSlackMessage(slackSendMessageInput: SendSlackMessageInput!): Boolean!
   addProject(project: ProjectCreateInput!): ProjectModel!
   updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
   deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
@@ -227,6 +230,16 @@ input EmployeeUpdateInput {
   email: String!
   status: String
   id: ID!
+}
+
+input SlackEmployeeInput {
+  employeeId: String!
+  slackId: String!
+}
+
+input SendSlackMessageInput {
+  employeeId: String!
+  message: String!
 }
 
 input ProjectCreateInput {
