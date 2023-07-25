@@ -156,14 +156,18 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
           const percentage = (row.billableHours / maximumWorkHours) * 100;
 
           return (
-            <Tooltip title={`${percentage}%`}>
+            <Tooltip title={`${percentage.toFixed(0)}%`}>
               <IconButton>
                 <CircularWithValueLabel progress={percentage} color={getCircularColor(percentage)} />
               </IconButton>
             </Tooltip>
           );
         },
-        sortValue: (row: any) => row.percentage
+        sortValue: (row: any) => {
+          const differences = differenceInBusinessDays(endDate, startDate);
+          const maximumWorkHours = row.fte * (differences * 8);
+          return (row.billableHours / maximumWorkHours) * 100;
+        }
       },
       {
         id: 'actions',
