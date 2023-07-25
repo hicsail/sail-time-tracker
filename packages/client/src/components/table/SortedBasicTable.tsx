@@ -4,12 +4,14 @@ import { TableSortLabel } from '@mui/material';
 import { BasicTable, BasicTableProps } from '@components/table/BasicTable';
 import { compareAsc } from 'date-fns';
 
-interface SortedBasicTableProps extends BasicTableProps {}
+interface SortedBasicTableProps extends BasicTableProps {
+  defaultOrderBy: string;
+}
 
 export const SortedBasicTable: FC<SortedBasicTableProps> = (props) => {
-  const { columns, rows } = props;
+  const { columns, rows, defaultOrderBy } = props;
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<string | null>(null);
+  const [orderBy, setOrderBy] = useState<string | null>(defaultOrderBy);
 
   const handleClick = (id: string) => {
     if (orderBy && orderBy !== id) {
@@ -53,8 +55,6 @@ export const SortedBasicTable: FC<SortedBasicTableProps> = (props) => {
     sortedData = [...sortedData].sort((a: any, b: any) => {
       const valueA = sortValue(a);
       const valueB = sortValue(b);
-
-      console.log(typeof valueA + ' => ' + valueB);
 
       const reverseOrder = order === 'asc' ? 1 : -1;
 

@@ -106,9 +106,9 @@ export const Invoice = () => {
       field: 'startDate',
       headerName: 'START DATE',
       width: 130,
-      sortValue: (row: any) => row.startDate
+      sortValue: (row: any) => new Date(row.startDate)
     },
-    { field: 'endDate', headerName: 'END DATE', width: 130, sortValue: (row: any) => row.endDate },
+    { field: 'endDate', headerName: 'END DATE', width: 130, sortValue: (row: any) => new Date(row.endDate) },
     {
       field: 'hours',
       headerName: 'TOTAL HOURS',
@@ -222,6 +222,7 @@ export const Invoice = () => {
         toolbar={ToolBar}
         columns={columns}
         keyFun={keyFun}
+        defaultOrderBy="startDate"
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 }
