@@ -1,9 +1,9 @@
 import { StyledPaper } from '@components/StyledPaper';
 import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination } from '@mui/material';
-import { FC, ReactNode, useState } from 'react';
+import { FC, Fragment, ReactNode, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
 
-interface BasicTableProps {
+export interface BasicTableProps {
   rows: any[];
   columns: any[];
   toolbar?: JSX.Element;
@@ -32,15 +32,19 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
 
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const renderedHeaders: ReactNode = columns.map((column) => (
-    <TableCell
-      key={column.field}
-      align={column.headerAlign ? column.headerAlign : 'left'}
-      sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}
-    >
-      {column.headerName.toUpperCase()}
-    </TableCell>
-  ));
+  const renderedHeaders: ReactNode = columns.map((column) => {
+    if (column.header) return <Fragment key={column.field}>{column.header()}</Fragment>;
+
+    return (
+      <TableCell
+        key={column.field}
+        align={column.headerAlign ? column.headerAlign : 'left'}
+        sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}
+      >
+        {column.header ? column.header() : column.headerName.toUpperCase()}
+      </TableCell>
+    );
+  });
 
   const renderRows: ReactNode = visibleRows.map((row) => {
     const renderCells: ReactNode = columns.map((column) => (

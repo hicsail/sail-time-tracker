@@ -12,6 +12,8 @@ import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { FormDialog } from '@components/form/FormDialog';
 import { SearchBar } from '@components/SearchBar';
+import { SortedBasicTable } from '@components/table/SortedBasicTable';
+import TableCell from '@mui/material/TableCell';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -102,20 +104,27 @@ export const Invoice = () => {
       width: 150,
       renderCell: (row: any) => <CustomIDCellRender id={row.projectId} startDate={row.startDate} endDate={row.endDate} value={row.projectName} />
     },
-    { field: 'startDate', headerName: 'START DATE', width: 130 },
-    { field: 'endDate', headerName: 'END DATE', width: 130 },
+    {
+      field: 'startDate',
+      headerName: 'START DATE',
+      width: 130,
+      sortValue: (row: any) => row.startDate
+    },
+    { field: 'endDate', headerName: 'END DATE', width: 130, sortValue: (row: any) => row.endDate },
     {
       field: 'hours',
       headerName: 'TOTAL HOURS',
       type: 'number',
-      width: 150
+      width: 150,
+      sortValue: (row: any) => row.hours
     },
     {
       field: 'amount',
       headerName: 'INVOICE AMOUNT',
       type: 'number',
       renderCell: (row: any) => `${USDollar.format(row.amount)}`,
-      width: 160
+      width: 160,
+      sortValue: (row: any) => row.amount
     },
     {
       field: 'actions',
@@ -210,7 +219,7 @@ export const Invoice = () => {
           Managing and viewing all your invoices.
         </Typography>
       </Box>
-      <BasicTable
+      <SortedBasicTable
         rows={filteredRows}
         toolbar={ToolBar}
         columns={columns}
