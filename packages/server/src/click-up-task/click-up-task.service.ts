@@ -20,8 +20,10 @@ export class ClickUpTaskService {
     );
 
     const filteredCustomFields = data.fields.filter((field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel');
-    const fiscalYear = filteredCustomFields.find((field) => field.name === 'Fiscal Year');
-    fiscalYear.type_config.options = fiscalYear.type_config.options.reverse();
+    const fiscalYear = filteredCustomFields.find((field) => field.name === 'FY: Work Completed');
+    if (fiscalYear) {
+      fiscalYear.type_config.options = fiscalYear.type_config.options.reverse();
+    }
     return [...filteredCustomFields];
   }
 
