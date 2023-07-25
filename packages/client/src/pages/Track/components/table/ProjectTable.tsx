@@ -27,6 +27,10 @@ interface ProjectTableProps {
   data: any | undefined;
 }
 
+const FormValidation = Yup.object({
+  hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
+});
+
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -35,31 +39,22 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     edit: false
   });
   const { employeeId } = useEmployee();
-  const navigate = useNavigate();
   const { date } = useDate();
+  const navigate = useNavigate();
   const dates = getMondayToSundayDates(date);
   const rows = data || [];
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
 
-  const FormValidation = Yup.object({
-    hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
-  });
-
-  const handleClickOpen = (type: string) => {
-    setOpen((prevState) => ({ ...prevState, [type]: true }));
-  };
+  const handleClickOpen = (type: string) => setOpen((prevState) => ({ ...prevState, [type]: true }));
 
   const handleOnClose = (type: string) => {
     setOpen((prevState) => ({ ...prevState, [type]: false }));
     navigate(Paths.TRACK);
   };
 
-  /**
-   * this method is used to handle select all project event.
-   * @param event
-   */
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
+      // exclude the first two rows (Indirect and Absence)
       const filteredSelected = rows.filter((row: any, index: number) => index !== 1 && index !== 0).map((row: any) => row.projectId);
       setSelected(filteredSelected);
       return;
@@ -67,11 +62,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     setSelected([]);
   };
 
-  /**
-   * this method is used to handle select single project event.
-   * @param event
-   * @param id
-   */
   const handleClick = (event: MouseEvent<unknown>, id: string) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly string[] = [];
@@ -89,11 +79,9 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     setSelected(newSelected);
   };
 
-  const isSelected = (id: string) => {
-    return selected.indexOf(id) !== -1;
-  };
+  const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
-  const handleOnClickDelete = () => {
+  const handleOnClickUnFavorite = () => {
     if (employeeId && selected.length > 0) {
       deleteFavoriteProject({
         variables: {
@@ -135,7 +123,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
               selected={selected}
               setSelected={setSelected}
               handleSelectAllClick={handleSelectAllClick}
-              handleClickDelete={handleOnClickDelete}
+              handleClickDelete={handleOnClickUnFavorite}
             />
             <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length - 2} dates={dates} />
             <TableBody>

@@ -20,6 +20,7 @@ export const Track = () => {
   const { date, setDate } = useDate();
   const { data: employeeListData } = useGetEmployeeListQuery();
   const [getRecordWithFavoriteProject, { data: recordWithFavoriteProjectData }] = useGetRecordWithFavoriteProjectLazyQuery();
+  const recordsWithFavoriteProjects = recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects || [];
 
   useEffect(() => {
     getRecordWithFavoriteProject({
@@ -31,18 +32,10 @@ export const Track = () => {
     });
   }, [employeeId, date]);
 
-  const totalAbsenceHours =
-    recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects
-      .find((project) => {
-        return project.projectName === 'Absence';
-      })
-      ?.records.reduce((sum, record) => sum + record.hours, 0) ?? 0;
-
-  const workProjectsHours =
-    recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects
-      .filter((project) => {
-        return project.projectName !== 'Absence';
-      })
+  const totalAbsenceHours = recordsWithFavoriteProjects.find((project) => project.projectName === 'Absence')?.records.reduce((sum, record) => sum + record.hours, 0) ?? 0;
+  const totalWorkProjectsHours =
+    recordsWithFavoriteProjects
+      .filter((project) => project.projectName !== 'Absence')
       .reduce((sum, project) => {
         return (
           sum +
@@ -110,7 +103,7 @@ export const Track = () => {
             } as any
           }}
         />
-        <DisplayCard key="work" id="work" title="Total Work Hours" data={workProjectsHours} icon={<WorkOutlined fontSize="large" />} />
+        <DisplayCard key="work" id="work" title="Total Work Hours" data={totalWorkProjectsHours} icon={<WorkOutlined fontSize="large" />} />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" data={totalAbsenceHours} icon={<WorkOff fontSize="large" />} />
       </Stack>
       {employeeId ? (
