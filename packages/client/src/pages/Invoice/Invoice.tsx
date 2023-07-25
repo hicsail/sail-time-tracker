@@ -5,7 +5,7 @@ import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
 import { GetAllInvoicesDocument, useDeleteInvoiceMutation, useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
-import { BasicTable } from './components/table/BasicTable';
+import { BasicTable } from '@components/table/BasicTable';
 import { DatePicker } from '@mui/x-date-pickers';
 import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
 import React, { useState } from 'react';

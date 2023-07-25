@@ -7,7 +7,7 @@ import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 import { StyledPaper } from '@components/StyledPaper';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import AddIcon from '@mui/icons-material/Add';
-import { BasicTable } from '@pages/Invoice/components/table/BasicTable';
+import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
 
 interface EmployeeTableProps {

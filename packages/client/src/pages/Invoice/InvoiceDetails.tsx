@@ -26,7 +26,7 @@ import { CommentList } from '@pages/Invoice/components/comment/CommentList';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { BasicTable } from '@pages/Invoice/components/table/BasicTable';
+import { BasicTable } from '@components/table/BasicTable';
 import EditIcon from '@mui/icons-material/Edit';
 import SendIcon from '@mui/icons-material/Send';
 import { Paths } from '@constants/paths';
