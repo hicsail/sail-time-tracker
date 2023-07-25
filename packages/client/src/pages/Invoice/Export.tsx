@@ -118,7 +118,7 @@ export const Export = () => {
   const initialValues = () => {
     const currentMonth = format(new Date(), 'MMM');
     const currentYear = format(new Date(), 'yyyy');
-    const notes = state.notes.map((note: any) => `${format(new Date(note.createDate), 'dd MMM yyyy')} - ${note.content}`).join('\n');
+    const notes = state.notes.map((note: any) => `${format(new Date(note.createDate), 'dd MMM yyyy kk:mm:ss')} - ${note.content}`).join('\n');
     const description = state.rows.map((row: any) => `${row.employeeName} - ${row.billableHours} hours - $${row.amount}`).join('\n');
 
     return {
