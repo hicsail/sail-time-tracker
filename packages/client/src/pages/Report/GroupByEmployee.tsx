@@ -15,6 +15,7 @@ import { Banner } from '@components/Banner';
 import { useTimeout } from '../../utils/useTimeOutHook';
 import { CustomOutlinedTextInput } from '@components/StyledComponent';
 import { CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
+import { SortedCollapsibleTable } from '@pages/Report/components/table/SortedCollapsibleTable';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -65,17 +66,20 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
       {
         id: 'workHours',
         name: 'Work Hours',
-        render: (row: any) => row.workHours
+        render: (row: any) => row.workHours,
+        sortValue: (row: any) => row.workHours
       },
       {
         id: 'indirectHours',
         name: 'Indirect Hours',
-        render: (row: any) => row.indirectHours
+        render: (row: any) => row.indirectHours,
+        sortValue: (row: any) => row.indirectHours
       },
       {
         id: 'billableHours',
         name: 'Billable Hours (Work + Indirect)',
-        render: (row: any) => row.billableHours
+        render: (row: any) => row.billableHours,
+        sortValue: (row: any) => row.billableHours
       },
       {
         id: 'actions',
@@ -180,7 +184,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   return (
     <Stack gap={5}>
       {showBanner.show && showBanner.state === 'success' && <Banner content={showBanner.content} state={showBanner.state} />}
-      <CollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
+      <SortedCollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
       {rows.length === 0 && <Box sx={{ textAlign: 'start' }}>No data</Box>}
       <CustomizedAccordions summary="See employees who has not submit their work hours">
         <Stack gap={2}>
