@@ -1,4 +1,3 @@
-import { CollapsibleTable, CollapsibleTableProps } from '@pages/Report/components/table/CollapsibleTable';
 import React, { FC, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
 import { TableSortLabel } from '@mui/material';
