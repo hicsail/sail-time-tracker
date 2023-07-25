@@ -3,7 +3,7 @@ import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 
 import { Box, Stack, SelectChangeEvent, Typography } from '@mui/material';
-import { useGetEmployeeByIdLazyQuery, useGetEmployeeListQuery, useGetRecordWithFavoriteProjectLazyQuery } from '@graphql/employee/employee';
+import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectLazyQuery } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
 import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
