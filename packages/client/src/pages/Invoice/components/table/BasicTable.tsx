@@ -1,19 +1,19 @@
 import { StyledPaper } from '@components/StyledPaper';
 import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
 
 interface BasicTableProps {
   rows: any[];
   columns: any[];
-  toolbar?: JSX.Element;
+  toolbar?: ReactNode;
   keyFun: (row: any) => string;
   initialState?: any;
   sx?: any;
   hidePagination?: boolean;
 }
 
-export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun, initialState, hidePagination, ...otherProps }) => {
+export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun, initialState, hidePagination }) => {
   const {
     pagination: { paginationModel }
   } = initialState || { pagination: { paginationModel: { page: 0, pageSize: 10 } } };
@@ -32,7 +32,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
 
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const renderedHeaders = columns.map((column) => (
+  const renderedHeaders: ReactNode = columns.map((column) => (
     <TableCell
       key={column.field}
       align={column.headerAlign ? column.headerAlign : 'left'}
@@ -42,13 +42,12 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
     </TableCell>
   ));
 
-  const renderRows = visibleRows.map((row) => {
-    const renderCells = columns.map((column) => (
+  const renderRows: ReactNode = visibleRows.map((row) => {
+    const renderedCells: ReactNode = columns.map((column) => (
       <TableCell align={column.align ? column.align : 'left'} key={column.field}>
         {column.renderCell ? column.renderCell(row) : row[column.field]}
       </TableCell>
     ));
-
     return (
       <TableRow
         key={keyFun(row)}
@@ -57,31 +56,33 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
           '&:hover': { backgroundColor: 'grey.100' }
         }}
       >
-        {renderCells}
+        {renderedCells}
       </TableRow>
     );
   });
 
   return (
-    <TableContainer component={StyledPaper} elevation={0}>
-      {toolbar}
-      <Table sx={{ minWidth: 650 }}>
-        <TableHead>
-          <TableRow>{renderedHeaders}</TableRow>
-        </TableHead>
-        <TableBody>{renderRows}</TableBody>
-      </Table>
-      {!hidePagination && (
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      )}
+    <TableContainer>
+      <StyledPaper elevation={0}>
+        {toolbar}
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead>
+            <TableRow>{renderedHeaders}</TableRow>
+          </TableHead>
+          <TableBody>{renderRows}</TableBody>
+        </Table>
+        {!hidePagination && (
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        )}
+      </StyledPaper>
     </TableContainer>
   );
 };
