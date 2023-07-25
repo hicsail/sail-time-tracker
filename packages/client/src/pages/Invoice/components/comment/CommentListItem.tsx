@@ -10,7 +10,8 @@ interface CommentListItemProps {
 }
 
 export const CommentListItem: FC<CommentListItemProps> = ({ date, content, onDelete, deletable }) => {
-  const formatDate = format(date, 'dd MMM yyyy');
+  const formatDate = format(date, 'dd MMM yyyy kk:mm:ss');
+
   return (
     <ListItem sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
       <Box>
