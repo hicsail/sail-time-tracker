@@ -4,7 +4,7 @@ import { FC, SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
 import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
-import { FavoriteProjectCreateInput, ProjectModel } from '@graphql/graphql';
+import { FavoriteProjectCreateInput } from '@graphql/graphql';
 import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
