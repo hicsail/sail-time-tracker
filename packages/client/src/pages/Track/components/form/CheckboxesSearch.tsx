@@ -4,7 +4,7 @@ import { FC, SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
 import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
-import { FavoriteProjectCreateInput, ProjectModel } from '@graphql/graphql';
+import { FavoriteProjectCreateInput } from '@graphql/graphql';
 import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
@@ -23,7 +23,7 @@ interface CheckboxesSearchProps {
 }
 
 export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) => {
-  const [selectedProjects, setSelectedProjects] = useState<ProjectModel[]>([]);
+  const [selectedProjects, setSelectedProjects] = useState<any[]>([]);
   const [isShowBanner, setIsShowBanner] = useState(false);
   const { data: projectListDate } = useGetProjectListQuery();
   const [addFavoriteProjectMutation, { data: addFavoriteProjectData, loading, error }] = useAddFavoriteProjectMutation();

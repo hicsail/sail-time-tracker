@@ -157,6 +157,7 @@ export class EmployeesService {
           rate: record.project.rate,
           status: record.project.status,
           fte: record.project.fte,
+          contractTypeId: record.project.contractTypeId,
           isBillable: record.project.isBillable,
           projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
           projectIndirectHours: formatHours(indirectHour),
@@ -213,7 +214,7 @@ export class EmployeesService {
 
     projects.map((project) => {
       if (!uniqueProjectMap.has(project.id)) {
-        const { id, name, isBillable, rate, status, fte } = project;
+        const { id, name, isBillable, rate, status, fte, contractTypeId } = project;
         const newProjectRecord: ProjectWithEmployeeRecords = {
           id,
           name,
@@ -221,6 +222,7 @@ export class EmployeesService {
           status,
           rate,
           fte,
+          contractTypeId,
           workHours: 0,
           indirectHours: 0,
           billableHours: 0,
@@ -243,7 +245,7 @@ export class EmployeesService {
 
       // Iterate through each inner project record
       for (const innerRecord of inner) {
-        const { projectId, projectName, status, rate, fte, isBillable, projectWorkHours, projectIndirectHours, projectPercentage } = innerRecord;
+        const { projectId, projectName, status, rate, fte, isBillable, contractTypeId, projectWorkHours, projectIndirectHours, projectPercentage } = innerRecord;
 
         // Check if the project already exists in the transformed data
         let projectRecord = transformedData.find((record) => record.id === projectId);
@@ -257,6 +259,7 @@ export class EmployeesService {
             rate: rate,
             status: status,
             fte: fte,
+            contractTypeId,
             workHours: 0,
             indirectHours: 0,
             billableHours: 0,

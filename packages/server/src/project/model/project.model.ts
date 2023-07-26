@@ -29,6 +29,21 @@ export class ProjectModel {
 }
 
 @ObjectType()
+export class ContractTypeModel {
+  @Field()
+  id: number;
+
+  @Field()
+  name: string;
+}
+
+@ObjectType()
+export class ProjectWithContractType extends ProjectModel {
+  @Field(() => ContractTypeModel)
+  contractType: ContractTypeModel;
+}
+
+@ObjectType()
 export class ProjectDeleteReturnModel {
   @Field()
   count: number;

@@ -79,7 +79,7 @@ export const Export = () => {
         case 'drop_down':
           return (
             <Box gridColumn="span 3" key={field.id}>
-              <ObserverTextInput {...commonProps} select placeholder={field.name} fullWidth variant="outlined">
+              <ObserverTextInput {...commonProps} select placeholder={field.name} fullWidth variant="outlined" disabled={field.name === 'Contract Type'}>
                 {field.type_config.options?.map((option) => (
                   <MenuItem value={option.orderindex as number} key={option.id}>
                     {option.name}
@@ -122,7 +122,7 @@ export const Export = () => {
       'Copy Total Here': state.revisedAmount,
       Rate: state.rate,
       'Fiscal Year': 0,
-      'Contract Type': 0,
+      'Contract Type': state.contractTypeId,
       Hours: state.revisedBillableHour
     };
   };

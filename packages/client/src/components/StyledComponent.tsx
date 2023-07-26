@@ -98,7 +98,7 @@ export const StyledTextarea = styled(TextareaAutosize)(
     background: ${theme.palette.mode === 'dark' ? theme.palette.grey['900'] : '#fff'};
     border: 1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey['700'] : theme.palette.grey['100']};
     resize: none;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Rubik', sans-serif;
     
     &:hover {
       border-color: black;

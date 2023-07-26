@@ -138,8 +138,26 @@ const insertProjects = (projects) => {
   });
 };
 
+const insertContractType = () => {
+  const contractTypes = [
+    { id: 0, name: 'Internal' },
+    { id: 1, name: 'External' },
+    { id: 2, name: 'Grant Funded'}
+  ];
+
+  contractTypes.map(async (contractType) => {
+    await sql`
+          INSERT INTO "ContractType" ("id", "name")
+          VALUES (${contractType.id}, ${contractType.name})
+          ON CONFLICT DO NOTHING
+        `;
+  });
+};
+
 // Perform database operations
 db.serialize(() => {
+  // insert contract types
+  insertContractType();
   /**
    * retrieve employee id map
    * {oldEmployeeId: string, newEmployeeId: string}

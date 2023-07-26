@@ -14,7 +14,8 @@ const FormValidation = Yup.object({
   rate: Yup.string().required('Required'),
   fte: Yup.string().required('Required'),
   status: Yup.string().required('Required'),
-  isBillable: Yup.string().required('Required')
+  isBillable: Yup.string().required('Required'),
+  contractTypeId: Yup.number().required('Required')
 });
 
 interface ProjectFormProps {
@@ -24,13 +25,14 @@ interface ProjectFormProps {
 export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
   const [addProject] = useProjectCreateInputMutation();
   const [updateProject] = useProjectUpdateInputMutation();
-  const [initialValue, setInitialValue] = useState<{ name: string; description: string; rate: string; status: string; isBillable: string; fte: string }>({
+  const [initialValue, setInitialValue] = useState<{ name: string; description: string; rate: string; status: string; isBillable: string; fte: string; contractTypeId: number }>({
     name: '',
     description: '',
     rate: '',
     status: '',
     fte: '',
-    isBillable: ''
+    isBillable: '',
+    contractTypeId: 0
   });
 
   const { id } = useParams();
@@ -46,14 +48,15 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
         nextFetchPolicy: 'cache-and-network'
       }).then((res) => {
         if (res && res.data) {
-          const { name, description, status, isBillable, rate, fte } = res.data.project;
+          const { name, description, status, isBillable, rate, fte, contractType } = res.data.project;
           setInitialValue({
             name,
             description,
             status,
             isBillable: isBillable.toString(),
             rate: rate.toString(),
-            fte: fte.toString()
+            fte: fte.toString(),
+            contractTypeId: contractType.id
           });
         }
       });
@@ -73,7 +76,14 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
             // after submitting the new project re-fetch the project via graphql
             await addProject({
               variables: {
-                newProject: { ...values, status: values.status.toString(), isBillable: values.isBillable == 'true', rate: parseFloat(values.rate), fte: parseFloat(values.fte) }
+                newProject: {
+                  ...values,
+                  status: values.status.toString(),
+                  isBillable: values.isBillable == 'true',
+                  rate: parseFloat(values.rate),
+                  fte: parseFloat(values.fte),
+                  contractTypeId: values.contractTypeId
+                }
               },
               refetchQueries: [{ query: GetProjectListDocument }]
             });
@@ -88,7 +98,8 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
                   id: id,
                   isBillable: values.isBillable == 'true',
                   rate: parseFloat(values.rate),
-                  fte: parseFloat(values.fte)
+                  fte: parseFloat(values.fte),
+                  contractTypeId: values.contractTypeId
                 }
               },
               refetchQueries: [
@@ -97,6 +108,9 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
                   variables: {
                     id: id as string
                   }
+                },
+                {
+                  query: GetProjectListDocument
                 }
               ]
             });
@@ -118,6 +132,11 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
             <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable" required>
               <MenuItem value="true">True</MenuItem>
               <MenuItem value="false">False</MenuItem>
+            </ObserverTextInput>
+            <ObserverTextInput name="contractTypeId" select label="Contract Type" placeholder="Contract Type" required>
+              <MenuItem value={0}>Internal</MenuItem>
+              <MenuItem value={1}>External</MenuItem>
+              <MenuItem value={2}>Grant Fund</MenuItem>
             </ObserverTextInput>
             <DefaultContainedButton color="primary" variant="contained" startIcon={<SendIcon />} fullWidth type="submit">
               {id ? 'Update' : 'Create'}

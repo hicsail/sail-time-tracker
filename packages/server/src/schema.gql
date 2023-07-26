@@ -36,6 +36,7 @@ type EmployeeWithRecordInner {
   rate: Float!
   fte: Float!
   status: String!
+  contractTypeId: Float!
   isBillable: Boolean!
   projectWorkHours: Float!
   projectIndirectHours: Float!
@@ -49,6 +50,7 @@ type ProjectWithEmployeeRecords {
   rate: Float!
   status: String!
   fte: Float!
+  contractTypeId: Float!
   workHours: Float!
   indirectHours: Float!
   billableHours: Float!
@@ -78,6 +80,22 @@ type ProjectModel {
   isBillable: Boolean!
   rate: Float!
   fte: Float!
+}
+
+type ContractTypeModel {
+  id: Float!
+  name: String!
+}
+
+type ProjectWithContractType {
+  id: ID!
+  name: String!
+  status: String!
+  description: String!
+  isBillable: Boolean!
+  rate: Float!
+  fte: Float!
+  contractType: ContractTypeModel!
 }
 
 type ProjectDeleteReturnModel {
@@ -187,8 +205,8 @@ type Query {
   employee(id: String!): EmployeeModel!
   getEmployeesWithRecord(startDate: DateTime!, endDate: DateTime!): [EmployeeWithRecord!]!
   getProjectWithEmployeeRecords(startDate: DateTime!, endDate: DateTime!): [ProjectWithEmployeeRecords!]!
-  projects: [ProjectModel!]!
-  project(id: String!): ProjectModel!
+  projects: [ProjectWithContractType!]!
+  project(id: String!): ProjectWithContractType!
   invoices: [InvoiceModelWithProject!]!
   searchInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModelWithProjectAndComments!
   searchInvoicesByDateRange(startDate: DateTime!, endDate: DateTime!): [InvoiceModel!]!
@@ -264,6 +282,7 @@ input ProjectCreateInput {
   isBillable: Boolean!
   fte: Float!
   rate: Float!
+  contractTypeId: Float!
 }
 
 input ProjectUpdateInput {
@@ -273,6 +292,7 @@ input ProjectUpdateInput {
   isBillable: Boolean!
   fte: Float!
   rate: Float!
+  contractTypeId: Float!
   id: ID!
 }
 

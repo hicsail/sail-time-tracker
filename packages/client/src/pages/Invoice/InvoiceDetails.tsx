@@ -214,7 +214,8 @@ export const InvoiceDetails = () => {
       projectName: project?.name,
       notes: searchInvoiceData?.searchInvoice.comments,
       invoiceId: searchInvoiceData?.searchInvoice?.invoiceId,
-      taskId: searchInvoiceData?.searchInvoice?.clickUpTask?.id
+      taskId: searchInvoiceData?.searchInvoice?.clickUpTask?.id,
+      contractTypeId: project?.contractTypeId
     };
     navigate(Paths.EXPORT_INVOICE, { state: data });
   };

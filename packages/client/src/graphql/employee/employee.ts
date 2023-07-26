@@ -51,6 +51,7 @@ export type GetProjectWithEmployeeRecordsQuery = {
     rate: number;
     status: string;
     fte: number;
+    contractTypeId: number;
     workHours: number;
     indirectHours: number;
     billableHours: number;
@@ -234,6 +235,7 @@ export const GetProjectWithEmployeeRecordsDocument = gql`
       rate
       status
       fte
+      contractTypeId
       workHours
       indirectHours
       billableHours

@@ -36,3 +36,11 @@ lerna-debug.log*
 
 # env
 .env
+
+# migration
+!/migration/employees.json
+!/migration/projects.json
+!/migration/timetracker.db
+
+!/migration/employee.json
+!/migration/project.json

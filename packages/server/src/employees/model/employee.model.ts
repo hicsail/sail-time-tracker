@@ -67,6 +67,9 @@ class EmployeeWithRecordInner {
   status: string;
 
   @Field()
+  contractTypeId: number;
+
+  @Field()
   isBillable: boolean;
 
   @Field()
@@ -98,6 +101,9 @@ export class ProjectWithEmployeeRecords {
 
   @Field()
   fte: number;
+
+  @Field()
+  contractTypeId: number;
 
   @Field()
   workHours: number;
