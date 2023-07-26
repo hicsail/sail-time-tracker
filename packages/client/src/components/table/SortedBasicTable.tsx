@@ -1,8 +1,8 @@
-import React, { FC, useState } from 'react';
+import { FC } from 'react';
 import TableCell from '@mui/material/TableCell';
 import { TableSortLabel } from '@mui/material';
 import { BasicTable, BasicTableProps } from '@components/table/BasicTable';
-import { compareAsc } from 'date-fns';
+import { useSort } from '../../utils/useSort';
 
 interface SortedBasicTableProps extends BasicTableProps {
   defaultOrderBy: string;
@@ -10,24 +10,7 @@ interface SortedBasicTableProps extends BasicTableProps {
 
 export const SortedBasicTable: FC<SortedBasicTableProps> = (props) => {
   const { columns, rows, defaultOrderBy } = props;
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<string | null>(defaultOrderBy);
-
-  const handleClick = (id: string) => {
-    if (orderBy && orderBy !== id) {
-      setOrder('asc');
-      setOrderBy(id);
-      return;
-    }
-
-    if (order === 'asc') {
-      setOrder('desc');
-    } else if (order === 'desc') {
-      setOrder('asc');
-    }
-
-    setOrderBy(id);
-  };
+  const { order, orderBy, setSortColumn, sortedData } = useSort(rows, columns, defaultOrderBy);
 
   const updatedColumns: any[] = columns.map((column: any) => {
     if (!column.sortValue) {
@@ -39,7 +22,7 @@ export const SortedBasicTable: FC<SortedBasicTableProps> = (props) => {
       header: () => {
         return (
           <TableCell align="left" sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}>
-            <TableSortLabel active={orderBy === column.field} direction={orderBy === column.field ? order : 'asc'} onClick={() => handleClick(column.field)}>
+            <TableSortLabel active={orderBy === column.field} direction={orderBy === column.field ? order : 'asc'} onClick={() => setSortColumn(column.field)}>
               {column.headerName}
             </TableSortLabel>
           </TableCell>
@@ -47,26 +30,6 @@ export const SortedBasicTable: FC<SortedBasicTableProps> = (props) => {
       }
     };
   });
-
-  let sortedData = rows;
-
-  if (order && orderBy) {
-    const { sortValue } = columns.find((column: any) => column.field === orderBy);
-    sortedData = [...sortedData].sort((a: any, b: any) => {
-      const valueA = sortValue(a);
-      const valueB = sortValue(b);
-
-      const reverseOrder = order === 'asc' ? 1 : -1;
-
-      if (typeof valueA === 'string') {
-        return valueA.localeCompare(valueB) * reverseOrder;
-      } else if (valueA instanceof Date) {
-        return compareAsc(valueA, valueB) * reverseOrder;
-      } else {
-        return (valueA - valueB) * reverseOrder;
-      }
-    });
-  }
 
   return <BasicTable {...props} columns={updatedColumns} rows={sortedData} />;
 };

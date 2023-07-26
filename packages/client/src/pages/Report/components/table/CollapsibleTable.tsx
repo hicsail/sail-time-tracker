@@ -32,11 +32,11 @@ export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, tableConfig,
             <TableCell />
             {tableConfig.outer.map((config: any) => {
               if (config.header) {
-                return <Fragment key={config.id}>{config.header()}</Fragment>;
+                return <Fragment key={config.field}>{config.header()}</Fragment>;
               }
 
               return (
-                <TableCell key={config.id} align="left">
+                <TableCell key={config.field} align="left">
                   {config.name}
                 </TableCell>
               );
@@ -80,7 +80,7 @@ export const RenderRow: FC<RenderRowProps> = ({ project, tableConfig, innerTitle
           </IconButton>
         </TableCell>
         {tableConfig.outer.map((config: any) => (
-          <TableCell key={config.id} align="left">
+          <TableCell key={config.field} align="left">
             {config.render(project)}
           </TableCell>
         ))}
