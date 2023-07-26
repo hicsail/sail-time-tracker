@@ -102,12 +102,12 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
   const tableConfig = {
     outer: [
       {
-        id: 'projectName',
+        field: 'projectName',
         name: 'Projects',
         render: (row: any) => row.name
       },
       {
-        id: 'isBillable',
+        field: 'isBillable',
         name: 'IsBillable',
         render: (row: any) => {
           return (
@@ -124,31 +124,31 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         }
       },
       {
-        id: 'workHours',
+        field: 'workHours',
         name: 'Work Hours',
         render: (row: any) => row.workHours,
         sortValue: (row: any) => row.workHours
       },
       {
-        id: 'indirectHours',
+        field: 'indirectHours',
         name: 'Indirect Hours',
         render: (row: any) => row.indirectHours,
         sortValue: (row: any) => row.indirectHours
       },
       {
-        id: 'billableHours',
+        field: 'billableHours',
         name: 'Billable Hours',
         render: (row: any) => row.billableHours,
         sortValue: (row: any) => row.billableHours
       },
       {
-        id: 'percentage',
+        field: 'percentage',
         name: 'Effort',
         render: (row: any) => row.percentage + '%',
         sortValue: (row: any) => row.percentage
       },
       {
-        id: 'usage',
+        field: 'usage',
         name: 'FTE Usage',
         render: (row: any) => {
           const differences = differenceInBusinessDays(endDate, startDate);
@@ -170,7 +170,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         }
       },
       {
-        id: 'actions',
+        field: 'actions',
         name: 'Actions',
         render: (row: any) => {
           const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
@@ -193,22 +193,22 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
     ],
     inner: [
       {
-        id: 'employeeName',
+        field: 'employeeName',
         name: 'Name',
         render: (row: any) => row.employeeName
       },
       {
-        id: 'employeeWorkHours',
+        field: 'employeeWorkHours',
         name: 'Work Hours',
         render: (row: any) => row.employeeWorkHours
       },
       {
-        id: 'employeeIndirectHours',
+        field: 'employeeIndirectHours',
         name: 'Indirect Hours',
         render: (row: any) => row.employeeIndirectHours
       },
       {
-        id: 'employeeBillableHours',
+        field: 'employeeBillableHours',
         name: 'Percentage',
         render: (row: any) => row.employeePercentage + '%'
       }
