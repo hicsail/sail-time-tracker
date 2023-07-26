@@ -113,7 +113,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
             Add Favorite Project
           </DefaultContainedButton>
           <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-            <CheckboxesSearch data={data} onClose={() => handleOnClose('add')} />
+            <CheckboxesSearch excludedData={data} onClose={() => handleOnClose('add')} />
           </FormDialog>
         </Stack>
         <TableContainer>

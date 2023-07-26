@@ -109,7 +109,7 @@ export const Track = () => {
       {employeeId ? (
         <Stack gap={2}>
           {welcomeMessage()}
-          <ProjectTable data={recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects} />
+          <ProjectTable data={recordsWithFavoriteProjects} />
         </Stack>
       ) : (
         <div>Please Select the Employee</div>
