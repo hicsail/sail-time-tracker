@@ -2,7 +2,7 @@ import { CollapsibleTable, CollapsibleTableProps } from '@pages/Report/component
 import { FC } from 'react';
 import TableCell from '@mui/material/TableCell';
 import { TableSortLabel } from '@mui/material';
-import { useSort } from '../../../../utils/useSort';
+import { useSort } from '../../../../hooks/useSort';
 
 interface SortedCollapsibleTableProps extends CollapsibleTableProps {}
 

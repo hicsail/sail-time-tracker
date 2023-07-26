@@ -12,7 +12,7 @@ import { endOfWeek, startOfWeek } from 'date-fns';
 import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
 import { CustomOutlinedTextInput, DefaultContainedButton, DefaultOutlinedButton } from '@components/StyledComponent';
-import { useTimeout } from '../../../../utils/useTimeOutHook';
+import { useTimeout } from '../../../../hooks/useTimeOutHook';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;

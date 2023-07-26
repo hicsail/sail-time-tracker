@@ -2,7 +2,7 @@ import { FC } from 'react';
 import TableCell from '@mui/material/TableCell';
 import { TableSortLabel } from '@mui/material';
 import { BasicTable, BasicTableProps } from '@components/table/BasicTable';
-import { useSort } from '../../utils/useSort';
+import { useSort } from '../../hooks/useSort';
 
 interface SortedBasicTableProps extends BasicTableProps {
   defaultOrderBy: string;

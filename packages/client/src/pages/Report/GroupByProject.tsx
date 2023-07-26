@@ -11,7 +11,7 @@ import { Paths } from '@constants/paths';
 import * as React from 'react';
 import { InvoiceIcon } from '@components/icons/InvoiceIcon';
 import IconButton from '@mui/material/IconButton';
-import { useTimeout } from '../../utils/useTimeOutHook';
+import { useTimeout } from '../../hooks/useTimeOutHook';
 import { differenceInBusinessDays } from 'date-fns';
 import { CircularWithValueLabel } from '@pages/Report/components/CircularWithValueLabel';
 import { SortedCollapsibleTable } from '@pages/Report/components/table/SortedCollapsibleTable';
