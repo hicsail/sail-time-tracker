@@ -171,7 +171,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                             onSubmit={() => {}}
                           >
                             <Form>
-                              <FormObserver employeeId={employeeId as string} projectId={row.projectId} date={date} setLoading={setLoading} id={dateValue.date} />
+                              <FormObserver employeeId={employeeId as string} projectId={row.projectId} setLoading={setLoading} id={dateValue.date} />
                               <ObserverTextInput name={dateValue.date} type="number" />
                             </Form>
                           </Formik>

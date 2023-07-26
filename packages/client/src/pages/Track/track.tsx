@@ -79,7 +79,7 @@ export const Track = () => {
         margin: 'auto'
       }}
     >
-      <Stack direction="row" spacing={10} sx={{ alignItems: 'center' }}>
+      <Stack direction="row" spacing={10} alignItems="center">
         <DropDownMenu
           data={employees}
           onChange={handleSelectEmployeeOnChange}
@@ -107,7 +107,9 @@ export const Track = () => {
           <ProjectTable data={recordsWithFavoriteProjects} />
         </Stack>
       ) : (
-        <div>Please Select the Employee</div>
+        <Stack sx={{ backgroundColor: 'grey.200', height: '500px' }} alignItems="center" justifyContent="center">
+          <Typography variant="subtitle2">Please Select the Employee</Typography>
+        </Stack>
       )}
     </Box>
   );
