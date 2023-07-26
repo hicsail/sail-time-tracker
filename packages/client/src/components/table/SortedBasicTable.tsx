@@ -1,8 +1,7 @@
-import React, { FC, useState } from 'react';
+import { FC } from 'react';
 import TableCell from '@mui/material/TableCell';
 import { TableSortLabel } from '@mui/material';
 import { BasicTable, BasicTableProps } from '@components/table/BasicTable';
-import { compareAsc } from 'date-fns';
 import { useSort } from '../../utils/useSort';
 
 interface SortedBasicTableProps extends BasicTableProps {
