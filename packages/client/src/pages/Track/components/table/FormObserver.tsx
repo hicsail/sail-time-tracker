@@ -1,14 +1,10 @@
 import { useFormikContext } from 'formik';
 import { FC, useEffect, useRef } from 'react';
 import { useAddRecordMutation } from '@graphql/record/record';
-import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
-import { endOfWeek, startOfWeek } from 'date-fns';
-import { formatDateToDashFormat } from '../../../../utils/helperFun';
 
 interface FormObserverProps {
   projectId: string;
   employeeId: string;
-  date: Date;
   setLoading: (loading: boolean) => void;
   id: string;
 }
@@ -17,7 +13,7 @@ interface FormValues {
   [id: string]: number | string;
 }
 
-export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, date, setLoading, id }) => {
+export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, setLoading, id }) => {
   const { values } = useFormikContext<FormValues>();
   const [addRecordMutation, { loading }] = useAddRecordMutation();
   const valueRef = useRef(values);
@@ -45,17 +41,7 @@ export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, dat
               hours: values[id] as number,
               date: id
             }
-          },
-          refetchQueries: [
-            {
-              query: GetRecordWithFavoriteProjectDocument,
-              variables: {
-                id: employeeId as string,
-                startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
-                endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
-              }
-            }
-          ]
+          }
         });
       }, 1000);
 

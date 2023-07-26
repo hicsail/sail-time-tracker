@@ -3,11 +3,10 @@ import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 
 import { Box, Stack, SelectChangeEvent, Typography } from '@mui/material';
-import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectLazyQuery } from '@graphql/employee/employee';
+import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
 import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
-import { useEffect } from 'react';
 import { WorkOff, WorkOutlined } from '@mui/icons-material';
 
 import { Day } from './components/DatePicker/Day';
@@ -19,18 +18,14 @@ export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
   const { date, setDate } = useDate();
   const { data: employeeListData } = useGetEmployeeListQuery();
-  const [getRecordWithFavoriteProject, { data: recordWithFavoriteProjectData }] = useGetRecordWithFavoriteProjectLazyQuery();
+  const { data: recordWithFavoriteProjectData } = useGetRecordWithFavoriteProjectQuery({
+    variables: {
+      id: employeeId as string,
+      startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
+      endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
+    }
+  });
   const recordsWithFavoriteProjects = recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects || [];
-
-  useEffect(() => {
-    getRecordWithFavoriteProject({
-      variables: {
-        id: employeeId as string,
-        startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
-        endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
-      }
-    });
-  }, [employeeId, date]);
 
   const totalAbsenceHours = recordsWithFavoriteProjects.find((project) => project.projectName === 'Absence')?.records.reduce((sum, record) => sum + record.hours, 0) ?? 0;
   const totalWorkProjectsHours =
