@@ -7,7 +7,7 @@ export const Admin = () => {
   return (
     <SplitScreen leftWeight={1} rightWeight={7} direction="row">
       <Navbar />
-      <Box sx={{ width: '80%', margin: 'auto' }}>
+      <Box sx={{ maxWidth: '85%', margin: 'auto' }}>
         <Outlet />
       </Box>
     </SplitScreen>
