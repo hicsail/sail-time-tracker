@@ -21,9 +21,11 @@ export const themeLight = createTheme({
       contrastText: '#fff'
     },
     success: {
-      light: '#EAF8F1',
-      main: '#1D7F54',
-      dark: '#1d5329'
+      lighter: 'rgb(211, 252, 210)',
+      light: 'rgb(119, 237, 139)',
+      main: 'rgb(34, 197, 94)',
+      dark: 'rgb(17, 141, 87)',
+      darker: 'rgb(6, 94, 73)'
     },
     error: {
       light: '#FFE3EC',
