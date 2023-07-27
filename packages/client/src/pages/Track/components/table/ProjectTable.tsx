@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { TableHeadCover } from '@pages/Track/components/table/TableHeadCover';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
+import { useSnackBar } from '@context/snackbar.context';
 
 interface ProjectTableProps {
   data: any | undefined;
@@ -38,6 +39,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const rows = data || [];
   const rowCount = rows.length - 2;
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
+  const { toggleSnackBar } = useSnackBar();
 
   const handleClickOpen = () => setOpen(true);
 
@@ -92,6 +94,10 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
             }
           }
         ]
+      }).then((r) => {
+        const response = r?.data?.deleteFavoriteProjects;
+        response && response.count > 0 && toggleSnackBar(`Successfully unfavorite ${response?.count} projects`, { variant: 'success' });
+        !response && toggleSnackBar('Something went wrong!', { variant: 'error' });
       });
     }
 
