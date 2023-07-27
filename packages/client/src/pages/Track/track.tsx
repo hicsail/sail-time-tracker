@@ -46,24 +46,14 @@ export const Track = () => {
   const employees = employeeListData?.employees.filter((employee) => employee.status === 'Active').map((employee) => ({ id: employee.id, name: employee.name }));
 
   const welcomeMessage = () => {
-    const name = employeeListData?.employees?.find((employee) => employee.id === employeeId)?.name || '';
+    const employee = employeeListData?.employees?.find((employee) => employee.id === employeeId);
+    const name = employee?.name || '';
     const hours = new Date().getHours();
-
-    let message = '';
-
-    if (hours >= 18) {
-      message += 'Good Evening, ';
-    } else if (hours >= 12) {
-      message += 'Good Afternoon, ';
-    } else {
-      message += 'Good Morning, ';
-    }
-
-    message += `${name}! Please Log Your Weekly Hours Here.`;
+    const greeting = hours >= 18 ? 'Good Evening' : hours >= 12 ? 'Good Afternoon' : 'Good Morning';
 
     return (
       <Typography variant="body1" color="grey.500" fontSize="0.8rem">
-        {message}
+        {`${greeting}, ${name}! Please Log Your Weekly Hours Here.`}
       </Typography>
     );
   };
