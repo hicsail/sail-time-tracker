@@ -29,5 +29,5 @@ export const SortedCollapsibleTable: FC<SortedCollapsibleTableProps> = (props) =
     };
   });
 
-  return <CollapsibleTable {...props} tableConfig={...tableConfig} rows={sortedData} />;
+  return <CollapsibleTable {...props} tableConfig={tableConfig} rows={sortedData} />;
 };
