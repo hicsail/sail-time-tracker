@@ -140,12 +140,12 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       },
       {
         id: 'percentage',
-        name: 'Percentage',
+        name: 'Effort',
         render: (row: any) => row.percentage + '%'
       },
       {
         id: 'usage',
-        name: 'Usage',
+        name: 'FTE Usage',
         render: (row: any) => {
           const differences = differenceInBusinessDays(endDate, startDate);
           const maximumWorkHours = row.fte * (differences * 8);

@@ -2,8 +2,8 @@ import { DisplayCard } from '@components/DisplayCard.component';
 import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 
-import { Box, Stack, SelectChangeEvent } from '@mui/material';
-import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectLazyQuery } from '@graphql/employee/employee';
+import { Box, Stack, SelectChangeEvent, Typography } from '@mui/material';
+import { useGetEmployeeByIdLazyQuery, useGetEmployeeListQuery, useGetRecordWithFavoriteProjectLazyQuery } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
 import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
@@ -19,6 +19,7 @@ export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
   const { date, setDate } = useDate();
   const { data: employeeListData } = useGetEmployeeListQuery();
+  const [getEmployeeById, { data: employeeDate }] = useGetEmployeeByIdLazyQuery();
   const [getRecordWithFavoriteProject, { data: recordWithFavoriteProjectData }] = useGetRecordWithFavoriteProjectLazyQuery();
 
   useEffect(() => {
@@ -30,6 +31,14 @@ export const Track = () => {
       }
     });
   }, [employeeId, date]);
+
+  useEffect(() => {
+    getEmployeeById({
+      variables: {
+        id: employeeId as string
+      }
+    });
+  }, [employeeId]);
 
   const totalAbsenceHours =
     recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects
@@ -65,6 +74,17 @@ export const Track = () => {
     .map((employee) => {
       return { id: employee.id, name: employee.name };
     });
+
+  const welcomeString = () => {
+    const hours = new Date().getHours();
+    if (hours >= 18) {
+      return 'Good Evening,';
+    } else if (hours >= 12) {
+      return 'Good Afternoon,';
+    } else {
+      return 'Good Morning,';
+    }
+  };
 
   return (
     <Box
@@ -102,7 +122,14 @@ export const Track = () => {
         <DisplayCard key="work" id="work" title="Total Work Hours" data={workProjectsHours} icon={<WorkOutlined fontSize="large" />} />
         <DisplayCard key="absence" id="absence" title="Total Absence Hours" data={totalAbsenceHours} icon={<WorkOff fontSize="large" />} />
       </Stack>
-      {employeeId ? <ProjectTable data={recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects} /> : <div>Please Select the Employee</div>}
+      {employeeId ? (
+        <Stack gap={2}>
+          <Typography variant="body1" color="grey.500" fontSize="0.8rem">{`${welcomeString()} ${employeeDate?.employee.name}! Please Log Your Weekly Hours Here.`}</Typography>
+          <ProjectTable data={recordWithFavoriteProjectData?.employee.recordsWithFavoriteProjects} />
+        </Stack>
+      ) : (
+        <div>Please Select the Employee</div>
+      )}
     </Box>
   );
 };

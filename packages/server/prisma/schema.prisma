@@ -79,7 +79,7 @@ model ClickUpTask {
 
 model Comment {
   commentId  String   @id @default(uuid())
-  createDate DateTime @default(now()) @db.Date
+  createDate DateTime @default(now())
   content    String
   invoiceId  String
   invoice    Invoice  @relation(fields: [invoiceId], references: [invoiceId])

@@ -79,7 +79,14 @@ export const Export = () => {
         case 'drop_down':
           return (
             <Box gridColumn="span 3" key={field.id}>
-              <ObserverTextInput {...commonProps} select placeholder={field.name} fullWidth variant="outlined" disabled={field.name === 'Contract Type'}>
+              <ObserverTextInput
+                {...commonProps}
+                select
+                placeholder={field.name}
+                fullWidth
+                variant="outlined"
+                disabled={field.name === 'Contract Type' || field.name === 'Invoice Payment Status'}
+              >
                 {field.type_config.options?.map((option) => (
                   <MenuItem value={option.orderindex as number} key={option.id}>
                     {option.name}
@@ -110,18 +117,18 @@ export const Export = () => {
   const initialValues = () => {
     const currentMonth = format(new Date(), 'MMM');
     const currentYear = format(new Date(), 'yyyy');
-    const notes = state.notes.map((note: any) => `${format(new Date(note.createDate), 'dd MMM yyyy')} - ${note.content}`).join('\n');
+    const notes = state.notes.map((note: any) => `${format(new Date(note.createDate), 'dd MMM yyyy kk:mm:ss')} - ${note.content}`).join('\n');
     const description = state.rows.map((row: any) => `${row.employeeName} - ${row.billableHours} hours - $${row.amount}`).join('\n');
 
     return {
       title: `${currentMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours - SAIL${currentYear}${format(new Date(), 'MM')}`,
       description: description,
-      status: 'july (m1, q1)',
+      status: 'new invoice',
       Notes: notes,
       'Invoice Payment Status': 0,
       'Copy Total Here': state.revisedAmount,
       Rate: state.rate,
-      'Fiscal Year': 0,
+      'FY: Work Completed': 2,
       'Contract Type': state.contractTypeId,
       Hours: state.revisedBillableHour
     };

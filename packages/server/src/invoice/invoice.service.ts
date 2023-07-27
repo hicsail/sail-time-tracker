@@ -45,7 +45,11 @@ export class InvoiceService {
       },
       include: {
         project: true,
-        comments: true,
+        comments: {
+          orderBy: {
+            createDate: 'desc'
+          }
+        },
         clickUpTask: true
       }
     });

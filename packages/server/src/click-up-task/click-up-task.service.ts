@@ -19,9 +19,12 @@ export class ClickUpTaskService {
       })
     );
 
-    return data.fields.filter(
-      (field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel' && field.name !== 'Invoice Payment Status'
-    );
+    const filteredCustomFields = data.fields.filter((field) => field.type !== 'formula' && field.name !== 'Award Amount' && field.name !== 'Responsible Personnel');
+    const fiscalYear = filteredCustomFields.find((field) => field.name === 'FY: Work Completed');
+    if (fiscalYear) {
+      fiscalYear.type_config.options = fiscalYear.type_config.options.reverse();
+    }
+    return [...filteredCustomFields];
   }
 
   async getClickUpStatuses(): Promise<ClickUpStatuses[]> {
@@ -33,7 +36,7 @@ export class ClickUpTaskService {
       })
     );
 
-    return data.statuses;
+    return data.statuses.reverse();
   }
 
   async createClickUpTask(task: ClickUpTaskCreateInput): Promise<ClickUpTaskModel> {
@@ -112,7 +115,7 @@ export class ClickUpTaskService {
         }
         return { url: data.url, id: data.id };
       } else {
-        throw new Error('Task not found');
+        new Error('Task not found');
       }
     } catch (error) {
       throw new BadRequestException();

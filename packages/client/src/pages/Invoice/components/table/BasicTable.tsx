@@ -43,7 +43,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
   ));
 
   const renderRows: ReactNode = visibleRows.map((row) => {
-    const renderedCells: ReactNode = columns.map((column) => (
+    const renderCells: ReactNode = columns.map((column) => (
       <TableCell align={column.align ? column.align : 'left'} key={column.field}>
         {column.renderCell ? column.renderCell(row) : row[column.field]}
       </TableCell>
@@ -56,7 +56,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
           '&:hover': { backgroundColor: 'grey.100' }
         }}
       >
-        {renderedCells}
+        {renderCells}
       </TableRow>
     );
   });
