@@ -39,6 +39,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const dates = getMondayToSundayDates(date);
   const navigate = useNavigate();
   const rows = data || [];
+  const rowCount = rows.length - 2;
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
 
   const handleClickOpen = (type: string) => setOpen((prevState) => ({ ...prevState, [type]: true }));
@@ -115,13 +116,13 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         <TableContainer>
           <Table sx={{ minWidth: 750, position: 'relative' }} aria-labelledby="tableTitle">
             <TableHeadCover
-              rowCount={rows.length - 2}
+              rowCount={rowCount}
               selected={selected}
               setSelected={setSelected}
               handleSelectAllClick={handleSelectAllClick}
               handleClickDelete={handleOnClickUnFavorite}
             />
-            <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rows.length - 2} dates={dates} />
+            <EnhancedTableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick} rowCount={rowCount} dates={dates} />
             <TableBody>
               {rows.map((row: any) => {
                 const isItemSelected = isSelected(row.projectId);
