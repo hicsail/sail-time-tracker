@@ -149,23 +149,17 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                       {row.projectName}
                     </TableCell>
                     {dates.map((dateValue) => {
-                      // store hours for each date in a map.
-                      const dateHoursMap = new Map();
-                      row.records.forEach((record: any) => {
-                        if (!dateHoursMap.has(record.date)) {
-                          dateHoursMap.set(record.date, record.hours);
-                        }
-                      });
-
                       const FormValidation = Yup.object({
                         [dateValue.date]: Yup.number().min(0, 'can not be negative.')
                       });
+
+                      const initialHours = row.records.find((record: any) => record.date === dateValue.date)?.hours || '';
 
                       return (
                         <TableCell scope="row" padding="normal" key={dateValue.dateOfMonth}>
                           <Formik
                             validateOnChange={true}
-                            initialValues={{ [dateValue.date]: dateHoursMap.get(dateValue.date) || '' }}
+                            initialValues={{ [dateValue.date]: initialHours }}
                             validationSchema={FormValidation}
                             enableReinitialize={true}
                             onSubmit={() => {}}
