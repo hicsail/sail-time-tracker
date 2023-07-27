@@ -24,7 +24,7 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onCl
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const { data: projectListDate } = useGetProjectListQuery();
   const activeProjects = projectListDate?.projects?.filter((project) => project.status === 'Active') ?? [];
-  const [addFavoriteProjectMutation, { data: addFavoriteProjectData }] = useAddFavoriteProjectMutation();
+  const [addFavoriteProjectMutation, { data: addFavoriteProjectData, error: addFavoriteProjectError }] = useAddFavoriteProjectMutation();
   const { employeeId } = useEmployee();
   const { date } = useDate();
 
@@ -101,7 +101,7 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onCl
       </Stack>
       <Snackbar open={openSnackBar} autoHideDuration={2000} onClose={handleSnackBarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
         <Alert onClose={handleSnackBarClose} severity={addFavoriteProjectData ? 'success' : 'error'}>
-          {addFavoriteProjectData ? `Successfully add ${addFavoriteProjectData?.addFavoriteProject.count} favorite project` : 'Something went wrong!'}
+          {addFavoriteProjectData && !addFavoriteProjectError ? `Successfully add ${addFavoriteProjectData?.addFavoriteProject.count} favorite project` : 'Something went wrong!'}
         </Alert>
       </Snackbar>
     </Box>

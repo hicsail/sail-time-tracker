@@ -11,7 +11,7 @@ import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { StyledPaper } from '@components/StyledPaper';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { FormObserver } from '@pages/Track/components/table/FormObserver';
+import { FormObserver } from '@pages/Track/components/form/FormObserver';
 import { formatDateToDashFormat, getMondayToSundayDates } from '../../../../utils/helperFun';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import AddIcon from '@mui/icons-material/Add';
@@ -19,7 +19,7 @@ import { FormDialog } from '@components/form/FormDialog';
 import { Paths } from '@constants/paths';
 import { CheckboxesSearch } from '@pages/Track/components/form/CheckboxesSearch';
 import { useNavigate } from 'react-router-dom';
-import { TableHeadCover } from '@pages/Employee/components/table/TableHeadCover';
+import { TableHeadCover } from '@pages/Track/components/table/TableHeadCover';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
 
@@ -30,7 +30,7 @@ interface ProjectTableProps {
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState({ add: false, edit: false });
+  const [open, setOpen] = useState(true);
   const { employeeId } = useEmployee();
   const { date } = useDate();
   const dates = getMondayToSundayDates(date);
@@ -39,10 +39,10 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const rowCount = rows.length - 2;
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
 
-  const handleClickOpen = (type: string) => setOpen((prevState) => ({ ...prevState, [type]: true }));
+  const handleClickOpen = () => setOpen(true);
 
-  const handleOnClose = (type: string) => {
-    setOpen((prevState) => ({ ...prevState, [type]: false }));
+  const handleOnClose = () => {
+    setOpen(false);
     navigate(Paths.TRACK);
   };
 
@@ -103,11 +103,11 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
       <StyledPaper elevation={0} sx={{ display: 'flex', gap: 5 }}>
         <Stack direction="row" width="100%" justifyContent="space-between">
           <Typography variant="h6">Favorite Projects</Typography>
-          <DefaultContainedButton variant="contained" startIcon={<AddIcon />} onClick={() => handleClickOpen('add')}>
+          <DefaultContainedButton variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
             Add Favorite Project
           </DefaultContainedButton>
-          <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-            <CheckboxesSearch excludedData={data} onClose={() => handleOnClose('add')} />
+          <FormDialog open={open} onClose={handleOnClose}>
+            <CheckboxesSearch excludedData={data} onClose={handleOnClose} />
           </FormDialog>
         </Stack>
         <TableContainer>

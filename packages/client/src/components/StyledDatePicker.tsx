@@ -1,4 +1,4 @@
-import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
+import { CustomDatePickerLayout } from '@components/CustomDatePickerLayout';
 import { DatePicker } from '@mui/x-date-pickers';
 import { DatePickerProps } from '@mui/lab';
 import { FC } from 'react';

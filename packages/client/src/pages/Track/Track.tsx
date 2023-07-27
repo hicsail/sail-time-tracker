@@ -10,7 +10,7 @@ import { endOfWeek, startOfWeek } from 'date-fns';
 import { WorkOff, WorkOutlined } from '@mui/icons-material';
 
 import { Day } from './components/DatePicker/Day';
-import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
+import { CustomDatePickerLayout } from '@components/CustomDatePickerLayout';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { StyledDatePicker } from '@components/StyledDatePicker';
 

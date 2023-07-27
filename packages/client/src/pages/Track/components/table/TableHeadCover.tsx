@@ -21,7 +21,7 @@ export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, ha
     setSelected([]);
   };
 
-  const handleUnFavoriteProject = async () => {
+  const handleUnFavoriteProject = () => {
     handleClickDelete();
     handleCloseFormDialog();
   };
@@ -42,7 +42,7 @@ export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, ha
         zIndex: `${selected.length > 0 ? 10 : -10}`
       }}
     >
-      <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={numSelected > 0 && numSelected === rowCount} onChange={handleSelectAllClick} />
+      <Checkbox indeterminate={numSelected > 0 && numSelected < rowCount} checked={numSelected > 0 && numSelected === rowCount} onChange={handleSelectAllClick} />
       <Typography sx={{ flex: '1 1 100%' }} color="primary" variant="subtitle2">
         {numSelected} selected
       </Typography>
