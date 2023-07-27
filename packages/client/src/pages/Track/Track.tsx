@@ -2,7 +2,7 @@ import { DisplayCard } from '@components/DisplayCard.component';
 import { ProjectTable } from '@pages/Track/components/table/ProjectTable';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 
-import { Box, Stack, SelectChangeEvent, Typography } from '@mui/material';
+import { Stack, SelectChangeEvent, Typography } from '@mui/material';
 import { useGetEmployeeListQuery, useGetRecordWithFavoriteProjectQuery } from '@graphql/employee/employee';
 import { useEmployee } from '@context/employee.context';
 import { useDate } from '@context/date.context';
@@ -59,17 +59,8 @@ export const Track = () => {
   };
 
   return (
-    <Box
-      maxWidth="xl"
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4rem',
-        paddingTop: '2rem',
-        margin: 'auto'
-      }}
-    >
-      <Stack direction="row" spacing={10} alignItems="center">
+    <Stack gap={8} paddingTop={6}>
+      <Stack direction="row" gap={10} alignItems="center">
         <DropDownMenu
           data={employees}
           onChange={handleSelectEmployeeOnChange}
@@ -105,6 +96,6 @@ export const Track = () => {
           <Typography variant="subtitle2">Please Select the Employee</Typography>
         </Stack>
       )}
-    </Box>
+    </Stack>
   );
 };
