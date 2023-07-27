@@ -5,7 +5,7 @@ import { Employee } from '@pages/Employee/Employee';
 
 import { GraphqlProvider } from '@graphql/graphql-provider';
 import { Project } from '@pages/Project/Project';
-import { Track } from '@pages/Track/track';
+import { Track } from '@pages/Track/Track';
 import { Paths } from '@constants/paths';
 import { Admin } from '@pages/Admin/Admin';
 import { ThemeProvider } from '@theme/theme.provider';

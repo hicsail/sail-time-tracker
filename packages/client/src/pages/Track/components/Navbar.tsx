@@ -1,32 +1,23 @@
 import { Box } from '@mui/material';
 import { SideList } from '@pages/Admin/components/SideList';
 import { SwitchBtn } from '@components/switch/switchBtn';
-import { useSettings } from '@context/setting.context';
+import { useToggleTheme } from '../../../hooks/useToggleTheme';
 
 export const Navbar = () => {
-  const { settings, setSettings } = useSettings();
-
-  const handleOnClick = () => {
-    if (settings.theme === 'light') {
-      setSettings({ theme: 'dark' });
-    } else {
-      setSettings({ theme: 'light' });
-    }
-  };
+  const { toggleTheme } = useToggleTheme();
 
   return (
     <Box
       sx={{
-        width: '100%',
-        backgroundColor: 'customColors.sidebarBg',
+        backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']),
         height: '5vh',
         display: 'flex',
         justifyContent: 'end'
       }}
     >
-      <nav aria-label="secondary track theme">
+      <nav>
         <SideList>
-          <SwitchBtn onClick={handleOnClick} />
+          <SwitchBtn onClick={toggleTheme} />
         </SideList>
       </nav>
     </Box>

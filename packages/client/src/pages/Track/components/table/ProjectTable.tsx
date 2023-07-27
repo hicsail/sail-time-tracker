@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { Button, Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack, TableFooter } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack, TableFooter } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { ChangeEvent, useState, MouseEvent, FC } from 'react';
@@ -126,12 +126,9 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
             <TableBody>
               {rows.map((row: any) => {
                 const isItemSelected = isSelected(row.projectId);
-                const labelId = `enhanced-table-checkbox-${row.projectId}`;
 
                 // total hours for each project in a week
-                const totalHours = row.records.reduce((totalHours: number, record: any) => {
-                  return totalHours + record.hours;
-                }, 0);
+                const totalHours = row.records.reduce((totalHours: number, record: any) => totalHours + record.hours, 0);
 
                 return (
                   <TableRow hover role="checkbox" key={row.projectId} selected={isItemSelected}>
@@ -140,15 +137,10 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                         color="primary"
                         checked={isItemSelected}
                         onClick={(event) => handleClick(event, row.projectId)}
-                        inputProps={{
-                          'aria-labelledby': labelId
-                        }}
                         disabled={row.projectName === 'Indirect' || row.projectName === 'Absence'}
                       />
                     </TableCell>
-                    <TableCell id="name" scope="row" padding="none" sx={{ width: '120px' }}>
-                      {row.projectName}
-                    </TableCell>
+                    <TableCell id="name">{row.projectName}</TableCell>
                     {dates.map((dateValue) => {
                       const FormValidation = Yup.object({
                         [dateValue.date]: Yup.number().min(0, 'can not be negative.')
@@ -157,7 +149,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                       const initialHours = row.records.find((record: any) => record.date === dateValue.date)?.hours || '';
 
                       return (
-                        <TableCell scope="row" padding="normal" key={dateValue.dateOfMonth}>
+                        <TableCell key={dateValue.dateOfMonth}>
                           <Formik
                             validateOnChange={true}
                             initialValues={{ [dateValue.date]: initialHours }}
@@ -173,10 +165,8 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                         </TableCell>
                       );
                     })}
-                    <TableCell align="left" sx={{ width: '100px' }}>
-                      {totalHours}
-                    </TableCell>
-                    <TableCell align="left">{row.description}</TableCell>
+                    <TableCell>{totalHours}</TableCell>
+                    <TableCell>{row.description}</TableCell>
                   </TableRow>
                 );
               })}
@@ -188,7 +178,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
             <span>{loading ? 'Saving' : 'Saved'}</span>
           </LoadingButton>
         </TableFooter>
-        {rows.length == 0 && <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }}>Add Your First Favorite Project</Button>}
       </StyledPaper>
     </StyledTableBox>
   );

@@ -97,7 +97,11 @@ export const Track = () => {
           <ProjectTable data={recordsWithFavoriteProjects} />
         </Stack>
       ) : (
-        <Stack sx={{ backgroundColor: 'grey.200', height: '500px' }} alignItems="center" justifyContent="center">
+        <Stack
+          sx={{ backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.grey['200'] : theme.palette.grey['800']), height: '500px', borderRadius: '5px' }}
+          alignItems="center"
+          justifyContent="center"
+        >
           <Typography variant="subtitle2">Please Select the Employee</Typography>
         </Stack>
       )}

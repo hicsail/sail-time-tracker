@@ -3,19 +3,11 @@ import { Folder, AssignmentInd, Assessment, WatchLater, Receipt } from '@mui/ico
 import { Paths } from '@constants/paths';
 import { SideListItem } from '@pages/Admin/components/SideListItem';
 import { SwitchBtn } from '@components/switch/switchBtn';
-import { useSettings } from '@context/setting.context';
 import { SideList } from '@pages/Admin/components/SideList';
+import { useToggleTheme } from '../../../hooks/useToggleTheme';
 
 export const Navbar = () => {
-  const { settings, setSettings } = useSettings();
-
-  const handleOnClick = () => {
-    if (settings.theme === 'light') {
-      return setSettings({ theme: 'dark' });
-    }
-
-    return setSettings({ theme: 'light' });
-  };
+  const { toggleTheme } = useToggleTheme();
 
   const Nav = styled('nav')(({ theme }) => ({
     padding: '0 1rem',
@@ -36,7 +28,7 @@ export const Navbar = () => {
       </SideList>
       <SideList>
         <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Track" />
-        <SwitchBtn onClick={handleOnClick} />
+        <SwitchBtn onClick={toggleTheme} />
       </SideList>
     </Nav>
   );
