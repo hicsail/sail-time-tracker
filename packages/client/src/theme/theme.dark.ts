@@ -32,6 +32,13 @@ export const themeDark = createTheme({
       dark: 'rgb(183, 110, 0)',
       darker: 'rgb(122, 65, 0)'
     },
+    info: {
+      lighter: 'rgb(202, 253, 245)',
+      light: 'rgb(97, 243, 243)',
+      main: 'rgb( 0, 184, 217)',
+      dark: 'rgb(0, 108, 156)',
+      darker: 'rgb(0, 55, 104)'
+    },
     error: {
       light: '#8B3B3D',
       main: '#dd8e94',

@@ -27,6 +27,13 @@ export const themeLight = createTheme({
       dark: 'rgb(183, 110, 0)',
       darker: 'rgb(122, 65, 0)'
     },
+    info: {
+      lighter: 'rgb(202, 253, 245)',
+      light: 'rgb(97, 243, 243)',
+      main: 'rgb( 0, 184, 217)',
+      dark: 'rgb(0, 108, 156)',
+      darker: 'rgb(0, 55, 104)'
+    },
     success: {
       light: '#EAF8F1',
       main: '#1D7F54',
