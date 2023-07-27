@@ -1,4 +1,4 @@
-import { Checkbox, Autocomplete, Box, Typography, Stack, ListItem, Snackbar } from '@mui/material';
+import { Checkbox, Autocomplete, Box, Typography, Stack, ListItem } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
 import { FC, SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
@@ -9,7 +9,7 @@ import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
 import { CustomOutlinedTextInput, DefaultContainedButton, DefaultOutlinedButton } from '@components/StyledComponent';
-import { Alert } from '@mui/lab';
+import { useSnackBar } from '@context/snackbar.context';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
@@ -21,12 +21,12 @@ interface CheckboxesSearchProps {
 
 export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onClose }) => {
   const [selectedProjects, setSelectedProjects] = useState<any[]>([]);
-  const [openSnackBar, setOpenSnackBar] = useState(false);
   const { data: projectListDate } = useGetProjectListQuery();
   const activeProjects = projectListDate?.projects?.filter((project) => project.status === 'Active') ?? [];
-  const [addFavoriteProjectMutation, { data: addFavoriteProjectData, error: addFavoriteProjectError }] = useAddFavoriteProjectMutation();
+  const [addFavoriteProjectMutation, { error: addFavoriteProjectError }] = useAddFavoriteProjectMutation();
   const { employeeId } = useEmployee();
   const { date } = useDate();
+  const { toggleSnackBar } = useSnackBar();
 
   // handle user select projects from search checkbox
   const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any[]) => setSelectedProjects(value);
@@ -50,13 +50,14 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onCl
             }
           }
         ]
-      }).then(() => handleSnackBarOpen());
+      }).then((r) => {
+        const response = r?.data?.addFavoriteProject;
+        response && response.count > 0 && toggleSnackBar(`Successfully add ${response?.count} favorite project`, { variant: 'success' });
+        addFavoriteProjectError && toggleSnackBar('Something went wrong!', { variant: 'error' });
+      });
     }
     setSelectedProjects([]);
   };
-
-  const handleSnackBarClose = () => setOpenSnackBar(false);
-  const handleSnackBarOpen = () => setOpenSnackBar(true);
 
   return (
     <Box>
@@ -99,11 +100,6 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onCl
           close
         </DefaultOutlinedButton>
       </Stack>
-      <Snackbar open={openSnackBar} autoHideDuration={2000} onClose={handleSnackBarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <Alert onClose={handleSnackBarClose} severity={addFavoriteProjectData ? 'success' : 'error'}>
-          {addFavoriteProjectData && !addFavoriteProjectError ? `Successfully add ${addFavoriteProjectData?.addFavoriteProject.count} favorite project` : 'Something went wrong!'}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

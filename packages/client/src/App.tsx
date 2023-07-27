@@ -20,6 +20,7 @@ import { InvoiceDetails } from '@pages/Invoice/InvoiceDetails';
 import { DateRangeProvider } from '@context/reportFilter.context';
 import { Export } from '@pages/Invoice/Export';
 import { NotFoundAdmin } from '@pages/Not_Find/NotFindAdmin';
+import { SnackBarProvider } from '@context/snackbar.context';
 
 function App() {
   if (enLocale && enLocale.options) {
@@ -35,27 +36,29 @@ function App() {
               <DateProvider>
                 <EmployeeProvider>
                   <DateRangeProvider>
-                    <Routes>
-                      <Route path={Paths.TRACK} element={<TrackLayout />}>
-                        <Route path={Paths.TRACK} element={<Track />} />
-                      </Route>
-                      <Route path={Paths.ADMIN} element={<Admin />}>
-                        <Route path={Paths.PROJECT_lIST} element={<Project />}>
-                          <Route path={Paths.EDIT_PROJECT} />
-                          <Route path={Paths.ADD_PROJECT} />
+                    <SnackBarProvider>
+                      <Routes>
+                        <Route path={Paths.TRACK} element={<TrackLayout />}>
+                          <Route path={Paths.TRACK} element={<Track />} />
                         </Route>
-                        <Route path={Paths.EMPLOYEE_lIST} element={<Employee />}>
-                          <Route path={Paths.EDIT_EMPLOYEE} />
-                          <Route path={Paths.ADD_EMPLOYEE} />
+                        <Route path={Paths.ADMIN} element={<Admin />}>
+                          <Route path={Paths.PROJECT_lIST} element={<Project />}>
+                            <Route path={Paths.EDIT_PROJECT} />
+                            <Route path={Paths.ADD_PROJECT} />
+                          </Route>
+                          <Route path={Paths.EMPLOYEE_lIST} element={<Employee />}>
+                            <Route path={Paths.EDIT_EMPLOYEE} />
+                            <Route path={Paths.ADD_EMPLOYEE} />
+                          </Route>
+                          <Route path={Paths.REPORT} element={<Report />} />
+                          <Route path={Paths.INVOICE} element={<Invoice />} />
+                          <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
+                          <Route path={Paths.EXPORT_INVOICE} element={<Export />} />
+                          <Route path={`${Paths.ADMIN}/*`} element={<NotFoundAdmin page="admin" />} />
                         </Route>
-                        <Route path={Paths.REPORT} element={<Report />} />
-                        <Route path={Paths.INVOICE} element={<Invoice />} />
-                        <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
-                        <Route path={Paths.EXPORT_INVOICE} element={<Export />} />
-                        <Route path={`${Paths.ADMIN}/*`} element={<NotFoundAdmin page="admin" />} />
-                      </Route>
-                      <Route path="*" element={<NotFoundAdmin />} />
-                    </Routes>
+                        <Route path="*" element={<NotFoundAdmin />} />
+                      </Routes>
+                    </SnackBarProvider>
                   </DateRangeProvider>
                 </EmployeeProvider>
               </DateProvider>

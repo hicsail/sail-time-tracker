@@ -30,7 +30,7 @@ interface ProjectTableProps {
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const { employeeId } = useEmployee();
   const { date } = useDate();
   const dates = getMondayToSundayDates(date);
