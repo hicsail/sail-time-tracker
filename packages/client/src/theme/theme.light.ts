@@ -20,6 +20,13 @@ export const themeLight = createTheme({
       dark: '#262626',
       contrastText: '#fff'
     },
+    warning: {
+      lighter: 'rgb(255, 245, 204)',
+      light: 'rgb(255, 214, 102)',
+      main: 'rgb(255, 171, 0)',
+      dark: 'rgb(183, 110, 0)',
+      darker: 'rgb(122, 65, 0)'
+    },
     success: {
       light: '#EAF8F1',
       main: '#1D7F54',
