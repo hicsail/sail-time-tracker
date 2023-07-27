@@ -20,6 +20,9 @@ export const ObserverTextInput: FC<TextInputProps> = (props) => {
         disabled={props.disabled || isSubmitting}
         error={!!errors[props.name]}
         helperText={(touched[props.name] && errors[props.name]) as string}
+        sx={{
+          '.MuiFormHelperText-root ': { width: '120px', marginRight: 0 }
+        }}
       />
     </FormControl>
   );

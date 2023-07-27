@@ -27,10 +27,6 @@ interface ProjectTableProps {
   data: any | undefined;
 }
 
-const FormValidation = Yup.object({
-  hours: Yup.number().required('Required').min(0, 'Hours can not be negative.')
-});
-
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -159,6 +155,10 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                         if (!dateHoursMap.has(record.date)) {
                           dateHoursMap.set(record.date, record.hours);
                         }
+                      });
+
+                      const FormValidation = Yup.object({
+                        [dateValue.date]: Yup.number().min(0, 'can not be negative.')
                       });
 
                       return (
