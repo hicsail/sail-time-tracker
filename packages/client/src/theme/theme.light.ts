@@ -12,7 +12,7 @@ export const themeLight = createTheme({
       light: '#757ce8',
       main: '#4A4ECC',
       dark: '#3d40ba',
-      contrastText: '#fff'
+      contrastText: 'white'
     },
     secondary: {
       light: '#B6B3C3',
@@ -21,11 +21,10 @@ export const themeLight = createTheme({
       contrastText: '#fff'
     },
     success: {
-      lighter: 'rgb(211, 252, 210)',
-      light: 'rgb(119, 237, 139)',
-      main: 'rgb(34, 197, 94)',
-      dark: 'rgb(17, 141, 87)',
-      darker: 'rgb(6, 94, 73)'
+      light: '#EAF8F1',
+      main: '#1D7F54',
+      dark: '#1d5329',
+      contrastText: 'white'
     },
     error: {
       light: '#FFE3EC',
@@ -54,6 +53,13 @@ export const themeLight = createTheme({
       700: 'rgb(69, 79, 91)',
       800: 'rgb(33,43,54)',
       900: 'rgb(22,28,36)'
+    },
+    green: {
+      lighter: 'rgb(211, 252, 210)',
+      light: 'rgb(119, 237, 139)',
+      main: 'rgb(34, 197, 94)',
+      dark: 'rgb(17, 141, 87)',
+      darker: 'rgb(6, 94, 73)'
     }
   }
 });

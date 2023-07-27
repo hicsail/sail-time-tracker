@@ -31,7 +31,11 @@ export const SnackBarProvider: FC<SnackBarProviderProps> = ({ children }) => {
     <SnackbarContext.Provider value={{ handleSnackBarOpen, toggleSnackBar }}>
       {children}
       <Snackbar open={open} autoHideDuration={2000} onClose={handleSnackBarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <Alert onClose={handleSnackBarClose} severity={variant}>
+        <Alert
+          onClose={handleSnackBarClose}
+          severity={variant}
+          sx={{ fontWeight: 'medium', backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.green.darker : theme.palette.green.dark), color: 'white' }}
+        >
           {message}
         </Alert>
       </Snackbar>

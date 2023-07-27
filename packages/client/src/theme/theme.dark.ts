@@ -48,6 +48,13 @@ export const themeDark = createTheme({
       700: '#454F5B',
       800: '#212B36',
       900: '#161C24'
+    },
+    green: {
+      lighter: 'rgb(211, 252, 210)',
+      light: 'rgb(119, 237, 139)',
+      main: 'rgb(34, 197, 94)',
+      dark: 'rgb(17, 141, 87)',
+      darker: 'rgb(6, 94, 73)'
     }
   }
 });

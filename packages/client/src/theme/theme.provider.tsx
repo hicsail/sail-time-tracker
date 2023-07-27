@@ -35,6 +35,13 @@ declare module '@mui/material/styles' {
       statusBtnText: string;
       interstellarBlue: string;
     };
+    green: {
+      darker: string;
+      lighter: string;
+      light: string;
+      dark: string;
+      main: string;
+    };
   }
 
   interface PaletteOptions {
@@ -49,6 +56,13 @@ declare module '@mui/material/styles' {
       statusBtnBg?: string;
       statusBtnText?: string;
       interstellarBlue?: string;
+    };
+    green: {
+      darker?: string;
+      lighter?: string;
+      light?: string;
+      dark?: string;
+      main?: string;
     };
   }
 }
