@@ -15,6 +15,7 @@ import { Banner } from '@components/Banner';
 import { useTimeout } from '../../utils/useTimeOutHook';
 import { CustomOutlinedTextInput } from '@components/StyledComponent';
 import { CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
+import { SortedCollapsibleTable } from '@pages/Report/components/table/SortedCollapsibleTable';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -58,27 +59,30 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   const tableConfig = {
     outer: [
       {
-        id: 'name',
+        field: 'name',
         name: 'Employees',
         render: (row: any) => row.name
       },
       {
-        id: 'workHours',
+        field: 'workHours',
         name: 'Work Hours',
-        render: (row: any) => row.workHours
+        render: (row: any) => row.workHours,
+        sortValue: (row: any) => row.workHours
       },
       {
-        id: 'indirectHours',
+        field: 'indirectHours',
         name: 'Indirect Hours',
-        render: (row: any) => row.indirectHours
+        render: (row: any) => row.indirectHours,
+        sortValue: (row: any) => row.indirectHours
       },
       {
-        id: 'billableHours',
+        field: 'billableHours',
         name: 'Billable Hours (Work + Indirect)',
-        render: (row: any) => row.billableHours
+        render: (row: any) => row.billableHours,
+        sortValue: (row: any) => row.billableHours
       },
       {
-        id: 'actions',
+        field: 'actions',
         name: 'Actions',
         render: (row: any) => (
           <Button variant="outlined" endIcon={<SlackIcon />} onClick={() => handleOpenFormDialog(row)}>
@@ -89,12 +93,12 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
     ],
     inner: [
       {
-        id: 'projectName',
+        field: 'projectName',
         name: 'Name',
         render: (row: any) => row.projectName
       },
       {
-        id: 'projectIsBillable',
+        field: 'projectIsBillable',
         name: 'IsBillable',
         render: (row: any) => {
           return (
@@ -111,17 +115,17 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
         }
       },
       {
-        id: 'projectWorkHours',
+        field: 'projectWorkHours',
         name: 'Work Hours',
         render: (row: any) => row.projectWorkHours
       },
       {
-        id: 'projectIndirectHours',
+        field: 'projectIndirectHours',
         name: 'Indirect Hours',
         render: (row: any) => row.projectIndirectHours
       },
       {
-        id: 'projectPercentage',
+        field: 'projectPercentage',
         name: 'Percentage',
         render: (row: any) => row.projectPercentage + '%'
       }
@@ -180,7 +184,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   return (
     <Stack gap={5}>
       {showBanner.show && showBanner.state === 'success' && <Banner content={showBanner.content} state={showBanner.state} />}
-      <CollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
+      <SortedCollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
       {rows.length === 0 && <Box sx={{ textAlign: 'start' }}>No data</Box>}
       <CustomizedAccordions summary="See employees who has not submit their work hours">
         <Stack gap={2}>

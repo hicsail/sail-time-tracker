@@ -1,4 +1,3 @@
-import { CollapsibleTable } from '@pages/Report/components/table/CollapsibleTable';
 import { Box, Tooltip } from '@mui/material';
 import { FC, useState } from 'react';
 import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoicesByDateRangeQuery } from '@graphql/invoice/invoice';
@@ -15,6 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import { useTimeout } from '../../utils/useTimeOutHook';
 import { differenceInBusinessDays } from 'date-fns';
 import { CircularWithValueLabel } from '@pages/Report/components/CircularWithValueLabel';
+import { SortedCollapsibleTable } from '@pages/Report/components/table/SortedCollapsibleTable';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -102,12 +102,12 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
   const tableConfig = {
     outer: [
       {
-        id: 'projectName',
+        field: 'projectName',
         name: 'Projects',
         render: (row: any) => row.name
       },
       {
-        id: 'isBillable',
+        field: 'isBillable',
         name: 'IsBillable',
         render: (row: any) => {
           return (
@@ -124,27 +124,31 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         }
       },
       {
-        id: 'workHours',
+        field: 'workHours',
         name: 'Work Hours',
-        render: (row: any) => row.workHours
+        render: (row: any) => row.workHours,
+        sortValue: (row: any) => row.workHours
       },
       {
-        id: 'indirectHours',
+        field: 'indirectHours',
         name: 'Indirect Hours',
-        render: (row: any) => row.indirectHours
+        render: (row: any) => row.indirectHours,
+        sortValue: (row: any) => row.indirectHours
       },
       {
-        id: 'billableHours',
+        field: 'billableHours',
         name: 'Billable Hours',
-        render: (row: any) => row.billableHours
+        render: (row: any) => row.billableHours,
+        sortValue: (row: any) => row.billableHours
       },
       {
-        id: 'percentage',
+        field: 'percentage',
         name: 'Effort',
-        render: (row: any) => row.percentage + '%'
+        render: (row: any) => row.percentage + '%',
+        sortValue: (row: any) => row.percentage
       },
       {
-        id: 'usage',
+        field: 'usage',
         name: 'FTE Usage',
         render: (row: any) => {
           const differences = differenceInBusinessDays(endDate, startDate);
@@ -152,16 +156,21 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
           const percentage = (row.billableHours / maximumWorkHours) * 100;
 
           return (
-            <Tooltip title="50%">
+            <Tooltip title={`${percentage.toFixed(0)}%`}>
               <IconButton>
                 <CircularWithValueLabel progress={percentage} color={getCircularColor(percentage)} />
               </IconButton>
             </Tooltip>
           );
+        },
+        sortValue: (row: any) => {
+          const differences = differenceInBusinessDays(endDate, startDate);
+          const maximumWorkHours = row.fte * (differences * 8);
+          return (row.billableHours / maximumWorkHours) * 100;
         }
       },
       {
-        id: 'actions',
+        field: 'actions',
         name: 'Actions',
         render: (row: any) => {
           const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
@@ -184,22 +193,22 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
     ],
     inner: [
       {
-        id: 'employeeName',
+        field: 'employeeName',
         name: 'Name',
         render: (row: any) => row.employeeName
       },
       {
-        id: 'employeeWorkHours',
+        field: 'employeeWorkHours',
         name: 'Work Hours',
         render: (row: any) => row.employeeWorkHours
       },
       {
-        id: 'employeeIndirectHours',
+        field: 'employeeIndirectHours',
         name: 'Indirect Hours',
         render: (row: any) => row.employeeIndirectHours
       },
       {
-        id: 'employeeBillableHours',
+        field: 'employeeBillableHours',
         name: 'Percentage',
         render: (row: any) => row.employeePercentage + '%'
       }
@@ -214,7 +223,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
           {error && <Banner content={`${error.message}`} state="error" />}
         </Box>
       )}
-      <CollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Employee" startDate={startDate} endDate={endDate} />
+      <SortedCollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Employee" startDate={startDate} endDate={endDate} />
       {rows.length === 0 && <Box sx={{ textAlign: 'start', marginTop: 5 }}>No data</Box>}
     </>
   );

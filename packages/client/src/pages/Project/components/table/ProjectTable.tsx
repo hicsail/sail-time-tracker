@@ -8,7 +8,7 @@ import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
 import { StyledPaper } from '@components/StyledPaper';
 import AddIcon from '@mui/icons-material/Add';
 import { DropDownMenu } from '@components/form/DropDownMenu';
-import { BasicTable } from '@pages/Invoice/components/table/BasicTable';
+import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
 
 const dropdownData = [

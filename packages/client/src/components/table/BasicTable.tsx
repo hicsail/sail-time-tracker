@@ -1,12 +1,12 @@
 import { StyledPaper } from '@components/StyledPaper';
 import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination } from '@mui/material';
-import { FC, ReactNode, useState } from 'react';
+import { FC, Fragment, ReactNode, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
 
-interface BasicTableProps {
+export interface BasicTableProps {
   rows: any[];
   columns: any[];
-  toolbar?: ReactNode;
+  toolbar?: JSX.Element;
   keyFun: (row: any) => string;
   initialState?: any;
   sx?: any;
@@ -32,15 +32,19 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
 
   const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const renderedHeaders: ReactNode = columns.map((column) => (
-    <TableCell
-      key={column.field}
-      align={column.headerAlign ? column.headerAlign : 'left'}
-      sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}
-    >
-      {column.headerName.toUpperCase()}
-    </TableCell>
-  ));
+  const renderedHeaders: ReactNode = columns.map((column) => {
+    if (column.header) return <Fragment key={column.field}>{column.header()}</Fragment>;
+
+    return (
+      <TableCell
+        key={column.field}
+        align={column.headerAlign ? column.headerAlign : 'left'}
+        sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}
+      >
+        {column.header ? column.header() : column.headerName.toUpperCase()}
+      </TableCell>
+    );
+  });
 
   const renderRows: ReactNode = visibleRows.map((row) => {
     const renderCells: ReactNode = columns.map((column) => (
@@ -48,6 +52,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
         {column.renderCell ? column.renderCell(row) : row[column.field]}
       </TableCell>
     ));
+
     return (
       <TableRow
         key={keyFun(row)}
@@ -62,27 +67,25 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
   });
 
   return (
-    <TableContainer>
-      <StyledPaper elevation={0}>
-        {toolbar}
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead>
-            <TableRow>{renderedHeaders}</TableRow>
-          </TableHead>
-          <TableBody>{renderRows}</TableBody>
-        </Table>
-        {!hidePagination && (
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 50]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        )}
-      </StyledPaper>
+    <TableContainer component={StyledPaper} elevation={0}>
+      {toolbar}
+      <Table sx={{ minWidth: 650 }}>
+        <TableHead>
+          <TableRow>{renderedHeaders}</TableRow>
+        </TableHead>
+        <TableBody>{renderRows}</TableBody>
+      </Table>
+      {!hidePagination && (
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
     </TableContainer>
   );
 };

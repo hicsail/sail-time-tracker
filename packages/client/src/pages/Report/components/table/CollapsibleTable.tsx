@@ -7,7 +7,7 @@ import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
 
-interface CollapsibleTableProps {
+export interface CollapsibleTableProps {
   rows: any[];
   tableConfig: any;
   innerTitle: string;
@@ -26,13 +26,21 @@ export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, tableConfig,
     >
       <Table size="small" aria-label="outer-table">
         <TableHead sx={{ padding: '50px 0' }}>
-          <TableRow sx={{ '& .MuiTableCell-root': { border: 'none', backgroundColor: 'grey.200', paddingTop: '1rem', paddingBottom: '1rem' } }}>
+          <TableRow
+            sx={{ '& .MuiTableCell-root': { border: 'none', backgroundColor: 'grey.200', paddingTop: '1rem', paddingBottom: '1rem', fontWeight: 'medium', color: 'grey.600' } }}
+          >
             <TableCell />
-            {tableConfig.outer.map((config: any) => (
-              <TableCell key={config.id} align="left">
-                {config.name}
-              </TableCell>
-            ))}
+            {tableConfig.outer.map((config: any) => {
+              if (config.header) {
+                return <Fragment key={config.field}>{config.header()}</Fragment>;
+              }
+
+              return (
+                <TableCell key={config.field} align="left">
+                  {config.name}
+                </TableCell>
+              );
+            })}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -72,7 +80,7 @@ export const RenderRow: FC<RenderRowProps> = ({ project, tableConfig, innerTitle
           </IconButton>
         </TableCell>
         {tableConfig.outer.map((config: any) => (
-          <TableCell key={config.id} align="left">
+          <TableCell key={config.field} align="left">
             {config.render(project)}
           </TableCell>
         ))}
