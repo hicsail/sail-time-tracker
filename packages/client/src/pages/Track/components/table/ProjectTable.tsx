@@ -36,8 +36,8 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   });
   const { employeeId } = useEmployee();
   const { date } = useDate();
-  const navigate = useNavigate();
   const dates = getMondayToSundayDates(date);
+  const navigate = useNavigate();
   const rows = data || [];
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
 
@@ -102,8 +102,8 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   return (
     <StyledTableBox>
-      <StyledPaper elevation={0}>
-        <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
+      <StyledPaper elevation={0} sx={{ display: 'flex', gap: 5 }}>
+        <Stack direction="row" width="100%" justifyContent="space-between">
           <Typography variant="h6">Favorite Projects</Typography>
           <DefaultContainedButton variant="contained" startIcon={<AddIcon />} onClick={() => handleClickOpen('add')}>
             Add Favorite Project
@@ -189,14 +189,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           </Table>
         </TableContainer>
         <TableFooter>
-          <LoadingButton
-            color="primary"
-            loading={loading}
-            loadingPosition="start"
-            startIcon={<FiberManualRecordIcon />}
-            variant="text"
-            sx={{ marginTop: 2, pointerEvents: 'none' }}
-          >
+          <LoadingButton color="primary" loading={loading} loadingPosition="start" startIcon={<FiberManualRecordIcon />} variant="text" sx={{ pointerEvents: 'none' }}>
             <span>{loading ? 'Saving' : 'Saved'}</span>
           </LoadingButton>
         </TableFooter>
