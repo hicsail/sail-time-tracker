@@ -9,10 +9,11 @@ export const themeDark = createTheme({
       default: '#161C24'
     },
     primary: {
-      light: '#757ce8',
-      main: '#3f50b5',
-      dark: '#002884',
-      contrastText: '#fff'
+      lighter: 'rgb(209, 233, 252)',
+      light: 'rgb(118, 176, 241)',
+      main: 'rgb(32, 101, 209)',
+      dark: 'rgb(16, 57, 150)',
+      darker: 'rgb(6, 27, 100)'
     },
     secondary: {
       light: '#B6B3C3',
