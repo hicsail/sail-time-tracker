@@ -71,7 +71,7 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
               }
             });
 
-            res.data?.updateEmployee && toggleSnackBar('Successfully update an employee!', { variant: 'success' });
+            res.data?.updateEmployee && toggleSnackBar('Successfully update the employee!', { variant: 'success' });
           }
           return handleClose();
         }}

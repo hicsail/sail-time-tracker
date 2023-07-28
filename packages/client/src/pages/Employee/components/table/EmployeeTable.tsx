@@ -9,6 +9,7 @@ import { DropDownMenu } from '@components/form/DropDownMenu';
 import AddIcon from '@mui/icons-material/Add';
 import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
+import { DefaultContainedButton } from '@components/StyledComponent';
 
 interface EmployeeTableProps {
   data: any[];
@@ -97,14 +98,9 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
     <>
       <Stack direction="row" justifyContent="space-between" mb={5}>
         <Typography variant="h6">All Employees</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
-          onClick={handleClickOpen}
-        >
+        <DefaultContainedButton variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
           New Employee
-        </Button>
+        </DefaultContainedButton>
       </Stack>
       <Stack direction="row" gap={2} mb={3}>
         <DropDownMenu data={dropdownData} onChange={handleDropdownOnChange} label="Status" name="employee-status-dropdown" id="employee-status-dropdown" value={filter} />
