@@ -31,7 +31,6 @@ import SendIcon from '@mui/icons-material/Send';
 import { Paths } from '@constants/paths';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { Banner } from '@components/Banner';
 import { ClickUpIcon } from '@components/icons/ClickupIcon';
 import { ClickUpMobile } from '@components/icons/ClickupMobile';
 import { SortedBasicTable } from '@components/table/SortedBasicTable';
