@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Chip, Typography, Stack, SelectChangeEvent } from '@mui/material';
+import { Box, Button, Chip, Typography, Stack, SelectChangeEvent, alpha } from '@mui/material';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
@@ -53,14 +53,26 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   const handleDropdownOnChange = (e: SelectChangeEvent<string>) => setFilter(e.target.value);
 
-  const contractTypeColor = (id: number, type?: string) => {
+  const contractTypeColor = (id: number, type?: string, theme?: any) => {
     switch (id) {
       case 0:
-        return type === 'bg' ? 'grey.300' : 'grey.700';
+        if (type === 'bg') {
+          return alpha(theme.palette.grey[500], 0.16);
+        } else {
+          return theme.palette.mode === 'light' ? 'grey.600' : 'grey.500';
+        }
       case 1:
-        return type === 'bg' ? 'warning.light' : 'warning.dark';
+        if (type === 'bg') {
+          return alpha(theme.palette.warning.main, 0.16);
+        } else {
+          return theme.palette.mode === 'light' ? 'warning.dark' : 'warning.light';
+        }
       case 2:
-        return type === 'bg' ? 'info.light' : 'info.dark';
+        if (type === 'bg') {
+          return alpha(theme.palette.info.main, 0.16);
+        } else {
+          return theme.palette.mode === 'light' ? 'info.dark' : 'info.light';
+        }
     }
   };
 
@@ -114,8 +126,8 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         <Chip
           label={row.contractType.name}
           sx={{
-            backgroundColor: contractTypeColor(row.contractType.id, 'bg'),
-            color: contractTypeColor(row.contractType.id),
+            backgroundColor: (theme) => contractTypeColor(row.contractType.id, 'bg', theme),
+            color: (theme) => contractTypeColor(row.contractType.id, 'color', theme),
             padding: '0 10px',
             borderRadius: '8px',
             fontWeight: 'medium'
