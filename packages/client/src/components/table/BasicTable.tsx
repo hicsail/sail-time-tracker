@@ -36,17 +36,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
     if (column.header) return <Fragment key={column.field}>{column.header()}</Fragment>;
 
     return (
-      <TableCell
-        key={column.field}
-        align={column.headerAlign ? column.headerAlign : 'left'}
-        sx={{
-          width: column.width ? column.width : '150px',
-          color: (theme) => (theme.palette.mode === 'light' ? 'grey.600' : 'grey.500'),
-          bgcolor: (theme) => (theme.palette.mode === 'light' ? 'grey.200' : alpha(theme.palette.grey[500], 0.12)),
-          fontWeight: 'medium',
-          border: 'none'
-        }}
-      >
+      <TableCell key={column.field} align={column.headerAlign ? column.headerAlign : 'left'} sx={{ width: column.width ? column.width : '150px' }}>
         {column.header ? column.header() : column.headerName.toUpperCase()}
       </TableCell>
     );
@@ -82,7 +72,18 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
       {toolbar}
       <Table sx={{ minWidth: 650 }}>
         <TableHead>
-          <TableRow>{renderedHeaders}</TableRow>
+          <TableRow
+            sx={{
+              '& .MuiTableCell-root': {
+                color: (theme) => (theme.palette.mode === 'light' ? 'grey.600' : 'grey.500'),
+                bgcolor: (theme) => (theme.palette.mode === 'light' ? 'grey.200' : alpha(theme.palette.grey[500], 0.12)),
+                fontWeight: 'medium',
+                border: 'none'
+              }
+            }}
+          >
+            {renderedHeaders}
+          </TableRow>
         </TableHead>
         <TableBody>{renderRows}</TableBody>
       </Table>
