@@ -48,7 +48,8 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
     <>
       <Typography variant="h5">{id ? 'Edit' : 'Create a new employee'}</Typography>
       <Formik
-        validateOnChange={true}
+        validateOnChange={false}
+        validateOnBlur={false}
         initialValues={initialValue}
         validationSchema={FormValidation}
         enableReinitialize={true}
@@ -78,9 +79,9 @@ export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
       >
         <Form>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
-            <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" />
-            <ObserverTextInput id="email" type="email" name="email" label="Email" placeholder="Email" />
-            <ObserverTextInput id="status" select name="status" label="Status" placeholder="Status">
+            <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" variant="outlined" />
+            <ObserverTextInput id="email" type="email" name="email" label="Email" placeholder="Email" variant="outlined" />
+            <ObserverTextInput id="status" select name="status" label="Status" placeholder="Status" variant="outlined">
               <MenuItem value="Inactive">Inactive</MenuItem>
               <MenuItem value="Active">Active</MenuItem>
             </ObserverTextInput>
