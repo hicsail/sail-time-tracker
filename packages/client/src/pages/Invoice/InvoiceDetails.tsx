@@ -7,7 +7,7 @@ import { convertToUTCDate, formatDateToDashFormat, USDollar } from '../../utils/
 import IconButton from '@mui/material/IconButton';
 import UpdateIcon from '@mui/icons-material/Update';
 import { FormDialog } from '@components/form/FormDialog';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   GetAllInvoicesDocument,
   SearchInvoiceDocument,
@@ -26,7 +26,6 @@ import { CommentList } from '@pages/Invoice/components/comment/CommentList';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { BasicTable } from '@components/table/BasicTable';
 import EditIcon from '@mui/icons-material/Edit';
 import SendIcon from '@mui/icons-material/Send';
 import { Paths } from '@constants/paths';
@@ -35,6 +34,8 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Banner } from '@components/Banner';
 import { ClickUpIcon } from '@components/icons/ClickupIcon';
 import { ClickUpMobile } from '@components/icons/ClickupMobile';
+import { SortedBasicTable } from '@components/table/SortedBasicTable';
+import { useSnackBar } from '@context/snackbar.context';
 
 const columns: any[] = [
   {
@@ -43,10 +44,10 @@ const columns: any[] = [
     width: 200,
     renderCell: (row: any) => row.employeeName
   },
-  { field: 'workHours', headerName: 'Work Hours', width: 200 },
-  { field: 'indirectHours', headerName: 'Indirect Hours', width: 200 },
-  { field: 'billableHours', headerName: 'Billable Hours', width: 200 },
-  { field: 'amount', headerName: 'Amount', width: 200, renderCell: (row: any) => USDollar.format(row.amount) }
+  { field: 'workHours', headerName: 'Work Hours', width: 200, sortValue: (row: any) => row.workHours },
+  { field: 'indirectHours', headerName: 'Indirect Hours', width: 200, sortValue: (row: any) => row.indirectHours },
+  { field: 'billableHours', headerName: 'Billable Hours', width: 200, sortValue: (row: any) => row.billableHours },
+  { field: 'amount', headerName: 'Amount', width: 200, renderCell: (row: any) => USDollar.format(row.amount), sortValue: (row: any) => row.amount }
 ];
 
 const FormValidation = Yup.object({
@@ -61,7 +62,6 @@ const isOpenDialogInitialValue = {
 
 export const InvoiceDetails = () => {
   const [isOpenDialog, setIsOpenDialog] = useState(isOpenDialogInitialValue);
-  const [isDisplayBanner, setDisplayBanner] = useState(false);
   const [deleteInvoice] = useDeleteInvoiceMutation();
   const { id, startDate, endDate } = useParams();
   const { data: projectWithEmployeeData } = useGetProjectWithEmployeeRecordsQuery({
@@ -89,6 +89,7 @@ export const InvoiceDetails = () => {
   const [findPreviousInvoice] = useFindPreviousInvoiceLazyQuery();
   const [findNextInvoice] = useFindNextInvoiceLazyQuery();
   const navigate = useNavigate();
+  const { toggleSnackBar } = useSnackBar();
 
   const rows =
     project?.inner
@@ -172,7 +173,7 @@ export const InvoiceDetails = () => {
         const formattedEndDate = formatDateToDashFormat(convertToUTCDate(new Date(newInvoiceEndDate)));
         navigate(`${Paths.INVOICE}/${id}/${formattedStartDate}/${formattedEndDate}`);
       } else {
-        setDisplayBanner(true);
+        toggleSnackBar('No more invoice', { variant: 'warning' });
       }
     });
   };
@@ -192,18 +193,10 @@ export const InvoiceDetails = () => {
         const formattedEndDate = formatDateToDashFormat(convertToUTCDate(new Date(newInvoiceEndDate)));
         navigate(`${Paths.INVOICE}/${id}/${formattedStartDate}/${formattedEndDate}`);
       } else {
-        setDisplayBanner(true);
+        toggleSnackBar('No more invoice', { variant: 'warning' });
       }
     });
   };
-
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      setDisplayBanner(false);
-    }, 800);
-
-    return () => clearTimeout(timerId);
-  }, [isDisplayBanner]);
 
   const exportToClickUp = () => {
     const data = {
@@ -250,7 +243,6 @@ export const InvoiceDetails = () => {
 
   return (
     <>
-      {isDisplayBanner && <Banner content={`No more invoice`} state="info" />}
       <Box sx={{ height: 'auto', margin: 'auto', paddingTop: 8 }}>
         <Stack direction="row" justifyContent="space-between">
           <Button startIcon={<NavigateBeforeIcon />} onClick={handlePreviousInvoiceOnClick}>
@@ -452,7 +444,7 @@ export const InvoiceDetails = () => {
           <DisplayCard id="Report invoice Amount" title="Report Amount" data={project && USDollar.format(project.billableHours * 65)} />
         </Stack>
         <Box sx={{ marginTop: '2rem' }}>
-          <BasicTable rows={rows} columns={columns} keyFun={keyFun} hidePagination />
+          <SortedBasicTable rows={rows} columns={columns} keyFun={keyFun} hidePagination defaultOrderBy="billableHours" />
         </Box>
         <Box sx={{ marginTop: 5 }}>
           <CommentInputBox onSubmit={handleOnSubmitComment} />

@@ -34,7 +34,7 @@ export const SnackBarProvider: FC<SnackBarProviderProps> = ({ children }) => {
         <Alert
           onClose={handleSnackBarClose}
           severity={variant}
-          sx={{ fontWeight: 'medium', backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.green.darker : theme.palette.green.dark), color: 'white' }}
+          sx={{ fontWeight: 'medium', backgroundColor: variant === 'success' ? 'green.dark' : '', color: variant === 'success' ? 'white' : '' }}
         >
           {message}
         </Alert>
