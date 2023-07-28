@@ -11,6 +11,7 @@ import { FormDialog } from '@components/form/FormDialog';
 import { SearchBar } from '@components/SearchBar';
 import { SortedBasicTable } from '@components/table/SortedBasicTable';
 import { StyledDatePicker } from '@components/StyledDatePicker';
+import { useSnackBar } from '@context/snackbar.context';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -34,6 +35,7 @@ export const Invoice = () => {
   const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
   const { data } = useGetAllInvoicesQuery();
   const [deleteInvoice] = useDeleteInvoiceMutation();
+  const { toggleSnackBar } = useSnackBar();
   const rows = data
     ? data.invoices.map((invoice) => {
         const projectName = invoice.project.name;
@@ -75,8 +77,8 @@ export const Invoice = () => {
     setSearchText('');
   };
 
-  const handleDeleteInvoice = (projectId: string, startDate: string, endDate: string) => {
-    deleteInvoice({
+  const handleDeleteInvoice = async (projectId: string, startDate: string, endDate: string) => {
+    const res = await deleteInvoice({
       variables: {
         projectId_startDate_endDate: {
           projectId,
@@ -85,7 +87,9 @@ export const Invoice = () => {
         }
       },
       refetchQueries: [{ query: GetAllInvoicesDocument }]
-    }).then((r) => r.data && setOpenDialog(false));
+    });
+    handleCloseFormDialog();
+    res?.data?.deleteInvoice && toggleSnackBar(`Successfully deleted the invoice!`, { variant: 'success' });
   };
 
   const handleCloseFormDialog = () => setOpenDialog(false);
