@@ -25,7 +25,7 @@ interface EmployeeFormProps {
 }
 export const EmployeeForm: FC<EmployeeFormProps> = ({ handleClose }) => {
   const [initialValue, setInitialValue] = useState({ name: '', email: '', status: '' });
-  let { id } = useParams();
+  const { id } = useParams();
   const [updateEmployee] = useEmployeeUpdateInputMutation();
   const [addEmployee] = useEmployeeCreateInputMutation();
 

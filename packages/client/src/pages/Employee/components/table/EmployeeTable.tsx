@@ -124,7 +124,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const keyFun = (row: any) => row.id;
 
   return (
-    <Box sx={{ width: '100%', marginTop: 8 }}>
+    <Box>
       <StyledPaper elevation={0}>
         <BasicTable
           rows={filteredRows}
@@ -142,7 +142,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
         </FormDialog>
         {data.length === 0 && (
           <Box>
-            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => handleClickOpen('new')}>
+            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => handleClickOpen('add')}>
               Add Your First Employee
             </Button>
             <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
