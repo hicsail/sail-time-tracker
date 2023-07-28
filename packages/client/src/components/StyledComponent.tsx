@@ -60,8 +60,7 @@ export const StyledTableBox = styled(Box)(({ theme }) => ({
 }));
 
 export const CustomStyledFormDialog = styled(DialogContent)(({ theme }) => ({
-  maxWidth: '600px',
-  width: '600px',
+  minWidth: '600px',
   padding: '4rem',
   backgroundColor: theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']
 }));

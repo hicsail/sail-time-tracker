@@ -260,7 +260,7 @@ export type Mutation = {
   sendSlackMessage: Scalars['Boolean'];
   updateClickUpTask: ClickUpTaskModel;
   updateEmployee: EmployeeModel;
-  updateProject: ProjectModel;
+  updateProject: ProjectWithContractType;
 };
 
 export type MutationAddCommentArgs = {

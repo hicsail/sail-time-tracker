@@ -8,12 +8,12 @@ export class ProjectResolver {
   constructor(private projectService: ProjectService) {}
 
   @Query(() => [ProjectWithContractType])
-  async projects(): Promise<(ProjectModel & { contractType: ContractTypeModel })[]> {
+  async projects(): Promise<ProjectWithContractType[]> {
     return this.projectService.getAllProjects();
   }
 
   @Query(() => ProjectWithContractType)
-  async project(@Args('id') id: string): Promise<ProjectModel & { contractType: ContractTypeModel }> {
+  async project(@Args('id') id: string): Promise<ProjectWithContractType> {
     return this.projectService.getProjectById(id);
   }
 
@@ -22,8 +22,8 @@ export class ProjectResolver {
     return this.projectService.addProject(project);
   }
 
-  @Mutation(() => ProjectModel)
-  async updateProject(@Args('updateProject') updateProject: ProjectUpdateInput): Promise<ProjectModel> {
+  @Mutation(() => ProjectWithContractType)
+  async updateProject(@Args('updateProject') updateProject: ProjectUpdateInput): Promise<ProjectWithContractType> {
     return this.projectService.updateProject(updateProject);
   }
 

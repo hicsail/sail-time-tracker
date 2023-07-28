@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
+import { DefaultContainedButton } from '@components/StyledComponent';
 
 const dropdownData = [
   {
@@ -31,20 +32,15 @@ interface ProjectTableProps {
 }
 
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
-  const [open, setOpen] = useState({
-    add: false,
-    edit: false
-  });
-  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('Active');
+  const navigate = useNavigate();
 
-  const handleClickOpen = (type: string) => {
-    setOpen((prevState) => ({ ...prevState, [type]: true }));
-  };
+  const handleClickOpen = () => setOpen(true);
 
-  const handleOnClose = (type: string) => {
-    setOpen((prevState) => ({ ...prevState, [type]: false }));
+  const handleOnClose = () => {
+    setOpen(false);
     navigate(Paths.PROJECT_lIST);
   };
 
@@ -136,7 +132,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           variant="outlined"
           onClick={() => {
             navigate(`${Paths.PROJECT_lIST}/${row.id}`);
-            handleClickOpen('edit');
+            handleClickOpen();
           }}
           color="secondary"
         >
@@ -148,19 +144,11 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   const ToolBar = (
     <>
-      <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
+      <Stack direction="row" justifyContent="space-between" mb={5}>
         <Typography variant="h6">All Projects</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
-          onClick={() => handleClickOpen('add')}
-        >
+        <DefaultContainedButton variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
           New Project
-        </Button>
-        <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-          <ProjectForm handleClose={() => handleOnClose('add')} />
-        </FormDialog>
+        </DefaultContainedButton>
       </Stack>
       <Stack direction="row" gap={2} mb={3}>
         <DropDownMenu data={dropdownData} onChange={handleDropdownOnChange} label="Status" name="employee-status-dropdown" id="employee-status-dropdown" value={filter} />
@@ -172,7 +160,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const keyFun = (row: any) => row.id;
 
   return (
-    <Box sx={{ width: '100%', marginTop: 8 }}>
+    <Box>
       <StyledPaper elevation={0}>
         <BasicTable
           rows={filteredRows}
@@ -185,20 +173,17 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
             }
           }}
         />
-        <FormDialog open={open.edit} onClose={() => handleOnClose('edit')}>
-          <ProjectForm handleClose={() => handleOnClose('edit')} />
-        </FormDialog>
         {data.length === 0 && (
           <Box>
-            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => handleClickOpen('add')}>
+            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
               Add Your First Project
             </Button>
-            <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-              <ProjectForm handleClose={() => handleOnClose('add')} />
-            </FormDialog>
           </Box>
         )}
       </StyledPaper>
+      <FormDialog open={open} onClose={handleOnClose}>
+        <ProjectForm handleClose={handleOnClose} />
+      </FormDialog>
     </Box>
   );
 };
