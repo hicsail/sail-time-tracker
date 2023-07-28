@@ -1,12 +1,12 @@
 import { StyledPaper } from '@components/StyledPaper';
-import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination } from '@mui/material';
+import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination, alpha } from '@mui/material';
 import { FC, Fragment, ReactNode, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
 
 export interface BasicTableProps {
   rows: any[];
   columns: any[];
-  toolbar?: JSX.Element;
+  toolbar?: ReactNode;
   keyFun: (row: any) => string;
   initialState?: any;
   sx?: any;
@@ -39,7 +39,13 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
       <TableCell
         key={column.field}
         align={column.headerAlign ? column.headerAlign : 'left'}
-        sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}
+        sx={{
+          width: column.width ? column.width : '150px',
+          color: (theme) => (theme.palette.mode === 'light' ? 'grey.600' : 'grey.500'),
+          bgcolor: (theme) => (theme.palette.mode === 'light' ? 'grey.200' : alpha(theme.palette.grey[500], 0.12)),
+          fontWeight: 'medium',
+          border: 'none'
+        }}
       >
         {column.header ? column.header() : column.headerName.toUpperCase()}
       </TableCell>
@@ -57,8 +63,13 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
       <TableRow
         key={keyFun(row)}
         sx={{
-          '& .MuiTableCell-root': { fontWeight: 'regular', fontSize: '1rem', borderBottom: '1px dashed', borderColor: 'grey.200' },
-          '&:hover': { backgroundColor: 'grey.100' }
+          '& .MuiTableCell-root': {
+            fontWeight: 'regular',
+            fontSize: '1rem',
+            borderBottom: '1px dashed',
+            borderColor: (theme) => (theme.palette.mode === 'light' ? 'grey.200' : 'rgb(46, 50, 54)')
+          },
+          '&:hover': { backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'grey.100' : alpha(theme.palette.grey[500], 0.08)) }
         }}
       >
         {renderCells}
