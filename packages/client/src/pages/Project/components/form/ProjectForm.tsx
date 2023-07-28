@@ -113,31 +113,31 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
         <Form>
           <Grid container sx={{ mt: '2rem' }} spacing={3}>
             <Grid item xs={6}>
-              <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" fullWidth />
+              <ObserverTextInput id="name" type="text" name="name" label="Name" placeholder="Name" fullWidth variant="outlined" />
             </Grid>
             <Grid item xs={6}>
-              <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" fullWidth />
+              <ObserverTextInput id="rate" type="number" name="rate" label="Rate" placeholder="Rate" fullWidth variant="outlined" />
             </Grid>
             <Grid item xs={12}>
-              <ObserverTextInput id="description" type="text" name="description" label="Description" placeholder="Description" fullWidth />
+              <ObserverTextInput id="description" type="text" name="description" label="Description" placeholder="Description" fullWidth variant="outlined" />
             </Grid>
             <Grid item xs={6}>
-              <ObserverTextInput id="fte" type="number" name="fte" label="FTE" placeholder="FTE" fullWidth />
+              <ObserverTextInput id="fte" type="number" name="fte" label="FTE" placeholder="FTE" fullWidth variant="outlined" />
             </Grid>
             <Grid item xs={6}>
-              <ObserverTextInput name="status" select label="Status" placeholder="Status" fullWidth>
+              <ObserverTextInput name="status" select label="Status" placeholder="Status" fullWidth variant="outlined">
                 <MenuItem value="Inactive">Inactive</MenuItem>
                 <MenuItem value="Active">Active</MenuItem>
               </ObserverTextInput>
             </Grid>
             <Grid item xs={6}>
-              <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable" fullWidth>
+              <ObserverTextInput name="isBillable" select label="isBillable" placeholder="IsBillable" fullWidth variant="outlined">
                 <MenuItem value="true">True</MenuItem>
                 <MenuItem value="false">False</MenuItem>
               </ObserverTextInput>
             </Grid>
             <Grid item xs={6}>
-              <ObserverTextInput name="contractTypeId" select label="Contract Type" placeholder="Contract Type" fullWidth>
+              <ObserverTextInput name="contractTypeId" select label="Contract Type" placeholder="Contract Type" fullWidth variant="outlined">
                 <MenuItem value={0}>Internal</MenuItem>
                 <MenuItem value={1}>External</MenuItem>
                 <MenuItem value={2}>Grant Fund</MenuItem>
