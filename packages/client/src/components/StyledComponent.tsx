@@ -3,10 +3,17 @@ import DialogContent from '@mui/material/DialogContent';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 
 export const DefaultTextInput = styled(TextField)(({ theme, variant }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey['100'] : theme.palette.grey['700'],
-  color: theme.palette.mode === 'light' ? theme.palette.grey['800'] : 'white',
+  ...(theme.palette.mode === 'dark' && {
+    backgroundColor: variant === 'outlined' ? theme.palette.grey['800'] : theme.palette.grey['700'],
+    color: theme.palette.grey['800'],
+    '& fieldset': { border: variant === 'outlined' ? `1px solid ${theme.palette.grey[700]}` : 'none' }
+  }),
+  ...(theme.palette.mode === 'light' && {
+    backgroundColor: variant === 'outlined' ? theme.palette.common.white : theme.palette.grey['100'],
+    color: variant === 'outlined' ? theme.palette.grey['800'] : theme.palette.grey['800'],
+    '& fieldset': { border: variant === 'outlined' ? `1px solid ${theme.palette.grey[300]}` : 'none' }
+  }),
   borderRadius: '8px',
-  '& fieldset': { border: variant === 'outlined' ? `1px solid ${theme.palette.grey[300]}` : 'none' },
   '& input[type=number]': {
     MozAppearance: 'textfield'
   },
