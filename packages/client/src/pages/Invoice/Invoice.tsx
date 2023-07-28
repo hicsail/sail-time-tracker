@@ -183,7 +183,8 @@ export const Invoice = () => {
                 alignItems: 'center',
                 height: '50px',
                 width: '250px',
-                padding: '0 8px'
+                padding: '0 8px',
+                backgroundColor: 'inherit'
               }}
             >
               <Box component="span" sx={{ fontWeight: 'medium' }}>
@@ -192,7 +193,12 @@ export const Invoice = () => {
               <Stack direction="row" gap="8px">
                 <Chip
                   label={dateRange.startDate && dateRange.endDate && `${format(dateRange.startDate, 'dd MMM yy')} - ${format(dateRange.endDate, 'dd MMM yy')}`}
-                  sx={{ borderRadius: '8px', width: '100%', backgroundColor: 'grey.900', color: 'white', '& .MuiSvgIcon-root': { color: 'grey.500' } }}
+                  sx={{
+                    borderRadius: '8px',
+                    backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'grey.900' : theme.palette.common.white),
+                    color: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey[900]),
+                    '& .MuiSvgIcon-root': { color: 'grey.500' }
+                  }}
                   onDelete={handleReset}
                 />
               </Stack>
