@@ -1,5 +1,4 @@
-import { StyledPaper } from '@components/StyledPaper';
-import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination, alpha } from '@mui/material';
+import { Table, TableBody, TableHead, TablePagination } from '@mui/material';
 import { FC, Fragment, ReactNode, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
 import { StyledTableDataRow, StyledTableHeadRow } from '@components/StyledComponent';

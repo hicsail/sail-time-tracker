@@ -5,7 +5,6 @@ import { Box, Button, Chip, Typography, Stack, SelectChangeEvent, alpha } from '
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
-import { StyledPaper } from '@components/StyledPaper';
 import AddIcon from '@mui/icons-material/Add';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import { BasicTable } from '@components/table/BasicTable';

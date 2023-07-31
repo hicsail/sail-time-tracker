@@ -4,7 +4,6 @@ import { Box, Button, Chip, SelectChangeEvent, Stack, Typography } from '@mui/ma
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
-import { StyledPaper } from '@components/StyledPaper';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import AddIcon from '@mui/icons-material/Add';
 import { BasicTable } from '@components/table/BasicTable';
