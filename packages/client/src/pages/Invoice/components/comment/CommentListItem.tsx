@@ -13,12 +13,15 @@ export const CommentListItem: FC<CommentListItemProps> = ({ date, content, onDel
   const formatDate = format(date, 'dd MMM yyyy kk:mm:ss');
 
   return (
-    <ListItem sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+    <ListItem sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Box>
         <Typography variant="caption" color="secondary.light">
           {formatDate}
         </Typography>
-        <Typography variant="body2" sx={{ color: deletable ? 'black' : 'info.main', fontWeight: deletable ? 'normal' : 'medium' }}>
+        <Typography
+          variant="body2"
+          sx={{ color: deletable ? (theme) => (theme.palette.mode === 'light' ? 'black' : theme.palette.common.white) : 'info.main', fontWeight: deletable ? 'normal' : 'medium' }}
+        >
           {content}
         </Typography>
       </Box>

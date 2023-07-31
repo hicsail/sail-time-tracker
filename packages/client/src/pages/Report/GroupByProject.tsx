@@ -177,9 +177,18 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
             <Tooltip title={isFind ? 'View Invoice' : 'Generate Invoice'}>
               <IconButton onClick={() => handleActionsOnClick(row, isFind)} color="secondary" sx={{ width: '50px', height: '50px' }}>
                 <Box sx={{ position: 'relative' }}>
-                  <InvoiceIcon />
+                  <InvoiceIcon sx={{ color: (theme: any) => (theme.palette.mode === 'light' ? 'inherit' : theme.palette.common.white) }} />
                   {isFind ? (
-                    <VisibilityIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
+                    <VisibilityIcon
+                      sx={{
+                        position: 'absolute',
+                        bottom: '5px',
+                        right: '-5px',
+                        fontSize: '15px',
+                        backgroundColor: 'white',
+                        borderRadius: '50%'
+                      }}
+                    />
                   ) : (
                     <AddCircleOutlineIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
                   )}

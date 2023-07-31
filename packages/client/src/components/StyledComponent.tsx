@@ -1,6 +1,7 @@
-import { Box, Button, styled, TextField } from '@mui/material';
+import { alpha, Box, Button, styled, TextField } from '@mui/material';
 import DialogContent from '@mui/material/DialogContent';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
+import TableRow from '@mui/material/TableRow';
 
 export const DefaultTextInput = styled(TextField)(({ theme, variant }) => ({
   ...(theme.palette.mode === 'dark' && {
@@ -91,28 +92,52 @@ export const DefaultOutlinedButton = styled(Button)(({ theme }) => ({
   })
 }));
 
-export const StyledTextarea = styled(TextareaAutosize)(
-  ({ theme }) => `
-    width: 100%;
-    height: 200px;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 12px;
-    border-radius: 10px;
-    color: ${theme.palette.mode === 'dark' ? theme.palette.grey['300'] : theme.palette.grey['900']};
-    background: ${theme.palette.mode === 'dark' ? theme.palette.grey['900'] : '#fff'};
-    border: 1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey['700'] : theme.palette.grey['100']};
-    resize: none;
-    font-family: 'Rubik', sans-serif;
-    
-    &:hover {
-      border-color: black;
-    }
-    
-    &:focus {
-      border-color: black;
-      outline: 1.5px solid black;
-    }
-  `
-);
+export const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
+  width: '100%',
+  height: '200px',
+  fontWeight: 'medium',
+  lineHeight: 1.5,
+  padding: '12px',
+  borderRadius: '10px',
+  color: theme.palette.mode === 'light' ? theme.palette.grey['900'] : theme.palette.common.white,
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey['100'] : theme.palette.grey['800'],
+  border: `1px solid ${theme.palette.mode === 'light' ? theme.palette.grey['400'] : theme.palette.grey['700']}`,
+  resize: 'none',
+  fontFamily: 'Rubik, sans-serif',
+  '&:hover': {
+    borderColor: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white
+  },
+  '&:focus': {
+    outline: `2px solid ${theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white}`
+  }
+}));
+
+export const StyledTableHeadRow = styled(TableRow)(({ theme }) => ({
+  '& .MuiTableCell-root': {
+    color: theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.grey[500],
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : alpha(theme.palette.grey[500], 0.12),
+    fontWeight: 'medium',
+    border: 'none'
+  }
+}));
+
+export const StyledTableDataRow = styled(TableRow)(({ theme }) => ({
+  '& .MuiTableCell-root': {
+    borderBottom: '1px dashed',
+    borderColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : 'rgb(46, 50, 54)'
+  },
+  '&:hover': { backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[100] : alpha(theme.palette.grey[500], 0.08) }
+}));
+
+interface StyledNestedTableDataRowProps {
+  open: boolean;
+}
+
+export const StyledNestedTableDataRow = styled(TableRow, { shouldForwardProp: (prop) => prop !== 'open' })<StyledNestedTableDataRowProps>(({ open, theme }) => ({
+  ...(theme.palette.mode === 'light' && {
+    backgroundColor: open ? theme.palette.grey[200] : 'inherit'
+  }),
+  ...(theme.palette.mode === 'dark' && {
+    backgroundColor: open ? alpha(theme.palette.grey[500], 0.12) : 'inherit'
+  })
+}));

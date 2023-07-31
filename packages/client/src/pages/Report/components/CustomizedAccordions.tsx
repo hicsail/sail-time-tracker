@@ -8,13 +8,18 @@ import Typography from '@mui/material/Typography';
 import { FC, ReactNode } from 'react';
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
-  border: `1px solid ${theme.palette.grey[300]}`,
+  border: `1px solid`,
+  borderColor: theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.grey[800],
   borderRadius: '5px',
-  backgroundColor: theme.palette.grey[100]
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[800],
+  '&::before': {
+    display: 'none'
+  }
 }));
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => <MuiAccordionSummary expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />} {...props} />)(
   ({ theme }) => ({
+    color: theme.palette.mode === 'light' ? 'grey.700' : theme.palette.grey[600],
     backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .05)' : 'rgba(0, 0, 0, .03)',
     flexDirection: 'row-reverse',
     '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
@@ -27,8 +32,7 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => <MuiAccordionS
 );
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: '1px solid rgba(0, 0, 0, .125)'
+  padding: theme.spacing(2)
 }));
 
 interface CustomizedAccordionsProps {
@@ -36,20 +40,16 @@ interface CustomizedAccordionsProps {
   children: ReactNode;
 }
 export const CustomizedAccordions: FC<CustomizedAccordionsProps> = ({ summary, children }) => {
-  const [expanded, setExpanded] = React.useState<string | false>(false);
+  const [expanded, setExpanded] = React.useState<boolean>(false);
 
-  const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-    setExpanded(newExpanded ? panel : false);
-  };
+  const handleChange = () => setExpanded((prevState) => !prevState);
 
   return (
-    <div>
-      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography sx={{ color: 'grey.700' }}>{summary}</Typography>
-        </AccordionSummary>
-        <AccordionDetails>{children}</AccordionDetails>
-      </Accordion>
-    </div>
+    <Accordion expanded={expanded} onChange={handleChange}>
+      <AccordionSummary id="panel1d-header">
+        <Typography>{summary}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>{children}</AccordionDetails>
+    </Accordion>
   );
 };

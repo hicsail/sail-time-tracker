@@ -173,26 +173,24 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   return (
     <Box>
-      <StyledPaper elevation={0}>
-        <BasicTable
-          rows={filteredRows}
-          columns={columns}
-          keyFun={keyFun}
-          toolbar={ToolBar}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 }
-            }
-          }}
-        />
-        {data.length === 0 && (
-          <Box>
-            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
-              Add Your First Project
-            </Button>
-          </Box>
-        )}
-      </StyledPaper>
+      <BasicTable
+        rows={filteredRows}
+        columns={columns}
+        keyFun={keyFun}
+        toolbar={ToolBar}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 10 }
+          }
+        }}
+      />
+      {data.length === 0 && (
+        <Box>
+          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
+            Add Your First Project
+          </Button>
+        </Box>
+      )}
       <FormDialog open={open} onClose={handleOnClose}>
         <ProjectForm handleClose={handleOnClose} />
       </FormDialog>

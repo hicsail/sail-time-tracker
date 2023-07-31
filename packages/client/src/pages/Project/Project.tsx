@@ -8,7 +8,7 @@ export const Project = () => {
   const projects = data?.projects || [];
 
   return (
-    <Box sx={{ paddingTop: 8 }}>
+    <Box>
       {error ? (
         <Typography variant="subtitle1" color="error">
           {error.message}

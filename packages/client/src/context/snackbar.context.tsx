@@ -30,7 +30,7 @@ export const SnackBarProvider: FC<SnackBarProviderProps> = ({ children }) => {
   return (
     <SnackbarContext.Provider value={{ handleSnackBarOpen, toggleSnackBar }}>
       {children}
-      <Snackbar open={open} autoHideDuration={2000} onClose={handleSnackBarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+      <Snackbar open={open} autoHideDuration={2000} onClose={handleSnackBarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert
           onClose={handleSnackBarClose}
           severity={variant}

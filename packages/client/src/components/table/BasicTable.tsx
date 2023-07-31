@@ -2,6 +2,8 @@ import { StyledPaper } from '@components/StyledPaper';
 import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination, alpha } from '@mui/material';
 import { FC, Fragment, ReactNode, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
+import { StyledTableDataRow, StyledTableHeadRow } from '@components/StyledComponent';
+import { CustomTableContainer } from '@components/CustomTableContainer';
 
 export interface BasicTableProps {
   rows: any[];
@@ -49,41 +51,15 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
       </TableCell>
     ));
 
-    return (
-      <TableRow
-        key={keyFun(row)}
-        sx={{
-          '& .MuiTableCell-root': {
-            fontWeight: 'regular',
-            fontSize: '1rem',
-            borderBottom: '1px dashed',
-            borderColor: (theme) => (theme.palette.mode === 'light' ? 'grey.200' : 'rgb(46, 50, 54)')
-          },
-          '&:hover': { backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'grey.100' : alpha(theme.palette.grey[500], 0.08)) }
-        }}
-      >
-        {renderCells}
-      </TableRow>
-    );
+    return <StyledTableDataRow key={keyFun(row)}>{renderCells}</StyledTableDataRow>;
   });
 
   return (
-    <TableContainer component={StyledPaper} elevation={0}>
+    <CustomTableContainer>
       {toolbar}
       <Table sx={{ minWidth: 650 }}>
         <TableHead>
-          <TableRow
-            sx={{
-              '& .MuiTableCell-root': {
-                color: (theme) => (theme.palette.mode === 'light' ? 'grey.600' : 'grey.500'),
-                bgcolor: (theme) => (theme.palette.mode === 'light' ? 'grey.200' : alpha(theme.palette.grey[500], 0.12)),
-                fontWeight: 'medium',
-                border: 'none'
-              }
-            }}
-          >
-            {renderedHeaders}
-          </TableRow>
+          <StyledTableHeadRow>{renderedHeaders}</StyledTableHeadRow>
         </TableHead>
         <TableBody>{renderRows}</TableBody>
       </Table>
@@ -98,6 +74,6 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       )}
-    </TableContainer>
+    </CustomTableContainer>
   );
 };

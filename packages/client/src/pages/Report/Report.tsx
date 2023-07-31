@@ -19,13 +19,11 @@ export const Report = () => {
     { id: '2', name: 'Project' }
   ];
 
-  const handleOnChange = (e: SelectChangeEvent) => {
-    setGroupBy(e.target.value);
-  };
+  const handleOnChange = (e: SelectChangeEvent) => setGroupBy(e.target.value);
 
   return (
-    <Stack direction="column">
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 8, marginBottom: 5 }}>
+    <Stack>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
         <Box>
           <DropDownMenu data={data} onChange={handleOnChange} value={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
         </Box>

@@ -37,14 +37,7 @@ export const FormTextArea: FC<FormTextAreaProps> = (props) => {
   const { handleChange, handleBlur, values, isSubmitting } = useFormikContext<any>();
   return (
     <FormControl fullWidth>
-      <StyledTextarea
-        {...props}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        value={values[props.name]}
-        disabled={props.disabled || isSubmitting}
-        sx={{ backgroundColor: 'grey.100' }}
-      />
+      <StyledTextarea {...props} onChange={handleChange} onBlur={handleBlur} value={values[props.name]} disabled={props.disabled || isSubmitting} />
     </FormControl>
   );
 };
@@ -180,10 +173,8 @@ export const Export = () => {
   };
 
   return (
-    <Box sx={{ height: 'auto', margin: 'auto', paddingTop: 8 }}>
-      <Typography variant="h6" sx={{ mb: 4 }}>
-        Export to ClickUp
-      </Typography>
+    <Stack gap={5}>
+      <Typography variant="h6">Export to ClickUp</Typography>
       <StyledPaper>
         <Formik
           validationSchema={FormValidation}
@@ -270,6 +261,6 @@ export const Export = () => {
           </Form>
         </Formik>
       </StyledPaper>
-    </Box>
+    </Stack>
   );
 };
