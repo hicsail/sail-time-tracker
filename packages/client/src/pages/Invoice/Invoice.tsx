@@ -12,6 +12,7 @@ import { SearchBar } from '@components/SearchBar';
 import { SortedBasicTable } from '@components/table/SortedBasicTable';
 import { StyledDatePicker } from '@components/StyledDatePicker';
 import { useSnackBar } from '@context/snackbar.context';
+import { Toolbar } from '@pages/Invoice/components/table/Toolbar';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -133,86 +134,6 @@ export const Invoice = () => {
       renderCell: (row: any) => <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} onClick={() => handleOpenFormDialog(row.projectId, row.startDate, row.endDate)} />
     }
   ];
-  const ToolBar = (
-    <>
-      <Stack direction="row" gap={2} mb={3}>
-        <Box sx={{ display: 'flex', gap: 5 }}>
-          <StyledDatePicker
-            label="Start Date"
-            value={dateRange.startDate}
-            onChange={(newValue: Date | null) => {
-              setDateRange((prevState: any) => ({
-                ...prevState,
-                startDate: newValue
-              }));
-            }}
-          />
-          <StyledDatePicker
-            label="End Date"
-            value={dateRange.endDate}
-            onChange={(newValue: Date | null) => {
-              setDateRange((prevState: any) => ({
-                ...prevState,
-                endDate: newValue
-              }));
-            }}
-          />
-        </Box>
-        <SearchBar id="search invoices" value={searchText} setValue={setSearchText} />
-      </Stack>
-      <Stack marginBottom="1.5rem">
-        {(searchText !== '' || (dateRange.startDate && dateRange.endDate)) && (
-          <Box sx={{ marginBottom: 2 }}>
-            <strong>{filteredRows.length}</strong>{' '}
-            <Box component="span" sx={{ color: 'grey.600' }}>
-              results found
-            </Box>
-          </Box>
-        )}
-        <Stack direction="row" alignItems="center">
-          {dateRange.startDate && dateRange.endDate && (
-            <Paper
-              variant="outlined"
-              sx={{
-                border: '1px dashed',
-                borderColor: 'grey.300',
-                borderRadius: '8px',
-                display: 'flex',
-                gap: '8px',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '50px',
-                width: '250px',
-                padding: '0 8px',
-                backgroundColor: 'inherit'
-              }}
-            >
-              <Box component="span" sx={{ fontWeight: 'medium' }}>
-                Date:
-              </Box>
-              <Stack direction="row" gap="8px">
-                <Chip
-                  label={dateRange.startDate && dateRange.endDate && `${format(dateRange.startDate, 'dd MMM yy')} - ${format(dateRange.endDate, 'dd MMM yy')}`}
-                  sx={{
-                    borderRadius: '8px',
-                    backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'grey.900' : theme.palette.common.white),
-                    color: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey[900]),
-                    '& .MuiSvgIcon-root': { color: 'grey.500' }
-                  }}
-                  onDelete={handleReset}
-                />
-              </Stack>
-            </Paper>
-          )}
-          {(searchText !== '' || (dateRange.startDate && dateRange.endDate)) && (
-            <Button onClick={handleClearButtonClick} sx={{ color: 'error.main', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <DeleteIcon /> Clear
-            </Button>
-          )}
-        </Stack>
-      </Stack>
-    </>
-  );
 
   return (
     <Stack gap={8}>
@@ -226,15 +147,20 @@ export const Invoice = () => {
       </Stack>
       <SortedBasicTable
         rows={filteredRows}
-        toolbar={ToolBar}
+        toolbar={
+          <Toolbar
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            filteredRows={filteredRows}
+            handleClearButtonClick={handleClearButtonClick}
+            handleReset={handleReset}
+          />
+        }
         columns={columns}
         keyFun={keyFun}
         defaultOrderBy="startDate"
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 }
-          }
-        }}
       />
       <FormDialog open={openDialog} onClose={handleCloseFormDialog}>
         <Stack gap={4}>
