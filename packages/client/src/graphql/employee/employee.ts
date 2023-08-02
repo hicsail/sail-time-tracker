@@ -71,17 +71,7 @@ export type GetEmployeeByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
 
-export type GetEmployeeByIdQuery = {
-  __typename?: 'Query';
-  employee: {
-    __typename?: 'EmployeeModel';
-    id: string;
-    name: string;
-    email: string;
-    status?: string | null;
-    projects: Array<{ __typename?: 'ProjectModel'; id: string; name: string; description: string; status: string; isBillable: boolean }>;
-  };
-};
+export type GetEmployeeByIdQuery = { __typename?: 'Query'; employee: { __typename?: 'EmployeeModel'; id: string; name: string; email: string; status?: string | null } };
 
 export type GetRecordWithFavoriteProjectQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -108,7 +98,10 @@ export type EmployeeCreateInputMutationVariables = Types.Exact<{
   newEmployee: Types.EmployeeCreateInput;
 }>;
 
-export type EmployeeCreateInputMutation = { __typename?: 'Mutation'; addEmployee: { __typename?: 'EmployeeModel'; id: string; email: string; name: string } };
+export type EmployeeCreateInputMutation = {
+  __typename?: 'Mutation';
+  addEmployee: { __typename?: 'EmployeeModel'; id: string; email: string; name: string; status?: string | null };
+};
 
 export type EmployeeUpdateInputMutationVariables = Types.Exact<{
   updateEmployee: Types.EmployeeUpdateInput;
@@ -288,13 +281,6 @@ export const GetEmployeeByIdDocument = gql`
       name
       email
       status
-      projects {
-        id
-        name
-        description
-        status
-        isBillable
-      }
     }
   }
 `;
@@ -379,6 +365,7 @@ export const EmployeeCreateInputDocument = gql`
       id
       email
       name
+      status
     }
   }
 `;

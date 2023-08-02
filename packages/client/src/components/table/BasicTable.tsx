@@ -1,12 +1,13 @@
-import { StyledPaper } from '@components/StyledPaper';
-import { Table, TableBody, TableHead, TableRow, TableContainer, TablePagination } from '@mui/material';
+import { Table, TableBody, TableHead, TablePagination } from '@mui/material';
 import { FC, Fragment, ReactNode, useState } from 'react';
 import TableCell from '@mui/material/TableCell';
+import { StyledTableDataRow, StyledTableHeadRow } from '@components/StyledComponent';
+import { CustomTableContainer } from '@components/CustomTableContainer';
 
 export interface BasicTableProps {
   rows: any[];
   columns: any[];
-  toolbar?: JSX.Element;
+  toolbar?: ReactNode;
   keyFun: (row: any) => string;
   initialState?: any;
   sx?: any;
@@ -36,11 +37,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
     if (column.header) return <Fragment key={column.field}>{column.header()}</Fragment>;
 
     return (
-      <TableCell
-        key={column.field}
-        align={column.headerAlign ? column.headerAlign : 'left'}
-        sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}
-      >
+      <TableCell key={column.field} align={column.headerAlign ? column.headerAlign : 'left'} sx={{ width: column.width ? column.width : '150px' }}>
         {column.header ? column.header() : column.headerName.toUpperCase()}
       </TableCell>
     );
@@ -53,25 +50,15 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
       </TableCell>
     ));
 
-    return (
-      <TableRow
-        key={keyFun(row)}
-        sx={{
-          '& .MuiTableCell-root': { fontWeight: 'regular', fontSize: '1rem', borderBottom: '1px dashed', borderColor: 'grey.200' },
-          '&:hover': { backgroundColor: 'grey.100' }
-        }}
-      >
-        {renderCells}
-      </TableRow>
-    );
+    return <StyledTableDataRow key={keyFun(row)}>{renderCells}</StyledTableDataRow>;
   });
 
   return (
-    <TableContainer component={StyledPaper} elevation={0}>
+    <CustomTableContainer>
       {toolbar}
       <Table sx={{ minWidth: 650 }}>
         <TableHead>
-          <TableRow>{renderedHeaders}</TableRow>
+          <StyledTableHeadRow>{renderedHeaders}</StyledTableHeadRow>
         </TableHead>
         <TableBody>{renderRows}</TableBody>
       </Table>
@@ -86,6 +73,6 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       )}
-    </TableContainer>
+    </CustomTableContainer>
   );
 };

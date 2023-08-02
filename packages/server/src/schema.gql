@@ -233,7 +233,7 @@ type Mutation {
   sendSlackMessage(slackSendMessageInput: SendSlackMessageInput!): Boolean!
   batchSendingMessages(input: BatchSendSlackMessageInput!): BatchResponseModel!
   addProject(project: ProjectCreateInput!): ProjectModel!
-  updateProject(updateProject: ProjectUpdateInput!): ProjectModel!
+  updateProject(updateProject: ProjectUpdateInput!): ProjectWithContractType!
   deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
   deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!

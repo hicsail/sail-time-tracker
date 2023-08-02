@@ -12,6 +12,16 @@ export interface ThemeProviderProps {
 }
 
 declare module '@mui/material/styles' {
+  interface PaletteColor {
+    darker?: string;
+    lighter?: string;
+  }
+
+  interface SimplePaletteColorOptions {
+    darker?: string;
+    lighter?: string;
+  }
+
   interface Palette {
     customColors: {
       listNavHoverColor: string;
@@ -24,6 +34,13 @@ declare module '@mui/material/styles' {
       statusBtnBg: string;
       statusBtnText: string;
       interstellarBlue: string;
+    };
+    green: {
+      darker: string;
+      lighter: string;
+      light: string;
+      dark: string;
+      main: string;
     };
   }
 
@@ -39,6 +56,13 @@ declare module '@mui/material/styles' {
       statusBtnBg?: string;
       statusBtnText?: string;
       interstellarBlue?: string;
+    };
+    green: {
+      darker?: string;
+      lighter?: string;
+      light?: string;
+      dark?: string;
+      main?: string;
     };
   }
 }

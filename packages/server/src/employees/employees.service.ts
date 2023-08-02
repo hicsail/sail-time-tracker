@@ -25,11 +25,35 @@ export class EmployeesService {
   }
 
   /**
+   * Check if an employee exists. If the employeeId is not provided, will
+   * return false.
+   *
+   * @param employeeId The employee id to check
+   * @returns True if the employee exists, false otherwise
+   */
+  async exists(employeeId: string | undefined): Promise<boolean> {
+    // If the employee ID is not provided, return false
+    if (!employeeId) return false;
+
+    // Return true if there is an employee with the provided ID
+    const employeeCount = await this.prisma.employee.count({
+      where: {
+        id: employeeId
+      }
+    });
+    return employeeCount > 0;
+  }
+
+  /**
    * Get an employee by ID
    *
    * @return a matched employee
    */
   async getEmployeeById(id: string): Promise<Employee> {
+    const employeeExist = await this.exists(id);
+
+    if (!employeeExist) throw new Error('Employee not found');
+
     return this.prisma.employee.findUnique({
       where: {
         id: id

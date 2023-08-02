@@ -1,4 +1,4 @@
-import { Button, Checkbox, Stack, Typography } from '@mui/material';
+import { Button, Checkbox, Stack, Tooltip, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { Delete } from '@mui/icons-material';
 import { ChangeEvent, FC, useState } from 'react';
@@ -21,7 +21,7 @@ export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, ha
     setSelected([]);
   };
 
-  const handleUnFavoriteProject = async () => {
+  const handleUnFavoriteProject = () => {
     handleClickDelete();
     handleCloseFormDialog();
   };
@@ -33,7 +33,7 @@ export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, ha
       position="absolute"
       gap={6}
       sx={{
-        top: 0,
+        top: 10,
         left: 0,
         height: '58px',
         backgroundColor: `primary.light`,
@@ -42,13 +42,15 @@ export const TableHeadCover: FC<TableHeadCoverProps> = ({ rowCount, selected, ha
         zIndex: `${selected.length > 0 ? 10 : -10}`
       }}
     >
-      <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={numSelected > 0 && numSelected === rowCount} onChange={handleSelectAllClick} />
+      <Checkbox indeterminate={numSelected > 0 && numSelected < rowCount} checked={numSelected > 0 && numSelected === rowCount} onChange={handleSelectAllClick} />
       <Typography sx={{ flex: '1 1 100%' }} color="primary" variant="subtitle2">
         {numSelected} selected
       </Typography>
-      <IconButton onClick={() => setOpenDialog(true)}>
-        <Delete color="primary" />
-      </IconButton>
+      <Tooltip title={`Unfavorite ${numSelected} projects`}>
+        <IconButton onClick={() => setOpenDialog(true)}>
+          <Delete color="primary" />
+        </IconButton>
+      </Tooltip>
       <FormDialog open={openDialog} onClose={handleCloseFormDialog}>
         <Typography variant="h6" sx={{ mb: 4 }}>
           Unfavorite

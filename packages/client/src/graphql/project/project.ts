@@ -30,6 +30,7 @@ export type GetProjectByIdQuery = {
   __typename?: 'Query';
   project: {
     __typename?: 'ProjectWithContractType';
+    id: string;
     name: string;
     description: string;
     rate: number;
@@ -55,7 +56,16 @@ export type ProjectUpdateInputMutationVariables = Types.Exact<{
 
 export type ProjectUpdateInputMutation = {
   __typename?: 'Mutation';
-  updateProject: { __typename?: 'ProjectModel'; id: string; name: string; rate: number; fte: number; description: string; status: string };
+  updateProject: {
+    __typename?: 'ProjectWithContractType';
+    id: string;
+    name: string;
+    rate: number;
+    fte: number;
+    description: string;
+    status: string;
+    contractType: { __typename?: 'ContractTypeModel'; id: number; name: string };
+  };
 };
 
 export type DeleteProjectsMutationVariables = Types.Exact<{
@@ -111,6 +121,7 @@ export type GetProjectListQueryResult = Apollo.QueryResult<GetProjectListQuery, 
 export const GetProjectByIdDocument = gql`
   query getProjectById($id: String!) {
     project(id: $id) {
+      id
       name
       description
       rate
@@ -199,6 +210,10 @@ export const ProjectUpdateInputDocument = gql`
       fte
       description
       status
+      contractType {
+        id
+        name
+      }
     }
   }
 `;

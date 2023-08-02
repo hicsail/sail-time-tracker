@@ -2,7 +2,7 @@ import { FC } from 'react';
 import TableCell from '@mui/material/TableCell';
 import { TableSortLabel } from '@mui/material';
 import { BasicTable, BasicTableProps } from '@components/table/BasicTable';
-import { useSort } from '../../utils/useSort';
+import { useSort } from '../../hooks/useSort';
 
 interface SortedBasicTableProps extends BasicTableProps {
   defaultOrderBy: string;
@@ -21,7 +21,7 @@ export const SortedBasicTable: FC<SortedBasicTableProps> = (props) => {
       ...column,
       header: () => {
         return (
-          <TableCell align="left" sx={{ width: column.width ? column.width : '150px', color: 'grey.600', fontWeight: 'medium', bgcolor: 'grey.200', border: 'none' }}>
+          <TableCell align="left" sx={{ width: column.width ? column.width : '150px' }}>
             <TableSortLabel active={orderBy === column.field} direction={orderBy === column.field ? order : 'asc'} onClick={() => setSortColumn(column.field)}>
               {column.headerName}
             </TableSortLabel>

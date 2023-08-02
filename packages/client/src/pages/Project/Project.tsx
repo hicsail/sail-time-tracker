@@ -1,11 +1,21 @@
 import Box from '@mui/material/Box';
 import { ProjectTable } from '@pages/Project/components/table/ProjectTable';
 import { useGetProjectListQuery } from '@graphql/project/project';
+import { Typography } from '@mui/material';
 
 export const Project = () => {
-  const { data, loading, error } = useGetProjectListQuery();
+  const { data, error } = useGetProjectListQuery();
+  const projects = data?.projects || [];
 
-  if (loading || !data) return <div>Loading...</div>;
-
-  return <Box>{error ? <pre>{error.message}</pre> : <ProjectTable data={data.projects} />}</Box>;
+  return (
+    <Box>
+      {error ? (
+        <Typography variant="subtitle1" color="error">
+          {error.message}
+        </Typography>
+      ) : (
+        <ProjectTable data={projects} />
+      )}
+    </Box>
+  );
 };

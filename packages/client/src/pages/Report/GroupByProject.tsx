@@ -1,7 +1,6 @@
 import { Box, Tooltip } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { GetAllInvoicesDocument, useCreateOrUpdateInvoiceMutation, useSearchInvoicesByDateRangeQuery } from '@graphql/invoice/invoice';
-import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -11,10 +10,10 @@ import { Paths } from '@constants/paths';
 import * as React from 'react';
 import { InvoiceIcon } from '@components/icons/InvoiceIcon';
 import IconButton from '@mui/material/IconButton';
-import { useTimeout } from '../../utils/useTimeOutHook';
 import { differenceInBusinessDays } from 'date-fns';
 import { CircularWithValueLabel } from '@pages/Report/components/CircularWithValueLabel';
 import { SortedCollapsibleTable } from '@pages/Report/components/table/SortedCollapsibleTable';
+import { useSnackBar } from '@context/snackbar.context';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -23,7 +22,6 @@ interface GroupByEmployeeProps {
 }
 
 export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, searchText }) => {
-  const [displayContent, setDisplayContent] = useState(false);
   const navigate = useNavigate();
   const { data } = useGetProjectWithEmployeeRecordsQuery({
     variables: {
@@ -38,6 +36,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       endDate: formatDateToDashFormat(endDate)
     }
   });
+  const { toggleSnackBar } = useSnackBar();
 
   const rows = data
     ? [
@@ -45,9 +44,8 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         ...data.getProjectWithEmployeeRecords.filter((project) => project.billableHours === 0)
       ].filter((project: any) => project.status === 'Active')
     : [];
-  const [createOrUpdateInvoiceMutation, { data: createOrUpdateDate, loading, error }] = useCreateOrUpdateInvoiceMutation();
+  const [createOrUpdateInvoiceMutation] = useCreateOrUpdateInvoiceMutation();
   const filteredRows = rows.filter((row) => row.name.toLowerCase().includes(searchText?.toLowerCase() as string) && row.name !== 'Indirect' && row.name !== 'Absence');
-  useTimeout(() => setDisplayContent(false), 1000, displayContent);
 
   /**
    * generate invoice
@@ -71,9 +69,10 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       },
       refetchQueries: [{ query: GetAllInvoicesDocument }]
     }).then((r) => {
-      if (r.data) {
+      const response = r?.data?.createOrUpdateInvoice;
+      if (response) {
         refetchSearchInvoicesByDateRangeQuery();
-        setDisplayContent(true);
+        response && toggleSnackBar('Successfully generate invoice!', { variant: 'success' });
       }
     });
   };
@@ -178,9 +177,18 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
             <Tooltip title={isFind ? 'View Invoice' : 'Generate Invoice'}>
               <IconButton onClick={() => handleActionsOnClick(row, isFind)} color="secondary" sx={{ width: '50px', height: '50px' }}>
                 <Box sx={{ position: 'relative' }}>
-                  <InvoiceIcon />
+                  <InvoiceIcon sx={{ color: (theme: any) => (theme.palette.mode === 'light' ? 'inherit' : theme.palette.common.white) }} />
                   {isFind ? (
-                    <VisibilityIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
+                    <VisibilityIcon
+                      sx={{
+                        position: 'absolute',
+                        bottom: '5px',
+                        right: '-5px',
+                        fontSize: '15px',
+                        backgroundColor: 'white',
+                        borderRadius: '50%'
+                      }}
+                    />
                   ) : (
                     <AddCircleOutlineIcon sx={{ position: 'absolute', bottom: '5px', right: '-5px', fontSize: '15px', backgroundColor: 'white', borderRadius: '50%' }} />
                   )}
@@ -217,12 +225,6 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
 
   return (
     <>
-      {displayContent && (
-        <Box>
-          {!loading && !error && createOrUpdateDate && <Banner content={`Successfully generate the invoice`} state="success" />}
-          {error && <Banner content={`${error.message}`} state="error" />}
-        </Box>
-      )}
       <SortedCollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Employee" startDate={startDate} endDate={endDate} />
       {rows.length === 0 && <Box sx={{ textAlign: 'start', marginTop: 5 }}>No data</Box>}
     </>

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Project, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { ProjectUpdateInput } from './dto/project.dto';
-import { ContractTypeModel, ProjectDeleteReturnModel } from './model/project.model';
+import { ProjectDeleteReturnModel, ProjectWithContractType } from './model/project.model';
 
 @Injectable()
 export class ProjectService {
@@ -12,7 +12,7 @@ export class ProjectService {
    * Get all projects
    */
 
-  async getAllProjects(): Promise<(Project & { contractType: ContractTypeModel })[]> {
+  async getAllProjects(): Promise<ProjectWithContractType[]> {
     return this.prisma.project.findMany({
       include: {
         contractType: true
@@ -25,7 +25,7 @@ export class ProjectService {
    *
    * @return a matched project
    */
-  async getProjectById(id: string): Promise<Project & { contractType: ContractTypeModel }> {
+  async getProjectById(id: string): Promise<ProjectWithContractType> {
     return this.prisma.project.findUnique({
       where: {
         id: id
@@ -55,10 +55,13 @@ export class ProjectService {
    * @return project that has been updated
    * @param updateProject
    */
-  async updateProject(updateProject: ProjectUpdateInput): Promise<Project> {
+  async updateProject(updateProject: ProjectUpdateInput): Promise<ProjectWithContractType> {
     return this.prisma.project.update({
       where: {
         id: updateProject.id as string
+      },
+      include: {
+        contractType: true
       },
       data: updateProject
     });

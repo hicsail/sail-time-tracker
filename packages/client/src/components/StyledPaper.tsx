@@ -7,11 +7,12 @@ const NewPaper = styled(Paper)(({ theme }) => ({
   mb: 2,
   padding: '1rem',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  borderRadius: '8px'
 }));
 
 interface StyledPaperProps extends PaperProps {
-  children: ReactNode[] | ReactNode;
+  children: ReactNode;
 }
 export const StyledPaper: FC<StyledPaperProps> = ({ children, ...otherOptions }) => {
   return <NewPaper {...otherOptions}>{children}</NewPaper>;

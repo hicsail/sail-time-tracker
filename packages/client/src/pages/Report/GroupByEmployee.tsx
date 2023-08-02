@@ -12,7 +12,7 @@ import { FormTextArea } from '@pages/Invoice/Export';
 import { Form, Formik, FormikValues } from 'formik';
 import * as Yup from 'yup';
 import { Banner } from '@components/Banner';
-import { useTimeout } from '../../utils/useTimeOutHook';
+import { useTimeout } from '../../hooks/useTimeOutHook';
 import { CustomOutlinedTextInput } from '@components/StyledComponent';
 import { CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 import { SortedCollapsibleTable } from '@pages/Report/components/table/SortedCollapsibleTable';
@@ -183,9 +183,11 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
 
   return (
     <Stack gap={5}>
-      {showBanner.show && showBanner.state === 'success' && <Banner content={showBanner.content} state={showBanner.state} />}
-      <SortedCollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
-      {rows.length === 0 && <Box sx={{ textAlign: 'start' }}>No data</Box>}
+      <Stack gap={5}>
+        {showBanner.show && showBanner.state === 'success' && <Banner content={showBanner.content} state={showBanner.state} />}
+        <SortedCollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
+        {rows.length === 0 && <Box sx={{ textAlign: 'start' }}>No data</Box>}
+      </Stack>
       <CustomizedAccordions summary="See employees who has not submit their work hours">
         <Stack gap={2}>
           <Button sx={{ flexBasis: '50px' }} variant="outlined" endIcon={<SlackIcon />} onClick={() => handleOpenFormDialog(null)}>

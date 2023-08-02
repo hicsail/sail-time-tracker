@@ -4,11 +4,11 @@ import { Box, Button, Chip, SelectChangeEvent, Stack, Typography } from '@mui/ma
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
-import { StyledPaper } from '@components/StyledPaper';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import AddIcon from '@mui/icons-material/Add';
 import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
+import { DefaultContainedButton } from '@components/StyledComponent';
 
 interface EmployeeTableProps {
   data: any[];
@@ -30,20 +30,15 @@ const dropdownData = [
 ];
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
-  const [open, setOpen] = useState({
-    add: false,
-    edit: false
-  });
+  const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('Active');
   const navigate = useNavigate();
 
-  const handleClickOpen = (type: string) => {
-    setOpen((prevState) => ({ ...prevState, [type]: true }));
-  };
+  const handleClickOpen = () => setOpen(true);
 
-  const handleOnClose = (type: string) => {
-    setOpen((prevState) => ({ ...prevState, [type]: false }));
+  const handleOnClose = () => {
+    setOpen(false);
     navigate(Paths.EMPLOYEE_lIST);
   };
 
@@ -88,7 +83,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
           variant="outlined"
           onClick={() => {
             navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
-            handleClickOpen('edit');
+            handleClickOpen();
           }}
           color="secondary"
         >
@@ -100,19 +95,11 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
 
   const ToolBar = (
     <>
-      <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
+      <Stack direction="row" justifyContent="space-between" mb={5}>
         <Typography variant="h6">All Employees</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
-          onClick={() => handleClickOpen('add')}
-        >
+        <DefaultContainedButton variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
           New Employee
-        </Button>
-        <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-          <EmployeeForm handleClose={() => handleOnClose('add')} />
-        </FormDialog>
+        </DefaultContainedButton>
       </Stack>
       <Stack direction="row" gap={2} mb={3}>
         <DropDownMenu data={dropdownData} onChange={handleDropdownOnChange} label="Status" name="employee-status-dropdown" id="employee-status-dropdown" value={filter} />
@@ -124,33 +111,28 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const keyFun = (row: any) => row.id;
 
   return (
-    <Box sx={{ width: '100%', marginTop: 8 }}>
-      <StyledPaper elevation={0}>
-        <BasicTable
-          rows={filteredRows}
-          columns={columns}
-          keyFun={keyFun}
-          toolbar={ToolBar}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 }
-            }
-          }}
-        />
-        <FormDialog open={open.edit} onClose={() => handleOnClose('edit')}>
-          <EmployeeForm handleClose={() => handleOnClose('edit')} />
-        </FormDialog>
-        {data.length === 0 && (
-          <Box>
-            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => handleClickOpen('new')}>
-              Add Your First Employee
-            </Button>
-            <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-              <EmployeeForm handleClose={() => handleOnClose('add')} />
-            </FormDialog>
-          </Box>
-        )}
-      </StyledPaper>
+    <Box>
+      <BasicTable
+        rows={filteredRows}
+        columns={columns}
+        keyFun={keyFun}
+        toolbar={ToolBar}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 10 }
+          }
+        }}
+      />
+      {data.length === 0 && (
+        <Box>
+          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
+            Add Your First Employee
+          </Button>
+        </Box>
+      )}
+      <FormDialog open={open} onClose={handleOnClose}>
+        <EmployeeForm handleClose={handleOnClose} />
+      </FormDialog>
     </Box>
   );
 };

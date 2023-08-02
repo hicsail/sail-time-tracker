@@ -1,15 +1,15 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Chip, Typography, Stack, SelectChangeEvent } from '@mui/material';
+import { Box, Button, Chip, Typography, Stack, SelectChangeEvent, alpha } from '@mui/material';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
-import { StyledPaper } from '@components/StyledPaper';
 import AddIcon from '@mui/icons-material/Add';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
+import { DefaultContainedButton } from '@components/StyledComponent';
 
 const dropdownData = [
   {
@@ -31,20 +31,15 @@ interface ProjectTableProps {
 }
 
 export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
-  const [open, setOpen] = useState({
-    add: false,
-    edit: false
-  });
-  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('Active');
+  const navigate = useNavigate();
 
-  const handleClickOpen = (type: string) => {
-    setOpen((prevState) => ({ ...prevState, [type]: true }));
-  };
+  const handleClickOpen = () => setOpen(true);
 
-  const handleOnClose = (type: string) => {
-    setOpen((prevState) => ({ ...prevState, [type]: false }));
+  const handleOnClose = () => {
+    setOpen(false);
     navigate(Paths.PROJECT_lIST);
   };
 
@@ -57,14 +52,26 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   const handleDropdownOnChange = (e: SelectChangeEvent<string>) => setFilter(e.target.value);
 
-  const contractTypeColor = (id: number, type?: string) => {
+  const contractTypeColor = (id: number, type?: string, theme?: any) => {
     switch (id) {
       case 0:
-        return type === 'bg' ? 'grey.300' : 'grey.700';
+        if (type === 'bg') {
+          return alpha(theme.palette.grey[500], 0.16);
+        } else {
+          return theme.palette.mode === 'light' ? 'grey.600' : 'grey.500';
+        }
       case 1:
-        return type === 'bg' ? 'warning.light' : 'warning.dark';
+        if (type === 'bg') {
+          return alpha(theme.palette.warning.main, 0.16);
+        } else {
+          return theme.palette.mode === 'light' ? 'warning.dark' : 'warning.light';
+        }
       case 2:
-        return type === 'bg' ? 'info.light' : 'info.dark';
+        if (type === 'bg') {
+          return alpha(theme.palette.info.main, 0.16);
+        } else {
+          return theme.palette.mode === 'light' ? 'info.dark' : 'info.light';
+        }
     }
   };
 
@@ -118,8 +125,8 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         <Chip
           label={row.contractType.name}
           sx={{
-            backgroundColor: contractTypeColor(row.contractType.id, 'bg'),
-            color: contractTypeColor(row.contractType.id),
+            backgroundColor: (theme) => contractTypeColor(row.contractType.id, 'bg', theme),
+            color: (theme) => contractTypeColor(row.contractType.id, 'color', theme),
             padding: '0 10px',
             borderRadius: '8px',
             fontWeight: 'medium'
@@ -136,7 +143,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           variant="outlined"
           onClick={() => {
             navigate(`${Paths.PROJECT_lIST}/${row.id}`);
-            handleClickOpen('edit');
+            handleClickOpen();
           }}
           color="secondary"
         >
@@ -148,19 +155,11 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   const ToolBar = (
     <>
-      <Stack direction="row" width="100%" justifyContent="space-between" marginBottom={5}>
+      <Stack direction="row" justifyContent="space-between" mb={5}>
         <Typography variant="h6">All Projects</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          sx={{ borderRadius: '8px', backgroundColor: 'grey.800', '&:hover': { backgroundColor: 'grey.700' } }}
-          onClick={() => handleClickOpen('add')}
-        >
+        <DefaultContainedButton variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
           New Project
-        </Button>
-        <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-          <ProjectForm handleClose={() => handleOnClose('add')} />
-        </FormDialog>
+        </DefaultContainedButton>
       </Stack>
       <Stack direction="row" gap={2} mb={3}>
         <DropDownMenu data={dropdownData} onChange={handleDropdownOnChange} label="Status" name="employee-status-dropdown" id="employee-status-dropdown" value={filter} />
@@ -172,33 +171,28 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const keyFun = (row: any) => row.id;
 
   return (
-    <Box sx={{ width: '100%', marginTop: 8 }}>
-      <StyledPaper elevation={0}>
-        <BasicTable
-          rows={filteredRows}
-          columns={columns}
-          keyFun={keyFun}
-          toolbar={ToolBar}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 }
-            }
-          }}
-        />
-        <FormDialog open={open.edit} onClose={() => handleOnClose('edit')}>
-          <ProjectForm handleClose={() => handleOnClose('edit')} />
-        </FormDialog>
-        {data.length === 0 && (
-          <Box>
-            <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={() => handleClickOpen('add')}>
-              Add Your First Project
-            </Button>
-            <FormDialog open={open.add} onClose={() => handleOnClose('add')}>
-              <ProjectForm handleClose={() => handleOnClose('add')} />
-            </FormDialog>
-          </Box>
-        )}
-      </StyledPaper>
+    <Box>
+      <BasicTable
+        rows={filteredRows}
+        columns={columns}
+        keyFun={keyFun}
+        toolbar={ToolBar}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 10 }
+          }
+        }}
+      />
+      {data.length === 0 && (
+        <Box>
+          <Button sx={{ width: '100%', height: '200px', fontSize: '1.2rem' }} onClick={handleClickOpen}>
+            Add Your First Project
+          </Button>
+        </Box>
+      )}
+      <FormDialog open={open} onClose={handleOnClose}>
+        <ProjectForm handleClose={handleOnClose} />
+      </FormDialog>
     </Box>
   );
 };

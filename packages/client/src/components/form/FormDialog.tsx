@@ -10,7 +10,7 @@ interface FormDialogProps {
 
 export const FormDialog: FC<FormDialogProps> = ({ open, children, onClose }) => {
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth="md">
       <CustomStyledFormDialog>{children}</CustomStyledFormDialog>
     </Dialog>
   );

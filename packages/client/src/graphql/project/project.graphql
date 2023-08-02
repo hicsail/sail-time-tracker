@@ -16,6 +16,7 @@ query getProjectList {
 
 query getProjectById($id: String!) {
   project(id: $id) {
+    id
     name
     description
     rate
@@ -48,6 +49,10 @@ mutation ProjectUpdateInput($updateProject: ProjectUpdateInput!) {
     fte
     description
     status
+    contractType {
+      id
+      name
+    }
   }
 }
 

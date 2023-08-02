@@ -5,13 +5,14 @@ import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
 import { GetAllInvoicesDocument, useDeleteInvoiceMutation, useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
-import { DatePicker } from '@mui/x-date-pickers';
-import { CustomDatePickerLayout } from '@pages/Track/components/DatePicker/CustomDatePickerLayout';
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { FormDialog } from '@components/form/FormDialog';
 import { SearchBar } from '@components/SearchBar';
 import { SortedBasicTable } from '@components/table/SortedBasicTable';
+import { StyledDatePicker } from '@components/StyledDatePicker';
+import { useSnackBar } from '@context/snackbar.context';
+import { Toolbar } from '@pages/Invoice/components/table/Toolbar';
 
 const CustomIDCellRender = (props: { id: string; value: string; startDate: Date; endDate: Date }) => {
   const { id, value, startDate, endDate } = props;
@@ -35,6 +36,7 @@ export const Invoice = () => {
   const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
   const { data } = useGetAllInvoicesQuery();
   const [deleteInvoice] = useDeleteInvoiceMutation();
+  const { toggleSnackBar } = useSnackBar();
   const rows = data
     ? data.invoices.map((invoice) => {
         const projectName = invoice.project.name;
@@ -76,8 +78,8 @@ export const Invoice = () => {
     setSearchText('');
   };
 
-  const handleDeleteInvoice = (projectId: string, startDate: string, endDate: string) => {
-    deleteInvoice({
+  const handleDeleteInvoice = async (projectId: string, startDate: string, endDate: string) => {
+    const res = await deleteInvoice({
       variables: {
         projectId_startDate_endDate: {
           projectId,
@@ -86,7 +88,9 @@ export const Invoice = () => {
         }
       },
       refetchQueries: [{ query: GetAllInvoicesDocument }]
-    }).then((r) => r.data && setOpenDialog(false));
+    });
+    handleCloseFormDialog();
+    res?.data?.deleteInvoice && toggleSnackBar(`Successfully deleted the invoice!`, { variant: 'success' });
   };
 
   const handleCloseFormDialog = () => setOpenDialog(false);
@@ -130,125 +134,52 @@ export const Invoice = () => {
       renderCell: (row: any) => <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} onClick={() => handleOpenFormDialog(row.projectId, row.startDate, row.endDate)} />
     }
   ];
-  const ToolBar = (
-    <>
-      <Stack direction="row" gap={2} mb={3}>
-        <Box sx={{ display: 'flex', gap: 5 }}>
-          <DatePicker
-            label="Start Date"
-            value={dateRange.startDate}
-            slots={{ layout: CustomDatePickerLayout }}
-            onChange={(newValue) => {
-              setDateRange((prevState: any) => ({
-                ...prevState,
-                startDate: newValue
-              }));
-            }}
-          />
-          <DatePicker
-            label="End Date"
-            value={dateRange.endDate}
-            slots={{ layout: CustomDatePickerLayout }}
-            onChange={(newValue) => {
-              setDateRange((prevState: any) => ({
-                ...prevState,
-                endDate: newValue
-              }));
-            }}
-          />
-        </Box>
-        <SearchBar id="search invoices" value={searchText} setValue={setSearchText} />
-      </Stack>
-      <Stack marginBottom="1.5rem">
-        {(searchText !== '' || (dateRange.startDate && dateRange.endDate)) && (
-          <Box sx={{ marginBottom: 2 }}>
-            <strong>{filteredRows.length}</strong>{' '}
-            <Box component="span" sx={{ color: 'grey.600' }}>
-              results found
-            </Box>
-          </Box>
-        )}
-        <Stack direction="row" alignItems="center">
-          {dateRange.startDate && dateRange.endDate && (
-            <Paper
-              variant="outlined"
-              sx={{
-                border: '1px dashed',
-                borderColor: 'grey.300',
-                borderRadius: '8px',
-                display: 'flex',
-                gap: '8px',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '50px',
-                width: '250px',
-                padding: '0 8px'
-              }}
-            >
-              <Box component="span" sx={{ fontWeight: 'medium' }}>
-                Date:
-              </Box>
-              <Stack direction="row" gap="8px">
-                <Chip
-                  label={dateRange.startDate && dateRange.endDate && `${format(dateRange.startDate, 'dd MMM yy')} - ${format(dateRange.endDate, 'dd MMM yy')}`}
-                  sx={{ borderRadius: '8px', width: '100%', backgroundColor: 'grey.900', color: 'white', '& .MuiSvgIcon-root': { color: 'grey.500' } }}
-                  onDelete={handleReset}
-                />
-              </Stack>
-            </Paper>
-          )}
-          {(searchText !== '' || (dateRange.startDate && dateRange.endDate)) && (
-            <Button onClick={handleClearButtonClick} sx={{ color: 'error.main', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <DeleteIcon /> Clear
-            </Button>
-          )}
-        </Stack>
-      </Stack>
-    </>
-  );
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 8 }}>
-        <Typography variant="h5" sx={{ marginTop: 8, fontWeight: 'bold', color: 'customColors.interstellarBlue' }}>
+    <Stack gap={8}>
+      <Stack>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'customColors.interstellarBlue' }}>
           Billing & Invoices
         </Typography>
         <Typography variant="body2" sx={{ color: 'secondary.light' }}>
           Managing and viewing all your invoices.
         </Typography>
-      </Box>
+      </Stack>
       <SortedBasicTable
         rows={filteredRows}
-        toolbar={ToolBar}
+        toolbar={
+          <Toolbar
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            filteredRows={filteredRows}
+            handleClearButtonClick={handleClearButtonClick}
+            handleReset={handleReset}
+          />
+        }
         columns={columns}
         keyFun={keyFun}
         defaultOrderBy="startDate"
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 }
-          }
-        }}
       />
       <FormDialog open={openDialog} onClose={handleCloseFormDialog}>
-        <Typography variant="h6" sx={{ mb: 4 }}>
-          Delete Invoice
-        </Typography>
-        <Typography variant="body1" sx={{ mb: 4 }}>
-          Are you sure you want to delete this invoice?
-        </Typography>
-        <Stack direction="row" gap={2} justifyContent="end">
-          <Button
-            color="error"
-            variant="contained"
-            onClick={() => currentInvoice && handleDeleteInvoice(currentInvoice.projectId, currentInvoice.startDate, currentInvoice.endDate)}
-          >
-            delete
-          </Button>
-          <Button color="secondary" variant="outlined" onClick={handleCloseFormDialog}>
-            cancel
-          </Button>
+        <Stack gap={4}>
+          <Typography variant="h6">Delete Invoice</Typography>
+          <Typography variant="body1">Are you sure you want to delete this invoice?</Typography>
+          <Stack direction="row" gap={2} justifyContent="end">
+            <Button
+              color="error"
+              variant="contained"
+              onClick={() => currentInvoice && handleDeleteInvoice(currentInvoice.projectId, currentInvoice.startDate, currentInvoice.endDate)}
+            >
+              delete
+            </Button>
+            <Button color="secondary" variant="outlined" onClick={handleCloseFormDialog}>
+              cancel
+            </Button>
+          </Stack>
         </Stack>
       </FormDialog>
-    </Box>
+    </Stack>
   );
 };

@@ -26,21 +26,19 @@ export const EnhancedTableHead = (props: EnhancedTableProps) => {
         <TableCell padding="checkbox">
           <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount} onChange={onSelectAllClick} />
         </TableCell>
-        <TableCell key="projectName" align="left" padding="normal" sx={{ width: '150px' }}>
+        <TableCell key="projectName" sx={{ width: '150px' }}>
           Project Name
         </TableCell>
         {dates.map((dateValue) => (
-          <TableCell key={dateValue.dateOfMonth} align="left" padding="normal">
+          <TableCell key={dateValue.dateOfMonth}>
             <Typography>{dateValue.dateOfWeek}</Typography>
             <Typography>{dateValue.dateOfMonth}</Typography>
           </TableCell>
         ))}
-        <TableCell key="totalHours" align="left" padding="normal" sx={{ width: '150px' }}>
+        <TableCell key="totalHours" sx={{ width: '150px' }}>
           Total Hours
         </TableCell>
-        <TableCell key="description" align="left" padding="normal">
-          Description
-        </TableCell>
+        <TableCell key="description">Description</TableCell>
       </TableRow>
     </TableHead>
   );

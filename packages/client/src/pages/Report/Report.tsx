@@ -3,11 +3,11 @@ import { GroupByProject } from '@pages/Report/GroupByProject';
 import { useState } from 'react';
 import { DropDownMenu } from '@components/form/DropDownMenu';
 import { Box, InputAdornment, SelectChangeEvent, Stack } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
 import { TextInput } from '@components/TextInput';
 import { useDateRange } from '@context/reportFilter.context';
+import { StyledDatePicker } from '@components/StyledDatePicker';
 
 export const Report = () => {
   const [searchText, setSearchText] = useState<string>('');
@@ -19,31 +19,29 @@ export const Report = () => {
     { id: '2', name: 'Project' }
   ];
 
-  const handleOnChange = (e: SelectChangeEvent) => {
-    setGroupBy(e.target.value);
-  };
+  const handleOnChange = (e: SelectChangeEvent) => setGroupBy(e.target.value);
 
   return (
-    <Stack direction="column">
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 8, marginBottom: 5 }}>
+    <Stack>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
         <Box>
           <DropDownMenu data={data} onChange={handleOnChange} value={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
         </Box>
         <Box sx={{ display: 'flex', gap: 5 }}>
-          <DatePicker
+          <StyledDatePicker
             label="Start Date"
             value={dateRange.startDate}
-            onChange={(newValue) => {
+            onChange={(newValue: Date | null) => {
               setDateRange((prevState: any) => ({
                 ...prevState,
                 startDate: newValue
               }));
             }}
           />
-          <DatePicker
+          <StyledDatePicker
             label="End Date"
             value={dateRange.endDate}
-            onChange={(newValue) => {
+            onChange={(newValue: Date | null) => {
               setDateRange((prevState: any) => ({
                 ...prevState,
                 endDate: newValue

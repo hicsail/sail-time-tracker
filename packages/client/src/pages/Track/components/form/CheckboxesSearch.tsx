@@ -2,92 +2,79 @@ import { Checkbox, Autocomplete, Box, Typography, Stack, ListItem } from '@mui/m
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
 import { FC, SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
-import { useSettings } from '@context/setting.context';
 import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
-import { FavoriteProjectCreateInput } from '@graphql/graphql';
 import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
-import { Banner } from '@components/Banner';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
 import { CustomOutlinedTextInput, DefaultContainedButton, DefaultOutlinedButton } from '@components/StyledComponent';
-import { useTimeout } from '../../../../utils/useTimeOutHook';
+import { useSnackBar } from '@context/snackbar.context';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
 
 interface CheckboxesSearchProps {
-  data: any[] | undefined;
+  excludedData: any[] | undefined;
   onClose: () => void;
 }
 
-export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) => {
+export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onClose }) => {
   const [selectedProjects, setSelectedProjects] = useState<any[]>([]);
-  const [isShowBanner, setIsShowBanner] = useState(false);
   const { data: projectListDate } = useGetProjectListQuery();
-  const [addFavoriteProjectMutation, { data: addFavoriteProjectData, loading, error }] = useAddFavoriteProjectMutation();
-  const { settings } = useSettings();
+  const activeProjects = projectListDate?.projects?.filter((project) => project.status === 'Active') ?? [];
+  const [addFavoriteProjectMutation, { error: addFavoriteProjectError }] = useAddFavoriteProjectMutation();
   const { employeeId } = useEmployee();
   const { date } = useDate();
-
-  useTimeout(() => setIsShowBanner(false), 1000, isShowBanner);
+  const { toggleSnackBar } = useSnackBar();
 
   // handle user select projects from search checkbox
-  const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any[]) => {
-    setSelectedProjects(value);
-  };
+  const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any[]) => setSelectedProjects(value);
 
   // handle add favorite project event
   const handleOnSubmit = () => {
-    if (settings.employee && selectedProjects) {
-      const data = selectedProjects.map((selectedProject: any) => {
-        return { employeeId: settings.employee, projectId: selectedProject.id };
-      });
+    if (employeeId && selectedProjects) {
+      const newFavoriteProjects = selectedProjects.map((project: any) => ({ employeeId: employeeId, projectId: project.id }));
 
       addFavoriteProjectMutation({
         variables: {
-          favoriteProject: data as FavoriteProjectCreateInput[]
+          favoriteProject: newFavoriteProjects
         },
         refetchQueries: [
           {
             query: GetRecordWithFavoriteProjectDocument,
             variables: {
-              id: employeeId as string,
+              id: employeeId,
               startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
               endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
             }
           }
         ]
-      }).then((r) => r.data && setIsShowBanner(true));
+      }).then((r) => {
+        const response = r?.data?.addFavoriteProject;
+        response && response.count > 0 && toggleSnackBar(`Successfully add ${response?.count} favorite project`, { variant: 'success' });
+        addFavoriteProjectError && toggleSnackBar('Something went wrong!', { variant: 'error' });
+      });
     }
     setSelectedProjects([]);
   };
 
   return (
     <Box>
-      {isShowBanner && (
-        <>
-          {!loading && !error && addFavoriteProjectData && (
-            <Banner content={`Successfully add ${addFavoriteProjectData.addFavoriteProject.count} favorite project`} state="success" />
-          )}
-          {error && <Banner content={`${error.message}`} state="error" />}
-        </>
-      )}
       <Typography variant="h6">Add your favorite project</Typography>
       <Autocomplete
         sx={{ marginTop: '3rem', width: 500, backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']) }}
         multiple
         id="checkboxes-tags-favoriteProject"
-        options={projectListDate?.projects ?? []}
+        options={activeProjects}
         disableCloseOnSelect
         getOptionLabel={(option) => option.name}
         filterOptions={(options, { inputValue }) => {
-          if (data) {
-            const ignoredValues = data.map((project) => project.projectId);
+          if (excludedData) {
+            const ignoredValues = excludedData.map((project) => project.projectId);
 
             return options.filter((option) => {
-              return !ignoredValues.includes(option.id) && option.name.toLowerCase().includes(inputValue.toLowerCase()) && option.status === 'Active';
+              return !ignoredValues.includes(option.id) && option.name.toLowerCase().includes(inputValue.toLowerCase());
             });
           }
 
@@ -96,7 +83,7 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ data, onClose }) =
         renderOption={(props, option, { selected }) => {
           return (
             <ListItem {...props} sx={{ backgroundColor: (theme) => (theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800']) }}>
-              <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} disabled={selected} />
+              <Checkbox icon={icon} checkedIcon={checkedIcon} checked={selected} disabled={selected} />
               {option.name}
             </ListItem>
           );
