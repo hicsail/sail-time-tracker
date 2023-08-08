@@ -12,6 +12,10 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClickUpTaskModule } from './click-up-task/click-up-task.module';
+import { AuthGuard } from '@summer-luna/auth-react';
+import { JwtModule } from '@summer-luna/auth-react';
+import { APP_GUARD } from '@nestjs/core';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -34,9 +38,17 @@ import { ClickUpTaskModule } from './click-up-task/click-up-task.module';
     RecordModule,
     InvoiceModule,
     CommentsModule,
-    ClickUpTaskModule
+    ClickUpTaskModule,
+    JwtModule,
+    UserModule
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    }
+  ]
 })
 export class AppModule {}
