@@ -12,8 +12,8 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClickUpTaskModule } from './click-up-task/click-up-task.module';
-import { AuthGuard } from '@summer-luna/auth-react';
-import { JwtModule } from '@summer-luna/auth-react';
+import { AuthGuard } from '@summerluna/auth-guard';
+import { JwtModule } from '@summerluna/auth-guard';
 import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './user/user.module';
 
