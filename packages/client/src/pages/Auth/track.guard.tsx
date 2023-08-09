@@ -1,7 +1,7 @@
-import { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '@summerluna/harbor';
 import { Paths } from '@constants/paths';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 export const TrackGuard = () => {
   const { token, decoded_token, initialized } = useAuth();
