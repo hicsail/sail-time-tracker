@@ -66,7 +66,7 @@ export const Track = () => {
         <DropDownMenu
           data={employees}
           onChange={handleSelectEmployeeOnChange}
-          label="Select Employee"
+          label={decoded_token?.role === 1 ? 'Select Employee' : 'Employee Name'}
           value={employeeId ? employeeId : ''}
           id="select_employee"
           name="select_employee"

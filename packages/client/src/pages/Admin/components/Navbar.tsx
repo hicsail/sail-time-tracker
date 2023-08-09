@@ -1,10 +1,10 @@
 import { styled } from '@mui/material';
-import { Folder, AssignmentInd, Assessment, WatchLater, Receipt } from '@mui/icons-material';
+import { Assessment, AssignmentInd, Folder, Logout, Receipt, WatchLater } from '@mui/icons-material';
 import { Paths } from '@constants/paths';
 import { SideListItem } from '@pages/Admin/components/SideListItem';
-import { SwitchBtn } from '@components/switch/switchBtn';
 import { SideList } from '@pages/Admin/components/SideList';
 import { useToggleTheme } from '../../../hooks/useToggleTheme';
+import { SwitchBtn } from '@components/switch/switchBtn';
 
 export const Navbar = () => {
   const { toggleTheme } = useToggleTheme();
@@ -28,6 +28,7 @@ export const Navbar = () => {
       </SideList>
       <SideList>
         <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Track" />
+        <SideListItem path={Paths.LOGOUT} icon={<Logout sx={{ color: 'customColors.iconColor' }} />} info="Logout" />
         <SwitchBtn onClick={toggleTheme} />
       </SideList>
     </Nav>
