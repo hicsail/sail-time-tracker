@@ -61,7 +61,7 @@ export const Track = () => {
   };
 
   return (
-    <Stack gap={8} paddingTop={6}>
+    <Stack gap={8}>
       <Stack direction="row" gap={10} alignItems="center">
         <DropDownMenu
           data={employees}

@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Stack, styled } from '@mui/material';
 
 interface SplitScreenProps {
@@ -8,11 +8,15 @@ interface SplitScreenProps {
   direction: 'row' | 'column';
 }
 
-const Pane = styled('div')(({ weight }: { weight: number }) => ({
+const Pane = styled('div')<PaneProps>(({ weight }) => ({
   flex: weight
 }));
 
-export const SplitScreen: FC<SplitScreenProps> = ({ children, leftWeight = 1, rightWeight = 1, direction }) => {
+interface PaneProps {
+  weight: number;
+}
+
+export const SplitScreen = ({ children, leftWeight = 1, rightWeight = 1, direction }: SplitScreenProps) => {
   const [left, right] = children;
 
   return (
