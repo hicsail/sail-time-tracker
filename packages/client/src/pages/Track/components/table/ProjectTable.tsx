@@ -117,7 +117,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           </FormDialog>
         </Stack>
         <TableContainer>
-          <Table sx={{ minWidth: 750, position: 'relative' }} aria-labelledby="tableTitle">
+          <Table sx={{ position: 'relative' }} aria-labelledby="tableTitle">
             <TableHeadCover
               rowCount={rowCount}
               selected={selected}

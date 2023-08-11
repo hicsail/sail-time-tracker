@@ -62,7 +62,7 @@ export const Track = () => {
 
   return (
     <Stack gap={8}>
-      <Stack direction="row" gap={10} alignItems="center">
+      <Stack direction="row" sx={{ gap: { lg: 10, sm: 5 } }} alignItems="center">
         <DropDownMenu
           data={employees}
           onChange={handleSelectEmployeeOnChange}
