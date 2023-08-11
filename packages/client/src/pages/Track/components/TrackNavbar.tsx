@@ -25,7 +25,8 @@ export const TrackNavbar = () => {
         backgroundColor: theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800'],
         height: '5vh',
         position: 'fixed',
-        width: '100%'
+        width: '100%',
+        zIndex: 20
       }}
     >
       {isAdmin && lessThanLarge && (
