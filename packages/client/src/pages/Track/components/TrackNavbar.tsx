@@ -23,7 +23,9 @@ export const TrackNavbar = () => {
       direction="row"
       sx={{
         backgroundColor: theme.palette.mode === 'light' ? theme.palette.common.white : theme.palette.grey['800'],
-        height: '5vh'
+        height: '5vh',
+        position: 'fixed',
+        width: '100%'
       }}
     >
       {isAdmin && lessThanLarge && (

@@ -16,7 +16,6 @@ export const AdminNavbar = () => {
     padding: '0 1rem',
     borderRight: `1px dashed rgba(145, 158, 171, 0.2)`,
     backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey['100'] : theme.palette.grey['900'],
-    position: 'sticky',
     height: '100vh',
     color: theme.palette.mode === 'light' ? theme.palette.grey['600'] : theme.palette.grey['500'],
     ...(!open && { width: '100px' })
