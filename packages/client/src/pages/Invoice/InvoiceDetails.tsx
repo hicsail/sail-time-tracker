@@ -96,7 +96,7 @@ export const InvoiceDetails = () => {
       ?.map((employee) => {
         const { employeeName, employeeId, employeeWorkHours, employeeIndirectHours } = employee;
         const billableHours = employeeIndirectHours + employeeWorkHours;
-        const amount = billableHours * 65;
+        const amount = billableHours * project.rate;
         return {
           employeeName,
           id: employeeId,
@@ -374,7 +374,7 @@ export const InvoiceDetails = () => {
             </Stack>
           }
         />
-        <DisplayCard id="Report invoice Amount" title="Report Amount" data={project && USDollar.format(project.billableHours * 65)} />
+        <DisplayCard id="Report invoice Amount" title="Report Amount" data={project && USDollar.format(project.billableHours * project.rate)} />
       </Stack>
       <Box sx={{ marginTop: '2rem' }}>
         <SortedBasicTable rows={rows} columns={columns} keyFun={keyFun} hidePagination defaultOrderBy="billableHours" />
