@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Record } from '@prisma/client';
 import { RecordCreateInput } from './dto/record.dto';
+import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 
 @Injectable()
 export class RecordService {
@@ -27,6 +28,24 @@ export class RecordService {
         projectId: record.projectId,
         hours: record.hours,
         date: record.date
+      }
+    });
+  }
+
+  async deleteZeroHoursRecord(employeeId: string, projectIds: string[], startDate: Date, endDate: Date): Promise<BatchPayload> {
+    return this.prisma.record.deleteMany({
+      where: {
+        employeeId: employeeId,
+        projectId: {
+          in: projectIds
+        },
+        date: {
+          lte: endDate,
+          gte: startDate
+        },
+        hours: {
+          equals: 0
+        }
       }
     });
   }
