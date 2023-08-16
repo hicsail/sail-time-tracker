@@ -154,7 +154,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                         color="primary"
                         checked={isItemSelected}
                         onClick={(event) => handleClick(event, row.projectId)}
-                        disabled={row.projectName === 'Indirect' || row.projectName === 'Absence'}
+                        disabled={row.projectName === 'Indirect' || row.projectName === 'Absence' || totalHours !== 0}
                       />
                     </TableCell>
                     <TableCell id="name">{row.projectName}</TableCell>
