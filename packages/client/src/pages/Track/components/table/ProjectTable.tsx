@@ -53,7 +53,13 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       // exclude the first two rows (Indirect and Absence)
-      const filteredSelected = rows.filter((row: any, index: number) => index !== 1 && index !== 0).map((row: any) => row.projectId);
+      // exclude the rows that have total hours > 0
+      const filteredSelected = rows
+        .filter((row: any, index: number) => {
+          const totalHours = row.records.reduce((totalHours: number, record: any) => totalHours + record.hours, 0);
+          return index !== 1 && index !== 0 && totalHours === 0;
+        })
+        .map((row: any) => row.projectId);
       setSelected(filteredSelected);
       return;
     }
