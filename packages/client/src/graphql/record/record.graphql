@@ -6,3 +6,9 @@ mutation addRecord($record: RecordCreateInput!) {
     hours
   }
 }
+
+mutation deleteRecord($input: RecordDeleteInput!) {
+  deleteRecord(input: $input) {
+    count
+  }
+}

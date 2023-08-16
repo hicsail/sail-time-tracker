@@ -256,6 +256,7 @@ export type Mutation = {
   deleteFavoriteProjects: BatchPayload;
   deleteInvoice: InvoiceModel;
   deleteProjects: ProjectDeleteReturnModel;
+  deleteRecord: BatchPayload;
   insertOrUpdateRecord: RecordInsertOrUpdateModel;
   sendSlackMessage: Scalars['Boolean'];
   updateClickUpTask: ClickUpTaskModel;
@@ -319,6 +320,10 @@ export type MutationDeleteInvoiceArgs = {
 
 export type MutationDeleteProjectsArgs = {
   ids: Array<Scalars['String']>;
+};
+
+export type MutationDeleteRecordArgs = {
+  input: RecordDeleteInput;
 };
 
 export type MutationInsertOrUpdateRecordArgs = {
@@ -486,6 +491,13 @@ export type RecordCreateInput = {
   employeeId: Scalars['ID'];
   hours: Scalars['Float'];
   projectId: Scalars['ID'];
+};
+
+export type RecordDeleteInput = {
+  employeeId: Scalars['ID'];
+  endDate?: InputMaybe<Scalars['DateTime']>;
+  projectIds: Array<Scalars['String']>;
+  startDate?: InputMaybe<Scalars['DateTime']>;
 };
 
 export type RecordInsertOrUpdateModel = {

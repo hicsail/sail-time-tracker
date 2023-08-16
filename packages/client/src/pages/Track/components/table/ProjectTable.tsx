@@ -23,6 +23,7 @@ import { TableHeadCover } from '@pages/Track/components/table/TableHeadCover';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
 import { useSnackBar } from '@context/snackbar.context';
+import { useDeleteRecordMutation } from '@graphql/record/record';
 
 interface ProjectTableProps {
   data: any | undefined;
@@ -40,6 +41,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const rowCount = rows.length - 2;
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
   const { toggleSnackBar } = useSnackBar();
+  const [deleteRecord] = useDeleteRecordMutation();
 
   const handleClickOpen = () => setOpen(true);
 
@@ -98,6 +100,18 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         const response = r?.data?.deleteFavoriteProjects;
         response && response.count > 0 && toggleSnackBar(`Successfully unfavorite ${response?.count} projects`, { variant: 'success' });
         !response && toggleSnackBar('Something went wrong!', { variant: 'error' });
+      });
+
+      // delete records of the unfavorite projects that has 0 hours
+      deleteRecord({
+        variables: {
+          input: {
+            employeeId: employeeId,
+            projectIds: selected as string[],
+            startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
+            endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
+          }
+        }
       });
     }
 
