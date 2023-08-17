@@ -91,7 +91,25 @@ export class EmployeesService {
    */
 
   async addEmployee(newEmployee: EmployeeCreateInput): Promise<Employee> {
-    return this.prisma.employee.create({ data: newEmployee });
+    const employee = await this.prisma.employee.create({ data: newEmployee });
+    const projects = await this.prisma.project.findMany({
+      where: {
+        OR: [{ name: 'Indirect' }, { name: 'Absence' }]
+      }
+    });
+    // default favorite projects for new employee
+    if (employee) {
+      for (const project of projects) {
+        await this.prisma.favoriteProject.createMany({
+          data: {
+            employeeId: employee.id,
+            projectId: project.id
+          },
+          skipDuplicates: true
+        });
+      }
+    }
+    return employee;
   }
 
   /**
