@@ -8,6 +8,7 @@ import { useAuth } from '@summerluna/harbor';
 import MenuIcon from '@mui/icons-material/Menu';
 import { SideList } from '@pages/Admin/components/SideList';
 import { useNavbar } from '@context/navbar.context';
+import { useEffect } from 'react';
 
 export const TrackNavbar = () => {
   const { toggleTheme } = useToggleTheme();
@@ -15,7 +16,11 @@ export const TrackNavbar = () => {
   const isAdmin = decoded_token?.role === 1;
   const theme = useTheme();
   const lessThanLarge = useMediaQuery(theme.breakpoints.down('lg'));
-  const { open, handleToggle } = useNavbar();
+  const { open, handleToggle, setOpen } = useNavbar();
+
+  useEffect(() => {
+    lessThanLarge && setOpen(false);
+  }, [lessThanLarge]);
 
   return (
     <Stack

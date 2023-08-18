@@ -3,6 +3,7 @@ import { createContext, ReactNode, FC, useState, useContext } from 'react';
 interface NavbarContextProps {
   open: boolean;
   handleToggle: () => void;
+  setOpen: (open: boolean) => void;
 }
 
 const NavbarContext = createContext<NavbarContextProps>({} as NavbarContextProps);
@@ -20,7 +21,8 @@ export const NavbarProvider: FC<NavbarProviderProps> = ({ children }) => {
     <NavbarContext.Provider
       value={{
         open,
-        handleToggle
+        handleToggle,
+        setOpen
       }}
     >
       {children}
