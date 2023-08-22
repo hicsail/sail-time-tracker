@@ -204,7 +204,7 @@ export class EmployeesService {
       employee.records
         .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
         .forEach((record) => {
-          if (!projectHoursMap.get(record.project.id)) {
+          if (!projectHoursMap.has(record.project.id)) {
             projectHoursMap.set(record.project.id, record.hours);
             uniqueProjectList.push(record);
           } else {
