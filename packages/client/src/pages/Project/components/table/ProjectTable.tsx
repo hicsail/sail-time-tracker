@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Chip, Typography, Stack, SelectChangeEvent, alpha, List, ListItem, Tooltip, IconButton } from '@mui/material';
+import { Box, Button, Chip, Typography, Stack, SelectChangeEvent, alpha, ListItem, Tooltip, IconButton } from '@mui/material';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
@@ -12,7 +12,6 @@ import { SearchBar } from '@components/SearchBar';
 import { DefaultContainedButton } from '@components/StyledComponent';
 import { ArchiveIcon } from '@components/icons/ArchiveIcon';
 import { CustomPopover } from '@components/CuctomPopover';
-import { useEmployeeUpdateInputMutation } from '@graphql/employee/employee';
 import { useSnackBar } from '@context/snackbar.context';
 import { useProjectUpdateInputMutation } from '@graphql/project/project';
 import { EditIcon } from '@components/icons/EditIcon';
