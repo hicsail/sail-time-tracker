@@ -1,8 +1,6 @@
 import React, { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { Box, Button, Chip, Typography, Stack, SelectChangeEvent, alpha, ListItem, Tooltip, IconButton } from '@mui/material';
-import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
 import AddIcon from '@mui/icons-material/Add';
@@ -45,13 +43,17 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const openPopover = Boolean(anchorEl);
   const [targetRow, setTargetRow] = useState<any>();
   const { toggleSnackBar } = useSnackBar();
-  const navigate = useNavigate();
 
   const handleClickOpen = () => setOpen(true);
 
+  const handleEditClick = (row: any) => {
+    setTargetRow(row);
+    handleClickOpen();
+  };
+
   const handleOnClose = () => {
+    setTargetRow(null);
     setOpen(false);
-    navigate(Paths.PROJECT_lIST);
   };
 
   const filteredRows = data.filter((row) => {
@@ -176,8 +178,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           <Tooltip title="Edit">
             <IconButton
               onClick={() => {
-                navigate(`${Paths.PROJECT_lIST}/${row.id}`);
-                handleClickOpen();
+                handleEditClick(row);
               }}
             >
               <EditIcon
@@ -240,7 +241,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         </Box>
       )}
       <FormDialog open={open} onClose={handleOnClose}>
-        <ProjectForm handleClose={handleOnClose} />
+        <ProjectForm handleClose={handleOnClose} targetProject={targetRow} />
       </FormDialog>
       <CustomPopover open={openPopover} anchorEl={anchorEl} onClose={handlePopoverClose}>
         <ListItem sx={{ gap: 2 }} onClick={handleArchive}>

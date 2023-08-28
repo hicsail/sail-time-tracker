@@ -19,7 +19,6 @@ interface EmployeeFormProps {
   targetEmployee?: any;
 }
 export const EmployeeForm = ({ handleClose, targetEmployee }: EmployeeFormProps) => {
-  console.log(targetEmployee);
   const [initialValue, setInitialValue] = useState({ name: '', email: '', status: '' });
   const [updateEmployee] = useEmployeeUpdateInputMutation();
   const [addEmployee, { error }] = useEmployeeCreateInputMutation();
