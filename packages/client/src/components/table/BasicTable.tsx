@@ -62,7 +62,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
         </TableHead>
         <TableBody>{renderRows}</TableBody>
       </Table>
-      {!hidePagination && (
+      {!hidePagination && rows.length > 0 && (
         <TablePagination
           rowsPerPageOptions={[10, 25, 50]}
           component="div"
