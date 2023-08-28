@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Chip, SelectChangeEvent, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, IconButton, List, ListItem, SelectChangeEvent, Stack, Tooltip, Typography } from '@mui/material';
 import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
@@ -9,6 +9,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
 import { DefaultContainedButton } from '@components/StyledComponent';
+import { ThreeDotIcon } from '@components/icons/ThreeDot';
+import { EditIcon } from '@components/icons/EditIcon';
+import { ArchiveIcon } from '@components/icons/ArchiveIcon';
+import { CustomPopover } from '@components/CuctomPopover';
 
 interface EmployeeTableProps {
   data: any[];
@@ -31,6 +35,8 @@ const dropdownData = [
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const openPopover = Boolean(anchorEl);
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('Active');
   const navigate = useNavigate();
@@ -50,6 +56,14 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   });
 
   const handleDropdownOnChange = (e: SelectChangeEvent<string>) => setFilter(e.target.value);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
   const columns: any[] = [
     {
@@ -77,18 +91,36 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: '',
+      headerAlign: 'right',
+      align: 'right',
       renderCell: (row: any) => (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
-            handleClickOpen();
-          }}
-          color="secondary"
-        >
-          Edit
-        </Button>
+        <Stack direction="row" gap={2} justifyContent="end">
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() => {
+                navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
+                handleClickOpen();
+              }}
+            >
+              <EditIcon
+                fontSize="medium"
+                sx={{
+                  color: 'grey.600'
+                }}
+              />
+            </IconButton>
+          </Tooltip>
+          <IconButton onClick={handleClick}>
+            <ThreeDotIcon
+              fontSize="medium"
+              sx={{
+                color: openPopover ? '#1C274C' : 'grey.600',
+                transform: 'rotate(90deg)'
+              }}
+            />
+          </IconButton>
+        </Stack>
       )
     }
   ];
@@ -133,6 +165,14 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
       <FormDialog open={open} onClose={handleOnClose}>
         <EmployeeForm handleClose={handleOnClose} />
       </FormDialog>
+      <CustomPopover open={openPopover} anchorEl={anchorEl} onClose={handlePopoverClose}>
+        <List sx={{ '& .MuiListItem-root': { cursor: 'pointer' } }}>
+          <ListItem sx={{ gap: 2 }}>
+            <ArchiveIcon fontSize="small" />
+            <Typography variant="body1">Archive</Typography>
+          </ListItem>
+        </List>
+      </CustomPopover>
     </Box>
   );
 };

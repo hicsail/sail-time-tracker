@@ -1,11 +1,11 @@
 import { SvgIcon, SvgIconProps } from '@mui/material';
 import { FC } from 'react';
 
-export interface ClickUpIconProps extends SvgIconProps<any> {
+export interface SVGIconProps extends SvgIconProps<any> {
   sx?: any;
 }
 
-export const ClickUpIcon: FC<ClickUpIconProps> = ({ sx, fontSize }) => {
+export const ClickUpIcon: FC<SVGIconProps> = ({ sx, fontSize }) => {
   return (
     <SvgIcon fontSize={fontSize} sx={sx}>
       <svg viewBox="0 0 185 185" fill="none" xmlns="http://www.w3.org/2000/svg">
