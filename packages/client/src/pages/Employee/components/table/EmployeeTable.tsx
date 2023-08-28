@@ -1,7 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Box, Button, Chip, IconButton, List, ListItem, SelectChangeEvent, Stack, Tooltip, Typography } from '@mui/material';
-import { Paths } from '@constants/paths';
 import { FormDialog } from '@components/form/FormDialog';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 import { DropDownMenu } from '@components/form/DropDownMenu';
@@ -41,16 +39,19 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const openPopover = Boolean(anchorEl);
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('Active');
-  const navigate = useNavigate();
   const [updateEmployee] = useEmployeeUpdateInputMutation();
-  const [targetRow, setTargetRow] = useState<any>();
+  const [targetRow, setTargetRow] = useState<any>(null);
   const { toggleSnackBar } = useSnackBar();
 
   const handleClickOpen = () => setOpen(true);
+  const handleEditClick = (row: any) => {
+    setTargetRow(row);
+    handleClickOpen();
+  };
 
   const handleOnClose = () => {
+    setTargetRow(null);
     setOpen(false);
-    navigate(Paths.EMPLOYEE_lIST);
   };
 
   const filteredRows = data.filter((row) => {
@@ -118,8 +119,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
           <Tooltip title="Edit">
             <IconButton
               onClick={() => {
-                navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
-                handleClickOpen();
+                handleEditClick(row);
               }}
             >
               <EditIcon
@@ -182,7 +182,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
         </Box>
       )}
       <FormDialog open={open} onClose={handleOnClose}>
-        <EmployeeForm handleClose={handleOnClose} />
+        <EmployeeForm handleClose={handleOnClose} targetEmployee={targetRow} />
       </FormDialog>
       <CustomPopover open={openPopover} anchorEl={anchorEl} onClose={handlePopoverClose}>
         <List sx={{ '& .MuiListItem-root': { cursor: 'pointer' } }}>
