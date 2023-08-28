@@ -13,6 +13,8 @@ import { ThreeDotIcon } from '@components/icons/ThreeDot';
 import { EditIcon } from '@components/icons/EditIcon';
 import { ArchiveIcon } from '@components/icons/ArchiveIcon';
 import { CustomPopover } from '@components/CuctomPopover';
+import { useEmployeeUpdateInputMutation } from '@graphql/employee/employee';
+import { useSnackBar } from '@context/snackbar.context';
 
 interface EmployeeTableProps {
   data: any[];
@@ -40,6 +42,9 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('Active');
   const navigate = useNavigate();
+  const [updateEmployee] = useEmployeeUpdateInputMutation();
+  const [targetRow, setTargetRow] = useState<any>();
+  const { toggleSnackBar } = useSnackBar();
 
   const handleClickOpen = () => setOpen(true);
 
@@ -57,12 +62,26 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
 
   const handleDropdownOnChange = (e: SelectChangeEvent<string>) => setFilter(e.target.value);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, row: any) => {
     setAnchorEl(event.currentTarget);
+    setTargetRow(row);
   };
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleArchive = async () => {
+    const { __typename, ...employee } = targetRow;
+    const message = employee.status === 'Active' ? 'Successfully archived the employee!' : 'Successfully unarchived the employee!';
+    const status = employee.status === 'Active' ? 'Inactive' : 'Active';
+    const res = await updateEmployee({
+      variables: {
+        updateEmployee: { ...employee, status: status }
+      }
+    });
+
+    res.data?.updateEmployee && toggleSnackBar(message, { variant: 'success' });
   };
 
   const columns: any[] = [
@@ -111,7 +130,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
               />
             </IconButton>
           </Tooltip>
-          <IconButton onClick={handleClick}>
+          <IconButton onClick={(e) => handleClick(e, row)}>
             <ThreeDotIcon
               fontSize="medium"
               sx={{
@@ -167,9 +186,9 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
       </FormDialog>
       <CustomPopover open={openPopover} anchorEl={anchorEl} onClose={handlePopoverClose}>
         <List sx={{ '& .MuiListItem-root': { cursor: 'pointer' } }}>
-          <ListItem sx={{ gap: 2 }}>
+          <ListItem sx={{ gap: 2 }} onClick={handleArchive}>
             <ArchiveIcon fontSize="small" />
-            <Typography variant="body1">Archive</Typography>
+            <Typography variant="body1">{targetRow?.status === 'Active' ? 'Archive' : 'Unarchive'}</Typography>
           </ListItem>
         </List>
       </CustomPopover>
