@@ -62,7 +62,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
 
   const handleDropdownOnChange = (e: SelectChangeEvent<string>) => setFilter(e.target.value);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, row: any) => {
+  const handleThreeDotClick = (event: React.MouseEvent<HTMLButtonElement>, row: any) => {
     setAnchorEl(event.currentTarget);
     setTargetRow(row);
   };
@@ -73,14 +73,14 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
 
   const handleArchive = async () => {
     const { __typename, ...employee } = targetRow;
-    const message = employee.status === 'Active' ? 'Successfully archived the employee!' : 'Successfully unarchived the employee!';
+    const message = employee.status === 'Active' ? `Successfully archived the ${employee.name}!` : `Successfully unarchived the ${employee.name}!`;
     const status = employee.status === 'Active' ? 'Inactive' : 'Active';
     const res = await updateEmployee({
       variables: {
         updateEmployee: { ...employee, status: status }
       }
     });
-
+    handlePopoverClose();
     res.data?.updateEmployee && toggleSnackBar(message, { variant: 'success' });
   };
 
@@ -130,7 +130,7 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
               />
             </IconButton>
           </Tooltip>
-          <IconButton onClick={(e) => handleClick(e, row)}>
+          <IconButton onClick={(e) => handleThreeDotClick(e, row)}>
             <ThreeDotIcon
               fontSize="medium"
               sx={{

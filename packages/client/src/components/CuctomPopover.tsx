@@ -1,4 +1,4 @@
-import { Popover, PopoverProps } from '@mui/material';
+import { List, Popover, PopoverProps } from '@mui/material';
 import React from 'react';
 
 interface CustomPopoverProps extends PopoverProps {
@@ -33,7 +33,7 @@ export const CustomPopover = ({ children, open, onClose, anchorEl }: CustomPopov
         horizontal: 'right'
       }}
     >
-      {children}
+      <List sx={{ '& .MuiListItem-root': { cursor: 'pointer' } }}>{children}</List>
     </Popover>
   );
 };
