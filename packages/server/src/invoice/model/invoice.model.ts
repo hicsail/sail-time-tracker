@@ -1,7 +1,8 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { ProjectModel } from '../../project/model/project.model';
+import { ProjectModel, ProjectWithContractType } from '../../project/model/project.model';
 import { CommentModel } from '../../comments/model/comments.model';
 import { ClickUpTaskModel } from '../../click-up-task/model/task.model';
+import { EmployeeModel } from '../../employees/model/employee.model';
 
 /**
  * return types for querying employee
@@ -33,15 +34,42 @@ export class InvoiceModel {
 
 @ObjectType()
 export class InvoiceModelWithProject extends InvoiceModel {
-  @Field(() => ProjectModel)
-  project: ProjectModel;
+  @Field(() => ProjectWithContractType, { nullable: true })
+  project?: ProjectWithContractType;
+}
+
+@ObjectType()
+export class InvoiceItemModel {
+  @Field()
+  invoiceId: string;
+
+  @Field()
+  employee: EmployeeModel;
+
+  @Field()
+  workHours: number;
+
+  @Field()
+  indirectHours: number;
+
+  @Field()
+  billableHours: number;
+
+  @Field()
+  rate: number;
+
+  @Field()
+  amount: number;
 }
 
 @ObjectType()
 export class InvoiceModelWithProjectAndComments extends InvoiceModelWithProject {
-  @Field(() => [CommentModel])
-  comments: CommentModel[];
+  @Field(() => [CommentModel], { nullable: true })
+  comments?: CommentModel[];
 
   @Field(() => ClickUpTaskModel, { nullable: true })
   clickUpTask?: ClickUpTaskModel;
+
+  @Field(() => [InvoiceItemModel], { nullable: true })
+  items?: InvoiceItemModel[];
 }

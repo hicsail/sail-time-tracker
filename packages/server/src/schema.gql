@@ -184,7 +184,17 @@ type InvoiceModelWithProject {
   hours: Float!
   amount: Float!
   invoiceId: String!
-  project: ProjectModel!
+  project: ProjectWithContractType
+}
+
+type InvoiceItemModel {
+  invoiceId: String!
+  employee: EmployeeModel!
+  workHours: Float!
+  indirectHours: Float!
+  billableHours: Float!
+  rate: Float!
+  amount: Float!
 }
 
 type InvoiceModelWithProjectAndComments {
@@ -195,9 +205,10 @@ type InvoiceModelWithProjectAndComments {
   hours: Float!
   amount: Float!
   invoiceId: String!
-  project: ProjectModel!
-  comments: [CommentModel!]!
+  project: ProjectWithContractType
+  comments: [CommentModel!]
   clickUpTask: ClickUpTaskModel
+  items: [InvoiceItemModel!]
 }
 
 type Query {

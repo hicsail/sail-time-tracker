@@ -3,34 +3,81 @@ import { PrismaService } from 'nestjs-prisma';
 import { Invoice } from '@prisma/client';
 import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
+import { EmployeesService } from '../employees/employees.service';
 
 @Injectable()
 export class InvoiceService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private employeesService: EmployeesService) {}
   async getAllInvoices(): Promise<InvoiceModelWithProject[]> {
     return this.prisma.invoice.findMany({
       include: {
-        project: true
+        project: {
+          include: {
+            contractType: true
+          }
+        }
       }
     });
   }
 
   async createOrUpdateInvoice(invoice: InvoiceCreateInput): Promise<Invoice> {
-    return this.prisma.invoice.upsert({
+    const { projectId, startDate, endDate, rate, hours, amount } = invoice;
+    const projects = await this.employeesService.getProjectWithRecord(startDate, endDate);
+    const project = projects.find((e) => e.inner.length > 0 && e.id === projectId);
+
+    // create or update invoice
+    const invoiceInfo = await this.prisma.invoice.upsert({
       where: {
         projectId_startDate_endDate: {
-          projectId: invoice.projectId,
-          startDate: invoice.startDate,
-          endDate: invoice.endDate
+          projectId: projectId,
+          startDate: startDate,
+          endDate: endDate
         }
       },
       create: invoice,
       update: {
-        rate: invoice.rate,
-        hours: invoice.hours,
-        amount: invoice.amount
+        rate: rate,
+        hours: hours,
+        amount: amount
       }
     });
+
+    // if invoice is created or updated, then create or update invoice items
+    if (invoiceInfo) {
+      for (const employee of project.inner) {
+        const { invoiceId } = invoiceInfo;
+        const { employeeId, employeeWorkHours, employeeIndirectHours } = employee;
+        const billableHours = employeeWorkHours + employeeIndirectHours;
+        const amount = billableHours * rate;
+
+        await this.prisma.invoiceItem.upsert({
+          where: {
+            invoiceId_employeeId: {
+              invoiceId,
+              employeeId
+            }
+          },
+          create: {
+            invoiceId: invoiceId,
+            employeeId: employeeId,
+            workHours: employeeWorkHours,
+            indirectHours: employeeIndirectHours,
+            billableHours,
+            rate,
+            amount
+          },
+          update: {
+            workHours: employeeWorkHours,
+            indirectHours: employeeIndirectHours,
+            billableHours,
+            rate,
+            amount
+          }
+        });
+      }
+    }
+
+    return invoiceInfo;
   }
 
   async searchInvoice(projectId_startDate_endDate: InvoiceSearchInput): Promise<InvoiceModelWithProjectAndComments> {
@@ -44,13 +91,22 @@ export class InvoiceService {
         }
       },
       include: {
-        project: true,
+        project: {
+          include: {
+            contractType: true
+          }
+        },
         comments: {
           orderBy: {
             createDate: 'desc'
           }
         },
-        clickUpTask: true
+        clickUpTask: true,
+        items: {
+          include: {
+            employee: true
+          }
+        }
       }
     });
   }
@@ -87,10 +143,6 @@ export class InvoiceService {
       },
       orderBy: {
         endDate: 'desc'
-      },
-      include: {
-        project: true,
-        comments: true
       }
     });
   }
@@ -105,10 +157,6 @@ export class InvoiceService {
       },
       orderBy: {
         startDate: 'asc'
-      },
-      include: {
-        project: true,
-        comments: true
       }
     });
   }
