@@ -1,11 +1,7 @@
-import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 import { convertToUTCDate, formatDateToDashFormat, USDollar } from '../../utils/helperFun';
-import IconButton from '@mui/material/IconButton';
-import UpdateIcon from '@mui/icons-material/Update';
 import { FormDialog } from '@components/form/FormDialog';
 import { useState } from 'react';
 import {
@@ -26,13 +22,9 @@ import { CommentList } from '@pages/Invoice/components/comment/CommentList';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import EditIcon from '@mui/icons-material/Edit';
-import SendIcon from '@mui/icons-material/Send';
 import { Paths } from '@constants/paths';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { ClickUpIcon } from '@components/icons/ClickupIcon';
-import { ClickUpMobile } from '@components/icons/ClickupMobile';
 import { SortedBasicTable } from '@components/table/SortedBasicTable';
 import { useSnackBar } from '@context/snackbar.context';
 import { InvoiceActionBar } from '@pages/Invoice/invoice-detail/InvoiceActionBar';

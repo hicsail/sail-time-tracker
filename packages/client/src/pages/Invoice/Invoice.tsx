@@ -1,16 +1,13 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
 import FolderIcon from '@mui/icons-material/Folder';
 import { GetAllInvoicesDocument, useDeleteInvoiceMutation, useGetAllInvoicesQuery } from '@graphql/invoice/invoice';
 import React, { useState } from 'react';
-import { format } from 'date-fns';
 import { FormDialog } from '@components/form/FormDialog';
-import { SearchBar } from '@components/SearchBar';
 import { SortedBasicTable } from '@components/table/SortedBasicTable';
-import { StyledDatePicker } from '@components/StyledDatePicker';
 import { useSnackBar } from '@context/snackbar.context';
 import { Toolbar } from '@pages/Invoice/components/table/Toolbar';
 
