@@ -35,6 +35,8 @@ import { ClickUpIcon } from '@components/icons/ClickupIcon';
 import { ClickUpMobile } from '@components/icons/ClickupMobile';
 import { SortedBasicTable } from '@components/table/SortedBasicTable';
 import { useSnackBar } from '@context/snackbar.context';
+import { InvoiceActionBar } from '@pages/Invoice/invoice-detail/InvoiceActionBar';
+import { InvoiceDetailHeader } from '@pages/Invoice/invoice-detail/InvoiceDetailHeader';
 
 const columns: any[] = [
   {
@@ -61,8 +63,13 @@ const isOpenDialogInitialValue = {
 
 export const InvoiceDetails = () => {
   const [isOpenDialog, setIsOpenDialog] = useState(isOpenDialogInitialValue);
-  const [deleteInvoice] = useDeleteInvoiceMutation();
+
   const { id, startDate, endDate } = useParams();
+  const navigate = useNavigate();
+  const { toggleSnackBar } = useSnackBar();
+
+  const [findNextInvoice] = useFindNextInvoiceLazyQuery();
+  const [findPreviousInvoice] = useFindPreviousInvoiceLazyQuery();
   const { data: projectWithEmployeeData } = useGetProjectWithEmployeeRecordsQuery({
     variables: {
       startDate: startDate,
@@ -71,7 +78,6 @@ export const InvoiceDetails = () => {
     fetchPolicy: 'cache-and-network'
   });
   const project = projectWithEmployeeData?.getProjectWithEmployeeRecords.find((project) => project.id === id);
-  const [createOrUpdateInvoiceMutation] = useCreateOrUpdateInvoiceMutation();
   const searchInvoiceVariable = {
     projectId_startDate_endDate: {
       projectId: id as string,
@@ -85,27 +91,22 @@ export const InvoiceDetails = () => {
   });
   const [addCommentMutation] = useAddCommentMutation();
   const [deleteCommentMutation] = useDeleteCommentMutation();
-  const [findPreviousInvoice] = useFindPreviousInvoiceLazyQuery();
-  const [findNextInvoice] = useFindNextInvoiceLazyQuery();
-  const navigate = useNavigate();
-  const { toggleSnackBar } = useSnackBar();
+  const [createOrUpdateInvoiceMutation] = useCreateOrUpdateInvoiceMutation();
+  const [deleteInvoice] = useDeleteInvoiceMutation();
 
   const rows =
-    project?.inner
-      ?.filter((employee) => employee.employeeWorkHours !== 0)
-      ?.map((employee) => {
-        const { employeeName, employeeId, employeeWorkHours, employeeIndirectHours } = employee;
-        const billableHours = employeeIndirectHours + employeeWorkHours;
-        const amount = billableHours * project.rate;
-        return {
-          employeeName,
-          id: employeeId,
-          workHours: employeeWorkHours,
-          indirectHours: employeeIndirectHours,
-          billableHours,
-          amount
-        };
-      }) ?? [];
+    searchInvoiceData?.searchInvoice.items?.map((invoiceItem) => {
+      const { workHours, indirectHours, billableHours, amount } = invoiceItem;
+      const { id, name } = invoiceItem.employee;
+      return {
+        id,
+        employeeName: name,
+        workHours,
+        indirectHours,
+        billableHours,
+        amount
+      };
+    }) ?? [];
 
   const handleOnSubmitComment = (value: string | undefined) => {
     if (value && searchInvoiceData) {
@@ -165,6 +166,7 @@ export const InvoiceDetails = () => {
       },
       fetchPolicy: 'cache-and-network'
     }).then((r) => {
+      console.log(r?.data);
       if (r?.data?.findPreviousInvoice) {
         const newInvoiceStartDate = r?.data?.findPreviousInvoice?.startDate;
         const newInvoiceEndDate = r?.data?.findPreviousInvoice?.endDate;
@@ -202,12 +204,12 @@ export const InvoiceDetails = () => {
       rows: rows,
       revisedBillableHour: searchInvoiceData?.searchInvoice?.hours,
       revisedAmount: searchInvoiceData?.searchInvoice?.amount,
-      rate: project?.rate,
-      projectName: project?.name,
+      rate: searchInvoiceData?.searchInvoice?.rate,
+      projectName: searchInvoiceData?.searchInvoice?.project?.name,
       notes: searchInvoiceData?.searchInvoice.comments,
       invoiceId: searchInvoiceData?.searchInvoice?.invoiceId,
       taskId: searchInvoiceData?.searchInvoice?.clickUpTask?.id,
-      contractTypeId: project?.contractTypeId
+      contractTypeId: searchInvoiceData?.searchInvoice?.project?.contractType?.id
     };
     navigate(Paths.EXPORT_INVOICE, { state: data });
   };
@@ -282,60 +284,13 @@ export const InvoiceDetails = () => {
           Next Invoice
         </Button>
       </Stack>
-      <Box>
-        <h3>
-          {`Project Name: ${project?.name}`}
-          {searchInvoiceData?.searchInvoice?.clickUpTask?.url && (
-            <Tooltip title="clickup task">
-              <Link to={searchInvoiceData?.searchInvoice?.clickUpTask?.url ?? ''} target="_blank">
-                <IconButton>
-                  <ClickUpIcon fontSize="large" />
-                </IconButton>
-              </Link>
-            </Tooltip>
-          )}
-        </h3>
-        <Box sx={{ display: 'flex', alignItem: 'center', gap: 1 }}>
-          <CalendarTodayIcon />
-          <div>
-            {startDate && startDate.split('-').join('/')} - {endDate && endDate.split('-').join('/')}
-          </div>
-        </Box>
-      </Box>
-      <Box sx={{ display: 'flex', gap: 1, '& .MuiButtonBase-root': { color: 'grey.600' }, alignItems: 'center' }}>
-        <Tooltip title="update invoice" onClick={() => handleOpenDialog('update')}>
-          <IconButton>
-            <UpdateIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="edit hours" onClick={() => handleOpenDialog('edit')}>
-          <IconButton>
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="delete" onClick={() => handleOpenDialog('delete')}>
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="export to clickup" onClick={exportToClickUp}>
-          <IconButton sx={{ position: 'relative' }}>
-            <ClickUpMobile fontSize="large" />
-            <SendIcon
-              sx={{
-                position: 'absolute',
-                bottom: '12px',
-                right: '5px',
-                fontSize: '15px',
-                backgroundColor: 'primary.light',
-                borderRadius: '50%',
-                color: 'white',
-                padding: '2px'
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-      </Box>
+      <InvoiceDetailHeader
+        projectName={searchInvoiceData?.searchInvoice?.project?.name}
+        clickUpTaskUrl={searchInvoiceData?.searchInvoice?.clickUpTask?.url}
+        startDate={startDate}
+        endDate={endDate}
+      />
+      <InvoiceActionBar exportToClickUp={exportToClickUp} handleOpenDialog={handleOpenDialog} />
       <Stack direction="row" justifyContent="space-between" gap={4}>
         <DisplayCard
           id="Invoice billable hours"
@@ -384,7 +339,7 @@ export const InvoiceDetails = () => {
         <Divider sx={{ color: 'grey.400', fontSize: '0.8rem', marginTop: 5 }}>comments</Divider>
         <CommentDisplayComponent>
           <CommentList>
-            {searchInvoiceData && searchInvoiceData.searchInvoice.comments.length > 0 ? (
+            {searchInvoiceData?.searchInvoice?.comments && searchInvoiceData.searchInvoice.comments.length > 0 ? (
               searchInvoiceData.searchInvoice.comments.map((item: any) => {
                 return (
                   <CommentListItem

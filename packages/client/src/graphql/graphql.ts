@@ -175,6 +175,17 @@ export type InvoiceCreateInput = {
   startDate: Scalars['DateTime'];
 };
 
+export type InvoiceItemModel = {
+  __typename?: 'InvoiceItemModel';
+  amount: Scalars['Float'];
+  billableHours: Scalars['Float'];
+  employee: EmployeeModel;
+  indirectHours: Scalars['Float'];
+  invoiceId: Scalars['String'];
+  rate: Scalars['Float'];
+  workHours: Scalars['Float'];
+};
+
 export type InvoiceModel = {
   __typename?: 'InvoiceModel';
   amount: Scalars['Float'];
@@ -192,7 +203,7 @@ export type InvoiceModelWithProject = {
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
   invoiceId: Scalars['String'];
-  project: ProjectModel;
+  project?: Maybe<ProjectWithContractType>;
   projectId: Scalars['String'];
   rate: Scalars['Float'];
   startDate: Scalars['DateTime'];
@@ -202,11 +213,12 @@ export type InvoiceModelWithProjectAndComments = {
   __typename?: 'InvoiceModelWithProjectAndComments';
   amount: Scalars['Float'];
   clickUpTask?: Maybe<ClickUpTaskModel>;
-  comments: Array<CommentModel>;
+  comments?: Maybe<Array<CommentModel>>;
   endDate: Scalars['DateTime'];
   hours: Scalars['Float'];
   invoiceId: Scalars['String'];
-  project: ProjectModel;
+  items?: Maybe<Array<InvoiceItemModel>>;
+  project?: Maybe<ProjectWithContractType>;
   projectId: Scalars['String'];
   rate: Scalars['Float'];
   startDate: Scalars['DateTime'];

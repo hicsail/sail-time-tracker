@@ -39,14 +39,14 @@ export const Invoice = () => {
   const { toggleSnackBar } = useSnackBar();
   const rows = data
     ? data.invoices.map((invoice) => {
-        const projectName = invoice.project.name;
+        const projectName = invoice?.project?.name;
         const { startDate, endDate, hours, amount, project } = invoice;
         const formattedStartDate = formatDateToForwardSlashFormat(convertToUTCDate(new Date(startDate)));
         const formattedEndDate = formatDateToForwardSlashFormat(convertToUTCDate(new Date(endDate)));
-        const id = `${invoice.project.id}-${formattedStartDate}-${formattedEndDate}`;
+        const id = `${invoice?.project?.id}-${formattedStartDate}-${formattedEndDate}`;
         return {
           id: id,
-          projectId: project.id,
+          projectId: project?.id,
           projectName: projectName,
           startDate: formattedStartDate,
           endDate: formattedEndDate,
@@ -63,9 +63,9 @@ export const Invoice = () => {
     const newStartDate = new Date(parseInt(startDateYear), parseInt(startDateMonth) - 1, parseInt(startDateDay));
     const newEndDate = new Date(parseInt(endDateYear), parseInt(endDateMonth) - 1, parseInt(endDateDay));
     if (dateRange.startDate && dateRange.endDate) {
-      return row.projectName.toLowerCase().includes(searchText.toLowerCase()) && newStartDate >= dateRange.startDate && newEndDate <= dateRange.endDate;
+      return row?.projectName?.toLowerCase().includes(searchText.toLowerCase()) && newStartDate >= dateRange.startDate && newEndDate <= dateRange.endDate;
     }
-    return row.projectName.toLowerCase().includes(searchText.toLowerCase());
+    return row?.projectName?.toLowerCase().includes(searchText.toLowerCase());
   });
 
   const keyFun = (row: any) => row.id;

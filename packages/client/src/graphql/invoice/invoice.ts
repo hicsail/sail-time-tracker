@@ -28,7 +28,7 @@ export type GetAllInvoicesQuery = {
     endDate: any;
     hours: number;
     amount: number;
-    project: { __typename?: 'ProjectModel'; id: string; name: string };
+    project?: { __typename?: 'ProjectWithContractType'; id: string; name: string } | null;
   }>;
 };
 
@@ -43,11 +43,21 @@ export type SearchInvoiceQuery = {
     invoiceId: string;
     startDate: any;
     endDate: any;
+    rate: number;
     hours: number;
     amount: number;
-    project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
+    project?: { __typename?: 'ProjectWithContractType'; id: string; name: string; contractType: { __typename?: 'ContractTypeModel'; id: number; name: string } } | null;
+    comments?: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }> | null;
     clickUpTask?: { __typename?: 'ClickUpTaskModel'; id: string; url: string } | null;
+    items?: Array<{
+      __typename?: 'InvoiceItemModel';
+      workHours: number;
+      indirectHours: number;
+      billableHours: number;
+      rate: number;
+      amount: number;
+      employee: { __typename?: 'EmployeeModel'; id: string; name: string };
+    }> | null;
   };
 };
 
@@ -72,8 +82,8 @@ export type FindPreviousInvoiceQuery = {
     endDate: any;
     hours: number;
     amount: number;
-    project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
+    project?: { __typename?: 'ProjectWithContractType'; id: string; name: string } | null;
+    comments?: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }> | null;
   } | null;
 };
 
@@ -91,8 +101,8 @@ export type FindNextInvoiceQuery = {
     endDate: any;
     hours: number;
     amount: number;
-    project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
+    project?: { __typename?: 'ProjectWithContractType'; id: string; name: string } | null;
+    comments?: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }> | null;
   } | null;
 };
 
@@ -212,11 +222,16 @@ export const SearchInvoiceDocument = gql`
       invoiceId
       startDate
       endDate
+      rate
       hours
       amount
       project {
         id
         name
+        contractType {
+          id
+          name
+        }
       }
       comments {
         createDate
@@ -228,6 +243,17 @@ export const SearchInvoiceDocument = gql`
       clickUpTask {
         id
         url
+      }
+      items {
+        employee {
+          id
+          name
+        }
+        workHours
+        indirectHours
+        billableHours
+        rate
+        amount
       }
     }
   }
