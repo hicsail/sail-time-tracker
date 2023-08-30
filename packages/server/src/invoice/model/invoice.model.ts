@@ -1,5 +1,5 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { ProjectModel, ProjectWithContractType } from '../../project/model/project.model';
+import { ProjectWithContractType } from '../../project/model/project.model';
 import { CommentModel } from '../../comments/model/comments.model';
 import { ClickUpTaskModel } from '../../click-up-task/model/task.model';
 import { EmployeeModel } from '../../employees/model/employee.model';
