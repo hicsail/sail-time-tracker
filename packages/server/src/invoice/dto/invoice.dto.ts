@@ -55,3 +55,22 @@ export class InvoiceSearchInput {
   @IsDate()
   endDate: Date;
 }
+
+@InputType()
+export class InvoiceItemUpdateInput {
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  invoiceId: string;
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  employeeId: string;
+
+  @Field(() => Number, { nullable: true })
+  workHours?: number;
+
+  @Field(() => Number, { nullable: true })
+  indirectHours?: number;
+}

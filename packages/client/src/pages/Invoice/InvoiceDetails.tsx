@@ -13,7 +13,6 @@ import {
   useFindPreviousInvoiceLazyQuery,
   useSearchInvoiceQuery
 } from '@graphql/invoice/invoice';
-import { DisplayCard } from '@components/DisplayCard.component';
 import { CommentInputBox } from '@pages/Invoice/components/comment/CommentInputBox';
 import { useAddCommentMutation, useDeleteCommentMutation } from '@graphql/comment/comment';
 import { CommentDisplayComponent } from '@pages/Invoice/components/comment/CommentDisplayComponent';
@@ -29,26 +28,10 @@ import { SortedBasicTable } from '@components/table/SortedBasicTable';
 import { useSnackBar } from '@context/snackbar.context';
 import { InvoiceActionBar } from '@pages/Invoice/invoice-detail/InvoiceActionBar';
 import { InvoiceDetailHeader } from '@pages/Invoice/invoice-detail/InvoiceDetailHeader';
-
-const columns: any[] = [
-  {
-    field: 'employeeName',
-    headerName: 'Employee Name',
-    width: 200,
-    renderCell: (row: any) => row.employeeName
-  },
-  { field: 'workHours', headerName: 'Work Hours', width: 200, sortValue: (row: any) => row.workHours },
-  { field: 'indirectHours', headerName: 'Indirect Hours', width: 200, sortValue: (row: any) => row.indirectHours },
-  { field: 'billableHours', headerName: 'Billable Hours', width: 200, sortValue: (row: any) => row.billableHours },
-  { field: 'amount', headerName: 'Amount', width: 200, renderCell: (row: any) => USDollar.format(row.amount), sortValue: (row: any) => row.amount }
-];
-
-const FormValidation = Yup.object({
-  billableHours: Yup.number().required('Required').min(0, 'Must be greater than 0')
-});
+import { FormObserver } from '@pages/Invoice/components/form/FormObserver';
+import { InvoiceDisplayCards } from '@pages/Invoice/invoice-detail/InvoiceDisplayCards';
 
 const isOpenDialogInitialValue = {
-  edit: false,
   delete: false,
   update: false
 };
@@ -86,19 +69,83 @@ export const InvoiceDetails = () => {
   const [createOrUpdateInvoiceMutation] = useCreateOrUpdateInvoiceMutation();
   const [deleteInvoice] = useDeleteInvoiceMutation();
 
+  const editedRenderCell = (name: string, row: any) => {
+    const formValidation = Yup.object({
+      [name]: Yup.number().min(0, 'Must be greater than 0')
+    });
+
+    const employee: any = searchInvoiceData?.searchInvoice.items?.find((item) => item.employee.id === row.id);
+    console.log(employee);
+    return (
+      <Formik initialValues={{ [name]: employee ? employee[name] : '' }} onSubmit={() => {}} validateOnBlur={true} validationSchema={formValidation}>
+        <Form>
+          <FormObserver invoiceId={searchInvoiceData?.searchInvoice.invoiceId} row={row} name={name} searchInvoiceVariable={searchInvoiceVariable} />
+          <ObserverTextInput name={name} type="number" />
+        </Form>
+      </Formik>
+    );
+  };
+
+  const columns: any[] = [
+    {
+      field: 'employeeName',
+      headerName: 'Employee Name',
+      width: 200,
+      renderCell: (row: any) => row.employeeName
+    },
+    { field: 'workHours', headerName: 'Work Hours', width: 200, sortValue: (row: any) => row.workHours },
+    {
+      field: 'editedWorkHours',
+      headerName: 'Edited Work Hours',
+      width: 200,
+      sortValue: (row: any) => row.workHours,
+      renderCell: (row: any) => editedRenderCell('workHours', row)
+    },
+    { field: 'indirectHours', headerName: 'Indirect Hours', width: 200, sortValue: (row: any) => row.indirectHours },
+    {
+      field: 'editedIndirectHours',
+      headerName: 'Edited Indirect Hours',
+      width: 200,
+      sortValue: (row: any) => row.indirectHours,
+      renderCell: (row: any) => editedRenderCell('indirectHours', row)
+    },
+    { field: 'billableHours', headerName: 'Billable Hours', width: 200, sortValue: (row: any) => row.billableHours },
+    {
+      field: 'editedBillableHours',
+      headerName: 'Edited Billable Hours',
+      width: 200,
+      sortValue: (row: any) => row.billableHours,
+      renderCell: (row: any) => searchInvoiceData?.searchInvoice.items?.find((item) => item.employee.id === row.id)?.billableHours
+    },
+    { field: 'amount', headerName: 'Amount', width: 200, renderCell: (row: any) => USDollar.format(row.amount), sortValue: (row: any) => row.amount },
+    {
+      field: 'editedAmount',
+      headerName: 'Edited Amount',
+      width: 200,
+      renderCell: (row: any) => {
+        const editedAmount = searchInvoiceData?.searchInvoice.items?.find((item) => item.employee.id === row.id)?.amount;
+        return editedAmount ? USDollar.format(editedAmount) : '';
+      },
+      sortValue: (row: any) => row.amount
+    }
+  ];
+
   const rows =
-    searchInvoiceData?.searchInvoice.items?.map((invoiceItem) => {
-      const { workHours, indirectHours, billableHours, amount } = invoiceItem;
-      const { id, name } = invoiceItem.employee;
-      return {
-        id,
-        employeeName: name,
-        workHours,
-        indirectHours,
-        billableHours,
-        amount
-      };
-    }) ?? [];
+    project?.inner
+      ?.filter((employee) => employee.employeeWorkHours !== 0)
+      ?.map((employee) => {
+        const { employeeName, employeeId, employeeWorkHours, employeeIndirectHours } = employee;
+        const billableHours = employeeIndirectHours + employeeWorkHours;
+        const amount = billableHours * project.rate;
+        return {
+          employeeName,
+          id: employeeId,
+          workHours: employeeWorkHours,
+          indirectHours: employeeIndirectHours,
+          billableHours,
+          amount
+        };
+      }) ?? [];
 
   const handleOnSubmitComment = (value: string | undefined) => {
     if (value && searchInvoiceData) {
@@ -158,7 +205,6 @@ export const InvoiceDetails = () => {
       },
       fetchPolicy: 'cache-and-network'
     }).then((r) => {
-      console.log(r?.data);
       if (r?.data?.findPreviousInvoice) {
         const newInvoiceStartDate = r?.data?.findPreviousInvoice?.startDate;
         const newInvoiceEndDate = r?.data?.findPreviousInvoice?.endDate;
@@ -192,6 +238,17 @@ export const InvoiceDetails = () => {
   };
 
   const exportToClickUp = () => {
+    const rows = searchInvoiceData?.searchInvoice?.items?.map((item) => {
+      const { employee, workHours, indirectHours, billableHours, amount } = item;
+      return {
+        employeeName: employee.name,
+        workHours: workHours,
+        indirectHours: indirectHours,
+        billableHours: billableHours,
+        amount: amount
+      };
+    });
+
     const data = {
       rows: rows,
       revisedBillableHour: searchInvoiceData?.searchInvoice?.hours,
@@ -234,38 +291,6 @@ export const InvoiceDetails = () => {
     }
   };
 
-  const handleEditHoursSubmit = (values: any) => {
-    const { billableHours } = values;
-    const totalHours = parseFloat(billableHours);
-
-    if (project && startDate && endDate) {
-      const { id, rate } = project;
-      const amount = rate * totalHours;
-      const invoice = {
-        projectId: id,
-        startDate: startDate,
-        endDate: endDate,
-        hours: totalHours,
-        rate: rate,
-        amount: amount
-      };
-
-      createOrUpdateInvoiceMutation({
-        variables: {
-          invoice: invoice
-        },
-        refetchQueries: [
-          { query: GetAllInvoicesDocument },
-          {
-            query: SearchInvoiceDocument,
-            variables: searchInvoiceVariable
-          }
-        ]
-      });
-      handleCloseDialog('edit');
-    }
-  };
-
   return (
     <Stack gap={5}>
       <Stack direction="row" justifyContent="space-between">
@@ -283,46 +308,13 @@ export const InvoiceDetails = () => {
         endDate={endDate}
       />
       <InvoiceActionBar exportToClickUp={exportToClickUp} handleOpenDialog={handleOpenDialog} />
-      <Stack direction="row" justifyContent="space-between" gap={4}>
-        <DisplayCard
-          id="Invoice billable hours"
-          title="Current Invoice Billable Hours"
-          data={
-            <Stack gap={1} direction="row" alignItems="center">
-              {searchInvoiceData?.searchInvoice?.hours}
-              <Typography component="span" variant="caption" color="grey.500">
-                hrs
-              </Typography>
-            </Stack>
-          }
-        />
-        <DisplayCard id="Invoice Amount" title="Current Invoice Amount" data={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)} />
-        <DisplayCard
-          id="Adjustment Hours"
-          title="Adjustment Hours"
-          data={
-            <Stack gap={1} direction="row" alignItems="center">
-              {searchInvoiceData && project && (searchInvoiceData.searchInvoice.hours - project.billableHours).toFixed(2)}
-              <Typography component="span" variant="caption" color="grey.500">
-                hrs
-              </Typography>
-            </Stack>
-          }
-        />
-        <DisplayCard
-          id="Original Billable Hours"
-          title="Report Billable Hours"
-          data={
-            <Stack gap={1} direction="row" alignItems="center">
-              {project?.billableHours}
-              <Typography component="span" variant="caption" color="grey.500">
-                hrs
-              </Typography>
-            </Stack>
-          }
-        />
-        <DisplayCard id="Report invoice Amount" title="Report Amount" data={project && USDollar.format(project.billableHours * project.rate)} />
-      </Stack>
+      <InvoiceDisplayCards
+        invoiceBillableHours={searchInvoiceData?.searchInvoice?.hours}
+        invoiceAmount={searchInvoiceData && USDollar.format(searchInvoiceData.searchInvoice.amount)}
+        adjustingHours={searchInvoiceData && project && (searchInvoiceData.searchInvoice.hours - project.billableHours).toFixed(2)}
+        reportBillableHours={project?.billableHours}
+        reportAmount={project && USDollar.format(project.billableHours * project.rate)}
+      />
       <Box sx={{ marginTop: '2rem' }}>
         <SortedBasicTable rows={rows} columns={columns} keyFun={keyFun} hidePagination defaultOrderBy="billableHours" />
       </Box>
@@ -374,26 +366,6 @@ export const InvoiceDetails = () => {
               cancel
             </Button>
           </Stack>
-        </Stack>
-      </FormDialog>
-      <FormDialog open={isOpenDialog.edit} onClose={() => handleCloseDialog('edit')}>
-        <Stack gap={5}>
-          <Typography variant="h6">Update Total Billable Hours</Typography>
-          <Formik
-            initialValues={{ billableHours: searchInvoiceData?.searchInvoice.hours.toString() || '' }}
-            validationSchema={FormValidation}
-            enableReinitialize={true}
-            onSubmit={(values) => handleEditHoursSubmit(values)}
-          >
-            <Form>
-              <Stack gap={3}>
-                <ObserverTextInput id="billableHours" name="billableHours" type="number" label="Billable Hours" placeholder="Billable Hours" variant="outlined" fullWidth />
-                <Button variant="contained" type="submit" fullWidth>
-                  Submit
-                </Button>
-              </Stack>
-            </Form>
-          </Formik>
         </Stack>
       </FormDialog>
       <FormDialog open={isOpenDialog.delete} onClose={() => handleCloseDialog('delete')}>

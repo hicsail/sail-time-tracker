@@ -1,7 +1,6 @@
 import { Box, Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import UpdateIcon from '@mui/icons-material/Update';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ClickUpMobile } from '@components/icons/ClickupMobile';
 import SendIcon from '@mui/icons-material/Send';
@@ -18,11 +17,6 @@ export const InvoiceActionBar: FC<ActionBarProps> = ({ exportToClickUp, handleOp
       <Tooltip title="update invoice" onClick={() => handleOpenDialog('update')}>
         <IconButton>
           <UpdateIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="edit hours" onClick={() => handleOpenDialog('edit')}>
-        <IconButton>
-          <EditIcon />
         </IconButton>
       </Tooltip>
       <Tooltip title="delete" onClick={() => handleOpenDialog('delete')}>

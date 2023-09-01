@@ -253,6 +253,7 @@ type Mutation {
   deleteRecord(input: RecordDeleteInput!): BatchPayload!
   createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
   deleteInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModel!
+  updateInvoiceItem(updatedInvoiceItem: InvoiceItemUpdateInput!): InvoiceItemModel!
   addComment(input: CommentCreateInput!): CommentModel!
   deleteComment(id: String!): CommentModel!
   createClickUpTask(task: ClickUpTaskCreateInput!): ClickUpTaskModel!
@@ -335,6 +336,13 @@ input InvoiceCreateInput {
   rate: Float!
   hours: Float!
   amount: Float!
+}
+
+input InvoiceItemUpdateInput {
+  invoiceId: String!
+  employeeId: String!
+  workHours: Float
+  indirectHours: Float
 }
 
 input CommentCreateInput {

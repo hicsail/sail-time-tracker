@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Invoice } from '@prisma/client';
-import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
-import { InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
+import { InvoiceCreateInput, InvoiceItemUpdateInput, InvoiceSearchInput } from './dto/invoice.dto';
+import { InvoiceItemModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
 import { EmployeesService } from '../employees/employees.service';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class InvoiceService {
@@ -159,5 +160,69 @@ export class InvoiceService {
         startDate: 'asc'
       }
     });
+  }
+
+  async updateInvoiceItem(updatedInvoiceItem: InvoiceItemUpdateInput): Promise<InvoiceItemModel> {
+    const { invoiceId, employeeId, workHours, indirectHours } = updatedInvoiceItem;
+
+    // FIND INVOICE ITEM
+    const invoiceItem = await this.prisma.invoiceItem.findUnique({
+      where: {
+        invoiceId_employeeId: {
+          invoiceId,
+          employeeId
+        }
+      }
+    });
+
+    if (!invoiceItem) {
+      throw new NotFoundError('Invoice item not found');
+    }
+
+    const billableHours = workHours ? workHours + invoiceItem.indirectHours : invoiceItem.workHours + indirectHours;
+    const amount = billableHours * invoiceItem.rate;
+
+    // UPDATE INVOICE ITEM
+    const updatedInvoiceItemData = await this.prisma.invoiceItem.update({
+      where: {
+        invoiceId_employeeId: {
+          invoiceId,
+          employeeId
+        }
+      },
+      data: {
+        workHours,
+        indirectHours,
+        billableHours,
+        amount
+      },
+      include: {
+        employee: true
+      }
+    });
+
+    // AGGREGATE INVOICE ITEMS, SUM AMOUNT AND HOURS
+    const invoiceItemAggregation = await this.prisma.invoiceItem.aggregate({
+      where: {
+        invoiceId: invoiceId
+      },
+      _sum: {
+        amount: true,
+        billableHours: true
+      }
+    });
+
+    // UPDATE INVOICE AMOUNT AND HOURS
+    await this.prisma.invoice.update({
+      where: {
+        invoiceId: invoiceId
+      },
+      data: {
+        amount: invoiceItemAggregation._sum.amount,
+        hours: invoiceItemAggregation._sum.billableHours
+      }
+    });
+
+    return updatedInvoiceItemData;
   }
 }

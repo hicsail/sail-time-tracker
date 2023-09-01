@@ -186,6 +186,13 @@ export type InvoiceItemModel = {
   workHours: Scalars['Float'];
 };
 
+export type InvoiceItemUpdateInput = {
+  employeeId: Scalars['String'];
+  indirectHours?: InputMaybe<Scalars['Float']>;
+  invoiceId: Scalars['String'];
+  workHours?: InputMaybe<Scalars['Float']>;
+};
+
 export type InvoiceModel = {
   __typename?: 'InvoiceModel';
   amount: Scalars['Float'];
@@ -273,6 +280,7 @@ export type Mutation = {
   sendSlackMessage: Scalars['Boolean'];
   updateClickUpTask: ClickUpTaskModel;
   updateEmployee: EmployeeModel;
+  updateInvoiceItem: InvoiceItemModel;
   updateProject: ProjectWithContractType;
 };
 
@@ -352,6 +360,10 @@ export type MutationUpdateClickUpTaskArgs = {
 
 export type MutationUpdateEmployeeArgs = {
   updateEmployee: EmployeeUpdateInput;
+};
+
+export type MutationUpdateInvoiceItemArgs = {
+  updatedInvoiceItem: InvoiceItemUpdateInput;
 };
 
 export type MutationUpdateProjectArgs = {

@@ -114,3 +114,18 @@ query findNextInvoice($projectId: String!, $endDate: DateTime!) {
         }
     }
 }
+
+mutation updateInvoiceItem($invoiceItem: InvoiceItemUpdateInput!) {
+    updateInvoiceItem(updatedInvoiceItem: $invoiceItem) {
+        invoiceId
+        employee {
+            id
+            name
+        }
+        workHours
+        indirectHours
+        billableHours
+        rate
+        amount
+    }
+}

@@ -106,6 +106,24 @@ export type FindNextInvoiceQuery = {
   } | null;
 };
 
+export type UpdateInvoiceItemMutationVariables = Types.Exact<{
+  invoiceItem: Types.InvoiceItemUpdateInput;
+}>;
+
+export type UpdateInvoiceItemMutation = {
+  __typename?: 'Mutation';
+  updateInvoiceItem: {
+    __typename?: 'InvoiceItemModel';
+    invoiceId: string;
+    workHours: number;
+    indirectHours: number;
+    billableHours: number;
+    rate: number;
+    amount: number;
+    employee: { __typename?: 'EmployeeModel'; id: string; name: string };
+  };
+};
+
 export const CreateOrUpdateInvoiceDocument = gql`
   mutation createOrUpdateInvoice($invoice: InvoiceCreateInput!) {
     createOrUpdateInvoice(invoice: $invoice) {
@@ -424,3 +442,45 @@ export function useFindNextInvoiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindNextInvoiceQueryHookResult = ReturnType<typeof useFindNextInvoiceQuery>;
 export type FindNextInvoiceLazyQueryHookResult = ReturnType<typeof useFindNextInvoiceLazyQuery>;
 export type FindNextInvoiceQueryResult = Apollo.QueryResult<FindNextInvoiceQuery, FindNextInvoiceQueryVariables>;
+export const UpdateInvoiceItemDocument = gql`
+  mutation updateInvoiceItem($invoiceItem: InvoiceItemUpdateInput!) {
+    updateInvoiceItem(updatedInvoiceItem: $invoiceItem) {
+      invoiceId
+      employee {
+        id
+        name
+      }
+      workHours
+      indirectHours
+      billableHours
+      rate
+      amount
+    }
+  }
+`;
+export type UpdateInvoiceItemMutationFn = Apollo.MutationFunction<UpdateInvoiceItemMutation, UpdateInvoiceItemMutationVariables>;
+
+/**
+ * __useUpdateInvoiceItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateInvoiceItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInvoiceItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInvoiceItemMutation, { data, loading, error }] = useUpdateInvoiceItemMutation({
+ *   variables: {
+ *      invoiceItem: // value for 'invoiceItem'
+ *   },
+ * });
+ */
+export function useUpdateInvoiceItemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateInvoiceItemMutation, UpdateInvoiceItemMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateInvoiceItemMutation, UpdateInvoiceItemMutationVariables>(UpdateInvoiceItemDocument, options);
+}
+export type UpdateInvoiceItemMutationHookResult = ReturnType<typeof useUpdateInvoiceItemMutation>;
+export type UpdateInvoiceItemMutationResult = Apollo.MutationResult<UpdateInvoiceItemMutation>;
+export type UpdateInvoiceItemMutationOptions = Apollo.BaseMutationOptions<UpdateInvoiceItemMutation, UpdateInvoiceItemMutationVariables>;
