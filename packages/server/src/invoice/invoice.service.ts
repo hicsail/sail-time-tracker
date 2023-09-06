@@ -179,7 +179,7 @@ export class InvoiceService {
       throw new NotFoundError('Invoice item not found');
     }
 
-    const billableHours = workHours ? workHours + invoiceItem.indirectHours : invoiceItem.workHours + indirectHours;
+    const billableHours = workHours >= 0 ? workHours + invoiceItem.indirectHours : invoiceItem.workHours + indirectHours;
     const amount = billableHours * invoiceItem.rate;
 
     // UPDATE INVOICE ITEM

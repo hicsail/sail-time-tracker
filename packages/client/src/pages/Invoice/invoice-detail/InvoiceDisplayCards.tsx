@@ -1,6 +1,9 @@
 import { DisplayCard } from '@components/DisplayCard.component';
 import { Stack, Typography } from '@mui/material';
 import { FC } from 'react';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 interface InvoiceDisplayCardsProps {
   invoiceBillableHours: number | undefined;
@@ -11,6 +14,17 @@ interface InvoiceDisplayCardsProps {
 }
 
 export const InvoiceDisplayCards: FC<InvoiceDisplayCardsProps> = ({ invoiceBillableHours, invoiceAmount, reportBillableHours, reportAmount, adjustingHours }) => {
+  const iconRender = () => {
+    if (invoiceBillableHours && reportBillableHours) {
+      if (invoiceBillableHours > reportBillableHours) {
+        return <ArrowUpwardIcon sx={{ color: 'success.main' }} />;
+      } else if (invoiceBillableHours < reportBillableHours) {
+        return <ArrowDownwardIcon sx={{ color: 'error.main' }} />;
+      } else {
+        return <RemoveIcon sx={{ color: 'grey.500' }} />;
+      }
+    }
+  };
   return (
     <Stack direction="row" justifyContent="space-between" gap={4}>
       <DisplayCard
@@ -22,10 +36,20 @@ export const InvoiceDisplayCards: FC<InvoiceDisplayCardsProps> = ({ invoiceBilla
             <Typography component="span" variant="caption" color="grey.500">
               hrs
             </Typography>
+            {iconRender()}
           </Stack>
         }
       />
-      <DisplayCard id="Invoice Amount" title="Current Invoice Amount" data={invoiceAmount} />
+      <DisplayCard
+        id="Invoice Amount"
+        title="Current Invoice Amount"
+        data={
+          <Stack gap={1} direction="row" alignItems="center">
+            {invoiceAmount}
+            {iconRender()}
+          </Stack>
+        }
+      />
       <DisplayCard
         id="Adjustment Hours"
         title="Adjustment Hours"
@@ -35,6 +59,7 @@ export const InvoiceDisplayCards: FC<InvoiceDisplayCardsProps> = ({ invoiceBilla
             <Typography component="span" variant="caption" color="grey.500">
               hrs
             </Typography>
+            {iconRender()}
           </Stack>
         }
       />
