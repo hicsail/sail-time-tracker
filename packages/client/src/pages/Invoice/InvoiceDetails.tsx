@@ -75,11 +75,17 @@ export const InvoiceDetails = () => {
     });
 
     const employee: any = searchInvoiceData?.searchInvoice.items?.find((item) => item.employee.id === row.id);
-    console.log(employee);
+
     return (
       <Formik initialValues={{ [name]: employee ? employee[name] : '' }} onSubmit={() => {}} validateOnBlur={true} validationSchema={formValidation}>
         <Form>
-          <FormObserver invoiceId={searchInvoiceData?.searchInvoice.invoiceId} row={row} name={name} searchInvoiceVariable={searchInvoiceVariable} />
+          <FormObserver
+            invoiceId={searchInvoiceData?.searchInvoice.invoiceId}
+            row={row}
+            name={name}
+            searchInvoiceVariable={searchInvoiceVariable}
+            handleOnSubmitComment={handleOnSubmitComment}
+          />
           <ObserverTextInput name={name} type="number" />
         </Form>
       </Formik>
