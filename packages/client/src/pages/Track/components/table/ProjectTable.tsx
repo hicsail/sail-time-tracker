@@ -16,9 +16,7 @@ import { formatDateToDashFormat, getMondayToSundayDates } from '../../../../util
 import { endOfWeek, startOfWeek } from 'date-fns';
 import AddIcon from '@mui/icons-material/Add';
 import { FormDialog } from '@components/form/FormDialog';
-import { Paths } from '@constants/paths';
 import { CheckboxesSearch } from '@pages/Track/components/form/CheckboxesSearch';
-import { useNavigate } from 'react-router-dom';
 import { TableHeadCover } from '@pages/Track/components/table/TableHeadCover';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
@@ -36,7 +34,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const { employeeId } = useEmployee();
   const { date } = useDate();
   const dates = getMondayToSundayDates(date);
-  const navigate = useNavigate();
   const rows = data || [];
   const rowCount = rows.length - 2;
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
@@ -47,7 +44,6 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
 
   const handleOnClose = () => {
     setOpen(false);
-    navigate(Paths.TRACK);
   };
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
