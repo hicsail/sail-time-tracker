@@ -47,3 +47,16 @@ export class RecordCreateInput {
   @IsNotEmpty()
   date: Date;
 }
+
+@InputType()
+export class DateRangeInput {
+  @Field()
+  @IsDate()
+  @IsNotEmpty()
+  startDate: Date;
+
+  @Field()
+  @IsDate()
+  @IsNotEmpty()
+  endDate: Date;
+}

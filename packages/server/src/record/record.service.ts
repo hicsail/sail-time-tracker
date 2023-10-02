@@ -3,6 +3,7 @@ import { PrismaService } from 'nestjs-prisma';
 import { Record } from '@prisma/client';
 import { RecordCreateInput } from './dto/record.dto';
 import { BatchPayload } from '../favorite-project/model/favorite-project.model';
+import { RecordModel } from './model/record.model';
 
 @Injectable()
 export class RecordService {
@@ -61,6 +62,21 @@ export class RecordService {
         hours: {
           equals: 0
         }
+      }
+    });
+  }
+
+  async getRecordsByDateRange(startDate: Date, endDate: Date): Promise<RecordModel[]> {
+    return this.prisma.record.findMany({
+      where: {
+        date: {
+          lte: endDate,
+          gte: startDate
+        }
+      },
+      include: {
+        employee: true,
+        project: true
       }
     });
   }
