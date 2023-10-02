@@ -94,6 +94,11 @@ export type ContractTypeModel = {
   name: Scalars['String'];
 };
 
+export type DateRangeInput = {
+  endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
+};
+
 export type EmployeeCreateInput = {
   email: Scalars['String'];
   name: Scalars['String'];
@@ -457,6 +462,7 @@ export type Query = {
   getClickUpTask?: Maybe<Scalars['Boolean']>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
+  getRecordsByDateRange: Array<RecordModel>;
   invoices: Array<InvoiceModelWithProject>;
   me: Scalars['String'];
   project: ProjectWithContractType;
@@ -497,6 +503,10 @@ export type QueryGetProjectWithEmployeeRecordsArgs = {
   startDate: Scalars['DateTime'];
 };
 
+export type QueryGetRecordsByDateRangeArgs = {
+  input: DateRangeInput;
+};
+
 export type QueryProjectArgs = {
   id: Scalars['String'];
 };
@@ -529,6 +539,16 @@ export type RecordInsertOrUpdateModel = {
   date: Scalars['DateTime'];
   employeeId: Scalars['ID'];
   hours: Scalars['Float'];
+  projectId: Scalars['ID'];
+};
+
+export type RecordModel = {
+  __typename?: 'RecordModel';
+  date: Scalars['DateTime'];
+  employee: EmployeeModel;
+  employeeId: Scalars['ID'];
+  hours: Scalars['Float'];
+  project: ProjectModel;
   projectId: Scalars['ID'];
 };
 
