@@ -1,6 +1,5 @@
-import { alpha, Box, Button, styled, TextField } from '@mui/material';
+import { alpha, Box, Button, styled, TextareaAutosize, TextField } from '@mui/material';
 import DialogContent from '@mui/material/DialogContent';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
 import TableRow from '@mui/material/TableRow';
 
 export const DefaultTextInput = styled(TextField)(({ theme, variant }) => ({

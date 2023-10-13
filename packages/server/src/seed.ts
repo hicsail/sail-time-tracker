@@ -1,12 +1,26 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 async function main() {
+  const contractType = await prisma.contractType.upsert({
+    create: {
+        id: 0,
+        name: 'Internal',
+    },
+    where: {
+      id: 0
+    },
+    update: {
+        id: 0,
+        name: 'Internal'
+    }
+  });
+
   const indirect = await prisma.project.upsert({
     create: {
       name: 'Indirect',
       description: 'Update Meetings, Standup, Classes, etc.',
       status: 'Active',
-      isBillable: true
+      isBillable: true,
     },
     where: {
       name: 'Indirect'
