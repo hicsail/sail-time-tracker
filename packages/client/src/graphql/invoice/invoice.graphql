@@ -31,11 +31,16 @@ query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
         invoiceId
         startDate
         endDate
+        rate
         hours
         amount
         project {
             id
             name
+            contractType {
+                id
+                name
+            }
         }
         comments {
             createDate
@@ -47,6 +52,17 @@ query searchInvoice ($projectId_startDate_endDate: InvoiceSearchInput!) {
         clickUpTask {
             id
             url
+        }
+        items {
+            employee {
+                id
+                name
+            }
+            workHours
+            indirectHours
+            billableHours
+            rate
+            amount
         }
     }
 }
@@ -96,5 +112,20 @@ query findNextInvoice($projectId: String!, $endDate: DateTime!) {
             content
             deletable
         }
+    }
+}
+
+mutation updateInvoiceItem($invoiceItem: InvoiceItemUpdateInput!) {
+    updateInvoiceItem(updatedInvoiceItem: $invoiceItem) {
+        invoiceId
+        employee {
+            id
+            name
+        }
+        workHours
+        indirectHours
+        billableHours
+        rate
+        amount
     }
 }

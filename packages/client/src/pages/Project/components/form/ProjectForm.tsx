@@ -11,8 +11,8 @@ import { useSnackBar } from '@context/snackbar.context';
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
   description: Yup.string().required('Required'),
-  rate: Yup.string().required('Required'),
-  fte: Yup.string().required('Required'),
+  rate: Yup.number().required('Required').min(0),
+  fte: Yup.number().required('Required').min(0),
   status: Yup.string().required('Required'),
   isBillable: Yup.string().required('Required'),
   contractTypeId: Yup.number().required('Required')

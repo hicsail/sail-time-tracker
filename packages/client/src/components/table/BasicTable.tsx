@@ -37,8 +37,8 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
     if (column.header) return <Fragment key={column.field}>{column.header()}</Fragment>;
 
     return (
-      <TableCell key={column.field} align={column.headerAlign ? column.headerAlign : 'left'} sx={{ width: column.width ? column.width : '150px' }}>
-        {column.header ? column.header() : column.headerName.toUpperCase()}
+      <TableCell key={column.field} align={column.headerAlign ? column.headerAlign : 'left'} sx={{ width: column.width ? column.width : '150px', textTransform: 'capitalize' }}>
+        {column.header ? column.header() : column.headerName}
       </TableCell>
     );
   });
