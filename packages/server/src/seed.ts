@@ -3,15 +3,15 @@ const prisma = new PrismaClient();
 async function main() {
   const contractType = await prisma.contractType.upsert({
     create: {
-        id: 0,
-        name: 'Internal',
+      id: 0,
+      name: 'Internal'
     },
     where: {
       id: 0
     },
     update: {
-        id: 0,
-        name: 'Internal'
+      id: 0,
+      name: 'Internal'
     }
   });
 
@@ -20,7 +20,7 @@ async function main() {
       name: 'Indirect',
       description: 'Update Meetings, Standup, Classes, etc.',
       status: 'Active',
-      isBillable: true,
+      isBillable: true
     },
     where: {
       name: 'Indirect'
