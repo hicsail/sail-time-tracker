@@ -205,6 +205,7 @@ type Query {
   employee(id: String!): EmployeeModel!
   getEmployeesWithRecord(startDate: DateTime!, endDate: DateTime!): [EmployeeWithRecord!]!
   getProjectWithEmployeeRecords(startDate: DateTime!, endDate: DateTime!): [ProjectWithEmployeeRecords!]!
+  me: String!
   projects: [ProjectWithContractType!]!
   project(id: String!): ProjectWithContractType!
   invoices: [InvoiceModelWithProject!]!

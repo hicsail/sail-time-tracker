@@ -10,10 +10,11 @@ import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService) {}
+  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService, private readonly userService: UserService) {}
 
   /**
    * Get all employees
@@ -57,6 +58,27 @@ export class EmployeesService {
     return this.prisma.employee.findUnique({
       where: {
         id: id
+      }
+    });
+  }
+
+  /**
+   * Get an employee by Email
+   *
+   * @return a matched employee
+   */
+  async getEmployeeByEmail(email: string): Promise<Employee> {
+    const employeeExist = await this.prisma.employee.count({
+      where: {
+        email: email
+      }
+    });
+
+    if (!(employeeExist > 0)) throw new Error('Employee not found');
+
+    return this.prisma.employee.findUnique({
+      where: {
+        email: email
       }
     });
   }
@@ -460,5 +482,12 @@ export class EmployeesService {
     } catch (e) {
       return { success: false, message: e.message, count: 0 };
     }
+  }
+
+  async getEmployeeId(token: string): Promise<string> {
+    const { email } = await this.userService.getUser(token);
+    const employee = await this.getEmployeeByEmail(email);
+
+    return employee.id;
   }
 }
