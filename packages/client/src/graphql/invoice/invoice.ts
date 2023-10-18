@@ -28,7 +28,7 @@ export type GetAllInvoicesQuery = {
     endDate: any;
     hours: number;
     amount: number;
-    project: { __typename?: 'ProjectModel'; id: string; name: string };
+    project?: { __typename?: 'ProjectWithContractType'; id: string; name: string } | null;
   }>;
 };
 
@@ -43,11 +43,21 @@ export type SearchInvoiceQuery = {
     invoiceId: string;
     startDate: any;
     endDate: any;
+    rate: number;
     hours: number;
     amount: number;
-    project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
+    project?: { __typename?: 'ProjectWithContractType'; id: string; name: string; contractType: { __typename?: 'ContractTypeModel'; id: number; name: string } } | null;
+    comments?: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }> | null;
     clickUpTask?: { __typename?: 'ClickUpTaskModel'; id: string; url: string } | null;
+    items?: Array<{
+      __typename?: 'InvoiceItemModel';
+      workHours: number;
+      indirectHours: number;
+      billableHours: number;
+      rate: number;
+      amount: number;
+      employee: { __typename?: 'EmployeeModel'; id: string; name: string };
+    }> | null;
   };
 };
 
@@ -72,8 +82,8 @@ export type FindPreviousInvoiceQuery = {
     endDate: any;
     hours: number;
     amount: number;
-    project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
+    project?: { __typename?: 'ProjectWithContractType'; id: string; name: string } | null;
+    comments?: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }> | null;
   } | null;
 };
 
@@ -91,9 +101,27 @@ export type FindNextInvoiceQuery = {
     endDate: any;
     hours: number;
     amount: number;
-    project: { __typename?: 'ProjectModel'; id: string; name: string };
-    comments: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }>;
+    project?: { __typename?: 'ProjectWithContractType'; id: string; name: string } | null;
+    comments?: Array<{ __typename?: 'CommentModel'; createDate: any; commentId: string; invoiceId: string; content: string; deletable: boolean }> | null;
   } | null;
+};
+
+export type UpdateInvoiceItemMutationVariables = Types.Exact<{
+  invoiceItem: Types.InvoiceItemUpdateInput;
+}>;
+
+export type UpdateInvoiceItemMutation = {
+  __typename?: 'Mutation';
+  updateInvoiceItem: {
+    __typename?: 'InvoiceItemModel';
+    invoiceId: string;
+    workHours: number;
+    indirectHours: number;
+    billableHours: number;
+    rate: number;
+    amount: number;
+    employee: { __typename?: 'EmployeeModel'; id: string; name: string };
+  };
 };
 
 export const CreateOrUpdateInvoiceDocument = gql`
@@ -212,11 +240,16 @@ export const SearchInvoiceDocument = gql`
       invoiceId
       startDate
       endDate
+      rate
       hours
       amount
       project {
         id
         name
+        contractType {
+          id
+          name
+        }
       }
       comments {
         createDate
@@ -228,6 +261,17 @@ export const SearchInvoiceDocument = gql`
       clickUpTask {
         id
         url
+      }
+      items {
+        employee {
+          id
+          name
+        }
+        workHours
+        indirectHours
+        billableHours
+        rate
+        amount
       }
     }
   }
@@ -398,3 +442,45 @@ export function useFindNextInvoiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindNextInvoiceQueryHookResult = ReturnType<typeof useFindNextInvoiceQuery>;
 export type FindNextInvoiceLazyQueryHookResult = ReturnType<typeof useFindNextInvoiceLazyQuery>;
 export type FindNextInvoiceQueryResult = Apollo.QueryResult<FindNextInvoiceQuery, FindNextInvoiceQueryVariables>;
+export const UpdateInvoiceItemDocument = gql`
+  mutation updateInvoiceItem($invoiceItem: InvoiceItemUpdateInput!) {
+    updateInvoiceItem(updatedInvoiceItem: $invoiceItem) {
+      invoiceId
+      employee {
+        id
+        name
+      }
+      workHours
+      indirectHours
+      billableHours
+      rate
+      amount
+    }
+  }
+`;
+export type UpdateInvoiceItemMutationFn = Apollo.MutationFunction<UpdateInvoiceItemMutation, UpdateInvoiceItemMutationVariables>;
+
+/**
+ * __useUpdateInvoiceItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateInvoiceItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInvoiceItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInvoiceItemMutation, { data, loading, error }] = useUpdateInvoiceItemMutation({
+ *   variables: {
+ *      invoiceItem: // value for 'invoiceItem'
+ *   },
+ * });
+ */
+export function useUpdateInvoiceItemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateInvoiceItemMutation, UpdateInvoiceItemMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateInvoiceItemMutation, UpdateInvoiceItemMutationVariables>(UpdateInvoiceItemDocument, options);
+}
+export type UpdateInvoiceItemMutationHookResult = ReturnType<typeof useUpdateInvoiceItemMutation>;
+export type UpdateInvoiceItemMutationResult = Apollo.MutationResult<UpdateInvoiceItemMutation>;
+export type UpdateInvoiceItemMutationOptions = Apollo.BaseMutationOptions<UpdateInvoiceItemMutation, UpdateInvoiceItemMutationVariables>;

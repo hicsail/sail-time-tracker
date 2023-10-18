@@ -18,6 +18,7 @@ model Employee {
   records  Record[]
   projects FavoriteProject[]
   slack    Slack?
+  invoices InvoiceItem[]
 }
 
 model Project {
@@ -56,16 +57,17 @@ model FavoriteProject {
 }
 
 model Invoice {
-  invoiceId   String       @unique @default(uuid())
+  invoiceId   String        @unique @default(uuid())
   projectId   String
-  project     Project      @relation(fields: [projectId], references: [id])
-  startDate   DateTime     @db.Date
-  endDate     DateTime     @db.Date
+  project     Project       @relation(fields: [projectId], references: [id])
+  startDate   DateTime      @db.Date
+  endDate     DateTime      @db.Date
   rate        Float
   hours       Float
   amount      Float
   comments    Comment[]
   clickUpTask ClickUpTask?
+  items       InvoiceItem[]
 
   @@id([projectId, startDate, endDate])
 }
@@ -96,4 +98,18 @@ model ContractType {
   id       Int       @id @default(autoincrement())
   name     String
   projects Project[]
+}
+
+model InvoiceItem {
+  invoiceId     String
+  invoice       Invoice  @relation(fields: [invoiceId], references: [invoiceId])
+  employeeId    String
+  employee      Employee @relation(fields: [employeeId], references: [id])
+  workHours     Float
+  indirectHours Float
+  billableHours Float
+  rate          Float
+  amount        Float
+
+  @@id([invoiceId, employeeId])
 }

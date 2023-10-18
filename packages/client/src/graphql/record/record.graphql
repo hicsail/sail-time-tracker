@@ -12,3 +12,18 @@ mutation deleteRecord($input: RecordDeleteInput!) {
     count
   }
 }
+
+query getRecordsByDateRange($input: DateRangeInput!) {
+  getRecordsByDateRange(input: $input) {
+    date
+    hours
+    employee {
+      name
+    }
+    project {
+      name
+      rate
+      isBillable
+    }
+  }
+}
