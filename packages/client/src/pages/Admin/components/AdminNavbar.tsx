@@ -37,8 +37,6 @@ export const AdminNavbar = () => {
         <SideListItem path={Paths.INVOICE} icon={<Receipt sx={{ color: 'customColors.iconColor' }} />} info="Billing & Invoices" open={open} />
       </SideList>
       <SideList>
-        <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Track" open={open} />
-        <SideListItem path={Paths.LOGOUT} icon={<Logout sx={{ color: 'customColors.iconColor' }} />} info="Logout" open={open} />
         <SwitchBtn onClick={toggleTheme} open={open} />
       </SideList>
     </Nav>
