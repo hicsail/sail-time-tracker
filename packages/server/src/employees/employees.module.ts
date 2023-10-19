@@ -4,10 +4,9 @@ import { PrismaModule } from 'nestjs-prisma';
 import { EmployeesResolver } from './employees.resolver';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [PrismaModule.forRoot(), HttpModule, ConfigModule, UserModule],
+  imports: [PrismaModule.forRoot(), HttpModule, ConfigModule],
   providers: [EmployeesService, EmployeesResolver],
   exports: [EmployeesService]
 })

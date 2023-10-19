@@ -12,10 +12,6 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClickUpTaskModule } from './click-up-task/click-up-task.module';
-import { AuthGuard } from '@summerluna/auth-guard';
-import { JwtModule } from '@summerluna/auth-guard';
-import { APP_GUARD } from '@nestjs/core';
-import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -38,17 +34,9 @@ import { UserModule } from './user/user.module';
     RecordModule,
     InvoiceModule,
     CommentsModule,
-    ClickUpTaskModule,
-    JwtModule,
-    UserModule
+    ClickUpTaskModule
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard
-    }
-  ]
+  providers: [AppService]
 })
 export class AppModule {}

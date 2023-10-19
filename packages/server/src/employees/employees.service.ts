@@ -10,11 +10,10 @@ import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService, private readonly userService: UserService) {}
+  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService) {}
 
   /**
    * Get all employees
@@ -500,12 +499,5 @@ export class EmployeesService {
     } catch (e) {
       return { success: false, message: e.message, count: 0 };
     }
-  }
-
-  async getEmployeeId(token: string): Promise<string> {
-    const { email } = await this.userService.getUser(token);
-    const employee = await this.getEmployeeByEmail(email);
-
-    return employee.id;
   }
 }

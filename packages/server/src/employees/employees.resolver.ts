@@ -5,7 +5,6 @@ import { BatchSendSlackMessageInput, EmployeeCreateInput, EmployeeUpdateInput, S
 import { ProjectModel } from '../project/model/project.model';
 import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
 import { BatchPayload } from '../favorite-project/model/favorite-project.model';
-import { TokenID } from './token.decorator';
 
 @Resolver(() => EmployeeModel)
 export class EmployeesResolver {
@@ -73,10 +72,5 @@ export class EmployeesResolver {
   @Mutation(() => BatchResponseModel)
   async batchSendingMessages(@Args('input') input: BatchSendSlackMessageInput): Promise<BatchResponseModel> {
     return this.employeesService.batchSendingMessages(input);
-  }
-
-  @Query(() => String)
-  async me(@TokenID() token: string): Promise<string> {
-    return this.employeesService.getEmployeeId(token);
   }
 }

@@ -22,7 +22,6 @@
     "@mui/material": "^5.11.10",
     "@mui/x-data-grid": "^6.6.0",
     "@mui/x-date-pickers": "^6.8.0",
-    "@summerluna/harbor": "^0.0.5",
     "axios": "^1.4.0",
     "date-fns": "^2.29.3",
     "formik": "^2.2.9",
