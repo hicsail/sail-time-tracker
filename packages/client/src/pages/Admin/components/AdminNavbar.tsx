@@ -1,5 +1,5 @@
 import { styled } from '@mui/material';
-import { ArrowBackIosNewRounded, Assessment, AssignmentInd, Folder, Logout, Receipt, WatchLater } from '@mui/icons-material';
+import { ArrowBackIosNewRounded, Assessment, AssignmentInd, Folder, Receipt } from '@mui/icons-material';
 import { Paths } from '@constants/paths';
 import { SideListItem } from '@pages/Admin/components/SideListItem';
 import { SideList } from '@pages/Admin/components/SideList';
