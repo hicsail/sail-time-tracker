@@ -2,7 +2,7 @@ import { Box, Drawer, IconButton, Stack, useMediaQuery, useTheme } from '@mui/ma
 import { SwitchBtn } from '@components/switch/switchBtn';
 import { useToggleTheme } from '../../../hooks/useToggleTheme';
 import { Paths } from '@constants/paths';
-import { Assessment, AssignmentInd, Folder, Logout, Receipt, WatchLater } from '@mui/icons-material';
+import { Assessment, AssignmentInd, Folder, Receipt, WatchLater } from '@mui/icons-material';
 import { SideListItem } from '@pages/Admin/components/SideListItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import { SideList } from '@pages/Admin/components/SideList';
