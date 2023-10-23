@@ -464,7 +464,6 @@ export type Query = {
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   getRecordsByDateRange: Array<RecordModel>;
   invoices: Array<InvoiceModelWithProject>;
-  me: Scalars['String'];
   project: ProjectWithContractType;
   projects: Array<ProjectWithContractType>;
   searchInvoice: InvoiceModelWithProjectAndComments;

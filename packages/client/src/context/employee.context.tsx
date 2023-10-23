@@ -1,7 +1,5 @@
 import { createContext, ReactNode, FC, useState, useContext, useEffect } from 'react';
 import { useSettings } from '@context/setting.context';
-import { useAuth } from '@summerluna/harbor';
-import { useGetEmployeeIdQuery } from '@graphql/employee/employee';
 
 interface EmployeeContextProps {
   employeeId: string | null;
@@ -18,18 +16,10 @@ export const EmployeeProvider: FC<EmployeeProviderProps> = ({ children }) => {
   const { settings, setSettings } = useSettings();
   const defaultEmployee = settings.employee ? settings.employee : null;
   const [employeeId, setEmployeeId] = useState(defaultEmployee);
-  const { data } = useGetEmployeeIdQuery();
-  const { token, decoded_token } = useAuth();
 
   useEffect(() => {
     setSettings({ ...settings, employee: employeeId });
   }, [employeeId]);
-
-  useEffect(() => {
-    if (data && token && decoded_token?.role !== 1) {
-      setEmployeeId(data.me);
-    }
-  }, [data]);
 
   return (
     <EmployeeContext.Provider

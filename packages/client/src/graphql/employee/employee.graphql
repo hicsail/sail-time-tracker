@@ -59,10 +59,6 @@ query getEmployeeById($id: String!) {
   }
 }
 
-query getEmployeeId {
-  me
-}
-
 query getRecordWithFavoriteProject($id: String!, $startDate: DateTime!, $endDate: DateTime!) {
   employee(id: $id) {
     recordsWithFavoriteProjects(startDate: $startDate, endDate: $endDate) {

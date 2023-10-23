@@ -73,10 +73,6 @@ export type GetEmployeeByIdQueryVariables = Types.Exact<{
 
 export type GetEmployeeByIdQuery = { __typename?: 'Query'; employee: { __typename?: 'EmployeeModel'; id: string; name: string; email: string; status?: string | null } };
 
-export type GetEmployeeIdQueryVariables = Types.Exact<{ [key: string]: never }>;
-
-export type GetEmployeeIdQuery = { __typename?: 'Query'; me: string };
-
 export type GetRecordWithFavoriteProjectQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
   startDate: Types.Scalars['DateTime'];
@@ -316,38 +312,6 @@ export function useGetEmployeeByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetEmployeeByIdQueryHookResult = ReturnType<typeof useGetEmployeeByIdQuery>;
 export type GetEmployeeByIdLazyQueryHookResult = ReturnType<typeof useGetEmployeeByIdLazyQuery>;
 export type GetEmployeeByIdQueryResult = Apollo.QueryResult<GetEmployeeByIdQuery, GetEmployeeByIdQueryVariables>;
-export const GetEmployeeIdDocument = gql`
-  query getEmployeeId {
-    me
-  }
-`;
-
-/**
- * __useGetEmployeeIdQuery__
- *
- * To run a query within a React component, call `useGetEmployeeIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetEmployeeIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetEmployeeIdQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetEmployeeIdQuery(baseOptions?: Apollo.QueryHookOptions<GetEmployeeIdQuery, GetEmployeeIdQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetEmployeeIdQuery, GetEmployeeIdQueryVariables>(GetEmployeeIdDocument, options);
-}
-export function useGetEmployeeIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEmployeeIdQuery, GetEmployeeIdQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetEmployeeIdQuery, GetEmployeeIdQueryVariables>(GetEmployeeIdDocument, options);
-}
-export type GetEmployeeIdQueryHookResult = ReturnType<typeof useGetEmployeeIdQuery>;
-export type GetEmployeeIdLazyQueryHookResult = ReturnType<typeof useGetEmployeeIdLazyQuery>;
-export type GetEmployeeIdQueryResult = Apollo.QueryResult<GetEmployeeIdQuery, GetEmployeeIdQueryVariables>;
 export const GetRecordWithFavoriteProjectDocument = gql`
   query getRecordWithFavoriteProject($id: String!, $startDate: DateTime!, $endDate: DateTime!) {
     employee(id: $id) {
