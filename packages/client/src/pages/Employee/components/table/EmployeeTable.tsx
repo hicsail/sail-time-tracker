@@ -1,7 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Chip, SelectChangeEvent, Stack, Typography } from '@mui/material';
-import { Paths } from '@constants/paths';
+import { Box, Button, Chip, IconButton, List, ListItem, SelectChangeEvent, Stack, Tooltip, Typography } from '@mui/material';
 import { FormDialog } from '@components/form/FormDialog';
 import { EmployeeForm } from '@pages/Employee/components/form/EmployeeForm';
 import { DropDownMenu } from '@components/form/DropDownMenu';
@@ -9,6 +7,12 @@ import AddIcon from '@mui/icons-material/Add';
 import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
 import { DefaultContainedButton } from '@components/StyledComponent';
+import { ThreeDotIcon } from '@components/icons/ThreeDot';
+import { EditIcon } from '@components/icons/EditIcon';
+import { ArchiveIcon } from '@components/icons/ArchiveIcon';
+import { CustomPopover } from '@components/CuctomPopover';
+import { useEmployeeUpdateInputMutation } from '@graphql/employee/employee';
+import { useSnackBar } from '@context/snackbar.context';
 
 interface EmployeeTableProps {
   data: any[];
@@ -31,15 +35,23 @@ const dropdownData = [
 
 export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const openPopover = Boolean(anchorEl);
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('Active');
-  const navigate = useNavigate();
+  const [updateEmployee] = useEmployeeUpdateInputMutation();
+  const [targetRow, setTargetRow] = useState<any>(null);
+  const { toggleSnackBar } = useSnackBar();
 
   const handleClickOpen = () => setOpen(true);
+  const handleEditClick = (row: any) => {
+    setTargetRow(row);
+    handleClickOpen();
+  };
 
   const handleOnClose = () => {
+    setTargetRow(null);
     setOpen(false);
-    navigate(Paths.EMPLOYEE_lIST);
   };
 
   const filteredRows = data.filter((row) => {
@@ -50,6 +62,28 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
   });
 
   const handleDropdownOnChange = (e: SelectChangeEvent<string>) => setFilter(e.target.value);
+
+  const handleThreeDotClick = (event: React.MouseEvent<HTMLButtonElement>, row: any) => {
+    setAnchorEl(event.currentTarget);
+    setTargetRow(row);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleArchive = async () => {
+    const { __typename, ...employee } = targetRow;
+    const message = employee.status === 'Active' ? `Successfully archived the ${employee.name}!` : `Successfully unarchived the ${employee.name}!`;
+    const status = employee.status === 'Active' ? 'Inactive' : 'Active';
+    const res = await updateEmployee({
+      variables: {
+        updateEmployee: { ...employee, status: status }
+      }
+    });
+    handlePopoverClose();
+    res.data?.updateEmployee && toggleSnackBar(message, { variant: 'success' });
+  };
 
   const columns: any[] = [
     {
@@ -77,18 +111,35 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: '',
+      headerAlign: 'right',
+      align: 'right',
       renderCell: (row: any) => (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            navigate(`${Paths.EMPLOYEE_lIST}/${row.id}`);
-            handleClickOpen();
-          }}
-          color="secondary"
-        >
-          Edit
-        </Button>
+        <Stack direction="row" gap={2} justifyContent="end">
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() => {
+                handleEditClick(row);
+              }}
+            >
+              <EditIcon
+                fontSize="medium"
+                sx={{
+                  color: 'grey.600'
+                }}
+              />
+            </IconButton>
+          </Tooltip>
+          <IconButton onClick={(e) => handleThreeDotClick(e, row)}>
+            <ThreeDotIcon
+              fontSize="medium"
+              sx={{
+                color: openPopover ? '#1C274C' : 'grey.600',
+                transform: 'rotate(90deg)'
+              }}
+            />
+          </IconButton>
+        </Stack>
       )
     }
   ];
@@ -131,8 +182,16 @@ export const EmployeeTable: FC<EmployeeTableProps> = ({ data }) => {
         </Box>
       )}
       <FormDialog open={open} onClose={handleOnClose}>
-        <EmployeeForm handleClose={handleOnClose} />
+        <EmployeeForm handleClose={handleOnClose} targetEmployee={targetRow} />
       </FormDialog>
+      <CustomPopover open={openPopover} anchorEl={anchorEl} onClose={handlePopoverClose}>
+        <List sx={{ '& .MuiListItem-root': { cursor: 'pointer' } }}>
+          <ListItem sx={{ gap: 2 }} onClick={handleArchive}>
+            <ArchiveIcon fontSize="small" />
+            <Typography variant="body1">{targetRow?.status === 'Active' ? 'Archive' : 'Unarchive'}</Typography>
+          </ListItem>
+        </List>
+      </CustomPopover>
     </Box>
   );
 };

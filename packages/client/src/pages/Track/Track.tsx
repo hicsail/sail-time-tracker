@@ -13,10 +13,12 @@ import { Day } from './components/DatePicker/Day';
 import { CustomDatePickerLayout } from '@components/CustomDatePickerLayout';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { StyledDatePicker } from '@components/StyledDatePicker';
+import { useAuth } from '@summerluna/harbor';
 
 export const Track = () => {
   const { employeeId, setEmployeeId } = useEmployee();
   const { date, setDate } = useDate();
+  const { decoded_token } = useAuth();
   const { data: employeeListData } = useGetEmployeeListQuery();
   const { data: recordWithFavoriteProjectData } = useGetRecordWithFavoriteProjectQuery({
     variables: {
@@ -59,15 +61,16 @@ export const Track = () => {
   };
 
   return (
-    <Stack gap={8} paddingTop={6}>
-      <Stack direction="row" gap={10} alignItems="center">
+    <Stack gap={8}>
+      <Stack direction="row" sx={{ gap: { lg: 10, sm: 5 } }} alignItems="center">
         <DropDownMenu
           data={employees}
           onChange={handleSelectEmployeeOnChange}
-          label="Select Employee"
+          label={decoded_token?.role === 1 ? 'Select Employee' : 'Employee Name'}
           value={employeeId ? employeeId : ''}
           id="select_employee"
           name="select_employee"
+          disabled={decoded_token?.role !== 1}
         />
         <StyledDatePicker
           value={date}

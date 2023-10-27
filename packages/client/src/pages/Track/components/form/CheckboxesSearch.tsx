@@ -1,14 +1,14 @@
-import { Checkbox, Autocomplete, Box, Typography, Stack, ListItem } from '@mui/material';
+import { Checkbox, Autocomplete, Box, Typography, Stack, ListItem, Chip } from '@mui/material';
 import { CheckBoxOutlineBlank, CheckBox } from '@mui/icons-material';
 import { FC, SyntheticEvent, useState } from 'react';
 import { useGetProjectListQuery } from '@graphql/project/project';
-import { useAddFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
+import { useAddFavoriteProjectMutation, useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { useDate } from '@context/date.context';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
-import { CustomOutlinedTextInput, DefaultContainedButton, DefaultOutlinedButton } from '@components/StyledComponent';
+import { CustomOutlinedTextInput, DefaultContainedButton } from '@components/StyledComponent';
 import { useSnackBar } from '@context/snackbar.context';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
@@ -24,17 +24,15 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onCl
   const { data: projectListDate } = useGetProjectListQuery();
   const activeProjects = projectListDate?.projects?.filter((project) => project.status === 'Active') ?? [];
   const [addFavoriteProjectMutation, { error: addFavoriteProjectError }] = useAddFavoriteProjectMutation();
+  const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
   const { employeeId } = useEmployee();
   const { date } = useDate();
   const { toggleSnackBar } = useSnackBar();
 
   // handle user select projects from search checkbox
-  const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any[]) => setSelectedProjects(value);
-
-  // handle add favorite project event
-  const handleOnSubmit = () => {
-    if (employeeId && selectedProjects) {
-      const newFavoriteProjects = selectedProjects.map((project: any) => ({ employeeId: employeeId, projectId: project.id }));
+  const handleOnChange = (e: SyntheticEvent<Element, Event>, value: any[]) => {
+    if (employeeId) {
+      const newFavoriteProjects = value.map((project: any) => ({ employeeId: employeeId, projectId: project.id }));
 
       addFavoriteProjectMutation({
         variables: {
@@ -55,8 +53,35 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onCl
         response && response.count > 0 && toggleSnackBar(`Successfully add ${response?.count} favorite project`, { variant: 'success' });
         addFavoriteProjectError && toggleSnackBar('Something went wrong!', { variant: 'error' });
       });
+      setSelectedProjects(value);
     }
-    setSelectedProjects([]);
+  };
+
+  const handleOnClickUnFavorite = (projectId: string) => {
+    if (employeeId && projectId) {
+      deleteFavoriteProject({
+        variables: {
+          employeeId: employeeId,
+          projectIds: [projectId]
+        },
+        refetchQueries: [
+          {
+            query: GetRecordWithFavoriteProjectDocument,
+            variables: {
+              id: employeeId as string,
+              startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
+              endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
+            }
+          }
+        ]
+      }).then((r) => {
+        const response = r?.data?.deleteFavoriteProjects;
+        response && response.count > 0 && toggleSnackBar(`Successfully unfavorite ${response?.count} projects`, { variant: 'success' });
+        !response && toggleSnackBar('Something went wrong!', { variant: 'error' });
+      });
+      const filteredSelected = selectedProjects.filter((project) => project.id !== projectId);
+      setSelectedProjects(filteredSelected);
+    }
   };
 
   return (
@@ -89,16 +114,16 @@ export const CheckboxesSearch: FC<CheckboxesSearchProps> = ({ excludedData, onCl
           );
         }}
         renderInput={(params) => <CustomOutlinedTextInput {...params} label="Add Your Favorite Project" placeholder="Projects" />}
+        renderTags={(tagValue, getTagProps) => {
+          return tagValue.map((option, index) => <Chip {...getTagProps({ index })} label={option.name} onDelete={() => handleOnClickUnFavorite(option.id)} />);
+        }}
         onChange={handleOnChange}
         value={selectedProjects}
       />
-      <Stack sx={{ width: 500, marginTop: '1rem' }} gap={2}>
-        <DefaultContainedButton onClick={handleOnSubmit} variant="contained" color="primary">
-          Add
-        </DefaultContainedButton>
-        <DefaultOutlinedButton variant="outlined" onClick={onClose}>
+      <Stack sx={{ width: 500, marginTop: '1rem' }}>
+        <DefaultContainedButton variant="contained" onClick={onClose}>
           close
-        </DefaultOutlinedButton>
+        </DefaultContainedButton>
       </Stack>
     </Box>
   );

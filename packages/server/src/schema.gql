@@ -122,6 +122,15 @@ type GroupedRecordWithFavoriteProjectModel {
   records: [RecordWithFavoriteProjectModel!]!
 }
 
+type RecordModel {
+  employeeId: ID!
+  projectId: ID!
+  date: DateTime!
+  hours: Float!
+  employee: EmployeeModel!
+  project: ProjectModel!
+}
+
 type BatchPayload {
   count: Float!
 }
@@ -184,7 +193,17 @@ type InvoiceModelWithProject {
   hours: Float!
   amount: Float!
   invoiceId: String!
-  project: ProjectModel!
+  project: ProjectWithContractType
+}
+
+type InvoiceItemModel {
+  invoiceId: String!
+  employee: EmployeeModel!
+  workHours: Float!
+  indirectHours: Float!
+  billableHours: Float!
+  rate: Float!
+  amount: Float!
 }
 
 type InvoiceModelWithProjectAndComments {
@@ -195,9 +214,10 @@ type InvoiceModelWithProjectAndComments {
   hours: Float!
   amount: Float!
   invoiceId: String!
-  project: ProjectModel!
-  comments: [CommentModel!]!
+  project: ProjectWithContractType
+  comments: [CommentModel!]
   clickUpTask: ClickUpTaskModel
+  items: [InvoiceItemModel!]
 }
 
 type Query {
@@ -208,6 +228,7 @@ type Query {
   me: String!
   projects: [ProjectWithContractType!]!
   project(id: String!): ProjectWithContractType!
+  getRecordsByDateRange(input: DateRangeInput!): [RecordModel!]!
   invoices: [InvoiceModelWithProject!]!
   searchInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModelWithProjectAndComments!
   searchInvoicesByDateRange(startDate: DateTime!, endDate: DateTime!): [InvoiceModel!]!
@@ -218,6 +239,11 @@ type Query {
   getClickUpCustomFields: [ListCustomField!]!
   getClickUpStatuses: [ClickUpStatuses!]!
   getClickUpTask(taskId: String!): Boolean
+}
+
+input DateRangeInput {
+  startDate: DateTime!
+  endDate: DateTime!
 }
 
 input InvoiceSearchInput {
@@ -239,8 +265,10 @@ type Mutation {
   addFavoriteProject(favoriteProject: [FavoriteProjectCreateInput!]!): BatchPayload!
   deleteFavoriteProjects(employeeId: String!, projectIds: [String!]!): BatchPayload!
   insertOrUpdateRecord(record: RecordCreateInput!): RecordInsertOrUpdateModel!
+  deleteRecord(input: RecordDeleteInput!): BatchPayload!
   createOrUpdateInvoice(invoice: InvoiceCreateInput!): InvoiceModel!
   deleteInvoice(projectId_startDate_endDate: InvoiceSearchInput!): InvoiceModel!
+  updateInvoiceItem(updatedInvoiceItem: InvoiceItemUpdateInput!): InvoiceItemModel!
   addComment(input: CommentCreateInput!): CommentModel!
   deleteComment(id: String!): CommentModel!
   createClickUpTask(task: ClickUpTaskCreateInput!): ClickUpTaskModel!
@@ -309,6 +337,13 @@ input RecordCreateInput {
   date: DateTime!
 }
 
+input RecordDeleteInput {
+  employeeId: ID!
+  projectIds: [String!]!
+  startDate: DateTime
+  endDate: DateTime
+}
+
 input InvoiceCreateInput {
   projectId: String!
   startDate: DateTime!
@@ -316,6 +351,13 @@ input InvoiceCreateInput {
   rate: Float!
   hours: Float!
   amount: Float!
+}
+
+input InvoiceItemUpdateInput {
+  invoiceId: String!
+  employeeId: String!
+  workHours: Float
+  indirectHours: Float
 }
 
 input CommentCreateInput {

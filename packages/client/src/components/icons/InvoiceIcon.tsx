@@ -1,8 +1,8 @@
 import { SvgIcon } from '@mui/material';
 import { FC } from 'react';
-import { ClickUpIconProps } from '@components/icons/ClickupIcon';
+import { SVGIconProps } from '@components/icons/ClickupIcon';
 
-export const InvoiceIcon: FC<ClickUpIconProps> = ({ sx, fontSize }) => {
+export const InvoiceIcon: FC<SVGIconProps> = ({ sx, fontSize }) => {
   return (
     <SvgIcon fontSize={fontSize} sx={sx}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">

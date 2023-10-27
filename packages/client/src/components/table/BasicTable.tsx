@@ -37,8 +37,8 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
     if (column.header) return <Fragment key={column.field}>{column.header()}</Fragment>;
 
     return (
-      <TableCell key={column.field} align={column.headerAlign ? column.headerAlign : 'left'} sx={{ width: column.width ? column.width : '150px' }}>
-        {column.header ? column.header() : column.headerName.toUpperCase()}
+      <TableCell key={column.field} align={column.headerAlign ? column.headerAlign : 'left'} sx={{ width: column.width ? column.width : '150px', textTransform: 'capitalize' }}>
+        {column.header ? column.header() : column.headerName}
       </TableCell>
     );
   });
@@ -62,7 +62,7 @@ export const BasicTable: FC<BasicTableProps> = ({ rows, columns, toolbar, keyFun
         </TableHead>
         <TableBody>{renderRows}</TableBody>
       </Table>
-      {!hidePagination && (
+      {!hidePagination && rows.length > 0 && (
         <TablePagination
           rowsPerPageOptions={[10, 25, 50]}
           component="div"
