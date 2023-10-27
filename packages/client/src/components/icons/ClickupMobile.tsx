@@ -1,8 +1,8 @@
 import { SvgIcon } from '@mui/material';
 import { FC } from 'react';
-import { ClickUpIconProps } from '@components/icons/ClickupIcon';
+import { SVGIconProps } from '@components/icons/ClickupIcon';
 
-export const ClickUpMobile: FC<ClickUpIconProps> = ({ sx, fontSize }) => {
+export const ClickUpMobile: FC<SVGIconProps> = ({ sx, fontSize }) => {
   return (
     <SvgIcon fontSize={fontSize} sx={sx}>
       <svg viewBox="0 0 185 185" fill="none" xmlns="http://www.w3.org/2000/svg">

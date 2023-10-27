@@ -16,13 +16,12 @@ import { formatDateToDashFormat, getMondayToSundayDates } from '../../../../util
 import { endOfWeek, startOfWeek } from 'date-fns';
 import AddIcon from '@mui/icons-material/Add';
 import { FormDialog } from '@components/form/FormDialog';
-import { Paths } from '@constants/paths';
 import { CheckboxesSearch } from '@pages/Track/components/form/CheckboxesSearch';
-import { useNavigate } from 'react-router-dom';
 import { TableHeadCover } from '@pages/Track/components/table/TableHeadCover';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favoriteProject';
 import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
 import { useSnackBar } from '@context/snackbar.context';
+import { useDeleteRecordMutation } from '@graphql/record/record';
 
 interface ProjectTableProps {
   data: any | undefined;
@@ -35,23 +34,28 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const { employeeId } = useEmployee();
   const { date } = useDate();
   const dates = getMondayToSundayDates(date);
-  const navigate = useNavigate();
   const rows = data || [];
   const rowCount = rows.length - 2;
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
   const { toggleSnackBar } = useSnackBar();
+  const [deleteRecord] = useDeleteRecordMutation();
 
   const handleClickOpen = () => setOpen(true);
 
   const handleOnClose = () => {
     setOpen(false);
-    navigate(Paths.TRACK);
   };
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       // exclude the first two rows (Indirect and Absence)
-      const filteredSelected = rows.filter((row: any, index: number) => index !== 1 && index !== 0).map((row: any) => row.projectId);
+      // exclude the rows that have total hours > 0
+      const filteredSelected = rows
+        .filter((row: any, index: number) => {
+          const totalHours = row.records.reduce((totalHours: number, record: any) => totalHours + record.hours, 0);
+          return index !== 1 && index !== 0 && totalHours === 0;
+        })
+        .map((row: any) => row.projectId);
       setSelected(filteredSelected);
       return;
     }
@@ -99,6 +103,18 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         response && response.count > 0 && toggleSnackBar(`Successfully unfavorite ${response?.count} projects`, { variant: 'success' });
         !response && toggleSnackBar('Something went wrong!', { variant: 'error' });
       });
+
+      // delete records of the unfavorite projects that has 0 hours
+      deleteRecord({
+        variables: {
+          input: {
+            employeeId: employeeId,
+            projectIds: selected as string[],
+            startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
+            endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
+          }
+        }
+      });
     }
 
     setSelected([]);
@@ -117,7 +133,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           </FormDialog>
         </Stack>
         <TableContainer>
-          <Table sx={{ minWidth: 750, position: 'relative' }} aria-labelledby="tableTitle">
+          <Table sx={{ position: 'relative' }} aria-labelledby="tableTitle">
             <TableHeadCover
               rowCount={rowCount}
               selected={selected}
@@ -140,7 +156,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                         color="primary"
                         checked={isItemSelected}
                         onClick={(event) => handleClick(event, row.projectId)}
-                        disabled={row.projectName === 'Indirect' || row.projectName === 'Absence'}
+                        disabled={row.projectName === 'Indirect' || row.projectName === 'Absence' || totalHours !== 0}
                       />
                     </TableCell>
                     <TableCell id="name">{row.projectName}</TableCell>

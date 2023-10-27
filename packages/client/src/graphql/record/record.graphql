@@ -6,3 +6,24 @@ mutation addRecord($record: RecordCreateInput!) {
     hours
   }
 }
+
+mutation deleteRecord($input: RecordDeleteInput!) {
+  deleteRecord(input: $input) {
+    count
+  }
+}
+
+query getRecordsByDateRange($input: DateRangeInput!) {
+  getRecordsByDateRange(input: $input) {
+    date
+    hours
+    employee {
+      name
+    }
+    project {
+      name
+      rate
+      isBillable
+    }
+  }
+}

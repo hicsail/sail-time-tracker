@@ -6,13 +6,15 @@ interface SideListItemProps {
   path: string;
   icon?: ReactNode;
   info: string;
+  open?: boolean;
 }
 
-export const SideListItem: FC<SideListItemProps> = ({ path, icon, info }) => {
+export const SideListItem: FC<SideListItemProps> = ({ path, icon, info, open = true }) => {
   return (
     <ListItem
       disablePadding
       sx={{
+        padding: '0.2rem 0',
         '&:hover': {
           backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'grey.100' : alpha(theme.palette.grey[500], 0.02))
         }
@@ -31,7 +33,7 @@ export const SideListItem: FC<SideListItemProps> = ({ path, icon, info }) => {
         }}
       >
         <ListItemIcon>{icon}</ListItemIcon>
-        <ListItemText primary={info} />
+        {open && <ListItemText primary={info} />}
       </ListItemButton>
     </ListItem>
   );

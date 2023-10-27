@@ -9,13 +9,15 @@ interface DropDownMenuProps<T> {
   name: string;
   id: string;
   value: string;
+  disabled?: boolean;
 }
 
-export const DropDownMenu: FC<DropDownMenuProps<any>> = ({ data, onChange, label, name, id, value }) => {
+export const DropDownMenu: FC<DropDownMenuProps<any>> = ({ data, onChange, label, name, id, value, disabled = false }) => {
   return (
     <FormControl sx={{ minWidth: '200px' }}>
       <InputLabel sx={{ '&.Mui-focused': { color: (theme: any) => (theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.common.white) } }}>{label}</InputLabel>
       <Select
+        disabled={disabled}
         name={name}
         label={label}
         id={id}

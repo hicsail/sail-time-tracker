@@ -1,8 +1,8 @@
 import { SvgIcon } from '@mui/material';
-import { ClickUpIconProps } from '@components/icons/ClickupIcon';
+import { SVGIconProps } from '@components/icons/ClickupIcon';
 import { FC } from 'react';
 
-export const SlackIcon: FC<ClickUpIconProps> = ({ fontSize, sx }) => {
+export const SlackIcon: FC<SVGIconProps> = ({ fontSize, sx }) => {
   return (
     <SvgIcon fontSize={fontSize} sx={sx}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">

@@ -2,18 +2,17 @@ import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { Grid, MenuItem, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { GetProjectListDocument, useGetProjectByIdLazyQuery, useProjectCreateInputMutation, useProjectUpdateInputMutation } from '@graphql/project/project';
+import { GetProjectListDocument, useProjectCreateInputMutation, useProjectUpdateInputMutation } from '@graphql/project/project';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { useParams } from 'react-router-dom';
 import { FC, useEffect, useState } from 'react';
 import { DefaultContainedButton } from '@components/StyledComponent';
 import { useSnackBar } from '@context/snackbar.context';
 
 const FormValidation = Yup.object({
   name: Yup.string().required('Required'),
-  description: Yup.string(),
-  rate: Yup.string().required('Required'),
-  fte: Yup.string().required('Required'),
+  description: Yup.string().required('Required'),
+  rate: Yup.number().required('Required').min(0),
+  fte: Yup.number().required('Required').min(0),
   status: Yup.string().required('Required'),
   isBillable: Yup.string().required('Required'),
   contractTypeId: Yup.number().required('Required')
@@ -21,14 +20,13 @@ const FormValidation = Yup.object({
 
 interface ProjectFormProps {
   handleClose: () => void;
+  targetProject: any;
 }
 
-export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
-  const [addProject] = useProjectCreateInputMutation();
+export const ProjectForm: FC<ProjectFormProps> = ({ handleClose, targetProject }) => {
+  const [addProject, { error }] = useProjectCreateInputMutation();
   const [updateProject] = useProjectUpdateInputMutation();
-  const [getProjectById] = useGetProjectByIdLazyQuery();
   const { toggleSnackBar } = useSnackBar();
-  const { id } = useParams();
   const [initialValue, setInitialValue] = useState<{ name: string; description: string; rate: string; status: string; isBillable: string; fte: string; contractTypeId: number }>({
     name: '',
     description: '',
@@ -40,30 +38,23 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
   });
 
   useEffect(() => {
-    id &&
-      getProjectById({
-        variables: {
-          id: id
-        }
-      }).then((res) => {
-        if (res.data) {
-          const { name, description, status, isBillable, rate, fte, contractType } = res.data.project;
-          setInitialValue({
-            name,
-            description,
-            status,
-            isBillable: isBillable.toString(),
-            rate: rate.toString(),
-            fte: fte.toString(),
-            contractTypeId: contractType.id
-          });
-        }
+    if (targetProject) {
+      const { name, description, status, isBillable, rate, fte, contractType } = targetProject;
+      setInitialValue({
+        name,
+        description,
+        status,
+        isBillable: isBillable.toString(),
+        rate: rate.toString(),
+        fte: fte.toString(),
+        contractTypeId: contractType.id
       });
-  }, [id]);
+    }
+  }, [targetProject]);
 
   return (
     <>
-      <Typography variant="h5">{id ? 'Edit' : 'Create a new project'}</Typography>
+      <Typography variant="h5">{targetProject ? 'Edit' : 'Create a new project'}</Typography>
       <Formik
         validateOnChange={false}
         validateOnBlur={false}
@@ -72,7 +63,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
         enableReinitialize={true}
         onSubmit={async (values) => {
           // if no id, create project
-          if (!id) {
+          if (!targetProject) {
             // after submitting the new project re-fetch the project via graphql
             const res = await addProject({
               variables: {
@@ -95,7 +86,7 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
                 updateProject: {
                   ...values,
                   status: values.status.toString(),
-                  id: id,
+                  id: targetProject.id,
                   isBillable: values.isBillable == 'true',
                   rate: parseFloat(values.rate),
                   fte: parseFloat(values.fte),
@@ -145,12 +136,13 @@ export const ProjectForm: FC<ProjectFormProps> = ({ handleClose }) => {
             </Grid>
             <Grid item xs={12}>
               <DefaultContainedButton color="primary" variant="contained" startIcon={<SendIcon />} fullWidth type="submit">
-                {id ? 'Update' : 'Create'}
+                {targetProject ? 'Update' : 'Create'}
               </DefaultContainedButton>
             </Grid>
           </Grid>
         </Form>
       </Formik>
+      {error && toggleSnackBar('There are something wrong!', { variant: 'error' })}
     </>
   );
 };

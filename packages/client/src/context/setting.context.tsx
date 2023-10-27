@@ -10,7 +10,7 @@ export interface Settings {
 const defaultSettings: Settings = {
   theme: 'light',
   VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
-  employee: ''
+  employee: null
 };
 
 export interface SettingsContextProps {

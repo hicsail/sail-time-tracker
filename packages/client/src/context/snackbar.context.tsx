@@ -1,6 +1,5 @@
 import React, { createContext, FC, ReactNode, useContext, useState } from 'react';
-import { AlertColor, Snackbar } from '@mui/material';
-import { Alert } from '@mui/lab';
+import { AlertColor, Snackbar, Alert } from '@mui/material';
 
 const SnackbarContext = createContext<SnackBarContextProps>({} as SnackBarContextProps);
 

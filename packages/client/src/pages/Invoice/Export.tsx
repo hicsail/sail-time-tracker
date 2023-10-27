@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { StyledPaper } from '@components/StyledPaper';
 import { FC, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { format, sub } from 'date-fns';
 import { useAddCommentMutation } from '@graphql/comment/comment';
 import {
   useCreateAndAddClickUpTaskToInvoiceMutation,
@@ -108,13 +108,19 @@ export const Export = () => {
     }) ?? [];
 
   const initialValues = () => {
-    const currentMonth = format(new Date(), 'MMM');
-    const currentYear = format(new Date(), 'yyyy');
+    const today = new Date();
+    const previousMonth = format(
+      sub(today, {
+        months: 1
+      }),
+      'MMM'
+    );
+    const currentYear = format(today, 'yyyy');
     const notes = state.notes.map((note: any) => `${format(new Date(note.createDate), 'dd MMM yyyy kk:mm:ss')} - ${note.content}`).join('\n');
     const description = state.rows.map((row: any) => `${row.employeeName} - ${row.billableHours} hours - $${row.amount}`).join('\n');
 
     return {
-      title: `${currentMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours - SAIL${currentYear}${format(new Date(), 'MM')}`,
+      title: `${previousMonth} 23 - ${state.projectName} - ${state.revisedBillableHour} hours - SAIL${currentYear}${format(new Date(), 'MM')}`,
       description: description,
       status: 'new invoice',
       Notes: notes,
