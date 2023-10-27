@@ -51,12 +51,17 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 interface SwitchBtnProps {
   onClick: () => void;
+  open?: boolean;
 }
 
-export const SwitchBtn: FC<SwitchBtnProps> = ({ onClick }) => {
+export const SwitchBtn: FC<SwitchBtnProps> = ({ onClick, open = true }) => {
   const { settings } = useSettings();
 
   return (
-    <FormControlLabel control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={settings.theme !== 'light'} onClick={onClick} />} label="Theme switch" sx={{ minWidth: '200px' }} />
+    <FormControlLabel
+      control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={settings.theme !== 'light'} onClick={onClick} />}
+      label={open ? 'Theme switch' : ''}
+      sx={{ minWidth: '200px' }}
+    />
   );
 };

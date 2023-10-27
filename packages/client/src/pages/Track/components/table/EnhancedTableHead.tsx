@@ -35,7 +35,7 @@ export const EnhancedTableHead = (props: EnhancedTableProps) => {
             <Typography>{dateValue.dateOfMonth}</Typography>
           </TableCell>
         ))}
-        <TableCell key="totalHours" sx={{ width: '150px' }}>
+        <TableCell key="totalHours" sx={{ width: { lg: '150px', sm: '100px' } }}>
           Total Hours
         </TableCell>
         <TableCell key="description">Description</TableCell>

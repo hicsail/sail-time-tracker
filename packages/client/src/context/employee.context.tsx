@@ -19,14 +19,14 @@ export const EmployeeProvider: FC<EmployeeProviderProps> = ({ children }) => {
   const defaultEmployee = settings.employee ? settings.employee : null;
   const [employeeId, setEmployeeId] = useState(defaultEmployee);
   const { data } = useGetEmployeeIdQuery();
-  const { token } = useAuth();
+  const { token, decoded_token } = useAuth();
 
   useEffect(() => {
     setSettings({ ...settings, employee: employeeId });
   }, [employeeId]);
 
   useEffect(() => {
-    if (data && token) {
+    if (data && token && decoded_token?.role !== 1) {
       setEmployeeId(data.me);
     }
   }, [data]);

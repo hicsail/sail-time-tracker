@@ -3,7 +3,6 @@ import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache } from '@ap
 import { useSettings } from '@context/setting.context';
 import { LoadingScreen } from '@components/loading-screen';
 import { useAuth } from '@summerluna/harbor';
-import { useNavigate } from 'react-router-dom';
 
 export interface GraphqlProviderProps {
   children: React.ReactNode;

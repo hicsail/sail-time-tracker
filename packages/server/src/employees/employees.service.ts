@@ -91,7 +91,25 @@ export class EmployeesService {
    */
 
   async addEmployee(newEmployee: EmployeeCreateInput): Promise<Employee> {
-    return this.prisma.employee.create({ data: newEmployee });
+    const employee = await this.prisma.employee.create({ data: newEmployee });
+    const projects = await this.prisma.project.findMany({
+      where: {
+        OR: [{ name: 'Indirect' }, { name: 'Absence' }]
+      }
+    });
+    // default favorite projects for new employee
+    if (employee) {
+      for (const project of projects) {
+        await this.prisma.favoriteProject.createMany({
+          data: {
+            employeeId: employee.id,
+            projectId: project.id
+          },
+          skipDuplicates: true
+        });
+      }
+    }
+    return employee;
   }
 
   /**
@@ -186,7 +204,7 @@ export class EmployeesService {
       employee.records
         .filter((record) => record.project.name !== 'Indirect' && record.project.name !== 'Absence')
         .forEach((record) => {
-          if (!projectHoursMap.get(record.project.id)) {
+          if (!projectHoursMap.has(record.project.id)) {
             projectHoursMap.set(record.project.id, record.hours);
             uniqueProjectList.push(record);
           } else {

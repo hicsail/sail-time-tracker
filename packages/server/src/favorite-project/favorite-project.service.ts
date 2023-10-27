@@ -15,7 +15,8 @@ export class FavoriteProjectService {
    */
   async addFavoriteProject(favoriteProject: FavoriteProjectCreateInput[]): Promise<BatchPayload> {
     return this.prisma.favoriteProject.createMany({
-      data: favoriteProject
+      data: favoriteProject,
+      skipDuplicates: true
     });
   }
 

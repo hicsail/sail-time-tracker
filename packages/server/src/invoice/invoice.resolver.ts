@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InvoiceService } from './invoice.service';
-import { InvoiceModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
-import { InvoiceCreateInput, InvoiceSearchInput } from './dto/invoice.dto';
+import { InvoiceItemModel, InvoiceModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
+import { InvoiceCreateInput, InvoiceItemUpdateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { Invoice } from '@prisma/client';
 
 @Resolver(() => InvoiceModel)
@@ -41,5 +41,10 @@ export class InvoiceResolver {
   @Mutation(() => InvoiceModel)
   async deleteInvoice(@Args('projectId_startDate_endDate') projectId_startDate_endDate: InvoiceSearchInput): Promise<Invoice> {
     return this.invoiceService.deleteInvoice(projectId_startDate_endDate);
+  }
+
+  @Mutation(() => InvoiceItemModel)
+  async updateInvoiceItem(@Args('updatedInvoiceItem') updatedInvoiceItem: InvoiceItemUpdateInput): Promise<InvoiceItemModel> {
+    return this.invoiceService.updateInvoiceItem(updatedInvoiceItem);
   }
 }

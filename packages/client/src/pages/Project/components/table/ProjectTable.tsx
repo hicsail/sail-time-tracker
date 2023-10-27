@@ -1,8 +1,6 @@
 import React, { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Chip, Typography, Stack, SelectChangeEvent, alpha } from '@mui/material';
-import { Paths } from '@constants/paths';
+import { Box, Button, Chip, Typography, Stack, SelectChangeEvent, alpha, ListItem, Tooltip, IconButton } from '@mui/material';
 import { FormDialog } from '@components/form/FormDialog';
 import { ProjectForm } from '@pages/Project/components/form/ProjectForm';
 import AddIcon from '@mui/icons-material/Add';
@@ -10,6 +8,12 @@ import { DropDownMenu } from '@components/form/DropDownMenu';
 import { BasicTable } from '@components/table/BasicTable';
 import { SearchBar } from '@components/SearchBar';
 import { DefaultContainedButton } from '@components/StyledComponent';
+import { ArchiveIcon } from '@components/icons/ArchiveIcon';
+import { CustomPopover } from '@components/CuctomPopover';
+import { useSnackBar } from '@context/snackbar.context';
+import { useProjectUpdateInputMutation } from '@graphql/project/project';
+import { EditIcon } from '@components/icons/EditIcon';
+import { ThreeDotIcon } from '@components/icons/ThreeDot';
 
 const dropdownData = [
   {
@@ -34,13 +38,22 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('Active');
-  const navigate = useNavigate();
+  const [updateProject] = useProjectUpdateInputMutation();
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const openPopover = Boolean(anchorEl);
+  const [targetRow, setTargetRow] = useState<any>();
+  const { toggleSnackBar } = useSnackBar();
 
   const handleClickOpen = () => setOpen(true);
 
+  const handleEditClick = (row: any) => {
+    setTargetRow(row);
+    handleClickOpen();
+  };
+
   const handleOnClose = () => {
+    setTargetRow(null);
     setOpen(false);
-    navigate(Paths.PROJECT_lIST);
   };
 
   const filteredRows = data.filter((row) => {
@@ -73,6 +86,28 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
           return theme.palette.mode === 'light' ? 'info.dark' : 'info.light';
         }
     }
+  };
+
+  const handleThreeDotClick = (event: React.MouseEvent<HTMLButtonElement>, row: any) => {
+    setAnchorEl(event.currentTarget);
+    setTargetRow(row);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleArchive = async () => {
+    const { __typename, contractType, ...project } = targetRow;
+    const message = project.status === 'Active' ? `Successfully archived the ${project.name}!` : `Successfully unarchived the ${project.name}!`;
+    const status = project.status === 'Active' ? 'Inactive' : 'Active';
+    const res = await updateProject({
+      variables: {
+        updateProject: { ...project, status: status, contractTypeId: contractType.id }
+      }
+    });
+    handlePopoverClose();
+    res.data?.updateProject && toggleSnackBar(message, { variant: 'success' });
   };
 
   const columns: any[] = [
@@ -137,18 +172,33 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: '',
       renderCell: (row: any) => (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            navigate(`${Paths.PROJECT_lIST}/${row.id}`);
-            handleClickOpen();
-          }}
-          color="secondary"
-        >
-          Edit
-        </Button>
+        <Stack direction="row" gap={2} justifyContent="end">
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() => {
+                handleEditClick(row);
+              }}
+            >
+              <EditIcon
+                fontSize="medium"
+                sx={{
+                  color: 'grey.600'
+                }}
+              />
+            </IconButton>
+          </Tooltip>
+          <IconButton onClick={(e) => handleThreeDotClick(e, row)}>
+            <ThreeDotIcon
+              fontSize="medium"
+              sx={{
+                color: openPopover ? '#1C274C' : 'grey.600',
+                transform: 'rotate(90deg)'
+              }}
+            />
+          </IconButton>
+        </Stack>
       )
     }
   ];
@@ -191,8 +241,14 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
         </Box>
       )}
       <FormDialog open={open} onClose={handleOnClose}>
-        <ProjectForm handleClose={handleOnClose} />
+        <ProjectForm handleClose={handleOnClose} targetProject={targetRow} />
       </FormDialog>
+      <CustomPopover open={openPopover} anchorEl={anchorEl} onClose={handlePopoverClose}>
+        <ListItem sx={{ gap: 2 }} onClick={handleArchive}>
+          <ArchiveIcon fontSize="small" />
+          <Typography variant="body1">{targetRow?.status === 'Active' ? 'Archive' : 'Unarchive'}</Typography>
+        </ListItem>
+      </CustomPopover>
     </Box>
   );
 };

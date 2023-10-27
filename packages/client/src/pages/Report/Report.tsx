@@ -8,6 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { TextInput } from '@components/TextInput';
 import { useDateRange } from '@context/reportFilter.context';
 import { StyledDatePicker } from '@components/StyledDatePicker';
+import { MenuOptions } from '@pages/Report/components/MoreOption';
 
 export const Report = () => {
   const [searchText, setSearchText] = useState<string>('');
@@ -65,6 +66,10 @@ export const Report = () => {
             }}
           />
         </Box>
+        <MenuOptions
+          startDate={dateRange.startDate ? dateRange.startDate : startOfWeek(date, { weekStartsOn: 1 })}
+          endDate={dateRange.endDate ? dateRange.endDate : endOfWeek(date, { weekStartsOn: 1 })}
+        />
       </Box>
       {groupBy === '1' ? (
         <GroupByEmployee
