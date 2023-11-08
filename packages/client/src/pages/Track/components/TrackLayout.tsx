@@ -1,21 +1,22 @@
-import { Container, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Container, useMediaQuery, useTheme } from '@mui/material';
 import { TrackNavbar } from '@pages/Track/components/TrackNavbar';
 import { AdminNavbar } from '@pages/Admin/components/AdminNavbar';
 import { Outlet } from 'react-router-dom';
 import { SplitScreen } from '@pages/Admin/components/SplitScreen';
 import { useNavbar } from '@context/navbar.context';
+import { SwitchBtn } from '@components/switch/switchBtn';
+import { useToggleTheme } from '../../../hooks/useToggleTheme';
 
 export const TrackLayout = () => {
-  const { open } = useNavbar();
-  const theme = useTheme();
-  const lessThanLarge = useMediaQuery(theme.breakpoints.down('lg'));
-
+  const { toggleTheme } = useToggleTheme();
   return (
-    <SplitScreen leftWeight={1} rightWeight={open ? 9 : 20} direction={lessThanLarge ? 'column' : 'row'}>
-      {!lessThanLarge ? <AdminNavbar /> : <TrackNavbar />}
+    <>
+      <Box display="flex" justifyContent="flex-end">
+        <SwitchBtn onClick={toggleTheme} />
+      </Box>
       <Container maxWidth={false} sx={{ paddingTop: 15, maxWidth: '1800px' }}>
         <Outlet />
       </Container>
-    </SplitScreen>
+    </>
   );
 };

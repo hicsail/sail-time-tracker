@@ -40,7 +40,7 @@ function App() {
                     <SnackBarProvider>
                       <NavbarProvider>
                         <Routes>
-                          <Route path={Paths.TRACK} element={<TrackLayout />}>
+                          <Route element={<TrackLayout />}>
                             <Route path={Paths.TRACK} element={<Track />} />
                           </Route>
                           <Route path={Paths.ADMIN} element={<AdminLayout />}>

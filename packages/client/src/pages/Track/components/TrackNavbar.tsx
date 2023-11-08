@@ -1,4 +1,4 @@
-import { Box, Drawer, IconButton, Stack, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Divider, Drawer, IconButton, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { SwitchBtn } from '@components/switch/switchBtn';
 import { useToggleTheme } from '../../../hooks/useToggleTheme';
 import { Paths } from '@constants/paths';
@@ -50,13 +50,14 @@ export const TrackNavbar = () => {
         }}
       >
         <SideList>
-          <SideListItem path={Paths.EMPLOYEE_lIST} icon={<AssignmentInd sx={{ color: 'customColors.iconColor' }} />} info="Employees" />
-          <SideListItem path={Paths.PROJECT_lIST} icon={<Folder sx={{ color: 'customColors.iconColor' }} />} info="Projects" />
           <SideListItem path={Paths.REPORT} icon={<Assessment sx={{ color: 'customColors.iconColor' }} />} info="Reports" />
           <SideListItem path={Paths.INVOICE} icon={<Receipt sx={{ color: 'customColors.iconColor' }} />} info="Billing & Invoices" />
+          <Divider />
+          <SideListItem path={Paths.EMPLOYEE_lIST} icon={<AssignmentInd sx={{ color: 'customColors.iconColor' }} />} info="Employees" />
+          <SideListItem path={Paths.PROJECT_lIST} icon={<Folder sx={{ color: 'customColors.iconColor' }} />} info="Projects" />
         </SideList>
         <SideList>
-          <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Track" />
+          <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Time Entry" />
           <SwitchBtn onClick={toggleTheme} />
         </SideList>
       </Drawer>
