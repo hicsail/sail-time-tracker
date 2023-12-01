@@ -213,7 +213,10 @@ export class EmployeesService {
 
       // get inner table data
       const inner = uniqueProjectList.map((record) => {
-        const indirectHour = (projectHoursMap.get(record.project.id) / totalWorkHours) * totalIndirectHours;
+        let indirectHour: number = (projectHoursMap.get(record.project.id) / totalWorkHours) * totalIndirectHours;
+        if (isNaN(indirectHour)) {
+          indirectHour = 0;
+        }
         return {
           projectId: record.project.id,
           projectName: record.project.name,
