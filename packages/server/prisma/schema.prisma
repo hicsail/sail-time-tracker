@@ -37,6 +37,7 @@ model Project {
 }
 
 model Record {
+  id         String?  @default(uuid()) @unique()
   date       DateTime @db.Date
   employeeId String
   employee   Employee @relation(fields: [employeeId], references: [id])

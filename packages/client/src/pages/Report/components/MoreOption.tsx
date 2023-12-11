@@ -32,11 +32,10 @@ export const MenuOptions: FC<MenuOptionsProps> = ({ startDate, endDate }) => {
     setAnchorEl(null);
   };
 
-  console.log(data?.getRecordsByDateRange);
-
   const formattedData =
     data?.getRecordsByDateRange.map((record) => {
       return {
+        id: record.id,
         date: record.date,
         employee: record.employee.name,
         project: record.project.name,
@@ -47,6 +46,7 @@ export const MenuOptions: FC<MenuOptionsProps> = ({ startDate, endDate }) => {
     }) ?? [];
 
   const headers = [
+    { label: 'ID', key: 'id' },
     { label: 'Date', key: 'date' },
     { label: 'Employee', key: 'employee' },
     { label: 'Project', key: 'project' },
