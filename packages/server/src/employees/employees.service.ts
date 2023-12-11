@@ -52,7 +52,7 @@ export class EmployeesService {
   async getEmployeeById(id: string): Promise<Employee> {
     const employeeExist = await this.exists(id);
 
-    if (!employeeExist) throw new Error('Employee not found');
+    if (!employeeExist) throw new Error('employee not found');
 
     return this.prisma.employee.findUnique({
       where: {
@@ -73,7 +73,7 @@ export class EmployeesService {
       }
     });
 
-    if (!(employeeExist > 0)) throw new Error('Employee not found');
+    if (!(employeeExist > 0)) throw new Error('employee not found');
 
     return this.prisma.employee.findUnique({
       where: {
@@ -83,7 +83,7 @@ export class EmployeesService {
   }
 
   /**
-   * Add new Employee
+   * Add new employee
    *
    * @param newEmployee new employee information details
    * @returns new employee that has been created

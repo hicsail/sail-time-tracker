@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache } from '@apollo/client';
 import { useSettings } from '@context/setting.context';
-import { LoadingScreen } from '@components/loading-screen';
+import { LoadingScreen } from '@components/LoadingScreen';
 
 export interface GraphqlProviderProps {
   children: React.ReactNode;
