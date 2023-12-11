@@ -15,6 +15,7 @@ mutation deleteRecord($input: RecordDeleteInput!) {
 
 query getRecordsByDateRange($input: DateRangeInput!) {
   getRecordsByDateRange(input: $input) {
+    id
     date
     hours
     employee {

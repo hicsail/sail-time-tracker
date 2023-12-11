@@ -28,6 +28,7 @@ export type GetRecordsByDateRangeQuery = {
   __typename?: 'Query';
   getRecordsByDateRange: Array<{
     __typename?: 'RecordModel';
+    id?: string | null;
     date: any;
     hours: number;
     employee: { __typename?: 'EmployeeModel'; name: string };
@@ -107,6 +108,7 @@ export type DeleteRecordMutationOptions = Apollo.BaseMutationOptions<DeleteRecor
 export const GetRecordsByDateRangeDocument = gql`
   query getRecordsByDateRange($input: DateRangeInput!) {
     getRecordsByDateRange(input: $input) {
+      id
       date
       hours
       employee {

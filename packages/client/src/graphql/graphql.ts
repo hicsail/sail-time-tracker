@@ -538,6 +538,7 @@ export type RecordInsertOrUpdateModel = {
   date: Scalars['DateTime'];
   employeeId: Scalars['ID'];
   hours: Scalars['Float'];
+  id?: Maybe<Scalars['String']>;
   projectId: Scalars['ID'];
 };
 
@@ -547,6 +548,7 @@ export type RecordModel = {
   employee: EmployeeModel;
   employeeId: Scalars['ID'];
   hours: Scalars['Float'];
+  id?: Maybe<Scalars['String']>;
   project: ProjectModel;
   projectId: Scalars['ID'];
 };

@@ -8,6 +8,9 @@ import { ProjectModel } from '../../project/model/project.model';
 
 @ObjectType()
 export class RecordInsertOrUpdateModel {
+  @Field(() => String, { nullable: true })
+  id: string | null;
+
   @Field(() => ID)
   employeeId: string;
 

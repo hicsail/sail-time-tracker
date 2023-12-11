@@ -103,6 +103,7 @@ type ProjectDeleteReturnModel {
 }
 
 type RecordInsertOrUpdateModel {
+  id: String
   employeeId: ID!
   projectId: ID!
   date: DateTime!
@@ -123,6 +124,7 @@ type GroupedRecordWithFavoriteProjectModel {
 }
 
 type RecordModel {
+  id: String
   employeeId: ID!
   projectId: ID!
   date: DateTime!
