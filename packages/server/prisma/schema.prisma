@@ -11,14 +11,15 @@ datasource db {
 }
 
 model Employee {
-  id       String            @id @default(uuid())
-  email    String            @unique
-  name     String
-  status   String?
-  records  Record[]
-  projects FavoriteProject[]
-  slack    Slack?
-  invoices InvoiceItem[]
+  id            String            @id @default(uuid())
+  email         String            @unique
+  name          String
+  status        String?
+  records       Record[]
+  projects      FavoriteProject[]
+  slack         Slack?
+  invoices      InvoiceItem[]
+  BillableHours BillableHours[]
 }
 
 model Project {
@@ -34,10 +35,11 @@ model Project {
   invoices       Invoice[]
   contractTypeId Int               @default(0)
   contractType   ContractType      @relation(fields: [contractTypeId], references: [id])
+  BillableHours  BillableHours[]
 }
 
 model Record {
-  id         String?  @default(uuid()) @unique()
+  id         String?  @unique() @default(uuid())
   date       DateTime @db.Date
   employeeId String
   employee   Employee @relation(fields: [employeeId], references: [id])
@@ -113,4 +115,16 @@ model InvoiceItem {
   amount        Float
 
   @@id([invoiceId, employeeId])
+}
+
+model BillableHours {
+  id                 String   @id @default(uuid())
+  employeeId         String
+  employee           Employee @relation(fields: [employeeId], references: [id])
+  projectId          String
+  project            Project  @relation(fields: [projectId], references: [id])
+  startDate          DateTime @db.Date
+  endDate            DateTime @db.Date
+  precalculatedHours Float
+  billableHours      Float
 }
