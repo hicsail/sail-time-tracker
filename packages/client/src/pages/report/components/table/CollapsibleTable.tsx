@@ -1,13 +1,11 @@
-import { Table, TableBody, TableCell, TableHead, Stack } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead } from '@mui/material';
 import { FC, Fragment, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import Collapse from '@mui/material/Collapse';
-import Typography from '@mui/material/Typography';
 import { formatDateToDashFormat } from '../../../../utils/helperFun';
 import { CustomTableContainer } from '@components/CustomTableContainer';
-import { StyledNestedTableDataRow, StyledTableDataRow, StyledTableHeadRow } from '@components/StyledComponent';
+import { StyledTableDataRow, StyledTableHeadRow } from '@components/StyledComponent';
 
 export interface CollapsibleTableProps {
   rows: any[];
