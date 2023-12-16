@@ -12,12 +12,11 @@ import { StyledNestedTableDataRow, StyledTableDataRow, StyledTableHeadRow } from
 export interface CollapsibleTableProps {
   rows: any[];
   tableConfig: any;
-  innerTitle: string;
   startDate: Date;
   endDate: Date;
 }
 
-export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, tableConfig, innerTitle, startDate, endDate }) => {
+export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, tableConfig, startDate, endDate }) => {
   const formattedStartDate = formatDateToDashFormat(startDate);
   const formattedEndDate = formatDateToDashFormat(endDate);
   return (
@@ -31,14 +30,18 @@ export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, tableConfig,
                 return <Fragment key={config.field}>{config.header()}</Fragment>;
               }
 
-              return <TableCell key={config.field}>{config.name}</TableCell>;
+              return (
+                <TableCell key={config.field} sx={{ width: '200px' }}>
+                  {config.name}
+                </TableCell>
+              );
             })}
           </StyledTableHeadRow>
         </TableHead>
         <TableBody>
           {rows.map((project: any) => {
             const key = `${project.id}#${formattedStartDate}#${formattedEndDate}`;
-            return <RenderRow key={key} project={project} innerTitle={innerTitle} tableConfig={tableConfig} id={key} />;
+            return <RenderRow key={key} project={project} tableConfig={tableConfig} id={key} />;
           })}
         </TableBody>
       </Table>
@@ -49,13 +52,12 @@ export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, tableConfig,
 interface RenderRowProps {
   project: any;
   tableConfig: any;
-  innerTitle: string;
   id: string;
 }
 
-export const RenderRow: FC<RenderRowProps> = ({ project, tableConfig, innerTitle, id }) => {
+export const RenderRow: FC<RenderRowProps> = ({ project, tableConfig, id }) => {
   const hasInnerTable = project.inner && project.inner.length > 0;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   return (
     <>
@@ -69,18 +71,7 @@ export const RenderRow: FC<RenderRowProps> = ({ project, tableConfig, innerTitle
           <TableCell key={config.field}>{config.render(project)}</TableCell>
         ))}
       </StyledTableDataRow>
-      {open && hasInnerTable && (
-        <StyledNestedTableDataRow open={open}>
-          <TableCell colSpan={tableConfig.outer.length + 1}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <Stack gap={2} padding={1}>
-                <Typography>{innerTitle}</Typography>
-                <RenderInnerTable innerData={project.inner} tableConfig={tableConfig} id={id} />
-              </Stack>
-            </Collapse>
-          </TableCell>
-        </StyledNestedTableDataRow>
-      )}
+      {hasInnerTable && <RenderInnerTable innerData={project.inner} tableConfig={tableConfig} id={id} open={open} employeeId={project.id} />}
     </>
   );
 };
@@ -89,33 +80,26 @@ interface RenderInnerTableProps {
   innerData: any[];
   tableConfig: any;
   id: string;
+  open: boolean;
+  employeeId: string;
 }
 
-export const RenderInnerTable: FC<RenderInnerTableProps> = ({ innerData, tableConfig, id }) => {
+export const RenderInnerTable: FC<RenderInnerTableProps> = ({ innerData, tableConfig, id, open, employeeId }) => {
   return (
-    <CustomTableContainer sx={{ padding: 0 }}>
-      <Table size="small" aria-label="inner-table">
-        <TableHead>
-          <StyledTableHeadRow>
-            {tableConfig.inner.map((cell: any) => (
-              <TableCell key={cell.field}>{cell.name}</TableCell>
-            ))}
-          </StyledTableHeadRow>
-        </TableHead>
-        <TableBody>
-          {innerData.map((row: any) => {
-            const key = row.employeeId ? `${id}#${row.employeeId}` : `${id}#${row.projectId}`;
-            return (
-              <StyledTableDataRow key={key}>
-                {tableConfig.inner.map((cell: any) => {
-                  const cellKey = `${key}#${cell.field}`;
-                  return <TableCell key={cellKey}>{cell.render(row)}</TableCell>;
-                })}
-              </StyledTableDataRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </CustomTableContainer>
+    <>
+      {open &&
+        innerData.map((row: any) => {
+          const key = row.employeeId ? `${id}#${row.employeeId}` : `${id}#${row.projectId}`;
+          return (
+            <StyledTableDataRow key={key}>
+              <TableCell />
+              {tableConfig.inner.map((cell: any) => {
+                const cellKey = `${key}#${cell.field}`;
+                return <TableCell key={cellKey}>{cell.render({ ...row, employeeId: employeeId })}</TableCell>;
+              })}
+            </StyledTableDataRow>
+          );
+        })}
+    </>
   );
 };

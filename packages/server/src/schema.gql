@@ -41,6 +41,7 @@ type EmployeeWithRecordInner {
   projectWorkHours: Float!
   projectIndirectHours: Float!
   projectPercentage: String!
+  billableHours: Float
 }
 
 type ProjectWithEmployeeRecords {

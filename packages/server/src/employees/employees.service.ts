@@ -227,6 +227,7 @@ export class EmployeesService {
           isBillable: record.project.isBillable,
           projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
           projectIndirectHours: formatHours(indirectHour),
+          billableHours: formatHours(projectHoursMap.get(record.project.id) + indirectHour),
           projectPercentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
         };
       });

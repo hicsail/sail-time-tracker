@@ -80,6 +80,9 @@ class EmployeeWithRecordInner {
 
   @Field()
   projectPercentage: string;
+
+  @Field(() => Number, { nullable: true })
+  billableHours?: number;
 }
 
 @ObjectType()

@@ -145,6 +145,7 @@ export type EmployeeWithRecord = {
 
 export type EmployeeWithRecordInner = {
   __typename?: 'EmployeeWithRecordInner';
+  billableHours: Scalars['Float'];
   contractTypeId: Scalars['Float'];
   fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];

@@ -32,6 +32,7 @@ export type GetEmployeesWithRecordQuery = {
       projectWorkHours: number;
       projectPercentage: string;
       projectIndirectHours: number;
+      billableHours: number;
     }>;
   }>;
 };
@@ -186,6 +187,7 @@ export const GetEmployeesWithRecordDocument = gql`
         projectWorkHours
         projectPercentage
         projectIndirectHours
+        billableHours
       }
     }
   }

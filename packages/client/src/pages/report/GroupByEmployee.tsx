@@ -1,5 +1,5 @@
 import { CollapsibleTable } from '@pages/report/components/table/CollapsibleTable';
-import { Autocomplete, Box, Button, Checkbox, Chip, ListItem, Stack, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Checkbox, Chip, ListItem, Stack, TextField, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
 
 import { useBatchSendSlackMessageMutation, useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
@@ -16,6 +16,8 @@ import { useTimeout } from '../../hooks/useTimeOutHook';
 import { CustomOutlinedTextInput } from '@components/StyledComponent';
 import { CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 import { SortedCollapsibleTable } from '@pages/report/components/table/SortedCollapsibleTable';
+import { FormObserver } from '@pages/report/components/FormObserver';
+import { ObserverTextInput } from '@components/form/ObserverTextInput';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -25,6 +27,10 @@ interface GroupByEmployeeProps {
 
 const FormValidation = Yup.object({
   message: Yup.string().required('Message is required')
+});
+
+const BillableHoursValidation = Yup.object({
+  billableHours: Yup.number().required('Billable hours is required')
 });
 
 export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, searchText }) => {
@@ -65,37 +71,89 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
       },
       {
         field: 'workHours',
-        name: 'Work Hours',
+        name: 'Direct',
         render: (row: any) => row.workHours,
         sortValue: (row: any) => row.workHours
       },
       {
         field: 'indirectHours',
-        name: 'Indirect Hours',
+        name: 'Indirect',
         render: (row: any) => row.indirectHours,
         sortValue: (row: any) => row.indirectHours
       },
+
       {
         field: 'billableHours',
-        name: 'Billable Hours (Work + Indirect)',
+        name: 'Precalculated',
         render: (row: any) => row.billableHours,
         sortValue: (row: any) => row.billableHours
       },
       {
-        field: 'actions',
-        name: 'Actions',
-        render: (row: any) => (
-          <Button variant="outlined" endIcon={<SlackIcon />} onClick={() => handleOpenFormDialog(row)}>
-            Notify
-          </Button>
-        )
+        field: 'billableHours',
+        name: 'Billable Hours',
+        render: (row: any) => row.billableHours,
+        sortValue: (row: any) => row.billableHours
+      },
+      {
+        field: 'percentage',
+        name: '%',
+        render: () => 'N/A'
+      },
+      {
+        field: 'percentage',
+        name: 'isBillable',
+        render: () => 'N/A'
       }
     ],
     inner: [
       {
         field: 'projectName',
-        name: 'Name',
+        name: 'Project Name',
         render: (row: any) => row.projectName
+      },
+      {
+        field: 'projectWorkHours',
+        name: 'Direct',
+        render: (row: any) => row.projectWorkHours
+      },
+      {
+        field: 'projectIndirectHours',
+        name: 'Indirect',
+        render: (row: any) => row.projectIndirectHours
+      },
+      {
+        field: 'billableHours',
+        name: 'Precalculated',
+        render: (row: any) => row.billableHours
+      },
+      {
+        field: 'billableHours',
+        name: 'Billable Hours',
+        render: (row: any) => {
+          const key = `${row.employeeId}#${row.projectId}`;
+          return (
+            <Formik
+              validateOnChange={true}
+              initialValues={{ [key]: row.billableHours }}
+              validationSchema={BillableHoursValidation}
+              enableReinitialize={true}
+              onSubmit={(values) => {
+                console.log(row.id);
+                console.log(values);
+              }}
+            >
+              <Form>
+                <FormObserver />
+                <ObserverTextInput name={key} type="number" sx={{ width: '70px' }} />
+              </Form>
+            </Formik>
+          );
+        }
+      },
+      {
+        field: 'projectPercentage',
+        name: '%',
+        render: (row: any) => row.projectPercentage + '%'
       },
       {
         field: 'projectIsBillable',
@@ -113,21 +171,6 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
             </Box>
           );
         }
-      },
-      {
-        field: 'projectWorkHours',
-        name: 'Work Hours',
-        render: (row: any) => row.projectWorkHours
-      },
-      {
-        field: 'projectIndirectHours',
-        name: 'Indirect Hours',
-        render: (row: any) => row.projectIndirectHours
-      },
-      {
-        field: 'projectPercentage',
-        name: 'Percentage',
-        render: (row: any) => row.projectPercentage + '%'
       }
     ]
   };
@@ -185,7 +228,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
     <Stack gap={5}>
       <Stack gap={5}>
         {showBanner.show && showBanner.state === 'success' && <Banner content={showBanner.content} state={showBanner.state} />}
-        <SortedCollapsibleTable rows={filteredRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
+        <SortedCollapsibleTable rows={filteredRows} tableConfig={tableConfig} startDate={startDate} endDate={endDate} />
         {rows.length === 0 && <Box sx={{ textAlign: 'start' }}>No data</Box>}
       </Stack>
       <CustomizedAccordions summary="See employees who has not submit their work hours">
@@ -196,7 +239,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
           {zeroWorkHoursWithActiveEmployeesRows.length === 0 ? (
             <Typography>No data</Typography>
           ) : (
-            <CollapsibleTable rows={zeroWorkHoursWithActiveEmployeesRows} tableConfig={tableConfig} innerTitle="Project" startDate={startDate} endDate={endDate} />
+            <CollapsibleTable rows={zeroWorkHoursWithActiveEmployeesRows} tableConfig={tableConfig} startDate={startDate} endDate={endDate} />
           )}
         </Stack>
         <FormDialog open={openDialog} onClose={handleCloseFormDialog}>

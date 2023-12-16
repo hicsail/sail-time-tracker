@@ -40,7 +40,7 @@ export type AddFavoriteProjectMutationFn = Apollo.MutationFunction<AddFavoritePr
  * @example
  * const [addFavoriteProjectMutation, { data, loading, error }] = useAddFavoriteProjectMutation({
  *   variables: {
- *      favorite-project: // value for 'favorite-project'
+ *      favoriteProject: // value for 'favoriteProject'
  *   },
  * });
  */
