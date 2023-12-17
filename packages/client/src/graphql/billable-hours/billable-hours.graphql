@@ -1,0 +1,11 @@
+mutation createOrUpdateBillableHours($input: BillableHoursCreateInput!) {
+    createOrUpdateBillableHours(input: $input) {
+        id
+        employeeId
+        projectId
+        precalculatedHours
+        billableHours
+        startDate
+        endDate
+    }
+}

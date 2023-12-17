@@ -223,6 +223,16 @@ type InvoiceModelWithProjectAndComments {
   items: [InvoiceItemModel!]
 }
 
+type BillableHoursModel {
+  id: ID!
+  projectId: String!
+  employeeId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  precalculatedHours: Float!
+  billableHours: Float!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -276,6 +286,7 @@ type Mutation {
   createClickUpTask(task: ClickUpTaskCreateInput!): ClickUpTaskModel!
   createAndAddClickUpTaskToInvoice(invoiceId: String!, task: ClickUpTaskInput!): ClickUpTaskModel!
   updateClickUpTask(task: ClickUpTaskUpdateInput!): ClickUpTaskModel!
+  createOrUpdateBillableHours(input: BillableHoursCreateInput!): BillableHoursModel!
 }
 
 input EmployeeCreateInput {
@@ -396,4 +407,13 @@ input ClickUpTaskUpdateInput {
   status: String!
   custom_fields: [ClickUpTaskCustomFieldsInput!]!
   id: String!
+}
+
+input BillableHoursCreateInput {
+  projectId: String!
+  employeeId: String!
+  precalculatedHours: Float!
+  billableHours: Float!
+  startDate: DateTime!
+  endDate: DateTime!
 }

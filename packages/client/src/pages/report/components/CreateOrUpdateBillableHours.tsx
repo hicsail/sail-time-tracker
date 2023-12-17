@@ -1,23 +1,21 @@
-import { FC } from 'react';
-import { FormObserver } from '@components/form/FormObserver';
 import { endOfMonth, getMonth, getYear, startOfMonth } from 'date-fns';
 import { useCreateOrUpdateBillableHoursMutation } from '@graphql/billable-hours/billable-hours';
+import { useEffect } from 'react';
 
-interface ReportFormObserverProps {
+interface CreateOrUpdateBillableHoursProps {
   employeeId: string;
   projectId: string;
   startDate: Date;
   endDate: Date;
-  id: string;
+  value: number;
   precalculatedHours: number;
 }
 
-export const ReportFormObserver: FC<ReportFormObserverProps> = (props) => {
-  const { employeeId, projectId, startDate, endDate, id, precalculatedHours } = props;
+export const createOrUpdateBillableHours = (input: CreateOrUpdateBillableHoursProps) => {
+  const { employeeId, projectId, startDate, endDate, precalculatedHours, value } = input;
   const [createOrUpdateBillableHours] = useCreateOrUpdateBillableHoursMutation();
 
-  const handleOnChange = (value: number) => {
-    // if the start date and end date are not in the same month or in same year, do nothing
+  useEffect(() => {
     if (getYear(startDate) !== getYear(endDate) || getMonth(startDate) !== getMonth(endDate)) {
       return;
     }
@@ -34,6 +32,7 @@ export const ReportFormObserver: FC<ReportFormObserverProps> = (props) => {
         }
       }
     });
-  };
-  return <FormObserver id={id} handleOnChange={handleOnChange} />;
+  }, []);
+
+  return;
 };

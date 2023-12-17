@@ -123,8 +123,8 @@ model BillableHours {
   employee           Employee @relation(fields: [employeeId], references: [id])
   projectId          String
   project            Project  @relation(fields: [projectId], references: [id])
-  startDate          DateTime @db.Date
-  endDate            DateTime @db.Date
+  startDate          DateTime
+  endDate            DateTime
   precalculatedHours Float
   billableHours      Float
 }

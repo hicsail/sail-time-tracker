@@ -1,5 +1,5 @@
 import { CollapsibleTable } from '@pages/report/components/table/CollapsibleTable';
-import { Autocomplete, Box, Button, Checkbox, Chip, ListItem, Stack, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Checkbox, Chip, IconButton, ListItem, Stack, Tooltip, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
 
 import { useBatchSendSlackMessageMutation, useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
@@ -7,17 +7,20 @@ import { formatDateToDashFormat } from '../../utils/helperFun';
 import { CustomizedAccordions } from '@pages/report/components/CustomizedAccordions';
 import { SlackIcon } from '@components/icons/SlackIcon';
 import { FormDialog } from '@components/form/FormDialog';
-import { format } from 'date-fns';
+import { endOfMonth, format, getMonth, getYear, startOfMonth } from 'date-fns';
 import { FormTextArea } from '@pages/invoice/Export';
 import { Form, Formik, FormikValues } from 'formik';
 import * as Yup from 'yup';
 import { Banner } from '@components/Banner';
 import { useTimeout } from '../../hooks/useTimeOutHook';
 import { CustomOutlinedTextInput } from '@components/StyledComponent';
-import { CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
+import { Check, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 import { SortedCollapsibleTable } from '@pages/report/components/table/SortedCollapsibleTable';
 import { ReportFormObserver } from '@pages/report/components/ReportFormObserver';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
+import { useIsEdit } from '@pages/report/components/useIsEdit';
+import { createOrUpdateBillableHours } from '@pages/report/components/CreateOrUpdateBillableHours';
+import { useCreateOrUpdateBillableHoursMutation } from '@graphql/billable-hours/billable-hours';
 
 interface GroupByEmployeeProps {
   startDate: Date;
@@ -38,6 +41,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   const [sendSlackMessage] = useSendSlackMessageMutation();
   const [sendBatchSlackMessage] = useBatchSendSlackMessageMutation();
   const [selectedEmployees, setSelectedEmployees] = useState<any[]>([]);
+  const [createOrUpdateBillableHours] = useCreateOrUpdateBillableHoursMutation();
   const [showBanner, setShowBanner] = React.useState({
     show: false,
     content: '',
@@ -60,6 +64,26 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
   const zeroWorkHoursWithActiveEmployees = zeroWorkHoursWithActiveEmployeesRows.map((employee) => {
     return { id: employee.id, name: employee.name };
   });
+  const { isEdit } = useIsEdit();
+
+  const savePrecalculatedHours = (employeeId: string, projectId: string, precalculatedHours: number, value: number) => {
+    if (getYear(startDate) !== getYear(endDate) || getMonth(startDate) !== getMonth(endDate)) {
+      return;
+    }
+
+    createOrUpdateBillableHours({
+      variables: {
+        input: {
+          startDate: startOfMonth(startDate),
+          endDate: endOfMonth(startDate),
+          employeeId: employeeId,
+          projectId: projectId,
+          precalculatedHours: precalculatedHours,
+          billableHours: value
+        }
+      }
+    });
+  };
 
   // outer table column name and render config
   const tableConfig = {
@@ -103,6 +127,17 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
         field: 'percentage',
         name: 'isBillable',
         render: () => 'N/A'
+      },
+      {
+        field: 'actions',
+        name: 'Actions',
+        render: (row: any) => (
+          <Tooltip title="Send slack message">
+            <IconButton onClick={() => handleOpenFormDialog(row)} size="small">
+              <SlackIcon />
+            </IconButton>
+          </Tooltip>
+        )
       }
     ],
     inner: [
@@ -130,21 +165,15 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
         field: 'billableHours',
         name: 'Billable Hours',
         render: (row: any) => {
+          const { employeeId, projectId, billableHours } = row;
           const key = `${row.employeeId}#${row.projectId}`;
           return (
-            <Formik
-              validateOnChange={true}
-              initialValues={{ [key]: row.billableHours }}
-              validationSchema={BillableHoursValidation}
-              enableReinitialize={true}
-              onSubmit={(values) => {
-                console.log(row.id);
-                console.log(values);
-              }}
-            >
+            <Formik validateOnChange={true} initialValues={{ [key]: row.billableHours }} validationSchema={BillableHoursValidation} enableReinitialize={true} onSubmit={() => {}}>
               <Form>
-                <ReportFormObserver />
-                <ObserverTextInput name={key} type="number" sx={{ width: '70px' }} />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <ReportFormObserver employeeId={employeeId} projectId={projectId} startDate={startDate} endDate={endDate} id={key} precalculatedHours={billableHours} />
+                  <ObserverTextInput name={key} type="number" sx={{ width: '70px' }} disabled={!isEdit} />
+                </Box>
               </Form>
             </Formik>
           );
@@ -169,6 +198,25 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
             >
               {row.isBillable.toString()}
             </Box>
+          );
+        }
+      },
+      {
+        field: 'action',
+        name: 'action',
+        render: (row: any) => {
+          const { employeeId, projectId, billableHours } = row;
+          return (
+            <Tooltip
+              title="Record precalculated hours"
+              onClick={() => {
+                savePrecalculatedHours(employeeId, projectId, billableHours, billableHours);
+              }}
+            >
+              <IconButton size="small">
+                <Check />
+              </IconButton>
+            </Tooltip>
           );
         }
       }

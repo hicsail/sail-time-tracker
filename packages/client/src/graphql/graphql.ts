@@ -33,6 +33,26 @@ export type BatchSendSlackMessageInput = {
   message: Scalars['String'];
 };
 
+export type BillableHoursCreateInput = {
+  billableHours: Scalars['Float'];
+  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  precalculatedHours: Scalars['Float'];
+  projectId: Scalars['String'];
+  startDate: Scalars['DateTime'];
+};
+
+export type BillableHoursModel = {
+  __typename?: 'BillableHoursModel';
+  billableHours: Scalars['Float'];
+  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  id: Scalars['ID'];
+  precalculatedHours: Scalars['Float'];
+  projectId: Scalars['String'];
+  startDate: Scalars['DateTime'];
+};
+
 export type ClickUpStatuses = {
   __typename?: 'ClickUpStatuses';
   color: Scalars['String'];
@@ -145,7 +165,7 @@ export type EmployeeWithRecord = {
 
 export type EmployeeWithRecordInner = {
   __typename?: 'EmployeeWithRecordInner';
-  billableHours: Scalars['Float'];
+  billableHours?: Maybe<Scalars['Float']>;
   contractTypeId: Scalars['Float'];
   fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];
@@ -275,6 +295,7 @@ export type Mutation = {
   batchSendingMessages: BatchResponseModel;
   createAndAddClickUpTaskToInvoice: ClickUpTaskModel;
   createClickUpTask: ClickUpTaskModel;
+  createOrUpdateBillableHours: BillableHoursModel;
   createOrUpdateInvoice: InvoiceModel;
   deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
@@ -321,6 +342,10 @@ export type MutationCreateAndAddClickUpTaskToInvoiceArgs = {
 
 export type MutationCreateClickUpTaskArgs = {
   task: ClickUpTaskCreateInput;
+};
+
+export type MutationCreateOrUpdateBillableHoursArgs = {
+  input: BillableHoursCreateInput;
 };
 
 export type MutationCreateOrUpdateInvoiceArgs = {

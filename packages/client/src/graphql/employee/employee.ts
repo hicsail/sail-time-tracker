@@ -32,7 +32,7 @@ export type GetEmployeesWithRecordQuery = {
       projectWorkHours: number;
       projectPercentage: string;
       projectIndirectHours: number;
-      billableHours: number;
+      billableHours?: number | null;
     }>;
   }>;
 };
