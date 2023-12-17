@@ -11,7 +11,7 @@ import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { StyledPaper } from '@components/StyledPaper';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { FormObserver } from '@pages/track/components/form/FormObserver';
+import { FormObserver } from '@components/form/FormObserver';
 import { formatDateToDashFormat, getMondayToSundayDates } from '../../../../utils/helperFun';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,7 +21,8 @@ import { TableHeadCover } from '@pages/track/components/table/TableHeadCover';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favorite-project/favoriteProject';
 import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
 import { useSnackBar } from '@context/snackbar.context';
-import { useDeleteRecordMutation } from '@graphql/record/record';
+import { useAddRecordMutation, useDeleteRecordMutation } from '@graphql/record/record';
+import { TrackFormObserver } from '@pages/track/components/form/TrackFormObserver';
 
 interface ProjectTableProps {
   data: any | undefined;
@@ -37,6 +38,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
   const rows = data || [];
   const rowCount = rows.length - 2;
   const [deleteFavoriteProject] = useDeleteFavoriteProjectMutation();
+
   const { toggleSnackBar } = useSnackBar();
   const [deleteRecord] = useDeleteRecordMutation();
 
@@ -177,7 +179,7 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                             onSubmit={() => {}}
                           >
                             <Form>
-                              <FormObserver employeeId={employeeId as string} projectId={row.projectId} setLoading={setLoading} id={dateValue.date} />
+                              <TrackFormObserver employeeId={employeeId as string} projectId={row.projectId} id={dateValue.date} setLoading={setLoading} date={date} />
                               <ObserverTextInput name={dateValue.date} type="number" />
                             </Form>
                           </Formik>

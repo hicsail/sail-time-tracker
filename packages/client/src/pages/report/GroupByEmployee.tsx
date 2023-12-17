@@ -16,7 +16,7 @@ import { useTimeout } from '../../hooks/useTimeOutHook';
 import { CustomOutlinedTextInput } from '@components/StyledComponent';
 import { CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 import { SortedCollapsibleTable } from '@pages/report/components/table/SortedCollapsibleTable';
-import { FormObserver } from '@pages/report/components/FormObserver';
+import { ReportFormObserver } from '@pages/report/components/ReportFormObserver';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
 
 interface GroupByEmployeeProps {
@@ -143,7 +143,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
               }}
             >
               <Form>
-                <FormObserver />
+                <ReportFormObserver />
                 <ObserverTextInput name={key} type="number" sx={{ width: '70px' }} />
               </Form>
             </Formik>
