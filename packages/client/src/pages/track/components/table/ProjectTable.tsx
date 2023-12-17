@@ -11,7 +11,6 @@ import { useEmployee } from '@context/employee.context';
 import { GetRecordWithFavoriteProjectDocument } from '@graphql/employee/employee';
 import { StyledPaper } from '@components/StyledPaper';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
-import { FormObserver } from '@components/form/FormObserver';
 import { formatDateToDashFormat, getMondayToSundayDates } from '../../../../utils/helperFun';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,7 +20,7 @@ import { TableHeadCover } from '@pages/track/components/table/TableHeadCover';
 import { useDeleteFavoriteProjectMutation } from '@graphql/favorite-project/favoriteProject';
 import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
 import { useSnackBar } from '@context/snackbar.context';
-import { useAddRecordMutation, useDeleteRecordMutation } from '@graphql/record/record';
+import { useDeleteRecordMutation } from '@graphql/record/record';
 import { TrackFormObserver } from '@pages/track/components/form/TrackFormObserver';
 
 interface ProjectTableProps {
