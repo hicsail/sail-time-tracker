@@ -26,6 +26,7 @@ type EmployeeWithRecord {
   status: String!
   workHours: Float!
   indirectHours: Float!
+  precalculatedHours: Float!
   billableHours: Float!
   inner: [EmployeeWithRecordInner!]!
 }
@@ -41,6 +42,7 @@ type EmployeeWithRecordInner {
   projectWorkHours: Float!
   projectIndirectHours: Float!
   projectPercentage: String!
+  precalculatedHours: Float
   billableHours: Float
 }
 
@@ -138,6 +140,16 @@ type BatchPayload {
   count: Float!
 }
 
+type BillableHoursModel {
+  id: ID!
+  projectId: String!
+  employeeId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  precalculatedHours: Float!
+  billableHours: Float!
+}
+
 type CommentModel {
   commentId: String!
   createDate: DateTime!
@@ -223,16 +235,6 @@ type InvoiceModelWithProjectAndComments {
   items: [InvoiceItemModel!]
 }
 
-type BillableHoursModel {
-  id: ID!
-  projectId: String!
-  employeeId: String!
-  startDate: DateTime!
-  endDate: DateTime!
-  precalculatedHours: Float!
-  billableHours: Float!
-}
-
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -271,6 +273,7 @@ type Mutation {
   addSlackUser(slackUsers: [SlackEmployeeInput!]!): BatchPayload!
   sendSlackMessage(slackSendMessageInput: SendSlackMessageInput!): Boolean!
   batchSendingMessages(input: BatchSendSlackMessageInput!): BatchResponseModel!
+  createOrUpdateBillableHours(input: BillableHoursCreateInput!): BillableHoursModel!
   addProject(project: ProjectCreateInput!): ProjectModel!
   updateProject(updateProject: ProjectUpdateInput!): ProjectWithContractType!
   deleteProjects(ids: [String!]!): ProjectDeleteReturnModel!
@@ -286,7 +289,6 @@ type Mutation {
   createClickUpTask(task: ClickUpTaskCreateInput!): ClickUpTaskModel!
   createAndAddClickUpTaskToInvoice(invoiceId: String!, task: ClickUpTaskInput!): ClickUpTaskModel!
   updateClickUpTask(task: ClickUpTaskUpdateInput!): ClickUpTaskModel!
-  createOrUpdateBillableHours(input: BillableHoursCreateInput!): BillableHoursModel!
 }
 
 input EmployeeCreateInput {
@@ -315,6 +317,15 @@ input SendSlackMessageInput {
 input BatchSendSlackMessageInput {
   employeeIds: [String!]!
   message: String!
+}
+
+input BillableHoursCreateInput {
+  projectId: String!
+  employeeId: String!
+  precalculatedHours: Float!
+  billableHours: Float!
+  startDate: DateTime!
+  endDate: DateTime!
 }
 
 input ProjectCreateInput {
@@ -407,13 +418,4 @@ input ClickUpTaskUpdateInput {
   status: String!
   custom_fields: [ClickUpTaskCustomFieldsInput!]!
   id: String!
-}
-
-input BillableHoursCreateInput {
-  projectId: String!
-  employeeId: String!
-  precalculatedHours: Float!
-  billableHours: Float!
-  startDate: DateTime!
-  endDate: DateTime!
 }

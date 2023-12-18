@@ -5,6 +5,7 @@ import { PrismaModule } from 'nestjs-prisma';
 
 @Module({
   imports: [PrismaModule.forRoot()],
-  providers: [BillableHoursService, BillableHoursResolver]
+  providers: [BillableHoursService, BillableHoursResolver],
+  exports: [BillableHoursService]
 })
 export class BillableHoursModule {}

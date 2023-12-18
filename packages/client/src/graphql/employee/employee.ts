@@ -23,6 +23,7 @@ export type GetEmployeesWithRecordQuery = {
     status: string;
     workHours: number;
     indirectHours: number;
+    precalculatedHours: number;
     billableHours: number;
     inner: Array<{
       __typename?: 'EmployeeWithRecordInner';
@@ -32,6 +33,7 @@ export type GetEmployeesWithRecordQuery = {
       projectWorkHours: number;
       projectPercentage: string;
       projectIndirectHours: number;
+      precalculatedHours?: number | null;
       billableHours?: number | null;
     }>;
   }>;
@@ -179,6 +181,7 @@ export const GetEmployeesWithRecordDocument = gql`
       status
       workHours
       indirectHours
+      precalculatedHours
       billableHours
       inner {
         projectId
@@ -187,6 +190,7 @@ export const GetEmployeesWithRecordDocument = gql`
         projectWorkHours
         projectPercentage
         projectIndirectHours
+        precalculatedHours
         billableHours
       }
     }

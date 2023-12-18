@@ -2,7 +2,7 @@ import { CollapsibleTable } from '@pages/report/components/table/CollapsibleTabl
 import { Autocomplete, Box, Button, Checkbox, Chip, IconButton, ListItem, Stack, Tooltip, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
 
-import { useBatchSendSlackMessageMutation, useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
+import { GetEmployeesWithRecordDocument, useBatchSendSlackMessageMutation, useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { CustomizedAccordions } from '@pages/report/components/CustomizedAccordions';
 import { SlackIcon } from '@components/icons/SlackIcon';
@@ -19,7 +19,6 @@ import { SortedCollapsibleTable } from '@pages/report/components/table/SortedCol
 import { ReportFormObserver } from '@pages/report/components/ReportFormObserver';
 import { ObserverTextInput } from '@components/form/ObserverTextInput';
 import { useIsEdit } from '@pages/report/components/useIsEdit';
-import { createOrUpdateBillableHours } from '@pages/report/components/CreateOrUpdateBillableHours';
 import { useCreateOrUpdateBillableHoursMutation } from '@graphql/billable-hours/billable-hours';
 
 interface GroupByEmployeeProps {
@@ -54,12 +53,13 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
       startDate: formatDateToDashFormat(startDate),
       endDate: formatDateToDashFormat(endDate)
     },
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'network-only'
   });
   const rows = data ? data.getEmployeesWithRecord.filter((employee) => employee.workHours !== 0) : [];
   const filteredRows = rows.filter((row) => {
     return row.name.toLowerCase().includes(searchText?.toLowerCase() as string);
   });
+
   const zeroWorkHoursWithActiveEmployeesRows = data?.getEmployeesWithRecord?.filter((row) => row.workHours === 0 && row.status === 'Active') ?? [];
   const zeroWorkHoursWithActiveEmployees = zeroWorkHoursWithActiveEmployeesRows.map((employee) => {
     return { id: employee.id, name: employee.name };
@@ -81,7 +81,16 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
           precalculatedHours: precalculatedHours,
           billableHours: value
         }
-      }
+      },
+      refetchQueries: [
+        {
+          query: GetEmployeesWithRecordDocument,
+          variables: {
+            startDate: formatDateToDashFormat(startDate),
+            endDate: formatDateToDashFormat(endDate)
+          }
+        }
+      ]
     });
   };
 
@@ -105,12 +114,11 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
         render: (row: any) => row.indirectHours,
         sortValue: (row: any) => row.indirectHours
       },
-
       {
-        field: 'billableHours',
+        field: 'precalculatedHours',
         name: 'Precalculated',
-        render: (row: any) => row.billableHours,
-        sortValue: (row: any) => row.billableHours
+        render: (row: any) => row.precalculatedHours,
+        sortValue: (row: any) => row.precalculatedHours
       },
       {
         field: 'billableHours',
@@ -157,21 +165,21 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
         render: (row: any) => row.projectIndirectHours
       },
       {
-        field: 'billableHours',
+        field: 'precalculatedHours',
         name: 'Precalculated',
-        render: (row: any) => row.billableHours
+        render: (row: any) => row.precalculatedHours
       },
       {
         field: 'billableHours',
         name: 'Billable Hours',
         render: (row: any) => {
-          const { employeeId, projectId, billableHours } = row;
+          const { employeeId, projectId, precalculatedHours, billableHours } = row;
           const key = `${row.employeeId}#${row.projectId}`;
           return (
-            <Formik validateOnChange={true} initialValues={{ [key]: row.billableHours }} validationSchema={BillableHoursValidation} enableReinitialize={true} onSubmit={() => {}}>
+            <Formik validateOnChange={true} initialValues={{ [key]: billableHours }} validationSchema={BillableHoursValidation} enableReinitialize={true} onSubmit={() => {}}>
               <Form>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <ReportFormObserver employeeId={employeeId} projectId={projectId} startDate={startDate} endDate={endDate} id={key} precalculatedHours={billableHours} />
+                  <ReportFormObserver employeeId={employeeId} projectId={projectId} startDate={startDate} endDate={endDate} id={key} precalculatedHours={precalculatedHours} />
                   <ObserverTextInput name={key} type="number" sx={{ width: '70px' }} disabled={!isEdit} />
                 </Box>
               </Form>
@@ -205,12 +213,12 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
         field: 'action',
         name: 'action',
         render: (row: any) => {
-          const { employeeId, projectId, billableHours } = row;
+          const { employeeId, projectId, precalculatedHours } = row;
           return (
             <Tooltip
               title="Record precalculated hours"
               onClick={() => {
-                savePrecalculatedHours(employeeId, projectId, billableHours, billableHours);
+                savePrecalculatedHours(employeeId, projectId, precalculatedHours, precalculatedHours);
               }}
             >
               <IconButton size="small">

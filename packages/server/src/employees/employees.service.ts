@@ -10,10 +10,12 @@ import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { BillableHoursService } from '../billable-hours/billable-hours.service';
+import { endOfMonth, startOfMonth } from 'date-fns';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService) {}
+  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService, private billableHoursService: BillableHoursService) {}
 
   /**
    * Get all employees
@@ -188,6 +190,8 @@ export class EmployeesService {
       }
     });
 
+    const billableRecords = await this.billableHoursService.searchBillableHours({ startDate: startOfMonth(startDate), endDate: endOfMonth(endDate) });
+
     // hide project that not contains any record, is not Indirect, Absence and the status is Active
     return employees.map((employee) => {
       const totalWorkHours = employee.records
@@ -217,6 +221,16 @@ export class EmployeesService {
         if (isNaN(indirectHour)) {
           indirectHour = 0;
         }
+
+        let billableHoursList = billableRecords.filter((billableRecord) => billableRecord.projectId === record.projectId && billableRecord.employeeId === record.employeeId);
+        console.log(billableHoursList);
+        // console.log(record);
+
+        const billableHours =
+          billableHoursList.length > 0
+            ? formatHours(billableHoursList.reduce((sum, currentValue) => sum + currentValue.billableHours, 0))
+            : formatHours(projectHoursMap.get(record.project.id) + indirectHour);
+
         return {
           projectId: record.project.id,
           projectName: record.project.name,
@@ -227,7 +241,8 @@ export class EmployeesService {
           isBillable: record.project.isBillable,
           projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
           projectIndirectHours: formatHours(indirectHour),
-          billableHours: formatHours(projectHoursMap.get(record.project.id) + indirectHour),
+          precalculatedHours: formatHours(projectHoursMap.get(record.project.id) + indirectHour),
+          billableHours: billableHours,
           projectPercentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
         };
       });
@@ -238,6 +253,7 @@ export class EmployeesService {
         status: employee.status,
         workHours: formatHours(totalWorkHours),
         indirectHours: formatHours(totalIndirectHours),
+        precalculatedHours: formatHours(totalWorkHours + totalIndirectHours),
         billableHours: formatHours(totalWorkHours + totalIndirectHours),
         inner: inner
       };

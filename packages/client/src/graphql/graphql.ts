@@ -159,6 +159,7 @@ export type EmployeeWithRecord = {
   indirectHours: Scalars['Float'];
   inner: Array<EmployeeWithRecordInner>;
   name: Scalars['String'];
+  precalculatedHours: Scalars['Float'];
   status: Scalars['String'];
   workHours: Scalars['Float'];
 };
@@ -169,6 +170,7 @@ export type EmployeeWithRecordInner = {
   contractTypeId: Scalars['Float'];
   fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];
+  precalculatedHours?: Maybe<Scalars['Float']>;
   projectId: Scalars['String'];
   projectIndirectHours: Scalars['Float'];
   projectName: Scalars['String'];
