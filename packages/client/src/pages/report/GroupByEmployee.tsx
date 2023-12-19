@@ -1,5 +1,5 @@
 import { CollapsibleTable } from '@pages/report/components/table/CollapsibleTable';
-import { Autocomplete, Box, Button, Checkbox, Chip, IconButton, ListItem, Stack, Tooltip, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Checkbox, Chip, IconButton, ListItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
 
 import { GetEmployeesWithRecordDocument, useBatchSendSlackMessageMutation, useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
@@ -180,7 +180,7 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
               <Form>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <ReportFormObserver employeeId={employeeId} projectId={projectId} startDate={startDate} endDate={endDate} id={key} precalculatedHours={precalculatedHours} />
-                  <ObserverTextInput name={key} type="number" sx={{ width: '70px' }} disabled={!isEdit} />
+                  <ObserverTextInput name={key} type="number" sx={{ width: '70px' }} disabled={!isEdit} size="small" />
                 </Box>
               </Form>
             </Formik>
