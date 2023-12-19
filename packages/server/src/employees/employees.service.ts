@@ -12,6 +12,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { BillableHoursService } from '../billable-hours/billable-hours.service';
 import { endOfMonth, startOfMonth } from 'date-fns';
+import { log } from 'console';
 
 @Injectable()
 export class EmployeesService {
@@ -222,9 +223,7 @@ export class EmployeesService {
           indirectHour = 0;
         }
 
-        let billableHoursList = billableRecords.filter((billableRecord) => billableRecord.projectId === record.projectId && billableRecord.employeeId === record.employeeId);
-        console.log(billableHoursList);
-        // console.log(record);
+        const billableHoursList = billableRecords.filter((billableRecord) => billableRecord.projectId === record.projectId && billableRecord.employeeId === record.employeeId);
 
         const billableHours =
           billableHoursList.length > 0
@@ -247,14 +246,17 @@ export class EmployeesService {
         };
       });
 
+      const totalPrecalculatedHours = inner.reduce((sum, currentValue) => sum + currentValue.precalculatedHours, 0);
+      const totalBillableHours = inner.reduce((sum, currentValue) => sum + currentValue.billableHours, 0);
+
       return {
         id: employee.id,
         name: employee.name,
         status: employee.status,
         workHours: formatHours(totalWorkHours),
         indirectHours: formatHours(totalIndirectHours),
-        precalculatedHours: formatHours(totalWorkHours + totalIndirectHours),
-        billableHours: formatHours(totalWorkHours + totalIndirectHours),
+        precalculatedHours: formatHours(totalPrecalculatedHours),
+        billableHours: formatHours(totalBillableHours),
         inner: inner
       };
     });

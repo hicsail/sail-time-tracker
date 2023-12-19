@@ -2,6 +2,8 @@ import { FC } from 'react';
 import { FormObserver } from '@components/form/FormObserver';
 import { endOfMonth, getMonth, getYear, startOfMonth } from 'date-fns';
 import { useCreateOrUpdateBillableHoursMutation } from '@graphql/billable-hours/billable-hours';
+import { GetEmployeesWithRecordDocument } from '@graphql/employee/employee';
+import { formatDateToDashFormat } from '../../../utils/helperFun';
 
 interface ReportFormObserverProps {
   employeeId: string;
@@ -32,7 +34,16 @@ export const ReportFormObserver: FC<ReportFormObserverProps> = (props) => {
           precalculatedHours: precalculatedHours,
           billableHours: value
         }
-      }
+      },
+      refetchQueries: [
+        {
+          query: GetEmployeesWithRecordDocument,
+          variables: {
+            startDate: formatDateToDashFormat(startDate),
+            endDate: formatDateToDashFormat(endDate)
+          }
+        }
+      ]
     });
   };
   return <FormObserver id={id} handleOnChange={handleOnChange} />;
