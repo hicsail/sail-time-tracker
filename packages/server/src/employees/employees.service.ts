@@ -12,7 +12,6 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { BillableHoursService } from '../billable-hours/billable-hours.service';
 import { endOfMonth, startOfMonth } from 'date-fns';
-import { log } from 'console';
 
 @Injectable()
 export class EmployeesService {
