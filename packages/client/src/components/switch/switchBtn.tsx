@@ -57,11 +57,5 @@ interface SwitchBtnProps {
 export const SwitchBtn: FC<SwitchBtnProps> = ({ onClick, open = true }) => {
   const { settings } = useSettings();
 
-  return (
-    <FormControlLabel
-      control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={settings.theme !== 'light'} onClick={onClick} />}
-      label={open ? 'Theme switch' : ''}
-      sx={{ minWidth: '200px' }}
-    />
-  );
+  return <FormControlLabel control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={settings.theme !== 'light'} onClick={onClick} />} label={open ? 'Theme switch' : ''} />;
 };
