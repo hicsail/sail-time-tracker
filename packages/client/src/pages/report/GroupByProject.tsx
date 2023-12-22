@@ -123,18 +123,6 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         }
       },
       {
-        field: 'workHours',
-        name: 'Work Hours',
-        render: (row: any) => row.workHours,
-        sortValue: (row: any) => row.workHours
-      },
-      {
-        field: 'indirectHours',
-        name: 'Indirect Hours',
-        render: (row: any) => row.indirectHours,
-        sortValue: (row: any) => row.indirectHours
-      },
-      {
         field: 'billableHours',
         name: 'Billable Hours',
         render: (row: any) => row.billableHours,
@@ -142,7 +130,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       },
       {
         field: 'percentage',
-        name: 'Effort',
+        name: '%',
         render: (row: any) => row.percentage + '%',
         sortValue: (row: any) => row.percentage
       },
@@ -152,15 +140,18 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         render: (row: any) => {
           const differences = differenceInBusinessDays(endDate, startDate);
           const maximumWorkHours = row.fte * (differences * 8);
-          const percentage = (row.billableHours / maximumWorkHours) * 100;
+          let percentage = (row.billableHours / maximumWorkHours) * 100;
+          percentage = percentage !== Infinity ? percentage : 0;
 
-          return (
-            <Tooltip title={`${percentage.toFixed(0)}%`}>
-              <IconButton>
-                <CircularWithValueLabel progress={percentage} color={getCircularColor(percentage)} />
-              </IconButton>
-            </Tooltip>
-          );
+          if (!isNaN(percentage)) {
+            return (
+              <Tooltip title={`${percentage.toFixed(0)}%`}>
+                <IconButton sx={{ width: '40px', height: '40px' }}>
+                  <CircularWithValueLabel progress={percentage} color={getCircularColor(percentage)} />
+                </IconButton>
+              </Tooltip>
+            );
+          }
         },
         sortValue: (row: any) => {
           const differences = differenceInBusinessDays(endDate, startDate);
@@ -175,7 +166,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
           const isFind = searchInvoicesByDateRangeDate?.searchInvoicesByDateRange?.find((invoice) => invoice.projectId === row.id);
           return (
             <Tooltip title={isFind ? 'View invoice' : 'Generate invoice'}>
-              <IconButton onClick={() => handleActionsOnClick(row, isFind)} color="secondary" sx={{ width: '50px', height: '50px' }}>
+              <IconButton onClick={() => handleActionsOnClick(row, isFind)} color="secondary" sx={{ width: '40px', height: '40px' }}>
                 <Box sx={{ position: 'relative' }}>
                   <InvoiceIcon sx={{ color: (theme: any) => (theme.palette.mode === 'light' ? 'inherit' : theme.palette.common.white) }} />
                   {isFind ? (
@@ -202,23 +193,27 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
     inner: [
       {
         field: 'employeeName',
-        name: 'Name',
         render: (row: any) => row.employeeName
       },
       {
-        field: 'employeeWorkHours',
-        name: 'Work Hours',
-        render: (row: any) => row.employeeWorkHours
-      },
-      {
-        field: 'employeeIndirectHours',
-        name: 'Indirect Hours',
-        render: (row: any) => row.employeeIndirectHours
+        field: 'isBillable',
+        render: () => 'N/A'
       },
       {
         field: 'employeeBillableHours',
-        name: 'Percentage',
+        render: (row: any) => row.employeeBillableHours
+      },
+      {
+        field: 'employeePercentage',
         render: (row: any) => row.employeePercentage + '%'
+      },
+      {
+        field: 'fte',
+        render: () => null
+      },
+      {
+        field: 'action',
+        render: () => null
       }
     ]
   };

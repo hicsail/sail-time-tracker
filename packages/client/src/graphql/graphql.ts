@@ -470,6 +470,7 @@ export type ProjectWithEmployeeRecords = {
 
 export type ProjectWithEmployeeRecordsInner = {
   __typename?: 'ProjectWithEmployeeRecordsInner';
+  employeeBillableHours: Scalars['Float'];
   employeeId: Scalars['String'];
   employeeIndirectHours: Scalars['Float'];
   employeeName: Scalars['String'];

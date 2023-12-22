@@ -271,12 +271,12 @@ export class EmployeesService {
   async getProjectWithRecord(startDate: Date, endDate: Date): Promise<ProjectWithEmployeeRecords[]> {
     const projectWithEmployeeRecordData = await this.getEmployeesWithRecord(startDate, endDate);
     const projects = await this.prisma.project.findMany();
-    const transformedDate = this.transformData(projectWithEmployeeRecordData);
+    const transformedData = this.transformData(projectWithEmployeeRecordData);
 
     let totalProjectWorkHours = 0;
 
     // calculate percentage of effort for each employee for each project
-    transformedDate.forEach((project) => {
+    transformedData.forEach((project) => {
       totalProjectWorkHours += project.workHours;
       project.inner.forEach((innerData) => {
         innerData.employeePercentage = formatPercentage(innerData.employeeWorkHours / project.workHours);
@@ -284,13 +284,13 @@ export class EmployeesService {
     });
 
     // calculate the percentage effort for each project
-    transformedDate.forEach((project) => {
+    transformedData.forEach((project) => {
       project.percentage = formatPercentage(project.workHours / totalProjectWorkHours);
     });
 
     const uniqueProjectMap = new Map();
 
-    transformedDate.forEach((project) => {
+    transformedData.forEach((project) => {
       if (!uniqueProjectMap.has(project.id)) {
         uniqueProjectMap.set(project.id, true);
       }
@@ -313,23 +313,24 @@ export class EmployeesService {
           percentage: '0.0',
           inner: []
         };
-        transformedDate.push(newProjectRecord);
+        transformedData.push(newProjectRecord);
       }
     });
 
-    return transformedDate.filter((project) => project.workHours !== 0);
+    return transformedData.filter((project) => project.workHours !== 0);
   }
 
   transformData(inputData: EmployeeWithRecord[]): ProjectWithEmployeeRecords[] {
-    const transformedData: ProjectWithEmployeeRecords[] = [];
+    const transformedData = [];
 
     // Iterate through each employee record
     for (const employeeRecord of inputData) {
       const { id, name, inner } = employeeRecord;
 
       // Iterate through each inner project record
-      for (const innerRecord of inner) {
-        const { projectId, projectName, status, rate, fte, isBillable, contractTypeId, projectWorkHours, projectIndirectHours, projectPercentage } = innerRecord;
+      for (const innerProjectRecord of inner) {
+        const { projectId, projectName, status, rate, fte, isBillable, contractTypeId, projectWorkHours, projectIndirectHours, projectPercentage, billableHours } =
+          innerProjectRecord;
 
         // Check if the project already exists in the transformed data
         let projectRecord = transformedData.find((record) => record.id === projectId);
@@ -353,10 +354,17 @@ export class EmployeesService {
           transformedData.push(projectRecord);
         }
 
+        const totalBillableHours = projectWorkHours + projectIndirectHours;
+
         // Update the project-level totals
         projectRecord.workHours += projectWorkHours;
         projectRecord.indirectHours += projectIndirectHours;
-        projectRecord.billableHours += projectWorkHours + projectIndirectHours;
+
+        if (billableHours) {
+          projectRecord.billableHours += billableHours;
+        } else {
+          projectRecord.billableHours += totalBillableHours;
+        }
 
         // Add the employee record to the project's inner array
         const employeeRecord: ProjectWithEmployeeRecordsInner = {
@@ -364,7 +372,8 @@ export class EmployeesService {
           employeeName: name,
           employeeWorkHours: projectWorkHours,
           employeeIndirectHours: projectIndirectHours,
-          employeePercentage: projectPercentage
+          employeePercentage: projectPercentage,
+          employeeBillableHours: billableHours ? billableHours : totalBillableHours
         };
         projectRecord.inner.push(employeeRecord);
       }

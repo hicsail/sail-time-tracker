@@ -103,10 +103,10 @@ export class ProjectWithEmployeeRecords {
   isBillable: boolean;
 
   @Field()
-  rate: number;
+  status: string;
 
   @Field()
-  status: string;
+  rate: number;
 
   @Field()
   fte: number;
@@ -137,6 +137,9 @@ export class ProjectWithEmployeeRecordsInner {
 
   @Field()
   employeeName: string;
+
+  @Field()
+  employeeBillableHours: number;
 
   @Field()
   employeeWorkHours: number;

@@ -48,6 +48,7 @@ query getProjectWithEmployeeRecords($startDate: DateTime!, $endDate: DateTime!) 
       employeeWorkHours
       employeeIndirectHours
       employeePercentage
+      employeeBillableHours
     }
 
   }
