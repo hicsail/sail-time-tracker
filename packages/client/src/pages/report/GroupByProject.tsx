@@ -132,7 +132,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         field: 'percentage',
         name: '%',
         render: (row: any) => row.percentage + '%',
-        sortValue: (row: any) => row.percentage
+        sortValue: (row: any) => Number(row.percentage)
       },
       {
         field: 'usage',
