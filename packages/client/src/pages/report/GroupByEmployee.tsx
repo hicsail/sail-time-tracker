@@ -1,8 +1,14 @@
 import { CollapsibleTable } from '@pages/report/components/table/CollapsibleTable';
-import { Autocomplete, Box, Button, Checkbox, Chip, IconButton, ListItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, Checkbox, Chip, IconButton, ListItem, Stack, Tooltip, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
 
-import { GetEmployeesWithRecordDocument, useBatchSendSlackMessageMutation, useGetEmployeesWithRecordQuery, useSendSlackMessageMutation } from '@graphql/employee/employee';
+import {
+  GetEmployeesWithRecordDocument,
+  GetProjectWithEmployeeRecordsDocument,
+  useBatchSendSlackMessageMutation,
+  useGetEmployeesWithRecordQuery,
+  useSendSlackMessageMutation
+} from '@graphql/employee/employee';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 import { CustomizedAccordions } from '@pages/report/components/CustomizedAccordions';
 import { SlackIcon } from '@components/icons/SlackIcon';
@@ -85,6 +91,13 @@ export const GroupByEmployee: FC<GroupByEmployeeProps> = ({ startDate, endDate, 
       refetchQueries: [
         {
           query: GetEmployeesWithRecordDocument,
+          variables: {
+            startDate: formatDateToDashFormat(startDate),
+            endDate: formatDateToDashFormat(endDate)
+          }
+        },
+        {
+          query: GetProjectWithEmployeeRecordsDocument,
           variables: {
             startDate: formatDateToDashFormat(startDate),
             endDate: formatDateToDashFormat(endDate)
