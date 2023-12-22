@@ -1,7 +1,6 @@
 import { GroupByEmployee } from '@pages/report/GroupByEmployee';
 import { GroupByProject } from '@pages/report/GroupByProject';
 import { useState } from 'react';
-import { DropDownMenu } from '@components/form/DropDownMenu';
 import { Box, InputAdornment, SelectChangeEvent, Stack } from '@mui/material';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
@@ -13,14 +12,7 @@ import { MenuOptions } from '@pages/report/components/MoreOption';
 export const Report = () => {
   const [searchText, setSearchText] = useState<string>('');
   const date = new Date();
-  const { dateRange, setDateRange, groupBy, setGroupBy } = useDateRange();
-
-  const data = [
-    { id: '1', name: 'Employee' },
-    { id: '2', name: 'Project' }
-  ];
-
-  const handleOnChange = (e: SelectChangeEvent) => setGroupBy(e.target.value);
+  const { dateRange, setDateRange } = useDateRange();
 
   return (
     <Stack>
