@@ -19,7 +19,7 @@ export const SortedCollapsibleTable: FC<SortedCollapsibleTableProps> = (props) =
       ...column,
       header: () => {
         return (
-          <TableCell align="left">
+          <TableCell align="left" sx={{ paddingLeft: 0 }}>
             <TableSortLabel active={orderBy === column.field} direction={orderBy === column.field ? order : 'asc'} onClick={() => setSortColumn(column.field)}>
               {column.name}
             </TableSortLabel>

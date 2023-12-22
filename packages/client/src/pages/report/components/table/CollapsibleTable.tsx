@@ -29,7 +29,7 @@ export const CollapsibleTable: FC<CollapsibleTableProps> = ({ rows, tableConfig,
               }
 
               return (
-                <TableCell key={config.field} sx={{ width: '200px' }}>
+                <TableCell key={config.field} sx={{ paddingLeft: 0 }}>
                   {config.name}
                 </TableCell>
               );

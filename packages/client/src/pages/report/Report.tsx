@@ -25,9 +25,6 @@ export const Report = () => {
   return (
     <Stack>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
-        <Box>
-          <DropDownMenu data={data} onChange={handleOnChange} value={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
-        </Box>
         <Box sx={{ display: 'flex', gap: 5 }}>
           <StyledDatePicker
             label="Start Date"
@@ -71,19 +68,22 @@ export const Report = () => {
           endDate={dateRange.endDate ? dateRange.endDate : endOfWeek(date, { weekStartsOn: 1 })}
         />
       </Box>
-      {groupBy === '1' ? (
-        <GroupByEmployee
-          startDate={dateRange.startDate ? dateRange.startDate : startOfWeek(date, { weekStartsOn: 1 })}
-          endDate={dateRange.endDate ? dateRange.endDate : endOfWeek(date, { weekStartsOn: 1 })}
-          searchText={searchText}
-        />
-      ) : (
-        <GroupByProject
-          startDate={dateRange.startDate ? dateRange.startDate : startOfWeek(date, { weekStartsOn: 1 })}
-          endDate={dateRange.endDate ? dateRange.endDate : endOfWeek(date, { weekStartsOn: 1 })}
-          searchText={searchText}
-        />
-      )}
+      <Stack direction="row" gap={5}>
+        <Box>
+          <GroupByEmployee
+            startDate={dateRange.startDate ? dateRange.startDate : startOfWeek(date, { weekStartsOn: 1 })}
+            endDate={dateRange.endDate ? dateRange.endDate : endOfWeek(date, { weekStartsOn: 1 })}
+            searchText={searchText}
+          />
+        </Box>
+        <Box>
+          <GroupByProject
+            startDate={dateRange.startDate ? dateRange.startDate : startOfWeek(date, { weekStartsOn: 1 })}
+            endDate={dateRange.endDate ? dateRange.endDate : endOfWeek(date, { weekStartsOn: 1 })}
+            searchText={searchText}
+          />
+        </Box>
+      </Stack>
     </Stack>
   );
 };

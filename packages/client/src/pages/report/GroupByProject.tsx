@@ -106,25 +106,8 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         render: (row: any) => row.name
       },
       {
-        field: 'isBillable',
-        name: 'IsBillable',
-        render: (row: any) => {
-          return (
-            <Box
-              sx={row.isBillable ? { backgroundColor: 'success.light', color: 'success.main' } : { backgroundColor: 'error.light', color: 'error.main' }}
-              width={40}
-              height={20}
-              textAlign="center"
-              borderRadius="3px"
-            >
-              {row.isBillable ? 'true' : 'false'}
-            </Box>
-          );
-        }
-      },
-      {
         field: 'billableHours',
-        name: 'Billable Hours',
+        name: 'Billable',
         render: (row: any) => row.billableHours,
         sortValue: (row: any) => row.billableHours
       },
@@ -157,6 +140,23 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
           const differences = differenceInBusinessDays(endDate, startDate);
           const maximumWorkHours = row.fte * (differences * 8);
           return (row.billableHours / maximumWorkHours) * 100;
+        }
+      },
+      {
+        field: 'isBillable',
+        name: 'IsBillable',
+        render: (row: any) => {
+          return (
+            <Box
+              sx={row.isBillable ? { backgroundColor: 'success.light', color: 'success.main' } : { backgroundColor: 'error.light', color: 'error.main' }}
+              width={40}
+              height={20}
+              textAlign="center"
+              borderRadius="3px"
+            >
+              {row.isBillable ? 'true' : 'false'}
+            </Box>
+          );
         }
       },
       {
@@ -195,10 +195,7 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
         field: 'employeeName',
         render: (row: any) => row.employeeName
       },
-      {
-        field: 'isBillable',
-        render: () => 'N/A'
-      },
+
       {
         field: 'employeeBillableHours',
         render: (row: any) => row.employeeBillableHours
@@ -210,6 +207,10 @@ export const GroupByProject: FC<GroupByEmployeeProps> = ({ startDate, endDate, s
       {
         field: 'fte',
         render: () => null
+      },
+      {
+        field: 'isBillable',
+        render: () => 'N/A'
       },
       {
         field: 'action',
