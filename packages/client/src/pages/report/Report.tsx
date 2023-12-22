@@ -1,7 +1,7 @@
 import { GroupByEmployee } from '@pages/report/GroupByEmployee';
 import { GroupByProject } from '@pages/report/GroupByProject';
 import { useState } from 'react';
-import { Box, InputAdornment, SelectChangeEvent, Stack } from '@mui/material';
+import { Box, InputAdornment, Stack } from '@mui/material';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
 import { TextInput } from '@components/TextInput';
