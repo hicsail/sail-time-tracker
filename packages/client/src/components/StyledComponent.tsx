@@ -123,7 +123,8 @@ export const StyledTableHeadRow = styled(TableRow)(({ theme }) => ({
 export const StyledTableDataRow = styled(TableRow)(({ theme }) => ({
   '& .MuiTableCell-root': {
     borderBottom: '1px dashed',
-    borderColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : 'rgb(46, 50, 54)'
+    borderColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : 'rgb(46, 50, 54)',
+    padding: 4
   },
   '&:hover': { backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[100] : alpha(theme.palette.grey[500], 0.08) }
 }));

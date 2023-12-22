@@ -12,6 +12,7 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClickUpTaskModule } from './click-up-task/click-up-task.module';
+import { BillableHoursModule } from './billable-hours/billable-hours.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { ClickUpTaskModule } from './click-up-task/click-up-task.module';
     RecordModule,
     InvoiceModule,
     CommentsModule,
-    ClickUpTaskModule
+    ClickUpTaskModule,
+    BillableHoursModule
   ],
   controllers: [AppController],
   providers: [AppService]

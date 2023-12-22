@@ -10,10 +10,12 @@ import { BatchPayload } from '../favorite-project/model/favorite-project.model';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { BillableHoursService } from '../billable-hours/billable-hours.service';
+import { endOfMonth, startOfMonth } from 'date-fns';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService) {}
+  constructor(private prisma: PrismaService, private readonly httpService: HttpService, private configService: ConfigService, private billableHoursService: BillableHoursService) {}
 
   /**
    * Get all employees
@@ -52,7 +54,7 @@ export class EmployeesService {
   async getEmployeeById(id: string): Promise<Employee> {
     const employeeExist = await this.exists(id);
 
-    if (!employeeExist) throw new Error('Employee not found');
+    if (!employeeExist) throw new Error('employee not found');
 
     return this.prisma.employee.findUnique({
       where: {
@@ -73,7 +75,7 @@ export class EmployeesService {
       }
     });
 
-    if (!(employeeExist > 0)) throw new Error('Employee not found');
+    if (!(employeeExist > 0)) throw new Error('employee not found');
 
     return this.prisma.employee.findUnique({
       where: {
@@ -83,7 +85,7 @@ export class EmployeesService {
   }
 
   /**
-   * Add new Employee
+   * Add new employee
    *
    * @param newEmployee new employee information details
    * @returns new employee that has been created
@@ -188,6 +190,8 @@ export class EmployeesService {
       }
     });
 
+    const billableRecords = await this.billableHoursService.searchBillableHours({ startDate: startOfMonth(startDate), endDate: endOfMonth(endDate) });
+
     // hide project that not contains any record, is not Indirect, Absence and the status is Active
     return employees.map((employee) => {
       const totalWorkHours = employee.records
@@ -217,6 +221,14 @@ export class EmployeesService {
         if (isNaN(indirectHour)) {
           indirectHour = 0;
         }
+
+        const billableHoursList = billableRecords.filter((billableRecord) => billableRecord.projectId === record.projectId && billableRecord.employeeId === record.employeeId);
+
+        const billableHours =
+          billableHoursList.length > 0
+            ? formatHours(billableHoursList.reduce((sum, currentValue) => sum + currentValue.billableHours, 0))
+            : formatHours(projectHoursMap.get(record.project.id) + indirectHour);
+
         return {
           projectId: record.project.id,
           projectName: record.project.name,
@@ -227,9 +239,14 @@ export class EmployeesService {
           isBillable: record.project.isBillable,
           projectWorkHours: formatHours(projectHoursMap.get(record.project.id)),
           projectIndirectHours: formatHours(indirectHour),
+          precalculatedHours: formatHours(projectHoursMap.get(record.project.id) + indirectHour),
+          billableHours: billableHours,
           projectPercentage: formatPercentage(projectHoursMap.get(record.project.id) / totalWorkHours)
         };
       });
+
+      const totalPrecalculatedHours = inner.reduce((sum, currentValue) => sum + currentValue.precalculatedHours, 0);
+      const totalBillableHours = inner.reduce((sum, currentValue) => sum + currentValue.billableHours, 0);
 
       return {
         id: employee.id,
@@ -237,7 +254,8 @@ export class EmployeesService {
         status: employee.status,
         workHours: formatHours(totalWorkHours),
         indirectHours: formatHours(totalIndirectHours),
-        billableHours: formatHours(totalWorkHours + totalIndirectHours),
+        precalculatedHours: formatHours(totalPrecalculatedHours),
+        billableHours: formatHours(totalBillableHours),
         inner: inner
       };
     });
@@ -253,12 +271,12 @@ export class EmployeesService {
   async getProjectWithRecord(startDate: Date, endDate: Date): Promise<ProjectWithEmployeeRecords[]> {
     const projectWithEmployeeRecordData = await this.getEmployeesWithRecord(startDate, endDate);
     const projects = await this.prisma.project.findMany();
-    const transformedDate = this.transformData(projectWithEmployeeRecordData);
+    const transformedData = this.transformData(projectWithEmployeeRecordData);
 
     let totalProjectWorkHours = 0;
 
     // calculate percentage of effort for each employee for each project
-    transformedDate.forEach((project) => {
+    transformedData.forEach((project) => {
       totalProjectWorkHours += project.workHours;
       project.inner.forEach((innerData) => {
         innerData.employeePercentage = formatPercentage(innerData.employeeWorkHours / project.workHours);
@@ -266,13 +284,13 @@ export class EmployeesService {
     });
 
     // calculate the percentage effort for each project
-    transformedDate.forEach((project) => {
+    transformedData.forEach((project) => {
       project.percentage = formatPercentage(project.workHours / totalProjectWorkHours);
     });
 
     const uniqueProjectMap = new Map();
 
-    transformedDate.forEach((project) => {
+    transformedData.forEach((project) => {
       if (!uniqueProjectMap.has(project.id)) {
         uniqueProjectMap.set(project.id, true);
       }
@@ -295,23 +313,24 @@ export class EmployeesService {
           percentage: '0.0',
           inner: []
         };
-        transformedDate.push(newProjectRecord);
+        transformedData.push(newProjectRecord);
       }
     });
 
-    return transformedDate.filter((project) => project.workHours !== 0);
+    return transformedData.filter((project) => project.workHours !== 0);
   }
 
   transformData(inputData: EmployeeWithRecord[]): ProjectWithEmployeeRecords[] {
-    const transformedData: ProjectWithEmployeeRecords[] = [];
+    const transformedData = [];
 
     // Iterate through each employee record
     for (const employeeRecord of inputData) {
       const { id, name, inner } = employeeRecord;
 
       // Iterate through each inner project record
-      for (const innerRecord of inner) {
-        const { projectId, projectName, status, rate, fte, isBillable, contractTypeId, projectWorkHours, projectIndirectHours, projectPercentage } = innerRecord;
+      for (const innerProjectRecord of inner) {
+        const { projectId, projectName, status, rate, fte, isBillable, contractTypeId, projectWorkHours, projectIndirectHours, projectPercentage, billableHours } =
+          innerProjectRecord;
 
         // Check if the project already exists in the transformed data
         let projectRecord = transformedData.find((record) => record.id === projectId);
@@ -335,10 +354,17 @@ export class EmployeesService {
           transformedData.push(projectRecord);
         }
 
+        const totalBillableHours = projectWorkHours + projectIndirectHours;
+
         // Update the project-level totals
         projectRecord.workHours += projectWorkHours;
         projectRecord.indirectHours += projectIndirectHours;
-        projectRecord.billableHours += projectWorkHours + projectIndirectHours;
+
+        if (billableHours) {
+          projectRecord.billableHours += billableHours;
+        } else {
+          projectRecord.billableHours += totalBillableHours;
+        }
 
         // Add the employee record to the project's inner array
         const employeeRecord: ProjectWithEmployeeRecordsInner = {
@@ -346,7 +372,8 @@ export class EmployeesService {
           employeeName: name,
           employeeWorkHours: projectWorkHours,
           employeeIndirectHours: projectIndirectHours,
-          employeePercentage: projectPercentage
+          employeePercentage: projectPercentage,
+          employeeBillableHours: billableHours ? billableHours : totalBillableHours
         };
         projectRecord.inner.push(employeeRecord);
       }

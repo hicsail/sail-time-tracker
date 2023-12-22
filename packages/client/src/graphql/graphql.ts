@@ -33,6 +33,26 @@ export type BatchSendSlackMessageInput = {
   message: Scalars['String'];
 };
 
+export type BillableHoursCreateInput = {
+  billableHours: Scalars['Float'];
+  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  precalculatedHours: Scalars['Float'];
+  projectId: Scalars['String'];
+  startDate: Scalars['DateTime'];
+};
+
+export type BillableHoursModel = {
+  __typename?: 'BillableHoursModel';
+  billableHours: Scalars['Float'];
+  employeeId: Scalars['String'];
+  endDate: Scalars['DateTime'];
+  id: Scalars['ID'];
+  precalculatedHours: Scalars['Float'];
+  projectId: Scalars['String'];
+  startDate: Scalars['DateTime'];
+};
+
 export type ClickUpStatuses = {
   __typename?: 'ClickUpStatuses';
   color: Scalars['String'];
@@ -139,15 +159,18 @@ export type EmployeeWithRecord = {
   indirectHours: Scalars['Float'];
   inner: Array<EmployeeWithRecordInner>;
   name: Scalars['String'];
+  precalculatedHours: Scalars['Float'];
   status: Scalars['String'];
   workHours: Scalars['Float'];
 };
 
 export type EmployeeWithRecordInner = {
   __typename?: 'EmployeeWithRecordInner';
+  billableHours?: Maybe<Scalars['Float']>;
   contractTypeId: Scalars['Float'];
   fte: Scalars['Float'];
   isBillable: Scalars['Boolean'];
+  precalculatedHours?: Maybe<Scalars['Float']>;
   projectId: Scalars['String'];
   projectIndirectHours: Scalars['Float'];
   projectName: Scalars['String'];
@@ -274,6 +297,7 @@ export type Mutation = {
   batchSendingMessages: BatchResponseModel;
   createAndAddClickUpTaskToInvoice: ClickUpTaskModel;
   createClickUpTask: ClickUpTaskModel;
+  createOrUpdateBillableHours: BillableHoursModel;
   createOrUpdateInvoice: InvoiceModel;
   deleteComment: CommentModel;
   deleteEmployees: EmployeeDeleteReturnModel;
@@ -320,6 +344,10 @@ export type MutationCreateAndAddClickUpTaskToInvoiceArgs = {
 
 export type MutationCreateClickUpTaskArgs = {
   task: ClickUpTaskCreateInput;
+};
+
+export type MutationCreateOrUpdateBillableHoursArgs = {
+  input: BillableHoursCreateInput;
 };
 
 export type MutationCreateOrUpdateInvoiceArgs = {
@@ -442,6 +470,7 @@ export type ProjectWithEmployeeRecords = {
 
 export type ProjectWithEmployeeRecordsInner = {
   __typename?: 'ProjectWithEmployeeRecordsInner';
+  employeeBillableHours: Scalars['Float'];
   employeeId: Scalars['String'];
   employeeIndirectHours: Scalars['Float'];
   employeeName: Scalars['String'];
@@ -538,6 +567,7 @@ export type RecordInsertOrUpdateModel = {
   date: Scalars['DateTime'];
   employeeId: Scalars['ID'];
   hours: Scalars['Float'];
+  id?: Maybe<Scalars['String']>;
   projectId: Scalars['ID'];
 };
 
@@ -547,6 +577,7 @@ export type RecordModel = {
   employee: EmployeeModel;
   employeeId: Scalars['ID'];
   hours: Scalars['Float'];
+  id?: Maybe<Scalars['String']>;
   project: ProjectModel;
   projectId: Scalars['ID'];
 };

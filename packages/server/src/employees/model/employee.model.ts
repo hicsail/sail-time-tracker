@@ -43,6 +43,9 @@ export class EmployeeWithRecord {
   indirectHours: number;
 
   @Field()
+  precalculatedHours: number;
+
+  @Field()
   billableHours: number;
 
   @Field(() => [EmployeeWithRecordInner])
@@ -80,6 +83,12 @@ class EmployeeWithRecordInner {
 
   @Field()
   projectPercentage: string;
+
+  @Field(() => Number, { nullable: true })
+  precalculatedHours?: number;
+
+  @Field(() => Number, { nullable: true })
+  billableHours?: number;
 }
 
 @ObjectType()
@@ -94,10 +103,10 @@ export class ProjectWithEmployeeRecords {
   isBillable: boolean;
 
   @Field()
-  rate: number;
+  status: string;
 
   @Field()
-  status: string;
+  rate: number;
 
   @Field()
   fte: number;
@@ -128,6 +137,9 @@ export class ProjectWithEmployeeRecordsInner {
 
   @Field()
   employeeName: string;
+
+  @Field()
+  employeeBillableHours: number;
 
   @Field()
   employeeWorkHours: number;

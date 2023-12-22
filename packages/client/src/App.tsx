@@ -1,25 +1,25 @@
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Employee } from '@pages/Employee/Employee';
+import { Employee } from '@pages/employee/Employee';
 
 import { GraphqlProvider } from '@graphql/graphql-provider';
-import { Project } from '@pages/Project/Project';
-import { Track } from '@pages/Track/Track';
+import { Project } from '@pages/project/Project';
+import { Track } from '@pages/track/Track';
 import { Paths } from '@constants/paths';
-import { AdminLayout } from '@pages/Admin/AdminLayout';
+import { AdminLayout } from '@pages/admin/AdminLayout';
 import { ThemeProvider } from '@theme/theme.provider';
 import { SettingsProvider } from '@context/setting.context';
 import { EmployeeProvider } from '@context/employee.context';
 import { DateProvider } from '@context/date.context';
-import { TrackLayout } from '@pages/Track/components/TrackLayout';
-import { Report } from '@pages/Report/Report';
-import { Invoice } from '@pages/Invoice/Invoice';
+import { TrackLayout } from '@pages/track/components/TrackLayout';
+import { Report } from '@pages/report/Report';
+import { Invoice } from '@pages/invoice/Invoice';
 import enLocale from 'date-fns/locale/en-US';
-import { InvoiceDetails } from '@pages/Invoice/InvoiceDetails';
+import { InvoiceDetails } from '@pages/invoice/InvoiceDetails';
 import { DateRangeProvider } from '@context/reportFilter.context';
-import { Export } from '@pages/Invoice/Export';
-import { NotFoundAdmin } from '@pages/Not_Find/NotFindAdmin';
+import { Export } from '@pages/invoice/Export';
+import { NotFoundAdmin } from '@pages/not-found/NotFindAdmin';
 import { SnackBarProvider } from '@context/snackbar.context';
 import { NavbarProvider } from '@context/navbar.context';
 
