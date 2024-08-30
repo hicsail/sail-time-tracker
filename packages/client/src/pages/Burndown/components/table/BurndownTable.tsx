@@ -1,8 +1,9 @@
 import { CustomTableContainer } from '@components/CustomTableContainer';
 import { StyledTableDataRow, StyledTableHeadRow } from '@components/StyledComponent';
-import { Collapse, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Collapse, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { useState } from 'react';
 import { ExpandButton } from '@components/ExpandButton';
+import { Chart } from '../Chart';
 
 export const BurndownTable: React.FC = () => {
   return (
@@ -51,7 +52,9 @@ const BurndownTableRow: React.FC<BurndownTableRowProps> = (props) => {
       {open &&  (
         <TableRow>
           <TableCell>
-            <Collapse in={open}>Hello</Collapse>
+            <Collapse in={open}>
+              <Chart />
+            </Collapse>
           </TableCell>
         </TableRow>
       )}
