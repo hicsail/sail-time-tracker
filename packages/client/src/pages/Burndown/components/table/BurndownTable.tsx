@@ -51,7 +51,7 @@ const BurndownTableRow: React.FC<BurndownTableRowProps> = (props) => {
       </StyledTableDataRow>
       {open &&  (
         <TableRow>
-          <TableCell>
+          <TableCell style={{ padding: 0 }} colSpan={5}>
             <Collapse in={open}>
               <Chart />
             </Collapse>
