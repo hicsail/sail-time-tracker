@@ -22,6 +22,7 @@ import { Export } from '@pages/Invoice/Export';
 import { NotFoundAdmin } from '@pages/Not_Find/NotFindAdmin';
 import { SnackBarProvider } from '@context/snackbar.context';
 import { NavbarProvider } from '@context/navbar.context';
+import { BurnDown } from '@pages/Burndown/Burndown';
 
 function App() {
   if (enLocale && enLocale.options) {
@@ -56,6 +57,7 @@ function App() {
                             <Route path={Paths.INVOICE} element={<Invoice />} />
                             <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
                             <Route path={Paths.EXPORT_INVOICE} element={<Export />} />
+                            <Route path={Paths.BURNDOWN} element={<BurnDown />} />
                             <Route path={`${Paths.ADMIN}/*`} element={<NotFoundAdmin page="admin" />} />
                           </Route>
                           <Route path="*" element={<NotFoundAdmin />} />

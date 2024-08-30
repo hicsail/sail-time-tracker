@@ -14,5 +14,6 @@ export enum Paths {
   LOGOUT = '/logout',
   LOGIN = '/login',
   AUTH_CALLBACK = '/auth/callback',
-  PERMISSION_REQUIRED = '/permission-required'
+  PERMISSION_REQUIRED = '/permission-required',
+  BURNDOWN = '/admin/burndown'
 }

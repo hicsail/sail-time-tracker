@@ -33,6 +33,7 @@ export const AdminNavbar = () => {
       <SideList>
         <SideListItem path={Paths.REPORT} icon={<Assessment sx={{ color: 'customColors.iconColor' }} />} info="Reports" open={open} />
         <SideListItem path={Paths.INVOICE} icon={<Receipt sx={{ color: 'customColors.iconColor' }} />} info="Billing & Invoices" open={open} />
+        <SideListItem path={Paths.BURNDOWN} icon={<Receipt sx={{ color: 'customColors.iconColor' }} />} info="Burndown" open={open} />
         <Divider />
         <SideListItem path={Paths.EMPLOYEE_lIST} icon={<AssignmentInd sx={{ color: 'customColors.iconColor' }} />} info="Employees" open={open} />
         <SideListItem path={Paths.PROJECT_lIST} icon={<Folder sx={{ color: 'customColors.iconColor' }} />} info="Projects" open={open} />
