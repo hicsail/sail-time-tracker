@@ -1,7 +1,8 @@
 import { CustomTableContainer } from '@components/CustomTableContainer';
 import { StyledTableDataRow, StyledTableHeadRow } from '@components/StyledComponent';
-import { KeyboardArrowRight } from '@mui/icons-material';
-import { IconButton, Table, TableBody, TableCell, TableHead } from '@mui/material';
+import { Collapse, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { useState } from 'react';
+import { ExpandButton } from '@components/ExpandButton';
 
 export const BurndownTable: React.FC = () => {
   return (
@@ -33,24 +34,27 @@ interface BurndownTableRowProps {
 }
 
 const BurndownTableRow: React.FC<BurndownTableRowProps> = (props) => {
-  return (
-    <StyledTableDataRow>
-      {/* Open Button*/}
-      <TableCell>
-        <ExpandButton />
-      </TableCell>
-      <TableCell>{props.project}</TableCell>
-      <TableCell>{props.isBillable.toString()}</TableCell>
-      <TableCell>{props.workHours}</TableCell>
-      <TableCell>{props.billableHours}</TableCell>
-    </StyledTableDataRow>
-  );
-};
+  const [open, setOpen] = useState<boolean>(false);
 
-const ExpandButton: React.FC = () => {
   return (
-    <IconButton size="small">
-      <KeyboardArrowRight />
-    </IconButton>
+    <>
+      <StyledTableDataRow>
+        {/* Open Button*/}
+        <TableCell>
+          <ExpandButton open={open} setOpen={setOpen} />
+        </TableCell>
+        <TableCell>{props.project}</TableCell>
+        <TableCell>{props.isBillable.toString()}</TableCell>
+        <TableCell>{props.workHours}</TableCell>
+        <TableCell>{props.billableHours}</TableCell>
+      </StyledTableDataRow>
+      {open &&  (
+        <TableRow>
+          <TableCell>
+            <Collapse in={open}>Hello</Collapse>
+          </TableCell>
+        </TableRow>
+      )}
+    </>
   );
 };
