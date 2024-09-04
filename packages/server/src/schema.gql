@@ -23,7 +23,7 @@ type EmployeeDeleteReturnModel {
 type EmployeeWithRecord {
   id: String!
   name: String!
-  status: String!
+  status: String
   workHours: Float!
   indirectHours: Float!
   billableHours: Float!
@@ -220,6 +220,11 @@ type InvoiceModelWithProjectAndComments {
   items: [InvoiceItemModel!]
 }
 
+type Burndown {
+  date: DateTime!
+  hours: Float!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -238,6 +243,7 @@ type Query {
   getClickUpCustomFields: [ListCustomField!]!
   getClickUpStatuses: [ClickUpStatuses!]!
   getClickUpTask(taskId: String!): Boolean
+  getHoursBreakdownActual(start: DateTime!, end: DateTime!): [Burndown!]!
 }
 
 input DateRangeInput {

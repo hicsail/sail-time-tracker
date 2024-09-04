@@ -15,8 +15,8 @@ export class EmployeeModel {
   @Field()
   name: string;
 
-  @Field({ nullable: true })
-  status?: string;
+  @Field(() => String, { nullable: true })
+  status: string | null;
 }
 
 @ObjectType()
@@ -33,8 +33,8 @@ export class EmployeeWithRecord {
   @Field()
   name: string;
 
-  @Field()
-  status: string;
+  @Field(() => String, { nullable: true})
+  status: string | null;
 
   @Field()
   workHours: number;

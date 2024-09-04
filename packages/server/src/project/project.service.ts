@@ -25,7 +25,7 @@ export class ProjectService {
    *
    * @return a matched project
    */
-  async getProjectById(id: string): Promise<ProjectWithContractType> {
+  async getProjectById(id: string): Promise<ProjectWithContractType | null> {
     return this.prisma.project.findUnique({
       where: {
         id: id

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
@@ -65,7 +65,7 @@ export class ClickUpTaskService {
       );
       return !!data;
     } catch (error) {
-      new Error('Task not found');
+      throw new NotFoundException(`Task with id ${taskId} not found`);
     }
   }
 
@@ -115,7 +115,7 @@ export class ClickUpTaskService {
         }
         return { url: data.url, id: data.id };
       } else {
-        new Error('Task not found');
+        throw new NotFoundException(`Task not found`);
       }
     } catch (error) {
       throw new BadRequestException();

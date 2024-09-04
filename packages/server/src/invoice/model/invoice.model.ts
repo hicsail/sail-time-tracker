@@ -65,11 +65,11 @@ export class InvoiceItemModel {
 @ObjectType()
 export class InvoiceModelWithProjectAndComments extends InvoiceModelWithProject {
   @Field(() => [CommentModel], { nullable: true })
-  comments?: CommentModel[];
+  comments?: CommentModel[] | null;
 
   @Field(() => ClickUpTaskModel, { nullable: true })
-  clickUpTask?: ClickUpTaskModel;
+  clickUpTask?: ClickUpTaskModel | null;
 
   @Field(() => [InvoiceItemModel], { nullable: true })
-  items?: InvoiceItemModel[];
+  items?: InvoiceItemModel[] | null;
 }

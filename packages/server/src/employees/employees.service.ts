@@ -49,7 +49,7 @@ export class EmployeesService {
    *
    * @return a matched employee
    */
-  async getEmployeeById(id: string): Promise<Employee> {
+  async getEmployeeById(id: string): Promise<Employee | null> {
     const employeeExist = await this.exists(id);
 
     if (!employeeExist) throw new Error('Employee not found');
@@ -66,7 +66,7 @@ export class EmployeesService {
    *
    * @return a matched employee
    */
-  async getEmployeeByEmail(email: string): Promise<Employee> {
+  async getEmployeeByEmail(email: string): Promise<Employee | null> {
     const employeeExist = await this.prisma.employee.count({
       where: {
         email: email
@@ -187,6 +187,10 @@ export class EmployeesService {
         slack: true
       }
     });
+
+    if (!employees) {
+      return [];
+    }
 
     // hide project that not contains any record, is not Indirect, Absence and the status is Active
     return employees.map((employee) => {
@@ -365,25 +369,24 @@ export class EmployeesService {
    */
   async getRecordsWithFavoriteProject(employeeId: string, startDate: Date, endDate: Date): Promise<GroupedRecordWithFavoriteProjectModel[]> {
     // get current week records and all favorite projects
-    const [records, favoriteProjects] = await Promise.all([
-      this.prisma.record.findMany({
-        where: {
-          employeeId: employeeId,
-          date: {
-            lte: endDate,
-            gte: startDate
-          }
-        },
-        include: {
-          project: true
+    const records = await this.prisma.record.findMany({
+      where: {
+        employeeId: employeeId,
+        date: {
+          lte: endDate,
+          gte: startDate
         }
-      }),
-      this.getFavoriteProjects(employeeId)
-    ]);
+      },
+      include: {
+        project: true
+      }
+    });
+
+    const favoriteProjects = await this.getFavoriteProjects(employeeId);
 
     const isRecordMap = new Set();
     const isFavoriteMap = new Set();
-    const combined = [];
+    const combined: any[] = [];
 
     // add all project in record to combined list
     records.forEach((record: any) => {
@@ -407,7 +410,7 @@ export class EmployeesService {
     // group combined list by project id
     const groupedData = combined.reduce((acc, projectRecord) => {
       const { projectId, projectName, isFavorite, description, date, hours } = projectRecord;
-      const existingGroup = acc.find((group) => group.projectId === projectId);
+      const existingGroup = acc.find((group: any) => group.projectId === projectId);
       const formatDate = date ? formatDateToDashFormat(convertToUTCDate(date)) : null;
 
       if (!existingGroup) {
@@ -419,8 +422,8 @@ export class EmployeesService {
     }, []);
 
     // find indirect and absence project from groupedData
-    const indirectRecord = groupedData.find((data) => data.projectName === 'Indirect');
-    const absenceRecord = groupedData.find((data) => data.projectName === 'Absence');
+    const indirectRecord = groupedData.find((data: any) => data.projectName === 'Indirect');
+    const absenceRecord = groupedData.find((data: any) => data.projectName === 'Absence');
 
     // remove indirect and absence from groupedData
     // and add them at the front of the groupedData
@@ -460,18 +463,18 @@ export class EmployeesService {
 
     try {
       // find the slack id
-      const { slackId } = await this.prisma.slack.findUnique({
+      const slack = await this.prisma.slack.findUnique({
         where: {
           employeeId
         }
       });
 
-      if (!slackId) {
+      if (!slack) {
         return false;
       }
 
       // send Slack message
-      const { data } = await firstValueFrom(this.httpService.post(`${this.configService.get<string>('SLACK_URL')}`, { user: slackId, message: message }));
+      const { data } = await firstValueFrom(this.httpService.post(`${this.configService.get<string>('SLACK_URL')}`, { user: slack.slackId, message: message }));
       return data.ok;
     } catch (e) {
       return false;

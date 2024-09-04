@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { Invoice } from '@prisma/client';
 import { InvoiceCreateInput, InvoiceItemUpdateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { InvoiceItemModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
 import { EmployeesService } from '../employees/employees.service';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class InvoiceService {
@@ -44,7 +43,7 @@ export class InvoiceService {
     });
 
     // if invoice is created or updated, then create or update invoice items
-    if (invoiceInfo) {
+    if (invoiceInfo && project) {
       for (const employee of project.inner) {
         const { invoiceId } = invoiceInfo;
         const { employeeId, employeeWorkHours, employeeIndirectHours } = employee;
@@ -81,7 +80,7 @@ export class InvoiceService {
     return invoiceInfo;
   }
 
-  async searchInvoice(projectId_startDate_endDate: InvoiceSearchInput): Promise<InvoiceModelWithProjectAndComments> {
+  async searchInvoice(projectId_startDate_endDate: InvoiceSearchInput): Promise<InvoiceModelWithProjectAndComments | null> {
     const { projectId, startDate, endDate } = projectId_startDate_endDate;
     return this.prisma.invoice.findUnique({
       where: {
@@ -176,10 +175,10 @@ export class InvoiceService {
     });
 
     if (!invoiceItem) {
-      throw new NotFoundError('Invoice item not found');
+      throw new NotFoundException('Invoice item not found');
     }
 
-    const billableHours = workHours >= 0 ? workHours + invoiceItem.indirectHours : invoiceItem.workHours + indirectHours;
+    const billableHours = workHours && workHours >= 0 ? workHours + invoiceItem.indirectHours : (invoiceItem.workHours || 0) + (indirectHours || 0);
     const amount = billableHours * invoiceItem.rate;
 
     // UPDATE INVOICE ITEM
@@ -218,8 +217,8 @@ export class InvoiceService {
         invoiceId: invoiceId
       },
       data: {
-        amount: invoiceItemAggregation._sum.amount,
-        hours: invoiceItemAggregation._sum.billableHours
+        amount: invoiceItemAggregation._sum.amount || undefined,
+        hours: invoiceItemAggregation._sum.billableHours || undefined
       }
     });
 

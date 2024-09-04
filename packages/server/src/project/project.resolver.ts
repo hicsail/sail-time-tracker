@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { ProjectService } from './project.service';
 import { ContractTypeModel, ProjectDeleteReturnModel, ProjectModel, ProjectWithContractType } from './model/project.model';
 import { ProjectCreateInput, ProjectUpdateInput } from './dto/project.dto';
+import { NotFoundException } from '@nestjs/common';
 
 @Resolver(() => ProjectModel)
 export class ProjectResolver {
@@ -14,7 +15,12 @@ export class ProjectResolver {
 
   @Query(() => ProjectWithContractType)
   async project(@Args('id') id: string): Promise<ProjectWithContractType> {
-    return this.projectService.getProjectById(id);
+    const project = await this.projectService.getProjectById(id);
+
+    if (!project) {
+      throw new NotFoundException(`Project id id ${id} not found`);
+    }
+    return project;
   }
 
   @Mutation(() => ProjectModel)

@@ -3,6 +3,7 @@ import { InvoiceService } from './invoice.service';
 import { InvoiceItemModel, InvoiceModel, InvoiceModelWithProject, InvoiceModelWithProjectAndComments } from './model/invoice.model';
 import { InvoiceCreateInput, InvoiceItemUpdateInput, InvoiceSearchInput } from './dto/invoice.dto';
 import { Invoice } from '@prisma/client';
+import { NotFoundException } from '@nestjs/common';
 
 @Resolver(() => InvoiceModel)
 export class InvoiceResolver {
@@ -15,7 +16,12 @@ export class InvoiceResolver {
 
   @Query(() => InvoiceModelWithProjectAndComments)
   async searchInvoice(@Args('projectId_startDate_endDate') projectId_startDate_endDate: InvoiceSearchInput): Promise<InvoiceModelWithProjectAndComments> {
-    return this.invoiceService.searchInvoice(projectId_startDate_endDate);
+    const invoice = await this.invoiceService.searchInvoice(projectId_startDate_endDate);
+
+    if (!invoice) {
+      throw new NotFoundException(`No invoice found`);
+    }
+    return invoice;
   }
 
   @Query(() => [InvoiceModel])

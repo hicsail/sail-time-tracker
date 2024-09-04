@@ -5,6 +5,7 @@ import { BatchSendSlackMessageInput, EmployeeCreateInput, EmployeeUpdateInput, S
 import { ProjectModel } from '../project/model/project.model';
 import { GroupedRecordWithFavoriteProjectModel } from '../record/model/record.model';
 import { BatchPayload } from '../favorite-project/model/favorite-project.model';
+import { NotFoundException } from '@nestjs/common';
 
 @Resolver(() => EmployeeModel)
 export class EmployeesResolver {
@@ -17,7 +18,12 @@ export class EmployeesResolver {
 
   @Query(() => EmployeeModel)
   async employee(@Args('id') id: string): Promise<EmployeeModel> {
-    return this.employeesService.getEmployeeById(id);
+    const employee = await this.employeesService.getEmployeeById(id);
+
+    if (!employee) {
+      throw new NotFoundException(`Employee with id ${id} not found`);
+    }
+    return employee;
   }
 
   @Query(() => [EmployeeWithRecord])

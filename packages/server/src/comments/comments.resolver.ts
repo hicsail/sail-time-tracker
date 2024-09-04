@@ -3,6 +3,7 @@ import { CommentModel } from './model/comments.model';
 import { CommentsService } from './comments.service';
 import { CommentCreateInput } from './dto/comments.dto';
 import { Comment } from '@prisma/client';
+import { NotFoundException } from '@nestjs/common';
 
 @Resolver(() => CommentModel)
 export class CommentsResolver {
@@ -10,7 +11,12 @@ export class CommentsResolver {
 
   @Query(() => CommentModel)
   async comment(@Args('id') id: string): Promise<CommentModel> {
-    return this.commentService.getCommentById(id);
+    const comment = await this.commentService.getCommentById(id);
+
+    if (!comment) {
+      throw new NotFoundException(`Comment with id ${id} not found`);
+    }
+    return comment;
   }
 
   @Query(() => [CommentModel])

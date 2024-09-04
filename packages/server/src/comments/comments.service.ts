@@ -11,7 +11,7 @@ export class CommentsService {
     return this.prisma.comment.findMany();
   }
 
-  async getCommentById(id: string): Promise<Comment> {
+  async getCommentById(id: string): Promise<Comment | null> {
     return this.prisma.comment.findUnique({
       where: {
         commentId: id
