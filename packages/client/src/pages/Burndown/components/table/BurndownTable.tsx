@@ -1,6 +1,6 @@
 import { CustomTableContainer } from '@components/CustomTableContainer';
 import { StyledTableDataRow, StyledTableHeadRow } from '@components/StyledComponent';
-import { Collapse, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { useState } from 'react';
 import { ExpandButton } from '@components/ExpandButton';
 import { Chart } from '../Chart';
@@ -53,7 +53,9 @@ const BurndownTableRow: React.FC<BurndownTableRowProps> = (props) => {
         <TableRow>
           <TableCell style={{ padding: 0 }} colSpan={5}>
             <Collapse in={open}>
-              <Chart />
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Chart />
+              </Box>
             </Collapse>
           </TableCell>
         </TableRow>

@@ -59,10 +59,10 @@ export const Chart: React.FC = () => {
     },
     {
       month: 'December',
-      runningEstimate: 20,
+      runningEstimate: -20,
       originalEstimate: 400
     }
-  ]
+  ];
 
   return (
     <BarChart
