@@ -7,5 +7,4 @@ export class Burndown {
 
   @Field()
   hours: number;
-
 }

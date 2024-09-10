@@ -7,6 +7,7 @@ import { PrismaModule } from 'nestjs-prisma';
 
 @Module({
   imports: [PrismaModule.forRoot(), HttpModule, ConfigModule],
-  providers: [ClickUpTaskService, ClickUpTaskResolver]
+  providers: [ClickUpTaskService, ClickUpTaskResolver],
+  exports: [ClickUpTaskService]
 })
 export class ClickUpTaskModule {}

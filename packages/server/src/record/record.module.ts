@@ -5,6 +5,7 @@ import { PrismaModule } from 'nestjs-prisma';
 
 @Module({
   imports: [PrismaModule.forRoot()],
-  providers: [RecordService, RecordResolver]
+  providers: [RecordService, RecordResolver],
+  exports: [RecordService]
 })
 export class RecordModule {}

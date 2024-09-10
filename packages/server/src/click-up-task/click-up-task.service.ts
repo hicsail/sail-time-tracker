@@ -69,6 +69,21 @@ export class ClickUpTaskService {
     }
   }
 
+  async get(taskId: string): Promise<ClickUpTaskCreateInput | null> {
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.get(`${this.configService.get<string>('CLICKUP_URL')}/task/${taskId}`, {
+          headers: {
+            Authorization: this.configService.get<string>('CLICKUP_TOKEN')
+          }
+        })
+      );
+      return data;
+    } catch (error) {
+      throw new NotFoundException(`Task with id ${taskId} not found`);
+    }
+  }
+
   async createAndAddClickUpTaskToInvoice(invoiceId: string, task: ClickUpTaskInput): Promise<ClickUpTaskModel> {
     return this.prisma.clickUpTask.create({
       data: {
