@@ -244,7 +244,8 @@ type Query {
   getClickUpCustomFields: [ListCustomField!]!
   getClickUpStatuses: [ClickUpStatuses!]!
   getClickUpTask(taskId: String!): Boolean
-  getHoursBreakdownActual: [Burndown!]!
+  getHoursBreakdownActual(projectId: String!): [Burndown!]!
+  getHoursBreakdownEstimate(projectId: String!): [Burndown!]!
 }
 
 input DateRangeInput {

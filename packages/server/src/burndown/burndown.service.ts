@@ -16,7 +16,7 @@ export class BurndownService {
     private readonly prisma: PrismaService
   ) {}
 
-  async getRealBurndown(): Promise<Burndown[]> {
+  async getRealBurndown(projectId: string): Promise<Burndown[]> {
     const task = await this.taskService.get('8686r8xnz');
     if (!task) {
       throw new Error(`Task not found for project`);
@@ -44,7 +44,7 @@ export class BurndownService {
           hours: true
         },
         where: {
-          projectId: '62602e89-f409-475e-83c2-bf216e84ba04',
+          projectId,
           date: {
             gte: startRange,
             lt: endRange
@@ -66,11 +66,63 @@ export class BurndownService {
     return results;
   }
 
+  async getEstimateBurndown(projectId: string): Promise<Burndown[]> {
+    const task = await this.taskService.get('8686r8xnz');
+    if (!task) {
+      throw new Error(`Task not found for project`);
+    }
+    const projectStartDate = this.getStartDateFromTask(task);
+    const projectEndDate = this.getEndDateFromTask(task);
+
+    // Get the initial week range
+    let startRange = new Date(projectStartDate.getTime());
+    let endRange = new Date(startRange.getTime());
+
+    // Get the FTE value from the task
+    const weeklyEstimate = this.getHoursPerWeek(task);
+
+    // Set the end range for a week out (end date aware)
+    endRange.setDate(startRange.getDate() + 7);
+    if (endRange > projectEndDate) {
+      endRange = projectEndDate;
+    }
+
+    const results: Burndown[] = [];
+
+    // While we aren't at the end of the range, get the aggregate hours spent
+    while (endRange <= projectEndDate) {
+
+      results.push({
+        startDate: new Date(startRange.getTime()),
+        endDate: new Date(endRange.getTime()),
+        // Currently just setting the estimate based on FTE -> hours in week
+        // in the future this function is intended for more complex functionality
+        hours: weeklyEstimate
+      })
+
+      // Update the date range
+      startRange = new Date(endRange.getTime());
+      endRange.setDate(startRange.getDate() + 7);
+    }
+
+    return results;
+  }
+
   private getStartDateFromTask(task: any): Date {
     return new Date(parseInt(task.start_date));
   }
 
   private getEndDateFromTask(task: any): Date {
     return new Date(parseInt(task.due_date));
+  }
+
+  private getHoursPerWeek(task: any): number {
+    const target = task.custom_fields.find((field: any) => field.id == '3d22f3bd-0921-461a-91c6-c91ec584ff55');
+
+    if (!target) {
+      throw new Error(`Could not find hours field`);
+    }
+
+    return target.value;
   }
 }

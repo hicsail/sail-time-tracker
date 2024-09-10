@@ -7,7 +7,12 @@ export class BurndownResolver {
   constructor(private readonly burndownService: BurndownService) {}
 
   @Query(() => [Burndown])
-  async getHoursBreakdownActual(): Promise<Burndown[]> {
-    return this.burndownService.getRealBurndown();
+  async getHoursBreakdownActual(@Args('projectId') projectId: string): Promise<Burndown[]> {
+    return this.burndownService.getRealBurndown(projectId);
+  }
+
+  @Query(() => [Burndown])
+  async getHoursBreakdownEstimate(@Args('projectId') projectId: string): Promise<Burndown[]> {
+    return this.burndownService.getEstimateBurndown(projectId);
   }
 }
