@@ -221,7 +221,8 @@ type InvoiceModelWithProjectAndComments {
 }
 
 type Burndown {
-  date: DateTime!
+  startDate: DateTime!
+  endDate: DateTime!
   hours: Float!
 }
 

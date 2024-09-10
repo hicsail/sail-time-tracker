@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Burndown } from './model/burndown.model';
 import { RecordService } from '../record/record.service';
 import { ClickUpTaskService } from 'src/click-up-task/click-up-task.service';
-import { ClickUpTaskCreateInput } from 'src/click-up-task/dto/task.dto';
-
+import { PrismaService } from 'nestjs-prisma';
 
 interface DateRange {
   startDate: Date;
@@ -13,8 +12,8 @@ interface DateRange {
 @Injectable()
 export class BurndownService {
   constructor(
-    private readonly recordService: RecordService,
-    private readonly taskService: ClickUpTaskService
+    private readonly taskService: ClickUpTaskService,
+    private readonly prisma: PrismaService
   ) {}
 
   async getRealBurndown(): Promise<Burndown[]> {
@@ -28,30 +27,43 @@ export class BurndownService {
     // Get the initial week range
     let startRange = new Date(projectStartDate.getTime());
     let endRange = new Date(startRange.getTime());
+
+    // Set the end range for a week out (end date aware)
     endRange.setDate(startRange.getDate() + 7);
     if (endRange > projectEndDate) {
-      // endRange = projectEndDate;
+      endRange = projectEndDate;
     }
 
-    console.log(projectEndDate);
+    const results: Burndown[] = [];
 
     // While we aren't at the end of the range, get the aggregate hours spent
     while (endRange <= projectEndDate) {
-      console.log(`Start: ${startRange}, End: ${endRange}`);
+      // Aggregate hours spent over the range
+      const aggregate = await this.prisma.record.aggregate({
+        _sum: {
+          hours: true
+        },
+        where: {
+          projectId: '62602e89-f409-475e-83c2-bf216e84ba04',
+          date: {
+            gte: startRange,
+            lt: endRange
+          }
+        }
+      });
+
+      results.push({
+        startDate: new Date(startRange.getTime()),
+        endDate: new Date(endRange.getTime()),
+        hours: aggregate._sum.hours || 0
+      })
 
       // Update the date range
       startRange = new Date(endRange.getTime());
       endRange.setDate(startRange.getDate() + 7);
     }
 
-
-    // Loop from start up until no records are available
-      // Aggregate the number of hours for a time period
-
-      // Update the date range to search over
-
-
-    return [];
+    return results;
   }
 
   private getStartDateFromTask(task: any): Date {
