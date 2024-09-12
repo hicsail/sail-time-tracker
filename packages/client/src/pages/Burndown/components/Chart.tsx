@@ -3,6 +3,12 @@ import { BarChart } from '@mui/x-charts';
 import { Burndown } from '@graphql/graphql';
 import { useState, useEffect } from 'react';
 
+interface ChartData {
+  date: Date,
+  runningEstimate: number;
+  originalEstimate: number;
+}
+
 export interface ChartProps {
   projectId: string;
 }
@@ -18,13 +24,12 @@ export const Chart: React.FC<ChartProps> = ({ projectId }) => {
   // Get the intitial total hours for the project
   const totalHours = 2000;
 
-  const [runningEstimate, setRunningEstimate] = useState<Burndown[]>([]);
-  const [originalEstimate, setOriginalEstimate] = useState<Burndown[]>([]);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
   useEffect(() => {
     // If the data isn't available, don't do anything
     if (actualData.length == 0 || estimateData.length == 0) {
-      setRunningEstimate([]);
+      setChartData([]);
       return;
     }
 
@@ -37,10 +42,9 @@ export const Chart: React.FC<ChartProps> = ({ projectId }) => {
 
 
     // Go through all the values and determine the cooresponding number of remaining hours
-    const estimateRemaining: Burndown[] = [];
-    const originalEstimate: Burndown[] = [];
     let runningValue = totalHours;
     let estimateBurndown = totalHours;
+    const newChartData: ChartData[] = [];
     for (let index = 0; index < actualData.length; index++) {
       const startDate = actualData[index].startDate;
       const endDate = actualData[index].endDate;
@@ -51,90 +55,25 @@ export const Chart: React.FC<ChartProps> = ({ projectId }) => {
       } else {
         runningValue -= estimateData[index].hours;
       }
-      estimateRemaining.push({ startDate, endDate, hours: runningValue });
 
       // For the original estimate, keep using the estimated value
       estimateBurndown -= estimateData[index].hours;
-      originalEstimate.push({ startDate, endDate, hours: estimateBurndown });
+
+      newChartData.push({ date: startDate, runningEstimate: runningValue, originalEstimate: estimateBurndown });
     }
 
-    setRunningEstimate(estimateRemaining);
-    setOriginalEstimate(originalEstimate);
-
+    setChartData(newChartData);
   }, [actualQueryResults, estimateQueryResults]);
-
-  const data = [
-    {
-      month: 'January',
-      runningEstimate: 400,
-      originalEstimate: 400
-    },
-    {
-      month: 'February',
-      runningEstimate: 350,
-      originalEstimate: 400
-    },
-    {
-      month: 'March',
-      runningEstimate: 250,
-      originalEstimate: 400
-    },
-    {
-      month: 'April',
-      runningEstimate: 150,
-      originalEstimate: 400
-    },
-    {
-      month: 'May',
-      runningEstimate: 125,
-      originalEstimate: 400
-    },
-    {
-      month: 'June',
-      runningEstimate: 120,
-      originalEstimate: 400
-    },
-    {
-      month: 'July',
-      runningEstimate: 110,
-      originalEstimate: 400
-    },
-    {
-      month: 'August',
-      runningEstimate: 100,
-      originalEstimate: 400
-    },
-    {
-      month: 'September',
-      runningEstimate: 75,
-      originalEstimate: 400
-    },
-    {
-      month: 'October',
-      runningEstimate: 80,
-      originalEstimate: 400
-    },
-    {
-      month: 'November',
-      runningEstimate: 40,
-      originalEstimate: 400
-    },
-    {
-      month: 'December',
-      runningEstimate: -20,
-      originalEstimate: 400
-    }
-  ];
 
   return (
     <BarChart
-      dataset={data}
-      xAxis={[{ scaleType: 'band', dataKey: 'month' }]}
+      dataset={chartData as any[]}
+      xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
       series={[
         { dataKey: 'runningEstimate', label: 'Running Estimate' },
         { dataKey: 'originalEstimate', label: 'Original Estimate' }
       ]}
-      width={500}
+      width={1000}
       height={300}
     />
   );
