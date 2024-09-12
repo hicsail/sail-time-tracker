@@ -10,7 +10,7 @@ export interface ExpandButtonProps {
 export const ExpandButton: React.FC<ExpandButtonProps> = ({ open, setOpen }) => {
   return (
     <IconButton size="small" onClick={() => setOpen(!open)}>
-      {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />  }
+      {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
     </IconButton>
   );
 };

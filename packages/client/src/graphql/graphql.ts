@@ -33,6 +33,13 @@ export type BatchSendSlackMessageInput = {
   message: Scalars['String'];
 };
 
+export type Burndown = {
+  __typename?: 'Burndown';
+  endDate: Scalars['DateTime'];
+  hours: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+};
+
 export type ClickUpStatuses = {
   __typename?: 'ClickUpStatuses';
   color: Scalars['String'];
@@ -139,7 +146,7 @@ export type EmployeeWithRecord = {
   indirectHours: Scalars['Float'];
   inner: Array<EmployeeWithRecordInner>;
   name: Scalars['String'];
-  status: Scalars['String'];
+  status?: Maybe<Scalars['String']>;
   workHours: Scalars['Float'];
 };
 
@@ -461,6 +468,8 @@ export type Query = {
   getClickUpStatuses: Array<ClickUpStatuses>;
   getClickUpTask?: Maybe<Scalars['Boolean']>;
   getEmployeesWithRecord: Array<EmployeeWithRecord>;
+  getHoursBreakdownActual: Array<Burndown>;
+  getHoursBreakdownEstimate: Array<Burndown>;
   getProjectWithEmployeeRecords: Array<ProjectWithEmployeeRecords>;
   getRecordsByDateRange: Array<RecordModel>;
   invoices: Array<InvoiceModelWithProject>;
@@ -495,6 +504,14 @@ export type QueryGetClickUpTaskArgs = {
 export type QueryGetEmployeesWithRecordArgs = {
   endDate: Scalars['DateTime'];
   startDate: Scalars['DateTime'];
+};
+
+export type QueryGetHoursBreakdownActualArgs = {
+  projectId: Scalars['String'];
+};
+
+export type QueryGetHoursBreakdownEstimateArgs = {
+  projectId: Scalars['String'];
 };
 
 export type QueryGetProjectWithEmployeeRecordsArgs = {

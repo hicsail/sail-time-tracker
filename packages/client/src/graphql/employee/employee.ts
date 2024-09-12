@@ -20,7 +20,7 @@ export type GetEmployeesWithRecordQuery = {
     __typename?: 'EmployeeWithRecord';
     id: string;
     name: string;
-    status: string;
+    status?: string | null;
     workHours: number;
     indirectHours: number;
     billableHours: number;

@@ -3,6 +3,7 @@ import { Burndown } from './model/burndown.model';
 import { RecordService } from '../record/record.service';
 import { ClickUpTaskService } from 'src/click-up-task/click-up-task.service';
 import { PrismaService } from 'nestjs-prisma';
+import { ConfigService } from '@nestjs/config';
 
 interface DateRange {
   startDate: Date;
@@ -11,9 +12,12 @@ interface DateRange {
 
 @Injectable()
 export class BurndownService {
+  private readonly clickupHourlyFieldID = this.configService.getOrThrow<string>('CLICKUP_HOURS_ID');
+
   constructor(
     private readonly taskService: ClickUpTaskService,
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService
   ) {}
 
   async getRealBurndown(projectId: string): Promise<Burndown[]> {
@@ -67,6 +71,7 @@ export class BurndownService {
   }
 
   async getEstimateBurndown(projectId: string): Promise<Burndown[]> {
+    // TODO: Get Project <-> ClickUP ID
     const task = await this.taskService.get('8686r8xnz');
     if (!task) {
       throw new Error(`Task not found for project`);
@@ -117,7 +122,7 @@ export class BurndownService {
   }
 
   private getHoursPerWeek(task: any): number {
-    const target = task.custom_fields.find((field: any) => field.id == '3d22f3bd-0921-461a-91c6-c91ec584ff55');
+    const target = task.custom_fields.find((field: any) => field.id == this.clickupHourlyFieldID);
 
     if (!target) {
       throw new Error(`Could not find hours field`);

@@ -1,0 +1,16 @@
+
+query getHoursBreakdownActual($projectId: String!) {
+  getHoursBreakdownActual(projectId: $projectId) {
+    startDate,
+    endDate,
+    hours
+  }
+}
+
+query getHoursBreakdownEstimate($projectId: String!) {
+  getHoursBreakdownEstimate(projectId: $projectId) {
+    startDate,
+    endDate,
+    hours
+  }
+}

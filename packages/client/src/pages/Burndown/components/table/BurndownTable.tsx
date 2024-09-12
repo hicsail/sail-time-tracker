@@ -20,7 +20,7 @@ export const BurndownTable: React.FC = () => {
         </TableHead>
 
         <TableBody>
-          <BurndownTableRow project='ASL-LEX' isBillable={true} workHours={30} billableHours={30} />
+          <BurndownTableRow project="ASL-LEX" isBillable={true} workHours={30} billableHours={30} />
         </TableBody>
       </Table>
     </CustomTableContainer>
@@ -49,12 +49,12 @@ const BurndownTableRow: React.FC<BurndownTableRowProps> = (props) => {
         <TableCell>{props.workHours}</TableCell>
         <TableCell>{props.billableHours}</TableCell>
       </StyledTableDataRow>
-      {open &&  (
+      {open && (
         <TableRow>
           <TableCell style={{ padding: 0 }} colSpan={5}>
             <Collapse in={open}>
-              <Box display='flex' justifyContent='center' alignItems='center'>
-                <Chart />
+              <Box display="flex" justifyContent="center" alignItems="center">
+                <Chart projectId={props.project} />
               </Box>
             </Collapse>
           </TableCell>

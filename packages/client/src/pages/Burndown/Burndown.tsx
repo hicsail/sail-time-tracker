@@ -17,7 +17,7 @@ export const BurnDown: React.FC = () => {
 
       {/* Filter Options */}
       <Toolbar
-        searchText=''
+        searchText=""
         dateRange={{ startDate: null, endDate: null }}
         setDateRange={(_prevState) => {}}
         setSearchText={(_searchText) => {}}
@@ -28,7 +28,6 @@ export const BurnDown: React.FC = () => {
 
       {/* Sorted Table View */}
       <BurndownTable />
-
     </Stack>
   );
 };
