@@ -10,6 +10,10 @@ COPY prisma ./prisma/
 # Install app dependencies
 RUN npm install
 
+# Prisma schema output path resolves to /node_modules in this Docker layout;
+# symlink so the generated client lands inside the app's node_modules
+RUN ln -s /app/node_modules /node_modules || true
+
 COPY . .
 
 RUN npm run prisma:generate
