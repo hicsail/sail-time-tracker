@@ -29,10 +29,7 @@ import { useDeleteRecordMutation } from '@graphql/record/record';
 
 const ProjectHoursRemaining: FC<{ projectId: string }> = ({ projectId }) => {
   const today = format(new Date(), 'yyyy-MM-dd');
-  const { data, loading } = useGetBurndownDataQuery(
-    { projectId, startDate: '2020-01-01', endDate: today },
-    { fetchPolicy: 'cache-and-network' }
-  );
+  const { data, loading } = useGetBurndownDataQuery({ projectId, startDate: '2020-01-01', endDate: today }, { fetchPolicy: 'cache-and-network' });
 
   if (loading || !data?.getBurndownData) return null;
 
@@ -57,7 +54,7 @@ const ProjectHoursRemaining: FC<{ projectId: string }> = ({ projectId }) => {
 
   let totalSpend = 0;
   for (const key of new Set([...trackerByMonth.keys(), ...invoiceAmountByMonth.keys()])) {
-    totalSpend += invoicedMonths.has(key) ? (invoiceAmountByMonth.get(key) ?? 0) : (trackerByMonth.get(key) ?? 0);
+    totalSpend += invoicedMonths.has(key) ? invoiceAmountByMonth.get(key) ?? 0 : trackerByMonth.get(key) ?? 0;
   }
 
   const hoursRemaining = (totalBudget - totalSpend) / projectRate;

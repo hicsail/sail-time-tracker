@@ -19,20 +19,7 @@ import {
   ListSubheader,
   useTheme
 } from '@mui/material';
-import {
-  ComposedChart,
-  Bar,
-  Area,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  ReferenceLine,
-  ReferenceArea
-} from 'recharts';
+import { ComposedChart, Bar, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
 import { format, parseISO, eachMonthOfInterval, startOfMonth, endOfMonth, subMonths, addMonths, subWeeks, isAfter } from 'date-fns';
 import { useGetBurndownDataQuery, BudgetAdjustment, DailySpendRecord, InvoiceRecord } from '@graphql/budget/budget';
 import { useGetProjectListQuery } from '@graphql/project/project';
@@ -41,8 +28,7 @@ import { StyledDatePicker } from '@components/StyledDatePicker';
 import { DateRangePresets } from '@components/DateRangePresets';
 import { formatDateToDashFormat } from '../../utils/helperFun';
 
-const fmt = (v: number) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
+const fmt = (v: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
 
 // Budget available at a date = sum of adjustments up to that date
 // Invoices represent spend (billed labor), not budget inflows — only adjustments drive the budget line
@@ -92,9 +78,7 @@ function buildChartData(
     const budget = budgetAvailableAt(monthEnd, adjustments);
     const projectedFullMonthHours = projectedMonthlyCost / projectRate;
     // For the current month, include estimated remaining cost in the remaining line
-    const currentMonthEstCost = isCurrentMonth && monthEffectiveSpend < projectedMonthlyCost
-      ? projectedMonthlyCost - monthEffectiveSpend
-      : 0;
+    const currentMonthEstCost = isCurrentMonth && monthEffectiveSpend < projectedMonthlyCost ? projectedMonthlyCost - monthEffectiveSpend : 0;
     const remaining = budget - cumulativeSpend - currentMonthEstCost;
 
     // Record the projected end-of-current-month baseline so future projection continues from there
@@ -118,9 +102,7 @@ function buildChartData(
     const trackerHours = !isFutureMonth && !hasInvoice ? monthHours : null;
     const projectedMonthlyHours = isFutureMonth ? projectedFullMonthHours : null;
     // Current month: stack estimated remaining on top of actual hours (capped so total = max(actual, est))
-    const currentMonthEstRemaining = isCurrentMonth && monthHours < projectedFullMonthHours
-      ? projectedFullMonthHours - monthHours
-      : null;
+    const currentMonthEstRemaining = isCurrentMonth && monthHours < projectedFullMonthHours ? projectedFullMonthHours - monthHours : null;
 
     return {
       label: format(monthStart, 'MMM yyyy'),
@@ -243,7 +225,7 @@ export const Burndown = () => {
     }
     const effectiveSpendByMonth = new Map<string, number>();
     for (const key of new Set([...trackerByMonth.keys(), ...invoiceAmountByMonth.keys()])) {
-      effectiveSpendByMonth.set(key, invoicedMonths.has(key) ? (invoiceAmountByMonth.get(key) ?? 0) : (trackerByMonth.get(key) ?? 0));
+      effectiveSpendByMonth.set(key, invoicedMonths.has(key) ? invoiceAmountByMonth.get(key) ?? 0 : trackerByMonth.get(key) ?? 0);
     }
     return { effectiveSpendByMonth, invoicedMonths };
   }, [burndown]);
@@ -341,12 +323,8 @@ export const Burndown = () => {
 
   const hoursRemaining = hasBudget ? currentRemaining / rate : null;
   const monthsRemaining = projectedMonthlyCost > 0 && hasBudget ? currentRemaining / projectedMonthlyCost : null;
-  const estimatedZeroDate = monthsRemaining !== null && monthsRemaining > 0
-    ? addMonths(new Date(), monthsRemaining)
-    : null;
-  const estimatedZeroLabel = estimatedZeroDate
-    ? `Week ${Math.ceil(estimatedZeroDate.getDate() / 7)} of ${format(estimatedZeroDate, 'MMM yyyy')}`
-    : null;
+  const estimatedZeroDate = monthsRemaining !== null && monthsRemaining > 0 ? addMonths(new Date(), monthsRemaining) : null;
+  const estimatedZeroLabel = estimatedZeroDate ? `Week ${Math.ceil(estimatedZeroDate.getDate() / 7)} of ${format(estimatedZeroDate, 'MMM yyyy')}` : null;
 
   const todayLabel = format(new Date(), 'MMM yyyy');
   const firstFutureLabel = chartData.find((d) => d.projectedMonthlyHours !== null)?.label ?? null;
@@ -373,24 +351,27 @@ export const Burndown = () => {
           <InputLabel>Project</InputLabel>
           <Select value={projectId} label="Project" onChange={(e: SelectChangeEvent) => setProjectId(e.target.value)}>
             {(() => {
-              const recentHoursByProject = new Map(
-                (recentRecordsData?.getProjectWithEmployeeRecords ?? [])
-                  .filter((p) => p.workHours > 0)
-                  .map((p) => [p.id, p.workHours])
-              );
+              const recentHoursByProject = new Map((recentRecordsData?.getProjectWithEmployeeRecords ?? []).filter((p) => p.workHours > 0).map((p) => [p.id, p.workHours]));
               const withHours = projects.filter((p) => recentHoursByProject.has(p.id));
               const withoutHours = projects.filter((p) => !recentHoursByProject.has(p.id));
               const items: React.ReactNode[] = [];
               if (withHours.length > 0) {
                 items.push(<ListSubheader key="recent-header">Recent activity</ListSubheader>);
-                withHours.forEach((p) => items.push(<MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>));
+                withHours.forEach((p) =>
+                  items.push(
+                    <MenuItem key={p.id} value={p.id}>
+                      {p.name}
+                    </MenuItem>
+                  )
+                );
               }
               if (withoutHours.length > 0) {
                 items.push(<Divider key="divider" />);
                 withoutHours.forEach((p) =>
                   items.push(
                     <MenuItem key={p.id} value={p.id} sx={p.status !== 'Active' ? { color: 'text.disabled' } : {}}>
-                      {p.name}{p.status !== 'Active' ? ' (inactive)' : ''}
+                      {p.name}
+                      {p.status !== 'Active' ? ' (inactive)' : ''}
                     </MenuItem>
                   )
                 );
@@ -402,7 +383,12 @@ export const Burndown = () => {
 
         <StyledDatePicker label="From" value={startDate} onChange={(d: Date | null) => d && setStartDate(d)} />
         <StyledDatePicker label="To" value={endDate} onChange={(d: Date | null) => d && setEndDate(d)} />
-        <DateRangePresets onApply={({ startDate: s, endDate: e }) => { setStartDate(s); setEndDate(e); }} />
+        <DateRangePresets
+          onApply={({ startDate: s, endDate: e }) => {
+            setStartDate(s);
+            setEndDate(e);
+          }}
+        />
       </Stack>
 
       {!projectId && (
@@ -433,13 +419,21 @@ export const Burndown = () => {
             <Paper sx={{ p: 2, flex: 1 }}>
               <Stack direction="row" alignItems="center" height="100%">
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Typography variant="caption" color="text.secondary">Total Hours</Typography>
-                  <Typography variant="h6" fontWeight={600}>{totalHours.toFixed(0)} hrs</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Total Hours
+                  </Typography>
+                  <Typography variant="h6" fontWeight={600}>
+                    {totalHours.toFixed(0)} hrs
+                  </Typography>
                 </Box>
                 <Divider orientation="vertical" flexItem />
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Typography variant="caption" color="text.secondary">Total Invoiced</Typography>
-                  <Typography variant="h6" fontWeight={600}>{fmt(totalInvoiced)}</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Total Invoiced
+                  </Typography>
+                  <Typography variant="h6" fontWeight={600}>
+                    {fmt(totalInvoiced)}
+                  </Typography>
                 </Box>
               </Stack>
             </Paper>
@@ -450,15 +444,23 @@ export const Burndown = () => {
                 <Stack direction="row" alignItems="center" height="100%">
                   {hoursRemaining !== null && (
                     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography variant="caption" color="text.secondary">Hours Remaining</Typography>
-                      <Typography variant="h6" fontWeight={600}>{hoursRemaining.toFixed(0)} hrs</Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Hours Remaining
+                      </Typography>
+                      <Typography variant="h6" fontWeight={600}>
+                        {hoursRemaining.toFixed(0)} hrs
+                      </Typography>
                     </Box>
                   )}
                   {hoursRemaining !== null && hasBudget && <Divider orientation="vertical" flexItem />}
                   {hasBudget && (
                     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography variant="caption" color="text.secondary">Budget Remaining</Typography>
-                      <Typography variant="h6" fontWeight={600}>{fmt(currentRemaining)}</Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Budget Remaining
+                      </Typography>
+                      <Typography variant="h6" fontWeight={600}>
+                        {fmt(currentRemaining)}
+                      </Typography>
                     </Box>
                   )}
                 </Stack>
@@ -486,10 +488,7 @@ export const Burndown = () => {
                 marks
                 sx={{ width: 160 }}
               />
-              <Chip
-                label={`${(Math.round(((parseFloat(customHoursStr) || avgMonthlySpend / rate) / (avgMonthlySpend / rate || 1)) * 4) / 4).toFixed(2)}×`}
-                size="small"
-              />
+              <Chip label={`${(Math.round(((parseFloat(customHoursStr) || avgMonthlySpend / rate) / (avgMonthlySpend / rate || 1)) * 4) / 4).toFixed(2)}×`} size="small" />
               <TextField
                 label="Monthly hours"
                 type="number"
@@ -503,12 +502,18 @@ export const Burndown = () => {
               />
               <Divider orientation="vertical" flexItem />
               <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography variant="caption" color="text.secondary">Proj. Monthly Hours</Typography>
-                <Typography variant="body1" fontWeight={600}>{projectedMonthlyHours.toFixed(0)} hrs</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Proj. Monthly Hours
+                </Typography>
+                <Typography variant="body1" fontWeight={600}>
+                  {projectedMonthlyHours.toFixed(0)} hrs
+                </Typography>
               </Box>
               <Divider orientation="vertical" flexItem />
               <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Typography variant="caption" color="text.secondary">Est. Zero Date</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Est. Zero Date
+                </Typography>
                 <Typography variant="body1" fontWeight={600} color={!estimatedZeroLabel && hasBudget && currentRemaining <= 0 ? 'error.main' : 'text.primary'}>
                   {estimatedZeroLabel ?? (hasBudget && currentRemaining <= 0 ? 'Over budget' : '—')}
                 </Typography>
@@ -547,7 +552,14 @@ export const Burndown = () => {
                   <ReferenceArea yAxisId="money" x1={firstFutureLabel} x2={chartData[chartData.length - 1]?.label} fill={theme.palette.action.selected} fillOpacity={0.4} />
                 )}
                 <ReferenceArea yAxisId="money" x1={todayLabel} x2={todayLabel} fill={theme.palette.action.hover} />
-                <ReferenceLine yAxisId="money" y={0} stroke={theme.palette.text.secondary} strokeWidth={2} strokeDasharray="4 2" label={{ value: '$0', position: 'insideLeft', fontSize: 11, fill: theme.palette.text.secondary }} />
+                <ReferenceLine
+                  yAxisId="money"
+                  y={0}
+                  stroke={theme.palette.text.secondary}
+                  strokeWidth={2}
+                  strokeDasharray="4 2"
+                  label={{ value: '$0', position: 'insideLeft', fontSize: 11, fill: theme.palette.text.secondary }}
+                />
                 <Bar yAxisId="hours" dataKey="invoiceHours" name="Invoice Hours" fill={theme.palette.success.main} opacity={0.8} stackId="hrs" />
                 <Bar yAxisId="hours" dataKey="trackerHours" name="Tracker Hours" fill={theme.palette.primary.main} opacity={0.8} stackId="hrs" />
                 <Bar yAxisId="hours" dataKey="currentMonthEstRemaining" name="Est. Remaining" fill={theme.palette.warning.main} opacity={0.4} stackId="hrs" />
@@ -582,4 +594,3 @@ export const Burndown = () => {
     </Box>
   );
 };
-

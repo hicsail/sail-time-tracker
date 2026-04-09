@@ -13,11 +13,7 @@ export class BudgetResolver {
   }
 
   @Query(() => BurndownData)
-  async getBurndownData(
-    @Args('projectId') projectId: string,
-    @Args('startDate') startDate: Date,
-    @Args('endDate') endDate: Date
-  ): Promise<BurndownData> {
+  async getBurndownData(@Args('projectId') projectId: string, @Args('startDate') startDate: Date, @Args('endDate') endDate: Date): Promise<BurndownData> {
     return this.budgetService.getBurndownData(projectId, startDate, endDate);
   }
 

@@ -65,5 +65,4 @@ export class BudgetService {
   async deleteBudgetAdjustment(id: string): Promise<BudgetAdjustmentModel> {
     return this.prisma.budgetAdjustment.delete({ where: { id } });
   }
-
 }

@@ -1,6 +1,22 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputAdornment, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Paths } from '@constants/paths';
 import { convertToUTCDate, formatDateToDashFormat, formatDateToForwardSlashFormat, USDollar } from '../../utils/helperFun';
@@ -51,13 +67,7 @@ export const Invoice = () => {
   const [createOrUpdateInvoice, { loading: creating }] = useCreateOrUpdateInvoiceMutation();
   const { toggleSnackBar } = useSnackBar();
 
-  const billableProjects = useMemo(
-    () =>
-      (projectsData?.projects ?? [])
-        .filter((p) => p.isBillable)
-        .sort((a, b) => a.name.localeCompare(b.name)),
-    [projectsData]
-  );
+  const billableProjects = useMemo(() => (projectsData?.projects ?? []).filter((p) => p.isBillable).sort((a, b) => a.name.localeCompare(b.name)), [projectsData]);
 
   const rows = data
     ? data.invoices.map((invoice) => {
@@ -222,9 +232,7 @@ export const Invoice = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      renderCell: (row: any) => (
-        <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} onClick={() => handleOpenFormDialog(row.projectId, row.rawStartDate, row.rawEndDate)} />
-      )
+      renderCell: (row: any) => <DeleteIcon color="secondary" sx={{ cursor: 'pointer' }} onClick={() => handleOpenFormDialog(row.projectId, row.rawStartDate, row.rawEndDate)} />
     }
   ];
 
@@ -286,17 +294,22 @@ export const Invoice = () => {
       </FormDialog>
 
       {/* Quick create invoice dialog */}
-      <Dialog open={createDialogOpen} onClose={() => { setCreateDialogOpen(false); setCustomRate(''); setCustomHours(''); }} maxWidth="xs" fullWidth>
+      <Dialog
+        open={createDialogOpen}
+        onClose={() => {
+          setCreateDialogOpen(false);
+          setCustomRate('');
+          setCustomHours('');
+        }}
+        maxWidth="xs"
+        fullWidth
+      >
         <DialogTitle>New Invoice</DialogTitle>
         <DialogContent>
           <Stack gap={3} pt={1}>
             <FormControl fullWidth>
               <InputLabel>Project</InputLabel>
-              <Select
-                value={createForm.projectId}
-                label="Project"
-                onChange={(e) => setCreateForm((f) => ({ ...f, projectId: e.target.value }))}
-              >
+              <Select value={createForm.projectId} label="Project" onChange={(e) => setCreateForm((f) => ({ ...f, projectId: e.target.value }))}>
                 {billableProjects.map((p) => (
                   <MenuItem key={p.id} value={p.id}>
                     {p.name}
@@ -304,16 +317,8 @@ export const Invoice = () => {
                 ))}
               </Select>
             </FormControl>
-            <StyledDatePicker
-              label="Start Date"
-              value={createForm.startDate}
-              onChange={(d: Date | null) => setCreateForm((f) => ({ ...f, startDate: d }))}
-            />
-            <StyledDatePicker
-              label="End Date"
-              value={createForm.endDate}
-              onChange={(d: Date | null) => setCreateForm((f) => ({ ...f, endDate: d }))}
-            />
+            <StyledDatePicker label="Start Date" value={createForm.startDate} onChange={(d: Date | null) => setCreateForm((f) => ({ ...f, startDate: d }))} />
+            <StyledDatePicker label="End Date" value={createForm.endDate} onChange={(d: Date | null) => setCreateForm((f) => ({ ...f, endDate: d }))} />
             {createForm.projectId && createForm.startDate && createForm.endDate && (
               <Box>
                 {recordsLoading ? (
@@ -349,11 +354,7 @@ export const Invoice = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
-          <Button
-            variant="contained"
-            onClick={handleCreateInvoice}
-            disabled={!createForm.projectId || !createForm.startDate || !createForm.endDate || creating}
-          >
+          <Button variant="contained" onClick={handleCreateInvoice} disabled={!createForm.projectId || !createForm.startDate || !createForm.endDate || creating}>
             Create
           </Button>
         </DialogActions>

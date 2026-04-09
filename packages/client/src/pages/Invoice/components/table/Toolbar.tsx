@@ -59,25 +59,13 @@ export const Toolbar: FC<ToolbarProps> = ({
         >
           Last Month
         </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => applyPreset({ startDate: startOfMonth(new Date()), endDate: lastDayOfMonth(new Date()) })}
-        >
+        <Button size="small" variant="outlined" onClick={() => applyPreset({ startDate: startOfMonth(new Date()), endDate: lastDayOfMonth(new Date()) })}>
           This Month
         </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => applyPreset(fiscalYear(0))}
-        >
+        <Button size="small" variant="outlined" onClick={() => applyPreset(fiscalYear(0))}>
           {fiscalYearLabel(0)}
         </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => applyPreset(fiscalYear(-1))}
-        >
+        <Button size="small" variant="outlined" onClick={() => applyPreset(fiscalYear(-1))}>
           {fiscalYearLabel(-1)}
         </Button>
       </Stack>
@@ -99,8 +87,7 @@ export const Toolbar: FC<ToolbarProps> = ({
               size="small"
               disabled={!dateRange.startDate || !dateRange.endDate}
               onClick={() => {
-                if (dateRange.startDate && dateRange.endDate)
-                  setDateRange({ startDate: subMonths(dateRange.startDate, 1), endDate: subMonths(dateRange.endDate, 1) });
+                if (dateRange.startDate && dateRange.endDate) setDateRange({ startDate: subMonths(dateRange.startDate, 1), endDate: subMonths(dateRange.endDate, 1) });
               }}
             >
               <ChevronLeftIcon />
@@ -133,8 +120,7 @@ export const Toolbar: FC<ToolbarProps> = ({
               size="small"
               disabled={!dateRange.startDate || !dateRange.endDate}
               onClick={() => {
-                if (dateRange.startDate && dateRange.endDate)
-                  setDateRange({ startDate: addMonths(dateRange.startDate, 1), endDate: addMonths(dateRange.endDate, 1) });
+                if (dateRange.startDate && dateRange.endDate) setDateRange({ startDate: addMonths(dateRange.startDate, 1), endDate: addMonths(dateRange.endDate, 1) });
               }}
             >
               <ChevronRightIcon />

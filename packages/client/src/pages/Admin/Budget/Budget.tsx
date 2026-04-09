@@ -28,15 +28,10 @@ import { format, parseISO, subWeeks } from 'date-fns';
 import { useGetProjectListQuery } from '@graphql/project/project';
 import { useGetProjectWithEmployeeRecordsQuery } from '@graphql/employee/employee';
 import { formatDateToDashFormat } from '../../../utils/helperFun';
-import {
-  useGetProjectAdjustmentsQuery,
-  useAddBudgetAdjustmentMutation,
-  useDeleteBudgetAdjustmentMutation
-} from '@graphql/budget/budget';
+import { useGetProjectAdjustmentsQuery, useAddBudgetAdjustmentMutation, useDeleteBudgetAdjustmentMutation } from '@graphql/budget/budget';
 import { StyledDatePicker } from '@components/StyledDatePicker';
 
-const fmt = (v: number) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
+const fmt = (v: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
 
 export const Budget = () => {
   const [projectId, setProjectId] = useState('');
@@ -56,11 +51,7 @@ export const Budget = () => {
 
   const { withHours, activeNoHours, inactive } = useMemo(() => {
     const all = projectsData?.projects ?? [];
-    const recentHours = new Map<string, number>(
-      (recentRecordsData?.getProjectWithEmployeeRecords ?? [])
-        .filter((p) => p.workHours > 0)
-        .map((p) => [p.id, p.workHours])
-    );
+    const recentHours = new Map<string, number>((recentRecordsData?.getProjectWithEmployeeRecords ?? []).filter((p) => p.workHours > 0).map((p) => [p.id, p.workHours]));
     const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
     return {
       withHours: all.filter((p) => recentHours.has(p.id)).sort((a, b) => (recentHours.get(b.id) ?? 0) - (recentHours.get(a.id) ?? 0)),
@@ -111,11 +102,23 @@ export const Budget = () => {
         <Select value={projectId} label="Project" onChange={(e: SelectChangeEvent) => setProjectId(e.target.value)}>
           {[
             withHours.length > 0 && <ListSubheader key="h-recent">Recent activity</ListSubheader>,
-            ...withHours.map((p) => <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>),
+            ...withHours.map((p) => (
+              <MenuItem key={p.id} value={p.id}>
+                {p.name}
+              </MenuItem>
+            )),
             (withHours.length > 0 || activeNoHours.length > 0) && inactive.length > 0 && <Divider key="d1" />,
-            ...activeNoHours.map((p) => <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>),
+            ...activeNoHours.map((p) => (
+              <MenuItem key={p.id} value={p.id}>
+                {p.name}
+              </MenuItem>
+            )),
             inactive.length > 0 && <ListSubheader key="h-inactive">Inactive</ListSubheader>,
-            ...inactive.map((p) => <MenuItem key={p.id} value={p.id} sx={{ color: 'text.disabled' }}>{p.name}</MenuItem>)
+            ...inactive.map((p) => (
+              <MenuItem key={p.id} value={p.id} sx={{ color: 'text.disabled' }}>
+                {p.name}
+              </MenuItem>
+            ))
           ]}
         </Select>
       </FormControl>
@@ -132,12 +135,7 @@ export const Budget = () => {
           </Typography>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={3} alignItems="flex-end">
-            <StyledDatePicker
-              label="Date"
-              value={adjDate}
-              onChange={(d: Date | null) => setAdjDate(d)}
-              slotProps={{ textField: { size: 'small' } }}
-            />
+            <StyledDatePicker label="Date" value={adjDate} onChange={(d: Date | null) => setAdjDate(d)} slotProps={{ textField: { size: 'small' } }} />
             <TextField
               label="Amount ($)"
               type="number"
@@ -147,13 +145,7 @@ export const Budget = () => {
               sx={{ width: 160 }}
               placeholder="e.g. 10000 or -5000"
             />
-            <TextField
-              label="Note (optional)"
-              size="small"
-              value={adjNote}
-              onChange={(e) => setAdjNote(e.target.value)}
-              sx={{ width: 220 }}
-            />
+            <TextField label="Note (optional)" size="small" value={adjNote} onChange={(e) => setAdjNote(e.target.value)} sx={{ width: 220 }} />
             <Button
               variant="contained"
               startIcon={savingAdj ? <CircularProgress size={16} /> : <AddIcon />}
