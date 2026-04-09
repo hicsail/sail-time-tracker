@@ -14,6 +14,10 @@ export const ObserverTextInput: FC<TextInputProps> = (props) => {
     <FormControl variant={props.variant} fullWidth={props.fullWidth}>
       <DefaultTextInput
         {...props}
+        onWheel={(e) => {
+          e.currentTarget.blur();
+          e.stopPropagation();
+        }}
         onChange={handleChange}
         onBlur={handleBlur}
         value={values[props.name]}
