@@ -3,6 +3,8 @@ import { SwitchBtn } from '@components/switch/switchBtn';
 import { useToggleTheme } from '../../../hooks/useToggleTheme';
 import { Paths } from '@constants/paths';
 import { Assessment, AssignmentInd, Folder, Receipt, WatchLater } from '@mui/icons-material';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { SideListItem } from '@pages/Admin/components/SideListItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import { SideList } from '@pages/Admin/components/SideList';
@@ -51,6 +53,8 @@ export const TrackNavbar = () => {
       >
         <SideList>
           <SideListItem path={Paths.REPORT} icon={<Assessment sx={{ color: 'customColors.iconColor' }} />} info="Reports" />
+          <SideListItem path={Paths.BURNDOWN} icon={<ShowChartIcon sx={{ color: 'customColors.iconColor' }} />} info="Burndown" />
+          <SideListItem path={Paths.ADMIN_BUDGET} icon={<AttachMoneyIcon sx={{ color: 'customColors.iconColor' }} />} info="Budget" />
           <SideListItem path={Paths.INVOICE} icon={<Receipt sx={{ color: 'customColors.iconColor' }} />} info="Billing & Invoices" />
           <Divider />
           <SideListItem path={Paths.EMPLOYEE_lIST} icon={<AssignmentInd sx={{ color: 'customColors.iconColor' }} />} info="Employees" />

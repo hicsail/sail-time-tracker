@@ -38,7 +38,7 @@ export const EnhancedTableHead = (props: EnhancedTableProps) => {
         <TableCell key="totalHours" sx={{ width: { lg: '150px', sm: '100px' } }}>
           Total Hours
         </TableCell>
-        <TableCell key="description">Description</TableCell>
+        <TableCell key="budget">Budget</TableCell>
       </TableRow>
     </TableHead>
   );

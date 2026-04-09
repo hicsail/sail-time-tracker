@@ -56,7 +56,8 @@ export const FormObserver: FC<FormObserverProps> = ({ projectId, employeeId, set
                 startDate: formatDateToDashFormat(startOfWeek(date, { weekStartsOn: 1 })),
                 endDate: formatDateToDashFormat(endOfWeek(date, { weekStartsOn: 1 }))
               }
-            }
+            },
+            'getBurndownData'
           ]
         });
       }, 1000);

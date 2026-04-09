@@ -220,6 +220,37 @@ type InvoiceModelWithProjectAndComments {
   items: [InvoiceItemModel!]
 }
 
+type BudgetAdjustmentModel {
+  id: String!
+  projectId: String!
+  date: DateTime!
+  amount: Float!
+  note: String
+  createdAt: DateTime!
+}
+
+type DailySpendRecord {
+  date: DateTime!
+  hours: Float!
+  cost: Float!
+}
+
+type InvoiceRecord {
+  invoiceId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  amount: Float!
+}
+
+type BurndownData {
+  projectId: String!
+  projectName: String!
+  projectRate: Float!
+  adjustments: [BudgetAdjustmentModel!]!
+  dailyRecords: [DailySpendRecord!]!
+  invoices: [InvoiceRecord!]!
+}
+
 type Query {
   employees: [EmployeeModel!]!
   employee(id: String!): EmployeeModel!
@@ -238,6 +269,8 @@ type Query {
   getClickUpCustomFields: [ListCustomField!]!
   getClickUpStatuses: [ClickUpStatuses!]!
   getClickUpTask(taskId: String!): Boolean
+  getProjectAdjustments(projectId: String!): [BudgetAdjustmentModel!]!
+  getBurndownData(projectId: String!, startDate: DateTime!, endDate: DateTime!): BurndownData!
 }
 
 input DateRangeInput {
@@ -273,6 +306,8 @@ type Mutation {
   createClickUpTask(task: ClickUpTaskCreateInput!): ClickUpTaskModel!
   createAndAddClickUpTaskToInvoice(invoiceId: String!, task: ClickUpTaskInput!): ClickUpTaskModel!
   updateClickUpTask(task: ClickUpTaskUpdateInput!): ClickUpTaskModel!
+  addBudgetAdjustment(input: AddBudgetAdjustmentInput!): BudgetAdjustmentModel!
+  deleteBudgetAdjustment(id: String!): BudgetAdjustmentModel!
 }
 
 input EmployeeCreateInput {
@@ -393,4 +428,11 @@ input ClickUpTaskUpdateInput {
   status: String!
   custom_fields: [ClickUpTaskCustomFieldsInput!]!
   id: String!
+}
+
+input AddBudgetAdjustmentInput {
+  projectId: String!
+  date: DateTime!
+  amount: Float!
+  note: String
 }

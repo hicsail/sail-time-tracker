@@ -11,6 +11,8 @@ export enum Paths {
   EMPLOYEE_lIST = '/admin/employees',
   ADD_EMPLOYEE = '/admin/employees/add',
   EDIT_EMPLOYEE = '/admin/employees/:id',
+  BURNDOWN = '/burndown',
+  ADMIN_BUDGET = '/admin/budget',
   LOGOUT = '/logout',
   LOGIN = '/login',
   AUTH_CALLBACK = '/auth/callback',

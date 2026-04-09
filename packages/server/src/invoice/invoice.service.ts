@@ -123,6 +123,17 @@ export class InvoiceService {
 
   async deleteInvoice(projectId_startDate_endDate: InvoiceSearchInput): Promise<Invoice> {
     const { projectId, startDate, endDate } = projectId_startDate_endDate;
+
+    const invoice = await this.prisma.invoice.findUnique({
+      where: { projectId_startDate_endDate: { projectId, startDate, endDate } }
+    });
+
+    if (!invoice) throw new Error('Invoice not found');
+
+    await this.prisma.invoiceItem.deleteMany({ where: { invoiceId: invoice.invoiceId } });
+    await this.prisma.comment.deleteMany({ where: { invoiceId: invoice.invoiceId } });
+    await this.prisma.clickUpTask.deleteMany({ where: { invoiceId: invoice.invoiceId } });
+
     return this.prisma.invoice.delete({
       where: {
         projectId_startDate_endDate: {

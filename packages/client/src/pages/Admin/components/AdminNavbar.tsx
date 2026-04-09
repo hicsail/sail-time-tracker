@@ -1,5 +1,6 @@
 import { Divider, styled } from '@mui/material';
-import { ArrowBackIosNewRounded, Assessment, AssignmentInd, Folder, Receipt, WatchLater } from '@mui/icons-material';
+import { ArrowBackIosNewRounded, Assessment, AssignmentInd, Folder, Receipt, ShowChart, WatchLater } from '@mui/icons-material';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { Paths } from '@constants/paths';
 import { SideListItem } from '@pages/Admin/components/SideListItem';
 import { SideList } from '@pages/Admin/components/SideList';
@@ -32,12 +33,14 @@ export const AdminNavbar = () => {
       </IconButton>
       <SideList>
         <SideListItem path={Paths.REPORT} icon={<Assessment sx={{ color: 'customColors.iconColor' }} />} info="Reports" open={open} />
+        <SideListItem path={Paths.ADMIN_BUDGET} icon={<AttachMoneyIcon sx={{ color: 'customColors.iconColor' }} />} info="Budget" open={open} />
         <SideListItem path={Paths.INVOICE} icon={<Receipt sx={{ color: 'customColors.iconColor' }} />} info="Billing & Invoices" open={open} />
         <Divider />
         <SideListItem path={Paths.EMPLOYEE_lIST} icon={<AssignmentInd sx={{ color: 'customColors.iconColor' }} />} info="Employees" open={open} />
         <SideListItem path={Paths.PROJECT_lIST} icon={<Folder sx={{ color: 'customColors.iconColor' }} />} info="Projects" open={open} />
         <Divider />
         <SideListItem path={Paths.TRACK} icon={<WatchLater sx={{ color: 'customColors.iconColor' }} />} info="Time Entry" open={open} />
+        <SideListItem path={Paths.BURNDOWN} icon={<ShowChart sx={{ color: 'customColors.iconColor' }} />} info="Burndown" open={open} />
       </SideList>
       <SideList>
         <SwitchBtn onClick={toggleTheme} open={open} />
