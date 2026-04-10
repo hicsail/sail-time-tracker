@@ -1,5 +1,5 @@
 import { createContext, ReactNode, FC, useState, useContext } from 'react';
-import { lastDayOfMonth } from 'date-fns';
+import { lastDayOfMonth, subMonths, startOfMonth } from 'date-fns';
 
 interface DateRangeContextProps {
   dateRange: {
@@ -18,10 +18,9 @@ interface DateProviderProps {
 }
 
 export const DateRangeProvider: FC<DateProviderProps> = ({ children }) => {
-  const today = new Date();
-  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const lastMonth = subMonths(new Date(), 1);
 
-  const [dateRange, setDateRange] = useState({ startDate: firstDayOfMonth, endDate: lastDayOfMonth(today) });
+  const [dateRange, setDateRange] = useState({ startDate: startOfMonth(lastMonth), endDate: lastDayOfMonth(lastMonth) });
   const [groupBy, setGroupBy] = useState<string>('1');
 
   return <ReportFilterContext.Provider value={{ dateRange, setDateRange, groupBy, setGroupBy }}>{children}</ReportFilterContext.Provider>;

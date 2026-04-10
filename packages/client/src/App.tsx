@@ -20,6 +20,8 @@ import { InvoiceDetails } from '@pages/Invoice/InvoiceDetails';
 import { DateRangeProvider } from '@context/reportFilter.context';
 import { Export } from '@pages/Invoice/Export';
 import { NotFoundAdmin } from '@pages/Not_Find/NotFindAdmin';
+import { Burndown } from '@pages/Burndown/Burndown';
+import { Budget } from '@pages/Admin/Budget/Budget';
 import { SnackBarProvider } from '@context/snackbar.context';
 import { NavbarProvider } from '@context/navbar.context';
 
@@ -42,6 +44,7 @@ function App() {
                         <Routes>
                           <Route element={<TrackLayout />}>
                             <Route path={Paths.TRACK} element={<Track />} />
+                            <Route path={Paths.BURNDOWN} element={<Burndown />} />
                           </Route>
                           <Route path={Paths.ADMIN} element={<AdminLayout />}>
                             <Route path={Paths.PROJECT_lIST} element={<Project />}>
@@ -53,6 +56,7 @@ function App() {
                               <Route path={Paths.ADD_EMPLOYEE} />
                             </Route>
                             <Route path={Paths.REPORT} element={<Report />} />
+                            <Route path={Paths.ADMIN_BUDGET} element={<Budget />} />
                             <Route path={Paths.INVOICE} element={<Invoice />} />
                             <Route path={Paths.INVOICE_DETAIL} element={<InvoiceDetails />} />
                             <Route path={Paths.EXPORT_INVOICE} element={<Export />} />

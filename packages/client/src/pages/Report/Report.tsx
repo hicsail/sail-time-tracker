@@ -5,6 +5,7 @@ import { DropDownMenu } from '@components/form/DropDownMenu';
 import { Box, InputAdornment, SelectChangeEvent, Stack } from '@mui/material';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
+import { DateRangePresets } from '@components/DateRangePresets';
 import { TextInput } from '@components/TextInput';
 import { useDateRange } from '@context/reportFilter.context';
 import { StyledDatePicker } from '@components/StyledDatePicker';
@@ -28,7 +29,7 @@ export const Report = () => {
         <Box>
           <DropDownMenu data={data} onChange={handleOnChange} value={groupBy} label="Group By" name="select_group_by" id="select_group_by" />
         </Box>
-        <Box sx={{ display: 'flex', gap: 5 }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <StyledDatePicker
             label="Start Date"
             value={dateRange.startDate}
@@ -49,6 +50,7 @@ export const Report = () => {
               }));
             }}
           />
+          <DateRangePresets onApply={({ startDate, endDate }) => setDateRange({ startDate, endDate })} />
         </Box>
         <Box sx={{ width: '49%' }}>
           <TextInput

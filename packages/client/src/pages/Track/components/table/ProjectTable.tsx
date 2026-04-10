@@ -1,9 +1,13 @@
 import * as Yup from 'yup';
-import { Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack, TableFooter } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, Typography, Stack, TableFooter, Link } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { ChangeEvent, useState, MouseEvent, FC } from 'react';
+import { format } from 'date-fns';
+import { Link as RouterLink } from 'react-router-dom';
 import { EnhancedTableHead } from '@pages/Track/components/table/EnhancedTableHead';
+import { useGetBurndownDataQuery } from '@graphql/budget/budget';
+import { Paths } from '@constants/paths';
 
 import { Form, Formik } from 'formik';
 import { useDate } from '@context/date.context';
@@ -22,6 +26,52 @@ import { useDeleteFavoriteProjectMutation } from '@graphql/favoriteProject/favor
 import { DefaultContainedButton, StyledTableBox } from '@components/StyledComponent';
 import { useSnackBar } from '@context/snackbar.context';
 import { useDeleteRecordMutation } from '@graphql/record/record';
+
+const ProjectHoursRemaining: FC<{ projectId: string }> = ({ projectId }) => {
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const { data, loading } = useGetBurndownDataQuery({ projectId, startDate: '2020-01-01', endDate: today }, { fetchPolicy: 'cache-and-network' });
+
+  if (loading || !data?.getBurndownData) return null;
+
+  const { adjustments, dailyRecords, invoices, projectRate } = data.getBurndownData;
+  if (adjustments.length === 0 || projectRate === 0) return null;
+
+  const totalBudget = adjustments.reduce((sum, adj) => sum + adj.amount, 0);
+
+  const invoicedMonths = new Set<string>();
+  const invoiceAmountByMonth = new Map<string, number>();
+  for (const inv of invoices) {
+    const key = inv.endDate.substring(0, 7);
+    invoiceAmountByMonth.set(key, (invoiceAmountByMonth.get(key) ?? 0) + inv.amount);
+    invoicedMonths.add(key);
+  }
+
+  const trackerByMonth = new Map<string, number>();
+  for (const rec of dailyRecords) {
+    const key = rec.date.substring(0, 7);
+    trackerByMonth.set(key, (trackerByMonth.get(key) ?? 0) + rec.cost);
+  }
+
+  let totalSpend = 0;
+  for (const key of new Set([...trackerByMonth.keys(), ...invoiceAmountByMonth.keys()])) {
+    totalSpend += invoicedMonths.has(key) ? invoiceAmountByMonth.get(key) ?? 0 : trackerByMonth.get(key) ?? 0;
+  }
+
+  const hoursRemaining = (totalBudget - totalSpend) / projectRate;
+
+  const burndownUrl = `${Paths.BURNDOWN}?project=${projectId}`;
+
+  return (
+    <Stack spacing={0.5}>
+      <Typography variant="body2" color={hoursRemaining < 0 ? 'error' : 'text.primary'}>
+        {hoursRemaining.toFixed(0)} hrs remaining
+      </Typography>
+      <Link component={RouterLink} to={burndownUrl} variant="caption" underline="hover">
+        View Burndown
+      </Link>
+    </Stack>
+  );
+};
 
 interface ProjectTableProps {
   data: any | undefined;
@@ -185,7 +235,9 @@ export const ProjectTable: FC<ProjectTableProps> = ({ data }) => {
                       );
                     })}
                     <TableCell>{totalHours}</TableCell>
-                    <TableCell>{row.description}</TableCell>
+                    <TableCell>
+                      <ProjectHoursRemaining projectId={row.projectId} />
+                    </TableCell>
                   </TableRow>
                 );
               })}
